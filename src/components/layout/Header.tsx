@@ -35,28 +35,28 @@ export function Header() {
             <span className="hidden sm:block text-title font-bold">Los Cabos United</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
+          {/* Main Navigation - Always visible */}
+          <nav className="hidden sm:flex items-center gap-1">
             {navLinks.map((link) => {
               const Icon = link.icon;
               return (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  className={`flex items-center gap-2 px-3 lg:px-4 py-2 rounded-full text-xs lg:text-sm font-medium transition-all duration-300 ${
                     isActive(link.path)
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-card"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
-                  {link.name}
+                  <span className="hidden md:inline">{link.name}</span>
                 </Link>
               );
             })}
           </nav>
 
-          {/* Mobile Menu Button */}
+          {/* Hamburger Menu Button - For Perfil & Noticias */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="p-2 rounded-full bg-card border border-border text-foreground hover:bg-muted transition-colors"
@@ -67,14 +67,14 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Menu Overlay - Only Perfil & Noticias */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 top-16 md:top-20 bg-background/95 backdrop-blur-xl z-40 lg:hidden"
+            className="fixed inset-0 top-16 md:top-20 bg-background/95 backdrop-blur-xl z-40"
           >
             <motion.nav
               initial={{ y: 20, opacity: 0 }}
@@ -83,8 +83,8 @@ export function Header() {
               transition={{ delay: 0.1 }}
               className="container mx-auto px-4 py-6 flex flex-col gap-2"
             >
-              {/* Main Navigation Links */}
-              <div className="space-y-2">
+              {/* Mobile-only: Main Navigation Links */}
+              <div className="sm:hidden space-y-2">
                 <p className="text-label text-muted-foreground mb-4">Navegación</p>
                 {navLinks.map((link, index) => {
                   const Icon = link.icon;
@@ -110,12 +110,11 @@ export function Header() {
                     </motion.div>
                   );
                 })}
+                {/* Divider */}
+                <div className="h-px bg-border my-4" />
               </div>
 
-              {/* Divider */}
-              <div className="h-px bg-border my-4" />
-
-              {/* Secondary Links */}
+              {/* Secondary Links - Perfil & Noticias */}
               <div className="space-y-2">
                 <p className="text-label text-muted-foreground mb-4">Más opciones</p>
                 {mobileMenuLinks.map((link, index) => {
@@ -125,7 +124,7 @@ export function Header() {
                       key={link.path}
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
-                      transition={{ delay: (navLinks.length + index) * 0.05 }}
+                      transition={{ delay: index * 0.05 }}
                     >
                       <Link
                         to={link.path}
