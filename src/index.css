@@ -44,10 +44,10 @@
     --input: 0 0% 16%;
     --ring: 189 100% 38%;
 
-    /* Border Radius - Large modern corners */
-    --radius: 1rem;
-    --radius-lg: 1.5rem;
-    --radius-xl: 2rem;
+    /* Border Radius - Moderate corners */
+    --radius: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.25rem;
 
     /* Sidebar */
     --sidebar-background: 0 0% 5%;
