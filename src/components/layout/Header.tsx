@@ -129,7 +129,7 @@ export function Header() {
                       <Link
                         to={link.path}
                         onClick={() => setIsMenuOpen(false)}
-                        className={`flex items-center gap-4 px-4 py-4 rounded-2xl text-lg font-medium transition-all ${
+                        className={`flex items-center gap-4 px-4 py-4 rounded-xl text-lg font-medium transition-all ${
                           isActive(link.path)
                             ? "bg-secondary text-secondary-foreground"
                             : "bg-card border border-border text-foreground hover:border-secondary/50"
