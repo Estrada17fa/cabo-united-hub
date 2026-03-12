@@ -59,7 +59,7 @@ export function Header() {
           {/* Hamburger Menu Button - For Perfil & Noticias */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 rounded-full bg-card border border-border text-foreground hover:bg-muted transition-colors"
+            className="p-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted transition-colors"
             aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
           >
             {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
