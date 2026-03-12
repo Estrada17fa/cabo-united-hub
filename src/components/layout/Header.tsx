@@ -29,7 +29,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-card border border-border flex items-center justify-center">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-card border border-border flex items-center justify-center">
               <Shield className="w-6 h-6 md:w-7 md:h-7 text-primary" />
             </div>
             <span className="hidden sm:block text-title font-bold">Los Cabos United</span>
