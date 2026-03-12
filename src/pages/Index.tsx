@@ -15,7 +15,7 @@ const Index = () => {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="mb-8 mx-auto w-32 h-32 md:w-40 md:h-40 rounded-full bg-card border-2 border-border flex items-center justify-center glow-primary"
+          className="mb-8 mx-auto w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-card border-2 border-border flex items-center justify-center glow-primary"
         >
           <Shield className="w-16 h-16 md:w-20 md:h-20 text-primary" />
         </motion.div>

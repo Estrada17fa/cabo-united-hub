@@ -29,7 +29,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-card border border-border flex items-center justify-center">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-card border border-border flex items-center justify-center">
               <Shield className="w-6 h-6 md:w-7 md:h-7 text-primary" />
             </div>
             <span className="hidden sm:block text-title font-bold">Los Cabos United</span>
@@ -43,7 +43,7 @@ export function Header() {
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`flex items-center gap-2 px-3 lg:px-4 py-2 rounded-full text-xs lg:text-sm font-medium transition-all duration-300 ${
+                  className={`flex items-center gap-2 px-3 lg:px-4 py-2 rounded-lg text-xs lg:text-sm font-medium transition-all duration-300 ${
                     isActive(link.path)
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-card"
@@ -59,7 +59,7 @@ export function Header() {
           {/* Hamburger Menu Button - For Perfil & Noticias */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 rounded-full bg-card border border-border text-foreground hover:bg-muted transition-colors"
+            className="p-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted transition-colors"
             aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
           >
             {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -98,7 +98,7 @@ export function Header() {
                       <Link
                         to={link.path}
                         onClick={() => setIsMenuOpen(false)}
-                        className={`flex items-center gap-4 px-4 py-4 rounded-2xl text-lg font-medium transition-all ${
+                        className={`flex items-center gap-4 px-4 py-4 rounded-xl text-lg font-medium transition-all ${
                           isActive(link.path)
                             ? "bg-primary text-primary-foreground"
                             : "bg-card border border-border text-foreground hover:border-primary/50"
@@ -129,7 +129,7 @@ export function Header() {
                       <Link
                         to={link.path}
                         onClick={() => setIsMenuOpen(false)}
-                        className={`flex items-center gap-4 px-4 py-4 rounded-2xl text-lg font-medium transition-all ${
+                        className={`flex items-center gap-4 px-4 py-4 rounded-xl text-lg font-medium transition-all ${
                           isActive(link.path)
                             ? "bg-secondary text-secondary-foreground"
                             : "bg-card border border-border text-foreground hover:border-secondary/50"
