@@ -10,7 +10,7 @@ const Club = () => {
         transition={{ duration: 0.5 }}
         className="text-center"
       >
-        <div className="mb-6 mx-auto w-20 h-20 rounded-2xl bg-card border border-border flex items-center justify-center">
+        <div className="mb-6 mx-auto w-20 h-20 rounded-xl bg-card border border-border flex items-center justify-center">
           <Users className="w-10 h-10 text-primary" />
         </div>
         <h1 className="text-headline mb-2">Club</h1>
