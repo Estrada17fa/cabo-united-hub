@@ -106,11 +106,11 @@
 /* Bento Card System */
 @layer components {
   .bento-card {
-    @apply bg-card rounded-2xl md:rounded-3xl border border-border p-4 md:p-6;
+    @apply bg-card rounded-xl md:rounded-2xl border border-border p-4 md:p-6;
   }
 
   .bento-card-sm {
-    @apply bg-card rounded-xl md:rounded-2xl border border-border p-3 md:p-4;
+    @apply bg-card rounded-lg md:rounded-xl border border-border p-3 md:p-4;
   }
 
   .bento-card-interactive {
