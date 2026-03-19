@@ -6,12 +6,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
 import Index from "./pages/Index";
 import Club from "./pages/Club";
-import Quiniela from "./pages/Quiniela";
-import Liga from "./pages/Liga";
+import ZonaPartido from "./pages/ZonaPartido";
+import FanZone from "./pages/FanZone";
 import Tickets from "./pages/Tickets";
 import Tienda from "./pages/Tienda";
-import Perfil from "./pages/Perfil";
-import Noticias from "./pages/Noticias";
+import ConoceLosCabos from "./pages/ConoceLosCabos";
+import Patrocinios from "./pages/Patrocinios";
+import Contacto from "./pages/Contacto";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,13 +26,14 @@ const App = () => (
         <AppLayout>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/zona-partido" element={<ZonaPartido />} />
             <Route path="/club" element={<Club />} />
-            <Route path="/quiniela" element={<Quiniela />} />
-            <Route path="/liga" element={<Liga />} />
-            <Route path="/tickets" element={<Tickets />} />
+            <Route path="/fan-zone" element={<FanZone />} />
+            <Route path="/boletos" element={<Tickets />} />
             <Route path="/tienda" element={<Tienda />} />
-            <Route path="/perfil" element={<Perfil />} />
-            <Route path="/noticias" element={<Noticias />} />
+            <Route path="/conoce-los-cabos" element={<ConoceLosCabos />} />
+            <Route path="/patrocinios" element={<Patrocinios />} />
+            <Route path="/contacto" element={<Contacto />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>
