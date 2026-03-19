@@ -141,6 +141,7 @@ function MobileNav() {
       </button>
 
       <div
+        ref={scrollContainerRef}
         className="flex-1 overflow-x-auto scrollbar-hide"
         style={{
           scrollSnapType: "x mandatory",
