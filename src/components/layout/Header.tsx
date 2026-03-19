@@ -27,89 +27,65 @@ const menuLinks = [
 function MobileNav() {
   const location = useLocation();
   const navigate = useNavigate();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const isProgrammaticNav = useRef(false);
   const touchStartX = useRef(0);
-  const touchStartTime = useRef(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
 
   const rawActiveIndex = navLinks.findIndex((link) => link.path === location.pathname);
   const activeIndex = rawActiveIndex >= 0 ? rawActiveIndex : 0;
 
-  const centerItem = useCallback((index: number, instant = false) => {
-    const el = itemRefs.current[index];
-    if (!el) return;
-    isProgrammaticNav.current = true;
-    el.scrollIntoView({
-      behavior: instant ? "auto" : "smooth",
-      block: "nearest",
-      inline: "center",
-    });
-    setTimeout(() => { isProgrammaticNav.current = false; }, instant ? 50 : 400);
-  }, []);
+  // Calculate translateX to center the active item
+  const getTranslateX = useCallback(() => {
+    const container = containerRef.current;
+    const item = itemRefs.current[activeIndex];
+    if (!container || !item) return 0;
+    const containerWidth = container.offsetWidth;
+    const itemOffsetLeft = item.offsetLeft;
+    const itemWidth = item.offsetWidth;
+    return -(itemOffsetLeft - containerWidth / 2 + itemWidth / 2);
+  }, [activeIndex]);
 
-  // Swipe gesture: detect direction → navigate ±1 only
+  const [translateX, setTranslateX] = useState(0);
+
+  // Recalculate position on mount, route change, resize
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const onTouchStart = (e: TouchEvent) => {
-      touchStartX.current = e.touches[0].clientX;
-      touchStartTime.current = Date.now();
-    };
-
-    const onTouchEnd = (e: TouchEvent) => {
-      const deltaX = e.changedTouches[0].clientX - touchStartX.current;
-      const deltaTime = Date.now() - touchStartTime.current;
-      const threshold = 30; // min px to count as swipe
-      const maxTime = 500; // max ms
-
-      if (Math.abs(deltaX) > threshold && deltaTime < maxTime) {
-        const direction = deltaX < 0 ? 1 : -1; // swipe left = next, right = prev
-        const nextIndex = (activeIndex + direction + navLinks.length) % navLinks.length;
-        navigate(navLinks[nextIndex].path);
-      } else {
-        // Snap back to current
-        centerItem(activeIndex, false);
-      }
-    };
-
-    // Prevent free scrolling — lock scroll position during touch
-    const onScroll = () => {
-      if (!isProgrammaticNav.current) {
-        // Allow slight movement for feedback but will snap back on touchend
-      }
-    };
-
-    container.addEventListener("touchstart", onTouchStart, { passive: true });
-    container.addEventListener("touchend", onTouchEnd, { passive: true });
-    container.addEventListener("scroll", onScroll, { passive: true });
+    const update = () => setTranslateX(getTranslateX());
+    // Double rAF for layout readiness
+    const f = requestAnimationFrame(() => requestAnimationFrame(update));
+    window.addEventListener("resize", update);
     return () => {
-      container.removeEventListener("touchstart", onTouchStart);
-      container.removeEventListener("touchend", onTouchEnd);
-      container.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(f);
+      window.removeEventListener("resize", update);
     };
-  }, [activeIndex, navigate, centerItem]);
+  }, [getTranslateX]);
 
-  // Center on mount
-  useEffect(() => {
-    const f1 = requestAnimationFrame(() => {
-      requestAnimationFrame(() => centerItem(activeIndex, true));
-    });
-    return () => cancelAnimationFrame(f1);
-  }, []);
+  // Touch handlers for swipe ±1
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    setIsDragging(true);
+    setDragOffset(0);
+  };
 
-  // Smooth center on route change
-  useEffect(() => {
-    centerItem(activeIndex, false);
-  }, [activeIndex, centerItem]);
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const delta = e.touches[0].clientX - touchStartX.current;
+    // Clamp drag feedback to ±80px so it feels constrained
+    setDragOffset(Math.max(-80, Math.min(80, delta)));
+  };
 
-  // Re-center on resize
-  useEffect(() => {
-    const handleResize = () => centerItem(activeIndex, true);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [activeIndex, centerItem]);
+  const onTouchEnd = () => {
+    setIsDragging(false);
+    const threshold = 30;
+    if (Math.abs(dragOffset) > threshold) {
+      const direction = dragOffset < 0 ? 1 : -1;
+      const nextIndex = (activeIndex + direction + navLinks.length) % navLinks.length;
+      navigate(navLinks[nextIndex].path);
+    }
+    setDragOffset(0);
+  };
 
   const goToIndex = (direction: "left" | "right") => {
     const nextIndex =
@@ -138,19 +114,18 @@ function MobileNav() {
       </button>
 
       <div
-        ref={scrollContainerRef}
-        className="flex-1 overflow-x-auto scrollbar-hide"
-        style={{
-          scrollSnapType: "x mandatory",
-          WebkitOverflowScrolling: "touch",
-          scrollbarWidth: "none",
-        }}
+        ref={containerRef}
+        className="flex-1 overflow-hidden"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
         <div
+          ref={trackRef}
           className="flex items-center w-max gap-2"
           style={{
-            paddingLeft: "calc(50% - 3.5rem)",
-            paddingRight: "calc(50% - 3.5rem)",
+            transform: `translateX(${translateX + dragOffset}px)`,
+            transition: isDragging ? "none" : "transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
           {navLinks.map((link, index) => {
@@ -166,7 +141,6 @@ function MobileNav() {
                 onClick={() => navigate(link.path)}
                 type="button"
                 style={{
-                  scrollSnapAlign: "center",
                   transform: `scale(${isActive ? 1.12 : isAdjacent ? 0.88 : 0.75})`,
                   opacity: isActive ? 1 : isAdjacent ? 0.65 : 0.35,
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
