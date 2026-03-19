@@ -126,9 +126,9 @@ function MobileNav() {
             const state = getItemState(index);
 
             const stateStyles = {
-              active: "min-w-[6rem] max-w-[7rem] border-primary bg-primary text-primary-foreground shadow-sm px-2.5 h-9",
-              adjacent: "min-w-[4.5rem] max-w-[5.5rem] border-border bg-card text-foreground px-2 h-8 opacity-80",
-              far: "min-w-[3rem] max-w-[4rem] border-transparent bg-transparent text-muted-foreground px-1.5 h-7 opacity-40",
+              active: "w-auto border-primary bg-primary text-primary-foreground shadow-sm px-3 h-9",
+              adjacent: "min-w-[4rem] max-w-[5rem] border-border bg-card text-foreground px-2 h-8 opacity-80",
+              far: "min-w-[2.5rem] max-w-[3.5rem] border-transparent bg-transparent text-muted-foreground px-1.5 h-7 opacity-40",
             };
 
             const iconSize = {
@@ -154,7 +154,7 @@ function MobileNav() {
                   className={`flex shrink-0 items-center justify-center gap-1 overflow-hidden rounded-xl border font-medium whitespace-nowrap transition-all duration-300 ease-out ${stateStyles[state]}`}
                 >
                   <Icon className={`${iconSize[state]} flex-shrink-0 transition-all duration-300`} />
-                  <span className={`truncate transition-all duration-300 ${textSize[state]}`}>
+                  <span className={`transition-all duration-300 ${state === "active" ? "" : "truncate"} ${textSize[state]}`}>
                     {link.name}
                   </span>
                 </Link>
