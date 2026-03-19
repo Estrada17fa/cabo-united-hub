@@ -147,7 +147,7 @@ function MobileNav() {
                 }}
                 className={`flex shrink-0 items-center justify-center gap-1.5 rounded-xl border font-medium whitespace-nowrap ${
                   isActive
-                    ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20 px-3.5 py-2"
+                    ? "border-primary bg-primary text-secondary-foreground shadow-lg shadow-primary/20 px-3.5 py-2"
                     : isAdjacent
                       ? "border-border bg-card text-foreground px-2.5 py-1.5"
                       : "border-transparent bg-card/50 text-muted-foreground px-2 py-1.5"
@@ -205,7 +205,7 @@ export function Header() {
                 to={link.path}
                 className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-[11px] lg:text-xs font-medium transition-all duration-300 ${
                   isActive(link.path)
-                    ? "bg-primary text-primary-foreground"
+                    ? "bg-primary text-secondary-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-card"
                 }`}
               >
