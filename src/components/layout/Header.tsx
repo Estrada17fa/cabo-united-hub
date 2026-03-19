@@ -29,9 +29,9 @@ function MobileNav() {
   const navigate = useNavigate();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const scrollTimer = useRef<ReturnType<typeof setTimeout>>();
-  const isUserScrolling = useRef(false);
   const isProgrammaticNav = useRef(false);
+  const touchStartX = useRef(0);
+  const touchStartTime = useRef(0);
 
   const rawActiveIndex = navLinks.findIndex((link) => link.path === location.pathname);
   const activeIndex = rawActiveIndex >= 0 ? rawActiveIndex : 0;
@@ -45,52 +45,51 @@ function MobileNav() {
       block: "nearest",
       inline: "center",
     });
-    // Reset flag after scroll completes
     setTimeout(() => { isProgrammaticNav.current = false; }, instant ? 50 : 400);
   }, []);
 
-  // Detect scroll end → find closest item to center → navigate
+  // Swipe gesture: detect direction → navigate ±1 only
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const handleScroll = () => {
-      // Only react to user-initiated scrolls
-      if (isProgrammaticNav.current) return;
-      isUserScrolling.current = true;
-
-      clearTimeout(scrollTimer.current);
-      scrollTimer.current = setTimeout(() => {
-        isUserScrolling.current = false;
-        // Find which item is closest to container center
-        const containerRect = container.getBoundingClientRect();
-        const containerCenter = containerRect.left + containerRect.width / 2;
-        let closestIndex = 0;
-        let closestDist = Infinity;
-
-        itemRefs.current.forEach((el, i) => {
-          if (!el) return;
-          const rect = el.getBoundingClientRect();
-          const itemCenter = rect.left + rect.width / 2;
-          const dist = Math.abs(itemCenter - containerCenter);
-          if (dist < closestDist) {
-            closestDist = dist;
-            closestIndex = i;
-          }
-        });
-
-        if (closestIndex !== activeIndex) {
-          navigate(navLinks[closestIndex].path);
-        }
-      }, 120); // debounce — fires after scroll settles
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartTime.current = Date.now();
     };
 
-    container.addEventListener("scroll", handleScroll, { passive: true });
+    const onTouchEnd = (e: TouchEvent) => {
+      const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+      const deltaTime = Date.now() - touchStartTime.current;
+      const threshold = 30; // min px to count as swipe
+      const maxTime = 500; // max ms
+
+      if (Math.abs(deltaX) > threshold && deltaTime < maxTime) {
+        const direction = deltaX < 0 ? 1 : -1; // swipe left = next, right = prev
+        const nextIndex = (activeIndex + direction + navLinks.length) % navLinks.length;
+        navigate(navLinks[nextIndex].path);
+      } else {
+        // Snap back to current
+        centerItem(activeIndex, false);
+      }
+    };
+
+    // Prevent free scrolling — lock scroll position during touch
+    const onScroll = () => {
+      if (!isProgrammaticNav.current) {
+        // Allow slight movement for feedback but will snap back on touchend
+      }
+    };
+
+    container.addEventListener("touchstart", onTouchStart, { passive: true });
+    container.addEventListener("touchend", onTouchEnd, { passive: true });
+    container.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      container.removeEventListener("scroll", handleScroll);
-      clearTimeout(scrollTimer.current);
+      container.removeEventListener("touchstart", onTouchStart);
+      container.removeEventListener("touchend", onTouchEnd);
+      container.removeEventListener("scroll", onScroll);
     };
-  }, [activeIndex, navigate]);
+  }, [activeIndex, navigate, centerItem]);
 
   // Center on mount
   useEffect(() => {
