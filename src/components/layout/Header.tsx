@@ -27,35 +27,84 @@ const menuLinks = [
 function MobileNav() {
   const location = useLocation();
   const navigate = useNavigate();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const scrollTimer = useRef<ReturnType<typeof setTimeout>>();
+  const isUserScrolling = useRef(false);
+  const isProgrammaticNav = useRef(false);
 
   const rawActiveIndex = navLinks.findIndex((link) => link.path === location.pathname);
   const activeIndex = rawActiveIndex >= 0 ? rawActiveIndex : 0;
 
-  // scrollIntoView-based centering — simple, native, smooth
   const centerItem = useCallback((index: number, instant = false) => {
     const el = itemRefs.current[index];
     if (!el) return;
+    isProgrammaticNav.current = true;
     el.scrollIntoView({
       behavior: instant ? "auto" : "smooth",
       block: "nearest",
       inline: "center",
     });
+    // Reset flag after scroll completes
+    setTimeout(() => { isProgrammaticNav.current = false; }, instant ? 50 : 400);
   }, []);
 
-  // Center on mount (instant)
+  // Detect scroll end → find closest item to center → navigate
   useEffect(() => {
-    // Double rAF to ensure layout is ready
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      // Only react to user-initiated scrolls
+      if (isProgrammaticNav.current) return;
+      isUserScrolling.current = true;
+
+      clearTimeout(scrollTimer.current);
+      scrollTimer.current = setTimeout(() => {
+        isUserScrolling.current = false;
+        // Find which item is closest to container center
+        const containerRect = container.getBoundingClientRect();
+        const containerCenter = containerRect.left + containerRect.width / 2;
+        let closestIndex = 0;
+        let closestDist = Infinity;
+
+        itemRefs.current.forEach((el, i) => {
+          if (!el) return;
+          const rect = el.getBoundingClientRect();
+          const itemCenter = rect.left + rect.width / 2;
+          const dist = Math.abs(itemCenter - containerCenter);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closestIndex = i;
+          }
+        });
+
+        if (closestIndex !== activeIndex) {
+          navigate(navLinks[closestIndex].path);
+        }
+      }, 120); // debounce — fires after scroll settles
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+      clearTimeout(scrollTimer.current);
+    };
+  }, [activeIndex, navigate]);
+
+  // Center on mount
+  useEffect(() => {
     const f1 = requestAnimationFrame(() => {
-      const f2 = requestAnimationFrame(() => centerItem(activeIndex, true));
-      return () => cancelAnimationFrame(f2);
+      requestAnimationFrame(() => centerItem(activeIndex, true));
     });
     return () => cancelAnimationFrame(f1);
-  }, []); // only on mount
+  }, []);
 
   // Smooth center on route change
   useEffect(() => {
-    centerItem(activeIndex, false);
+    if (!isUserScrolling.current) {
+      centerItem(activeIndex, false);
+    }
   }, [activeIndex, centerItem]);
 
   // Re-center on resize
