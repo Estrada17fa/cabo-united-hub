@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, Home, Swords, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Sheet,
@@ -26,112 +26,111 @@ const menuLinks = [
 
 function MobileNav() {
   const location = useLocation();
+  const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-  const [scrollPos, setScrollPos] = useState(0);
-  const [maxScroll, setMaxScroll] = useState(1);
 
-  const activeIndex = navLinks.findIndex((l) => l.path === location.pathname);
+  const rawActiveIndex = navLinks.findIndex((link) => link.path === location.pathname);
+  const activeIndex = rawActiveIndex >= 0 ? rawActiveIndex : 0;
   const isActive = (path: string) => location.pathname === path;
 
-  const updateScrollInfo = () => {
+  const centerItem = (index: number, behavior: ScrollBehavior = "smooth") => {
     const container = scrollRef.current;
-    if (!container) return;
-    setScrollPos(container.scrollLeft);
-    setMaxScroll(container.scrollWidth - container.clientWidth);
+    const item = itemRefs.current[index];
+    if (!container || !item) return;
+
+    const targetLeft = item.offsetLeft - container.clientWidth / 2 + item.offsetWidth / 2;
+    const maxLeft = container.scrollWidth - container.clientWidth;
+
+    container.scrollTo({
+      left: Math.max(0, Math.min(targetLeft, maxLeft)),
+      behavior,
+    });
   };
 
-  // Center active item on mount and route change
   useEffect(() => {
-    const container = scrollRef.current;
-    const activeEl = itemRefs.current[activeIndex];
-    if (!container || !activeEl) return;
+    const frame = window.requestAnimationFrame(() => centerItem(activeIndex));
+    const handleResize = () => centerItem(activeIndex, "auto");
 
-    const scrollLeft =
-      activeEl.offsetLeft - container.clientWidth / 2 + activeEl.offsetWidth / 2;
-
-    container.scrollTo({ left: scrollLeft, behavior: "smooth" });
-    setTimeout(updateScrollInfo, 350);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", handleResize);
+    };
   }, [activeIndex]);
 
-  // Track scroll position for arrow visibility
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-    const onScroll = () => updateScrollInfo();
-    container.addEventListener("scroll", onScroll, { passive: true });
-    updateScrollInfo();
-    return () => container.removeEventListener("scroll", onScroll);
-  }, []);
+  const goToIndex = (direction: "left" | "right") => {
+    const nextIndex =
+      direction === "left"
+        ? (activeIndex - 1 + navLinks.length) % navLinks.length
+        : (activeIndex + 1) % navLinks.length;
 
-  const scroll = (dir: "left" | "right") => {
-    const container = scrollRef.current;
-    if (!container) return;
-    const amount = container.clientWidth * 0.6;
-    container.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
+    navigate(navLinks[nextIndex].path);
   };
 
-  const canScrollLeft = scrollPos > 2;
-  const canScrollRight = scrollPos < maxScroll - 2;
-
   return (
-    <div className="flex items-center flex-1 min-w-0 mx-0.5">
-      {/* Left arrow */}
+    <div className="flex items-center flex-1 min-w-0 gap-1">
       <button
-        onClick={() => scroll("left")}
-        className={`flex-shrink-0 p-0.5 transition-all duration-200 ${
-          canScrollLeft ? "text-foreground opacity-100" : "text-muted-foreground opacity-30"
-        }`}
-        aria-label="Anterior"
+        onClick={() => goToIndex("left")}
+        className="flex-shrink-0 rounded-full p-1 text-muted-foreground transition-colors hover:text-foreground active:text-foreground"
+        aria-label="Página anterior"
+        type="button"
       >
-        <ChevronLeft className="w-3.5 h-3.5" />
+        <ChevronLeft className="h-3.5 w-3.5" />
       </button>
 
-      {/* Scrollable nav */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-x-auto scrollbar-hide"
         style={{
           scrollSnapType: "x mandatory",
+          scrollBehavior: "smooth",
           WebkitOverflowScrolling: "touch",
         }}
       >
         <div
-          className="flex items-center w-max"
-          style={{ paddingLeft: "calc(50% - 3rem)", paddingRight: "calc(50% - 3rem)" }}
+          className="flex items-center w-max gap-1"
+          style={{ paddingLeft: "calc(50% - 2.9rem)", paddingRight: "calc(50% - 2.9rem)" }}
         >
-          {navLinks.map((link, i) => {
+          {navLinks.map((link, index) => {
             const Icon = link.icon;
+            const distance = Math.abs(index - activeIndex);
             const active = isActive(link.path);
+            const isAdjacent = distance === 1;
+
             return (
               <Link
                 key={link.path}
                 to={link.path}
-                ref={(el) => { itemRefs.current[i] = el; }}
+                ref={(el) => {
+                  itemRefs.current[index] = el;
+                }}
                 style={{ scrollSnapAlign: "center" }}
-                className={`flex-shrink-0 flex items-center gap-1 mx-0.5 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
+                className={`flex h-10 shrink-0 snap-center items-center justify-center gap-1 overflow-hidden rounded-xl border font-medium whitespace-nowrap transition-all duration-300 ease-out ${
                   active
-                    ? "bg-primary text-primary-foreground px-3 py-1.5 text-[11px] scale-105"
-                    : "text-muted-foreground active:bg-card px-2 py-1 text-[10px]"
+                    ? "w-[5.8rem] border-primary bg-primary px-2.5 text-primary-foreground shadow-sm"
+                    : isAdjacent
+                      ? "w-[4.5rem] border-border bg-card px-2 text-foreground scale-90"
+                      : "w-[3.5rem] border-transparent bg-transparent px-1.5 text-muted-foreground scale-75 opacity-55"
                 }`}
               >
-                <Icon className={active ? "w-3.5 h-3.5" : "w-3 h-3"} />
-                <span>{link.name}</span>
+                <Icon className={`${active ? "h-3.5 w-3.5" : "h-3 w-3"} flex-shrink-0`} />
+                <span className={`truncate ${active ? "text-[11px]" : isAdjacent ? "text-[10px]" : "text-[9px]"}`}>
+                  {link.name}
+                </span>
               </Link>
             );
           })}
         </div>
       </div>
 
-      {/* Right arrow */}
       <button
-        onClick={() => scroll("right")}
-        className={`flex-shrink-0 p-0.5 transition-all duration-200 ${
-          canScrollRight ? "text-foreground opacity-100" : "text-muted-foreground opacity-30"
-        }`}
-        aria-label="Siguiente"
+        onClick={() => goToIndex("right")}
+        className="flex-shrink-0 rounded-full p-1 text-muted-foreground transition-colors hover:text-foreground active:text-foreground"
+        aria-label="Página siguiente"
+        type="button"
       >
-        <ChevronRight className="w-3.5 h-3.5" />
+        <ChevronRight className="h-3.5 w-3.5" />
       </button>
     </div>
   );
