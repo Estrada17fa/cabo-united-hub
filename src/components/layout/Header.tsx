@@ -29,54 +29,94 @@ function MobileNav() {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const isFirstRender = useRef(true);
+  const animFrameRef = useRef<number>(0);
 
   const rawActiveIndex = navLinks.findIndex((link) => link.path === location.pathname);
   const activeIndex = rawActiveIndex >= 0 ? rawActiveIndex : 0;
 
-  const centerActiveItem = useCallback((behavior: ScrollBehavior = "smooth") => {
+  // Smoothly animate scroll to center the active item over ~450ms,
+  // re-reading getBoundingClientRect each frame so it tracks size transitions.
+  const animateCenter = useCallback((instant = false) => {
+    cancelAnimationFrame(animFrameRef.current);
+
     const container = scrollRef.current;
     const activeEl = itemRefs.current[activeIndex];
     if (!container || !activeEl) return;
 
-    const containerRect = container.getBoundingClientRect();
-    const itemRect = activeEl.getBoundingClientRect();
+    if (instant) {
+      const containerRect = container.getBoundingClientRect();
+      const itemRect = activeEl.getBoundingClientRect();
+      const delta = (itemRect.left - containerRect.left + itemRect.width / 2) - containerRect.width / 2;
+      container.scrollLeft += delta;
+      return;
+    }
 
-    const containerCenter = containerRect.width / 2;
-    const itemCenter = itemRect.left - containerRect.left + itemRect.width / 2;
-    const delta = itemCenter - containerCenter;
+    const duration = 450;
+    const start = performance.now();
+    const startScroll = container.scrollLeft;
+    let targetDelta = 0;
 
-    container.scrollTo({
-      left: container.scrollLeft + delta,
-      behavior,
-    });
+    // Calculate initial delta
+    const cRect = container.getBoundingClientRect();
+    const iRect = activeEl.getBoundingClientRect();
+    targetDelta = (iRect.left - cRect.left + iRect.width / 2) - cRect.width / 2;
+
+    const ease = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const step = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = ease(progress);
+
+      // Re-read the target position each frame to track CSS transitions
+      const cr = container.getBoundingClientRect();
+      const ir = activeEl.getBoundingClientRect();
+      const currentDelta = (ir.left - cr.left + ir.width / 2) - cr.width / 2;
+
+      // Blend: early in animation follow initial target, later follow live position
+      const blendedDelta = currentDelta * eased + targetDelta * (1 - eased);
+      container.scrollLeft += blendedDelta * 0.3; // Gradual steps
+
+      if (progress < 1) {
+        animFrameRef.current = requestAnimationFrame(step);
+      } else {
+        // Final snap to exact center
+        const fr = container.getBoundingClientRect();
+        const fir = activeEl.getBoundingClientRect();
+        const finalDelta = (fir.left - fr.left + fir.width / 2) - fr.width / 2;
+        container.scrollLeft += finalDelta;
+      }
+    };
+
+    animFrameRef.current = requestAnimationFrame(step);
   }, [activeIndex]);
 
-  // Center on mount, route change, and resize
+  // On mount: instant center. On resize: instant re-center.
   useEffect(() => {
-    // Immediate center without animation on mount
-    const frame1 = requestAnimationFrame(() => {
-      centerActiveItem("auto");
-      // Second pass after layout settles (transitions may change sizes)
-      const frame2 = requestAnimationFrame(() => {
-        centerActiveItem("auto");
-      });
-      return () => cancelAnimationFrame(frame2);
+    const frame = requestAnimationFrame(() => {
+      animateCenter(true);
+      requestAnimationFrame(() => animateCenter(true));
     });
-
-    const handleResize = () => centerActiveItem("auto");
+    const handleResize = () => animateCenter(true);
     window.addEventListener("resize", handleResize);
-
     return () => {
-      cancelAnimationFrame(frame1);
+      cancelAnimationFrame(frame);
+      cancelAnimationFrame(animFrameRef.current);
       window.removeEventListener("resize", handleResize);
     };
-  }, [centerActiveItem]);
+  }, [animateCenter]);
 
-  // Smooth re-center when activeIndex changes after initial mount
+  // On route change: animate smoothly (skip first render)
   useEffect(() => {
-    const timeout = setTimeout(() => centerActiveItem("smooth"), 50);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    // Small delay to let React apply new classes before animating
+    const timeout = setTimeout(() => animateCenter(false), 20);
     return () => clearTimeout(timeout);
-  }, [activeIndex, centerActiveItem]);
+  }, [activeIndex, animateCenter]);
 
   const goToIndex = (direction: "left" | "right") => {
     const nextIndex =
