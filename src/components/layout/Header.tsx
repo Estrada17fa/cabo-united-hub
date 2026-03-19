@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, Home, Swords, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, ChevronLeft, ChevronRight } from "lucide-react";
 import {
@@ -28,97 +28,137 @@ function MobileNav() {
   const location = useLocation();
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const rawActiveIndex = navLinks.findIndex((link) => link.path === location.pathname);
   const activeIndex = rawActiveIndex >= 0 ? rawActiveIndex : 0;
-  const isActive = (path: string) => location.pathname === path;
 
-  const centerItem = (index: number, behavior: ScrollBehavior = "smooth") => {
+  const centerActiveItem = useCallback((behavior: ScrollBehavior = "smooth") => {
     const container = scrollRef.current;
-    const item = itemRefs.current[index];
-    if (!container || !item) return;
+    const activeEl = itemRefs.current[activeIndex];
+    if (!container || !activeEl) return;
 
-    const targetLeft = item.offsetLeft - container.clientWidth / 2 + item.offsetWidth / 2;
-    const maxLeft = container.scrollWidth - container.clientWidth;
+    const containerRect = container.getBoundingClientRect();
+    const itemRect = activeEl.getBoundingClientRect();
+
+    const containerCenter = containerRect.width / 2;
+    const itemCenter = itemRect.left - containerRect.left + itemRect.width / 2;
+    const delta = itemCenter - containerCenter;
 
     container.scrollTo({
-      left: Math.max(0, Math.min(targetLeft, maxLeft)),
+      left: container.scrollLeft + delta,
       behavior,
     });
-  };
+  }, [activeIndex]);
 
+  // Center on mount, route change, and resize
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => centerItem(activeIndex));
-    const handleResize = () => centerItem(activeIndex, "auto");
+    // Immediate center without animation on mount
+    const frame1 = requestAnimationFrame(() => {
+      centerActiveItem("auto");
+      // Second pass after layout settles (transitions may change sizes)
+      const frame2 = requestAnimationFrame(() => {
+        centerActiveItem("auto");
+      });
+      return () => cancelAnimationFrame(frame2);
+    });
 
+    const handleResize = () => centerActiveItem("auto");
     window.addEventListener("resize", handleResize);
+
     return () => {
-      window.cancelAnimationFrame(frame);
+      cancelAnimationFrame(frame1);
       window.removeEventListener("resize", handleResize);
     };
-  }, [activeIndex]);
+  }, [centerActiveItem]);
+
+  // Smooth re-center when activeIndex changes after initial mount
+  useEffect(() => {
+    const timeout = setTimeout(() => centerActiveItem("smooth"), 50);
+    return () => clearTimeout(timeout);
+  }, [activeIndex, centerActiveItem]);
 
   const goToIndex = (direction: "left" | "right") => {
     const nextIndex =
       direction === "left"
         ? (activeIndex - 1 + navLinks.length) % navLinks.length
         : (activeIndex + 1) % navLinks.length;
-
     navigate(navLinks[nextIndex].path);
   };
 
+  const getItemState = (index: number): "active" | "adjacent" | "far" => {
+    if (index === activeIndex) return "active";
+    // Circular distance
+    const dist = Math.min(
+      Math.abs(index - activeIndex),
+      navLinks.length - Math.abs(index - activeIndex)
+    );
+    return dist === 1 ? "adjacent" : "far";
+  };
+
   return (
-    <div className="flex items-center flex-1 min-w-0 gap-1">
+    <div className="flex items-center flex-1 min-w-0 gap-0.5">
       <button
         onClick={() => goToIndex("left")}
         className="flex-shrink-0 rounded-full p-1 text-muted-foreground transition-colors hover:text-foreground active:text-foreground"
         aria-label="Página anterior"
         type="button"
       >
-        <ChevronLeft className="h-3.5 w-3.5" />
+        <ChevronLeft className="h-4 w-4" />
       </button>
 
       <div
         ref={scrollRef}
         className="flex-1 overflow-x-auto scrollbar-hide"
         style={{
-          scrollSnapType: "x mandatory",
-          scrollBehavior: "smooth",
           WebkitOverflowScrolling: "touch",
         }}
       >
         <div
-          className="flex items-center w-max gap-1"
-          style={{ paddingLeft: "calc(50% - 2.9rem)", paddingRight: "calc(50% - 2.9rem)" }}
+          className="flex items-center w-max gap-1.5"
+          style={{
+            paddingLeft: "calc(50% - 3rem)",
+            paddingRight: "calc(50% - 3rem)",
+          }}
         >
           {navLinks.map((link, index) => {
             const Icon = link.icon;
-            const distance = Math.abs(index - activeIndex);
-            const active = isActive(link.path);
-            const isAdjacent = distance === 1;
+            const state = getItemState(index);
+
+            const stateStyles = {
+              active: "min-w-[6rem] max-w-[7rem] border-primary bg-primary text-primary-foreground shadow-sm px-2.5 h-9",
+              adjacent: "min-w-[4.5rem] max-w-[5.5rem] border-border bg-card text-foreground px-2 h-8 opacity-80",
+              far: "min-w-[3rem] max-w-[4rem] border-transparent bg-transparent text-muted-foreground px-1.5 h-7 opacity-40",
+            };
+
+            const iconSize = {
+              active: "h-3.5 w-3.5",
+              adjacent: "h-3 w-3",
+              far: "h-2.5 w-2.5",
+            };
+
+            const textSize = {
+              active: "text-[11px] font-semibold",
+              adjacent: "text-[9px] font-medium",
+              far: "text-[8px] font-normal",
+            };
 
             return (
-              <Link
+              <div
                 key={link.path}
-                to={link.path}
-                ref={(el) => {
-                  itemRefs.current[index] = el;
-                }}
-                style={{ scrollSnapAlign: "center" }}
-                className={`flex h-10 shrink-0 snap-center items-center justify-center gap-1 overflow-hidden rounded-xl border font-medium whitespace-nowrap transition-all duration-300 ease-out ${
-                  active
-                    ? "w-[5.8rem] border-primary bg-primary px-2.5 text-primary-foreground shadow-sm"
-                    : isAdjacent
-                      ? "w-[4.5rem] border-border bg-card px-2 text-foreground scale-90"
-                      : "w-[3.5rem] border-transparent bg-transparent px-1.5 text-muted-foreground scale-75 opacity-55"
-                }`}
+                ref={(el) => { itemRefs.current[index] = el; }}
+                className="flex-shrink-0 snap-center"
               >
-                <Icon className={`${active ? "h-3.5 w-3.5" : "h-3 w-3"} flex-shrink-0`} />
-                <span className={`truncate ${active ? "text-[11px]" : isAdjacent ? "text-[10px]" : "text-[9px]"}`}>
-                  {link.name}
-                </span>
-              </Link>
+                <Link
+                  to={link.path}
+                  className={`flex shrink-0 items-center justify-center gap-1 overflow-hidden rounded-xl border font-medium whitespace-nowrap transition-all duration-300 ease-out ${stateStyles[state]}`}
+                >
+                  <Icon className={`${iconSize[state]} flex-shrink-0 transition-all duration-300`} />
+                  <span className={`truncate transition-all duration-300 ${textSize[state]}`}>
+                    {link.name}
+                  </span>
+                </Link>
+              </div>
             );
           })}
         </div>
@@ -130,7 +170,7 @@ function MobileNav() {
         aria-label="Página siguiente"
         type="button"
       >
-        <ChevronRight className="h-3.5 w-3.5" />
+        <ChevronRight className="h-4 w-4" />
       </button>
     </div>
   );
@@ -143,7 +183,7 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border safe-top">
-      <div className="flex items-center h-14 sm:h-16 md:h-20 px-3 sm:px-4 gap-2">
+      <div className="flex items-center h-14 sm:h-16 md:h-20 px-2 sm:px-4 gap-1.5">
         {/* Logo */}
         <Link to="/" className="flex-shrink-0">
           <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl bg-card border border-border flex items-center justify-center">
@@ -180,7 +220,7 @@ export function Header() {
         {/* Más + Hamburger */}
         <button
           onClick={() => setIsMenuOpen(true)}
-          className="flex-shrink-0 flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted active:bg-muted transition-colors"
+          className="flex-shrink-0 flex items-center gap-1.5 px-2 sm:px-3 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted active:bg-muted transition-colors"
           aria-label="Abrir menú"
         >
           <span className="text-xs sm:text-sm font-medium">Más</span>
