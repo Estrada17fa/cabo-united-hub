@@ -27,96 +27,43 @@ const menuLinks = [
 function MobileNav() {
   const location = useLocation();
   const navigate = useNavigate();
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const isFirstRender = useRef(true);
-  const animFrameRef = useRef<number>(0);
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const rawActiveIndex = navLinks.findIndex((link) => link.path === location.pathname);
   const activeIndex = rawActiveIndex >= 0 ? rawActiveIndex : 0;
 
-  // Smoothly animate scroll to center the active item over ~450ms,
-  // re-reading getBoundingClientRect each frame so it tracks size transitions.
-  const animateCenter = useCallback((instant = false) => {
-    cancelAnimationFrame(animFrameRef.current);
-
-    const container = scrollRef.current;
-    const activeEl = itemRefs.current[activeIndex];
-    if (!container || !activeEl) return;
-
-    if (instant) {
-      const containerRect = container.getBoundingClientRect();
-      const itemRect = activeEl.getBoundingClientRect();
-      const delta = (itemRect.left - containerRect.left + itemRect.width / 2) - containerRect.width / 2;
-      container.scrollLeft += delta;
-      return;
-    }
-
-    const duration = 450;
-    const start = performance.now();
-    const startScroll = container.scrollLeft;
-    let targetDelta = 0;
-
-    // Calculate initial delta
-    const cRect = container.getBoundingClientRect();
-    const iRect = activeEl.getBoundingClientRect();
-    targetDelta = (iRect.left - cRect.left + iRect.width / 2) - cRect.width / 2;
-
-    const ease = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
-    const step = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = ease(progress);
-
-      // Re-read the target position each frame to track CSS transitions
-      const cr = container.getBoundingClientRect();
-      const ir = activeEl.getBoundingClientRect();
-      const currentDelta = (ir.left - cr.left + ir.width / 2) - cr.width / 2;
-
-      // Blend: early in animation follow initial target, later follow live position
-      const blendedDelta = currentDelta * eased + targetDelta * (1 - eased);
-      container.scrollLeft += blendedDelta * 0.3; // Gradual steps
-
-      if (progress < 1) {
-        animFrameRef.current = requestAnimationFrame(step);
-      } else {
-        // Final snap to exact center
-        const fr = container.getBoundingClientRect();
-        const fir = activeEl.getBoundingClientRect();
-        const finalDelta = (fir.left - fr.left + fir.width / 2) - fr.width / 2;
-        container.scrollLeft += finalDelta;
-      }
-    };
-
-    animFrameRef.current = requestAnimationFrame(step);
-  }, [activeIndex]);
-
-  // On mount: instant center. On resize: instant re-center.
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      animateCenter(true);
-      requestAnimationFrame(() => animateCenter(true));
+  // scrollIntoView-based centering — simple, native, smooth
+  const centerItem = useCallback((index: number, instant = false) => {
+    const el = itemRefs.current[index];
+    if (!el) return;
+    el.scrollIntoView({
+      behavior: instant ? "auto" : "smooth",
+      block: "nearest",
+      inline: "center",
     });
-    const handleResize = () => animateCenter(true);
-    window.addEventListener("resize", handleResize);
-    return () => {
-      cancelAnimationFrame(frame);
-      cancelAnimationFrame(animFrameRef.current);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [animateCenter]);
+  }, []);
 
-  // On route change: animate smoothly (skip first render)
+  // Center on mount (instant)
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    // Small delay to let React apply new classes before animating
-    const timeout = setTimeout(() => animateCenter(false), 20);
-    return () => clearTimeout(timeout);
-  }, [activeIndex, animateCenter]);
+    // Double rAF to ensure layout is ready
+    const f1 = requestAnimationFrame(() => {
+      const f2 = requestAnimationFrame(() => centerItem(activeIndex, true));
+      return () => cancelAnimationFrame(f2);
+    });
+    return () => cancelAnimationFrame(f1);
+  }, []); // only on mount
+
+  // Smooth center on route change
+  useEffect(() => {
+    centerItem(activeIndex, false);
+  }, [activeIndex, centerItem]);
+
+  // Re-center on resize
+  useEffect(() => {
+    const handleResize = () => centerItem(activeIndex, true);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [activeIndex, centerItem]);
 
   const goToIndex = (direction: "left" | "right") => {
     const nextIndex =
@@ -126,21 +73,18 @@ function MobileNav() {
     navigate(navLinks[nextIndex].path);
   };
 
-  const getItemState = (index: number): "active" | "adjacent" | "far" => {
-    if (index === activeIndex) return "active";
-    // Circular distance
-    const dist = Math.min(
+  const getCircularDistance = (index: number): number => {
+    return Math.min(
       Math.abs(index - activeIndex),
       navLinks.length - Math.abs(index - activeIndex)
     );
-    return dist === 1 ? "adjacent" : "far";
   };
 
   return (
     <div className="flex items-center flex-1 min-w-0 gap-0.5">
       <button
         onClick={() => goToIndex("left")}
-        className="flex-shrink-0 rounded-full p-1 text-muted-foreground transition-colors hover:text-foreground active:text-foreground"
+        className="flex-shrink-0 rounded-full p-1.5 text-muted-foreground active:text-foreground"
         aria-label="Página anterior"
         type="button"
       >
@@ -148,57 +92,51 @@ function MobileNav() {
       </button>
 
       <div
-        ref={scrollRef}
         className="flex-1 overflow-x-auto scrollbar-hide"
         style={{
+          scrollSnapType: "x mandatory",
           WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
         }}
       >
         <div
-          className="flex items-center w-max gap-1.5"
+          className="flex items-center w-max gap-2"
           style={{
-            paddingLeft: "calc(50% - 3rem)",
-            paddingRight: "calc(50% - 3rem)",
+            paddingLeft: "calc(50% - 3.5rem)",
+            paddingRight: "calc(50% - 3.5rem)",
           }}
         >
           {navLinks.map((link, index) => {
             const Icon = link.icon;
-            const state = getItemState(index);
-
-            const stateStyles = {
-              active: "w-auto border-primary bg-primary text-primary-foreground shadow-sm px-3 h-9",
-              adjacent: "min-w-[4rem] max-w-[5rem] border-border bg-card text-foreground px-2 h-8 opacity-80",
-              far: "min-w-[2.5rem] max-w-[3.5rem] border-transparent bg-transparent text-muted-foreground px-1.5 h-7 opacity-40",
-            };
-
-            const iconSize = {
-              active: "h-3.5 w-3.5",
-              adjacent: "h-3 w-3",
-              far: "h-2.5 w-2.5",
-            };
-
-            const textSize = {
-              active: "text-[11px] font-semibold",
-              adjacent: "text-[9px] font-medium",
-              far: "text-[8px] font-normal",
-            };
+            const dist = getCircularDistance(index);
+            const isActive = dist === 0;
+            const isAdjacent = dist === 1;
 
             return (
-              <div
+              <button
                 key={link.path}
                 ref={(el) => { itemRefs.current[index] = el; }}
-                className="flex-shrink-0 snap-center transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
+                onClick={() => navigate(link.path)}
+                type="button"
+                style={{
+                  scrollSnapAlign: "center",
+                  transform: `scale(${isActive ? 1.12 : isAdjacent ? 0.88 : 0.75})`,
+                  opacity: isActive ? 1 : isAdjacent ? 0.65 : 0.35,
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                }}
+                className={`flex shrink-0 items-center justify-center gap-1.5 rounded-xl border font-medium whitespace-nowrap ${
+                  isActive
+                    ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20 px-3.5 py-2"
+                    : isAdjacent
+                      ? "border-border bg-card text-foreground px-2.5 py-1.5"
+                      : "border-transparent bg-card/50 text-muted-foreground px-2 py-1.5"
+                }`}
               >
-                <Link
-                  to={link.path}
-                  className={`flex shrink-0 items-center justify-center gap-1 overflow-hidden rounded-xl border font-medium whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${stateStyles[state]}`}
-                >
-                  <Icon className={`${iconSize[state]} flex-shrink-0 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]`} />
-                  <span className={`transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${state === "active" ? "" : "truncate"} ${textSize[state]}`}>
-                    {link.name}
-                  </span>
-                </Link>
-              </div>
+                <Icon className={`flex-shrink-0 ${isActive ? "h-3.5 w-3.5" : "h-3 w-3"}`} />
+                <span className={`${isActive ? "text-[11px] font-semibold" : isAdjacent ? "text-[9px] font-medium truncate max-w-[3.5rem]" : "text-[8px] truncate max-w-[2.5rem]"}`}>
+                  {link.name}
+                </span>
+              </button>
             );
           })}
         </div>
@@ -206,7 +144,7 @@ function MobileNav() {
 
       <button
         onClick={() => goToIndex("right")}
-        className="flex-shrink-0 rounded-full p-1 text-muted-foreground transition-colors hover:text-foreground active:text-foreground"
+        className="flex-shrink-0 rounded-full p-1.5 text-muted-foreground active:text-foreground"
         aria-label="Página siguiente"
         type="button"
       >
