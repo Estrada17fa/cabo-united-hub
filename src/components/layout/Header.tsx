@@ -154,7 +154,7 @@ function MobileNav() {
                   className={`flex shrink-0 items-center justify-center gap-1 overflow-hidden rounded-xl border font-medium whitespace-nowrap transition-all duration-300 ease-out ${stateStyles[state]}`}
                 >
                   <Icon className={`${iconSize[state]} flex-shrink-0 transition-all duration-300`} />
-                  <span className={`truncate transition-all duration-300 ${textSize[state]}`}>
+                  <span className={`transition-all duration-300 ${state === "active" ? "" : "truncate"} ${textSize[state]}`}>
                     {link.name}
                   </span>
                 </Link>
