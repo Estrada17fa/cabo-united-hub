@@ -101,9 +101,7 @@ function MobileNav() {
 
   // Smooth center on route change
   useEffect(() => {
-    if (!isUserScrolling.current) {
-      centerItem(activeIndex, false);
-    }
+    centerItem(activeIndex, false);
   }, [activeIndex, centerItem]);
 
   // Re-center on resize
