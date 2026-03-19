@@ -145,18 +145,18 @@ function MobileNav() {
                   opacity: isActive ? 1 : isAdjacent ? 0.65 : 0.35,
                   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 }}
-                className={`flex shrink-0 items-center justify-center gap-1.5 rounded-xl border font-medium whitespace-nowrap ${
+                className={`flex shrink-0 items-center justify-center rounded-xl border font-medium whitespace-nowrap ${
                   isActive
-                    ? "border-primary bg-primary text-secondary-foreground shadow-lg shadow-primary/20 px-3.5 py-2"
-                    : isAdjacent
-                      ? "border-border bg-card text-foreground px-2.5 py-1.5"
-                      : "border-transparent bg-card/50 text-muted-foreground px-2 py-1.5"
+                    ? "gap-1.5 border-primary bg-primary text-secondary-foreground shadow-lg shadow-primary/20 px-3.5 py-2"
+                    : "border-border bg-card text-muted-foreground p-2"
                 }`}
               >
-                <Icon className={`flex-shrink-0 ${isActive ? "h-3.5 w-3.5" : "h-3 w-3"}`} />
-                <span className={`${isActive ? "text-[11px] font-semibold" : isAdjacent ? "text-[9px] font-medium truncate max-w-[3.5rem]" : "text-[8px] truncate max-w-[2.5rem]"}`}>
-                  {link.name}
-                </span>
+                <Icon className={`flex-shrink-0 ${isActive ? "h-3.5 w-3.5" : "h-3.5 w-3.5"}`} />
+                {isActive && (
+                  <span className="text-[11px] font-semibold">
+                    {link.name}
+                  </span>
+                )}
               </button>
             );
           })}
