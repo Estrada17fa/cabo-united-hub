@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Home, Swords, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, ChevronLeft, ChevronRight } from "lucide-react";
+import { Menu, Home, CircleDot, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -11,7 +11,7 @@ import {
 
 const navLinks = [
   { name: "Inicio", path: "/", icon: Home },
-  { name: "Zona de Partido", path: "/zona-partido", icon: Swords },
+  { name: "Zona de Partido", path: "/zona-partido", icon: CircleDot },
   { name: "Tu Club", path: "/club", icon: Users },
   { name: "Fan Zone", path: "/fan-zone", icon: Heart },
   { name: "Boletos", path: "/boletos", icon: Ticket },
