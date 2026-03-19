@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Medal } from "lucide-react";
+import { MapPin } from "lucide-react";
 
-const Liga = () => {
+const ConoceLosCabos = () => {
   return (
     <div className="min-h-[calc(100vh-12rem)] flex flex-col items-center justify-center py-8">
       <motion.div
@@ -11,15 +11,13 @@ const Liga = () => {
         className="text-center"
       >
         <div className="mb-6 mx-auto w-20 h-20 rounded-xl bg-card border border-border flex items-center justify-center">
-          <Medal className="w-10 h-10 text-primary" />
+          <MapPin className="w-10 h-10 text-primary" />
         </div>
-        <h1 className="text-headline mb-2">Liga</h1>
-        <p className="text-body text-muted-foreground">
-          Tabla de posiciones próximamente
-        </p>
+        <h1 className="text-headline mb-2">Conoce Los Cabos</h1>
+        <p className="text-body text-muted-foreground">Próximamente</p>
       </motion.div>
     </div>
   );
 };
 
-export default Liga;
+export default ConoceLosCabos;

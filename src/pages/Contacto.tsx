@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { User } from "lucide-react";
+import { Mail } from "lucide-react";
 
-const Perfil = () => {
+const Contacto = () => {
   return (
     <div className="min-h-[calc(100vh-12rem)] flex flex-col items-center justify-center py-8">
       <motion.div
@@ -11,15 +11,13 @@ const Perfil = () => {
         className="text-center"
       >
         <div className="mb-6 mx-auto w-20 h-20 rounded-xl bg-card border border-border flex items-center justify-center">
-          <User className="w-10 h-10 text-secondary" />
+          <Mail className="w-10 h-10 text-primary" />
         </div>
-        <h1 className="text-headline mb-2">Perfil</h1>
-        <p className="text-body text-muted-foreground">
-          Tu perfil de usuario próximamente
-        </p>
+        <h1 className="text-headline mb-2">Contáctanos</h1>
+        <p className="text-body text-muted-foreground">Próximamente</p>
       </motion.div>
     </div>
   );
 };
 
-export default Perfil;
+export default Contacto;

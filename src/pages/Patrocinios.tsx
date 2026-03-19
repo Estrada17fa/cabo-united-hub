@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Newspaper } from "lucide-react";
+import { Handshake } from "lucide-react";
 
-const Noticias = () => {
+const Patrocinios = () => {
   return (
     <div className="min-h-[calc(100vh-12rem)] flex flex-col items-center justify-center py-8">
       <motion.div
@@ -11,15 +11,13 @@ const Noticias = () => {
         className="text-center"
       >
         <div className="mb-6 mx-auto w-20 h-20 rounded-xl bg-card border border-border flex items-center justify-center">
-          <Newspaper className="w-10 h-10 text-secondary" />
+          <Handshake className="w-10 h-10 text-primary" />
         </div>
-        <h1 className="text-headline mb-2">Noticias</h1>
-        <p className="text-body text-muted-foreground">
-          Últimas noticias del equipo próximamente
-        </p>
+        <h1 className="text-headline mb-2">Patrocinios</h1>
+        <p className="text-body text-muted-foreground">Próximamente</p>
       </motion.div>
     </div>
   );
 };
 
-export default Noticias;
+export default Patrocinios;
