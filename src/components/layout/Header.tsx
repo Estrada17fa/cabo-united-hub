@@ -147,14 +147,14 @@ function MobileNav() {
               <div
                 key={link.path}
                 ref={(el) => { itemRefs.current[index] = el; }}
-                className="flex-shrink-0 snap-center"
+                className="flex-shrink-0 snap-center transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]"
               >
                 <Link
                   to={link.path}
-                  className={`flex shrink-0 items-center justify-center gap-1 overflow-hidden rounded-xl border font-medium whitespace-nowrap transition-all duration-300 ease-out ${stateStyles[state]}`}
+                  className={`flex shrink-0 items-center justify-center gap-1 overflow-hidden rounded-xl border font-medium whitespace-nowrap transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${stateStyles[state]}`}
                 >
-                  <Icon className={`${iconSize[state]} flex-shrink-0 transition-all duration-300`} />
-                  <span className={`transition-all duration-300 ${state === "active" ? "" : "truncate"} ${textSize[state]}`}>
+                  <Icon className={`${iconSize[state]} flex-shrink-0 transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]`} />
+                  <span className={`transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${state === "active" ? "" : "truncate"} ${textSize[state]}`}>
                     {link.name}
                   </span>
                 </Link>
