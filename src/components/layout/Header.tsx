@@ -205,7 +205,7 @@ export function Header() {
                 to={link.path}
                 className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-[11px] lg:text-xs font-medium transition-all duration-300 ${
                   isActive(link.path)
-                    ? "bg-primary text-primary-foreground"
+                    ? "bg-primary text-secondary-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-card"
                 }`}
               >
