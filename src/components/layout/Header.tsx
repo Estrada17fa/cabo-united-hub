@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, Home, Swords, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield } from "lucide-react";
+import { Menu, Home, Swords, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -24,10 +24,100 @@ const menuLinks = [
   { name: "Contáctanos", path: "/contacto", icon: Mail },
 ];
 
+function MobileNav() {
+  const location = useLocation();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+
+  const activeIndex = navLinks.findIndex((l) => l.path === location.pathname);
+  const isActive = (path: string) => location.pathname === path;
+
+  // Center active item
+  useEffect(() => {
+    const container = scrollRef.current;
+    const activeEl = itemRefs.current[activeIndex];
+    if (!container || !activeEl) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const elRect = activeEl.getBoundingClientRect();
+    const scrollLeft =
+      activeEl.offsetLeft - containerRect.width / 2 + elRect.width / 2;
+
+    container.scrollTo({ left: scrollLeft, behavior: "smooth" });
+  }, [activeIndex]);
+
+  const scroll = (dir: "left" | "right") => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const step = dir === "left" ? -1 : 1;
+    const targetIndex = Math.min(
+      Math.max(0, activeIndex + step),
+      navLinks.length - 1
+    );
+    const targetEl = itemRefs.current[targetIndex];
+    if (!targetEl) return;
+    const containerRect = container.getBoundingClientRect();
+    const elRect = targetEl.getBoundingClientRect();
+    const scrollLeft =
+      targetEl.offsetLeft - containerRect.width / 2 + elRect.width / 2;
+    container.scrollTo({ left: scrollLeft, behavior: "smooth" });
+  };
+
+  return (
+    <div className="flex items-center flex-1 min-w-0 mx-1">
+      {/* Left arrow */}
+      <button
+        onClick={() => scroll("left")}
+        className="flex-shrink-0 p-1 text-muted-foreground active:text-foreground transition-colors"
+        aria-label="Anterior"
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+
+      {/* Scrollable nav */}
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-x-auto scrollbar-hide scroll-smooth"
+        style={{ scrollSnapType: "x mandatory" }}
+      >
+        <div className="flex items-center w-max px-[calc(50%-3.5rem)]">
+          {navLinks.map((link, i) => {
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.path}
+                to={link.path}
+                ref={(el) => { itemRefs.current[i] = el; }}
+                style={{ scrollSnapAlign: "center" }}
+                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 mx-0.5 rounded-lg text-[11px] font-medium transition-all duration-200 whitespace-nowrap ${
+                  isActive(link.path)
+                    ? "bg-primary text-primary-foreground scale-105"
+                    : "text-muted-foreground active:bg-card"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{link.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Right arrow */}
+      <button
+        onClick={() => scroll("right")}
+        className="flex-shrink-0 p-1 text-muted-foreground active:text-foreground transition-colors"
+        aria-label="Siguiente"
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-
   const isActive = (path: string) => location.pathname === path;
 
   return (
@@ -40,27 +130,30 @@ export function Header() {
           </div>
         </Link>
 
-        {/* Navigation - scrollable on mobile, centered on desktop */}
-        <nav className="flex-1 min-w-0 overflow-x-auto scrollbar-hide">
-          <div className="flex items-center gap-1 w-max md:w-full md:justify-center py-1">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${
-                    isActive(link.path)
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-card active:bg-card"
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span>{link.name}</span>
-                </Link>
-              );
-            })}
-          </div>
+        {/* Mobile nav carousel */}
+        <div className="md:hidden flex-1 min-w-0">
+          <MobileNav />
+        </div>
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex flex-1 items-center justify-center gap-1">
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-[11px] lg:text-xs font-medium transition-all duration-300 ${
+                  isActive(link.path)
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-card"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span className="hidden lg:inline">{link.name}</span>
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Más + Hamburger */}
