@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 
-// Placeholder sponsors - these would be replaced with actual sponsor logos
 const sponsors = [
   { id: 1, name: "Sponsor 1" },
   { id: 2, name: "Sponsor 2" },
@@ -11,14 +10,13 @@ const sponsors = [
 ];
 
 export function SponsorCarousel() {
-  // Duplicate sponsors for seamless loop
   const duplicatedSponsors = [...sponsors, ...sponsors];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border py-3 z-40">
+    <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border py-2 sm:py-3 z-40 safe-bottom">
       <div className="overflow-hidden">
         <motion.div
-          className="flex gap-8 items-center"
+          className="flex gap-6 sm:gap-8 items-center"
           animate={{ x: [0, "-50%"] }}
           transition={{
             x: {
@@ -31,10 +29,10 @@ export function SponsorCarousel() {
           {duplicatedSponsors.map((sponsor, index) => (
             <div
               key={`${sponsor.id}-${index}`}
-              className="flex-shrink-0 h-8 px-6 flex items-center justify-center"
+              className="flex-shrink-0 h-7 sm:h-8 px-4 sm:px-6 flex items-center justify-center"
             >
-              <div className="bg-muted/50 rounded-lg px-4 py-2 border border-border">
-                <span className="text-caption text-muted-foreground whitespace-nowrap">
+              <div className="bg-muted/50 rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 border border-border">
+                <span className="text-[11px] sm:text-caption text-muted-foreground whitespace-nowrap font-medium">
                   {sponsor.name}
                 </span>
               </div>

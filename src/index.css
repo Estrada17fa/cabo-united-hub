@@ -160,6 +160,19 @@
 /* Safe area for mobile */
 @layer utilities {
   .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 1rem);
+    padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+  }
+  
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
+/* Touch optimizations */
+@layer base {
+  @media (hover: none) {
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
   }
 }
