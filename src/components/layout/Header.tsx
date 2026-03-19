@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Home, CircleDot, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, ChevronLeft, ChevronRight } from "lucide-react";
+import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, ChevronLeft, ChevronRight, Icon } from "lucide-react";
+import { soccerBall } from "@lucide/lab";
 import {
   Sheet,
   SheetContent,
