@@ -10,9 +10,13 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 
+const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
+  <Icon iconNode={soccerBall} {...props} />
+);
+
 const navLinks = [
   { name: "Inicio", path: "/", icon: Home },
-  { name: "Zona de Partido", path: "/zona-partido", icon: CircleDot },
+  { name: "Zona de Partido", path: "/zona-partido", icon: SoccerBallIcon },
   { name: "Tu Club", path: "/club", icon: Users },
   { name: "Fan Zone", path: "/fan-zone", icon: Heart },
   { name: "Boletos", path: "/boletos", icon: Ticket },
