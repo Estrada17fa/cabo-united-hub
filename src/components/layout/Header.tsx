@@ -28,74 +28,94 @@ function MobileNav() {
   const location = useLocation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  const [scrollPos, setScrollPos] = useState(0);
+  const [maxScroll, setMaxScroll] = useState(1);
 
   const activeIndex = navLinks.findIndex((l) => l.path === location.pathname);
   const isActive = (path: string) => location.pathname === path;
 
-  // Center active item
+  const updateScrollInfo = () => {
+    const container = scrollRef.current;
+    if (!container) return;
+    setScrollPos(container.scrollLeft);
+    setMaxScroll(container.scrollWidth - container.clientWidth);
+  };
+
+  // Center active item on mount and route change
   useEffect(() => {
     const container = scrollRef.current;
     const activeEl = itemRefs.current[activeIndex];
     if (!container || !activeEl) return;
 
-    const containerRect = container.getBoundingClientRect();
-    const elRect = activeEl.getBoundingClientRect();
     const scrollLeft =
-      activeEl.offsetLeft - containerRect.width / 2 + elRect.width / 2;
+      activeEl.offsetLeft - container.clientWidth / 2 + activeEl.offsetWidth / 2;
 
     container.scrollTo({ left: scrollLeft, behavior: "smooth" });
+    setTimeout(updateScrollInfo, 350);
   }, [activeIndex]);
+
+  // Track scroll position for arrow visibility
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const onScroll = () => updateScrollInfo();
+    container.addEventListener("scroll", onScroll, { passive: true });
+    updateScrollInfo();
+    return () => container.removeEventListener("scroll", onScroll);
+  }, []);
 
   const scroll = (dir: "left" | "right") => {
     const container = scrollRef.current;
     if (!container) return;
-    const step = dir === "left" ? -1 : 1;
-    const targetIndex = Math.min(
-      Math.max(0, activeIndex + step),
-      navLinks.length - 1
-    );
-    const targetEl = itemRefs.current[targetIndex];
-    if (!targetEl) return;
-    const containerRect = container.getBoundingClientRect();
-    const elRect = targetEl.getBoundingClientRect();
-    const scrollLeft =
-      targetEl.offsetLeft - containerRect.width / 2 + elRect.width / 2;
-    container.scrollTo({ left: scrollLeft, behavior: "smooth" });
+    const amount = container.clientWidth * 0.6;
+    container.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
   };
 
+  const canScrollLeft = scrollPos > 2;
+  const canScrollRight = scrollPos < maxScroll - 2;
+
   return (
-    <div className="flex items-center flex-1 min-w-0 mx-1">
+    <div className="flex items-center flex-1 min-w-0 mx-0.5">
       {/* Left arrow */}
       <button
         onClick={() => scroll("left")}
-        className="flex-shrink-0 p-1 text-muted-foreground active:text-foreground transition-colors"
+        className={`flex-shrink-0 p-0.5 transition-all duration-200 ${
+          canScrollLeft ? "text-foreground opacity-100" : "text-muted-foreground opacity-30"
+        }`}
         aria-label="Anterior"
       >
-        <ChevronLeft className="w-4 h-4" />
+        <ChevronLeft className="w-3.5 h-3.5" />
       </button>
 
       {/* Scrollable nav */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-x-auto scrollbar-hide scroll-smooth"
-        style={{ scrollSnapType: "x mandatory" }}
+        className="flex-1 overflow-x-auto scrollbar-hide"
+        style={{
+          scrollSnapType: "x mandatory",
+          WebkitOverflowScrolling: "touch",
+        }}
       >
-        <div className="flex items-center w-max px-[calc(50%-3.5rem)]">
+        <div
+          className="flex items-center w-max"
+          style={{ paddingLeft: "calc(50% - 3rem)", paddingRight: "calc(50% - 3rem)" }}
+        >
           {navLinks.map((link, i) => {
             const Icon = link.icon;
+            const active = isActive(link.path);
             return (
               <Link
                 key={link.path}
                 to={link.path}
                 ref={(el) => { itemRefs.current[i] = el; }}
                 style={{ scrollSnapAlign: "center" }}
-                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 mx-0.5 rounded-lg text-[11px] font-medium transition-all duration-200 whitespace-nowrap ${
-                  isActive(link.path)
-                    ? "bg-primary text-primary-foreground scale-105"
-                    : "text-muted-foreground active:bg-card"
+                className={`flex-shrink-0 flex items-center gap-1 mx-0.5 rounded-lg font-medium transition-all duration-200 whitespace-nowrap ${
+                  active
+                    ? "bg-primary text-primary-foreground px-3 py-1.5 text-[11px] scale-105"
+                    : "text-muted-foreground active:bg-card px-2 py-1 text-[10px]"
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className={active ? "w-3.5 h-3.5" : "w-3 h-3"} />
                 <span>{link.name}</span>
               </Link>
             );
@@ -106,10 +126,12 @@ function MobileNav() {
       {/* Right arrow */}
       <button
         onClick={() => scroll("right")}
-        className="flex-shrink-0 p-1 text-muted-foreground active:text-foreground transition-colors"
+        className={`flex-shrink-0 p-0.5 transition-all duration-200 ${
+          canScrollRight ? "text-foreground opacity-100" : "text-muted-foreground opacity-30"
+        }`}
         aria-label="Siguiente"
       >
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight className="w-3.5 h-3.5" />
       </button>
     </div>
   );
