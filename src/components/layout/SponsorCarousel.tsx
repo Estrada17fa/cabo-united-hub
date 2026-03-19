@@ -29,10 +29,10 @@ export function SponsorCarousel() {
           {duplicatedSponsors.map((sponsor, index) => (
             <div
               key={`${sponsor.id}-${index}`}
-              className="flex-shrink-0 h-7 sm:h-8 px-4 sm:px-6 flex items-center justify-center"
+              className="flex-shrink-0 h-9 sm:h-8 px-5 sm:px-6 flex items-center justify-center"
             >
-              <div className="bg-muted/50 rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 border border-border">
-                <span className="text-[11px] sm:text-caption text-muted-foreground whitespace-nowrap font-medium">
+              <div className="bg-muted/50 rounded-lg px-4 sm:px-4 py-2 sm:py-2 border border-border">
+                <span className="text-xs sm:text-caption text-muted-foreground whitespace-nowrap font-medium">
                   {sponsor.name}
                 </span>
               </div>
