@@ -13,7 +13,7 @@ export function SponsorCarousel() {
   const duplicatedSponsors = [...sponsors, ...sponsors];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border py-2 sm:py-3 z-40 safe-bottom">
+    <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border py-2.5 sm:py-3 z-40 safe-bottom">
       <div className="overflow-hidden">
         <motion.div
           className="flex gap-6 sm:gap-8 items-center"
