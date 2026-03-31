@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon } from "lucide-react";
 import { soccerBall } from "@lucide/lab";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Sheet,
   SheetContent,
@@ -37,47 +37,42 @@ function MobileNav() {
   const currentIndex = activeIndex >= 0 ? activeIndex : 0;
 
   return (
-    <LayoutGroup>
-      <div className="flex items-center justify-center gap-1.5 px-2">
-        {navLinks.map((link, index) => {
-          const NavIcon = link.icon;
-          const isActive = index === currentIndex;
+    <div className="flex items-center justify-center gap-1.5 px-2">
+      {navLinks.map((link, index) => {
+        const NavIcon = link.icon;
+        const isActive = index === currentIndex;
 
-          return (
-            <motion.button
-              key={link.path}
-              layout
-              onClick={() => navigate(link.path)}
-              type="button"
-              className={`relative flex items-center justify-center rounded-xl font-medium whitespace-nowrap transition-colors duration-300 ${
-                isActive
-                  ? "gap-1.5 bg-primary text-secondary-foreground shadow-lg shadow-primary/20 px-3 py-2"
-                  : "text-muted-foreground hover:text-foreground p-2"
-              }`}
-              transition={{
-                layout: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
-              }}
-            >
-              <NavIcon className="flex-shrink-0 h-4 w-4" />
-              <AnimatePresence mode="wait">
-                {isActive && (
-                  <motion.span
-                    key={`label-${link.path}`}
-                    initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: "auto", opacity: 1 }}
-                    exit={{ width: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                    className="text-[11px] font-semibold overflow-hidden"
-                  >
-                    {link.name}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
-          );
-        })}
-      </div>
-    </LayoutGroup>
+        return (
+          <motion.button
+            key={link.path}
+            layout="position"
+            onClick={() => navigate(link.path)}
+            type="button"
+            style={{ willChange: "transform" }}
+            className={`relative flex items-center justify-center rounded-xl font-medium whitespace-nowrap ${
+              isActive
+                ? "gap-1.5 bg-primary text-secondary-foreground shadow-lg shadow-primary/20 px-3 py-2"
+                : "text-muted-foreground hover:text-foreground p-2"
+            }`}
+            transition={{
+              layout: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] },
+            }}
+          >
+            <NavIcon className="flex-shrink-0 h-4 w-4" />
+            {isActive && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.25, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+                className="text-[11px] font-semibold"
+              >
+                {link.name}
+              </motion.span>
+            )}
+          </motion.button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -87,7 +82,7 @@ export function Header() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border safe-top">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 border-b border-border safe-top">
       {/* Mobile layout */}
       <div className="md:hidden">
         {/* Top row: shield centered, hamburger top-right */}
