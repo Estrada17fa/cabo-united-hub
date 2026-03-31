@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, ChevronLeft, ChevronRight, Icon } from "lucide-react";
+import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon } from "lucide-react";
 import { soccerBall } from "@lucide/lab";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import {
   Sheet,
   SheetContent,
@@ -32,151 +33,51 @@ const menuLinks = [
 function MobileNav() {
   const location = useLocation();
   const navigate = useNavigate();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const touchStartX = useRef(0);
-  const [dragOffset, setDragOffset] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const rawActiveIndex = navLinks.findIndex((link) => link.path === location.pathname);
-  const activeIndex = rawActiveIndex >= 0 ? rawActiveIndex : 0;
-
-  // Calculate translateX to center the active item
-  const getTranslateX = useCallback(() => {
-    const container = containerRef.current;
-    const item = itemRefs.current[activeIndex];
-    if (!container || !item) return 0;
-    const containerWidth = container.offsetWidth;
-    const itemOffsetLeft = item.offsetLeft;
-    const itemWidth = item.offsetWidth;
-    return -(itemOffsetLeft - containerWidth / 2 + itemWidth / 2);
-  }, [activeIndex]);
-
-  const [translateX, setTranslateX] = useState(0);
-
-  // Recalculate position on mount, route change, resize
-  useEffect(() => {
-    const update = () => setTranslateX(getTranslateX());
-    // Double rAF for layout readiness
-    const f = requestAnimationFrame(() => requestAnimationFrame(update));
-    window.addEventListener("resize", update);
-    return () => {
-      cancelAnimationFrame(f);
-      window.removeEventListener("resize", update);
-    };
-  }, [getTranslateX]);
-
-  // Touch handlers for swipe ±1
-  const onTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    setIsDragging(true);
-    setDragOffset(0);
-  };
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    const delta = e.touches[0].clientX - touchStartX.current;
-    // Clamp drag feedback to ±80px so it feels constrained
-    setDragOffset(Math.max(-80, Math.min(80, delta)));
-  };
-
-  const onTouchEnd = () => {
-    setIsDragging(false);
-    const threshold = 30;
-    if (Math.abs(dragOffset) > threshold) {
-      const direction = dragOffset < 0 ? 1 : -1;
-      const nextIndex = (activeIndex + direction + navLinks.length) % navLinks.length;
-      navigate(navLinks[nextIndex].path);
-    }
-    setDragOffset(0);
-  };
-
-  const goToIndex = (direction: "left" | "right") => {
-    const nextIndex =
-      direction === "left"
-        ? (activeIndex - 1 + navLinks.length) % navLinks.length
-        : (activeIndex + 1) % navLinks.length;
-    navigate(navLinks[nextIndex].path);
-  };
-
-  const getCircularDistance = (index: number): number => {
-    return Math.min(
-      Math.abs(index - activeIndex),
-      navLinks.length - Math.abs(index - activeIndex)
-    );
-  };
+  const activeIndex = navLinks.findIndex((link) => link.path === location.pathname);
+  const currentIndex = activeIndex >= 0 ? activeIndex : 0;
 
   return (
-    <div className="flex items-center flex-1 min-w-0 gap-0.5">
-      <button
-        onClick={() => goToIndex("left")}
-        className="flex-shrink-0 rounded-full p-1.5 text-muted-foreground active:text-foreground"
-        aria-label="Página anterior"
-        type="button"
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </button>
+    <LayoutGroup>
+      <div className="flex items-center justify-center gap-1.5 px-2">
+        {navLinks.map((link, index) => {
+          const NavIcon = link.icon;
+          const isActive = index === currentIndex;
 
-      <div
-        ref={containerRef}
-        className="flex-1 overflow-hidden"
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-      >
-        <div
-          ref={trackRef}
-          className="flex items-center w-max gap-2"
-          style={{
-            transform: `translateX(${translateX + dragOffset}px)`,
-            transition: isDragging ? "none" : "transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
-        >
-          {navLinks.map((link, index) => {
-            const Icon = link.icon;
-            const dist = getCircularDistance(index);
-            const isActive = dist === 0;
-            const isAdjacent = dist === 1;
-
-            return (
-              <button
-                key={link.path}
-                ref={(el) => { itemRefs.current[index] = el; }}
-                onClick={() => navigate(link.path)}
-                type="button"
-                style={{
-                  transform: `scale(${isActive ? 1.12 : isAdjacent ? 0.88 : 0.75})`,
-                  opacity: isActive ? 1 : isAdjacent ? 0.65 : 0.35,
-                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                }}
-                className={`flex shrink-0 items-center justify-center rounded-xl border font-medium whitespace-nowrap ${
-                  isActive
-                    ? "gap-1.5 border-primary bg-primary text-secondary-foreground shadow-lg shadow-primary/20 px-3.5 py-2"
-                    : "border-border bg-card text-muted-foreground p-2"
-                }`}
-              >
-                <Icon className={`flex-shrink-0 ${isActive ? "h-3.5 w-3.5" : "h-3.5 w-3.5"}`} />
+          return (
+            <motion.button
+              key={link.path}
+              layout
+              onClick={() => navigate(link.path)}
+              type="button"
+              className={`relative flex items-center justify-center rounded-xl font-medium whitespace-nowrap transition-colors duration-300 ${
+                isActive
+                  ? "gap-1.5 bg-primary text-secondary-foreground shadow-lg shadow-primary/20 px-3 py-2"
+                  : "text-muted-foreground hover:text-foreground p-2"
+              }`}
+              transition={{
+                layout: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
+              }}
+            >
+              <NavIcon className="flex-shrink-0 h-4 w-4" />
+              <AnimatePresence mode="wait">
                 {isActive && (
-                  <span className="text-[11px] font-semibold">
+                  <motion.span
+                    key={`label-${link.path}`}
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: "auto", opacity: 1 }}
+                    exit={{ width: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    className="text-[11px] font-semibold overflow-hidden"
+                  >
                     {link.name}
-                  </span>
+                  </motion.span>
                 )}
-              </button>
-            );
-          })}
-        </div>
+              </AnimatePresence>
+            </motion.button>
+          );
+        })}
       </div>
-
-      <button
-        onClick={() => goToIndex("right")}
-        className="flex-shrink-0 rounded-full p-1.5 text-muted-foreground active:text-foreground"
-        aria-label="Página siguiente"
-        type="button"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </button>
-    </div>
+    </LayoutGroup>
   );
 }
 
@@ -187,23 +88,42 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border safe-top">
-      <div className="flex items-center h-14 sm:h-16 md:h-20 px-2 sm:px-4 gap-1.5">
-        {/* Logo */}
+      {/* Mobile layout */}
+      <div className="md:hidden">
+        {/* Top row: shield centered, hamburger top-right */}
+        <div className="relative flex items-center justify-center h-14 px-2">
+          <Link to="/" className="flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center">
+              <Shield className="w-6 h-6 text-primary" />
+            </div>
+          </Link>
+
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-card border border-border text-foreground active:bg-muted transition-colors"
+            aria-label="Abrir menú"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Nav row below shield */}
+        <div className="pb-2 overflow-x-auto scrollbar-hide">
+          <MobileNav />
+        </div>
+      </div>
+
+      {/* Desktop layout */}
+      <div className="hidden md:flex items-center h-20 px-4 gap-1.5">
         <Link to="/" className="flex-shrink-0">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl bg-card border border-border flex items-center justify-center">
-            <Shield className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-primary" />
+          <div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center">
+            <Shield className="w-7 h-7 text-primary" />
           </div>
         </Link>
 
-        {/* Mobile nav carousel */}
-        <div className="md:hidden flex-1 min-w-0">
-          <MobileNav />
-        </div>
-
-        {/* Desktop nav */}
-        <nav className="hidden md:flex flex-1 items-center justify-center gap-1">
+        <nav className="flex flex-1 items-center justify-center gap-1">
           {navLinks.map((link) => {
-            const Icon = link.icon;
+            const NavIcon = link.icon;
             return (
               <Link
                 key={link.path}
@@ -214,21 +134,20 @@ export function Header() {
                     : "text-muted-foreground hover:text-foreground hover:bg-card"
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <NavIcon className="w-3.5 h-3.5" />
                 <span className="hidden lg:inline">{link.name}</span>
               </Link>
             );
           })}
         </nav>
 
-        {/* Más + Hamburger */}
         <button
           onClick={() => setIsMenuOpen(true)}
-          className="flex-shrink-0 flex items-center gap-1.5 px-2 sm:px-3 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted active:bg-muted transition-colors"
+          className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted active:bg-muted transition-colors"
           aria-label="Abrir menú"
         >
-          <span className="text-xs sm:text-sm font-medium">Más</span>
-          <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="text-sm font-medium">Más</span>
+          <Menu className="w-5 h-5" />
         </button>
       </div>
 
@@ -243,7 +162,7 @@ export function Header() {
           <div className="space-y-1.5 mt-6">
             <p className="text-label text-muted-foreground mb-3">Extras</p>
             {menuLinks.map((link) => {
-              const Icon = link.icon;
+              const NavIcon = link.icon;
               return (
                 <Link
                   key={link.path}
@@ -255,7 +174,7 @@ export function Header() {
                       : "bg-card border border-border text-foreground active:border-secondary/50"
                   }`}
                 >
-                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <NavIcon className="w-4 h-4 flex-shrink-0" />
                   <span className="truncate">{link.name}</span>
                 </Link>
               );
