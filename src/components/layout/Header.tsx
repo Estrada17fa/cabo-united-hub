@@ -115,7 +115,7 @@ export function Header() {
       </div>
 
       {/* Desktop layout */}
-      <div className="hidden md:flex items-center h-20 px-4 gap-1.5">
+      <div className="hidden md:flex items-center h-20 px-4 gap-1.5 border-b border-border">
         <Link to="/" className="flex-shrink-0">
           <div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center">
             <Shield className="w-7 h-7 text-primary" />
