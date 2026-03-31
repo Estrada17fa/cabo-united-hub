@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon, Facebook, Instagram } from "lucide-react";
+import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon, Facebook, Instagram, User, LogOut } from "lucide-react";
 import { soccerBall } from "@lucide/lab";
 import { motion } from "framer-motion";
 import {
@@ -10,6 +10,9 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import { useAuth } from "@/hooks/useAuth";
+import { AuthModal } from "@/components/auth/AuthModal";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
   <Icon iconNode={soccerBall} {...props} />
@@ -97,7 +100,9 @@ function MobileNav() {
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
   const location = useLocation();
+  const { user, profile, signOut } = useAuth();
   const isActive = (path: string) => location.pathname === path;
 
   return (
@@ -211,11 +216,65 @@ export function Header() {
       <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
         <SheetContent side="left" className="w-[85vw] max-w-80">
           <SheetHeader>
-            <SheetTitle className="text-lg">Más opciones</SheetTitle>
+            <SheetTitle className="sr-only">Menú</SheetTitle>
             <SheetDescription className="sr-only">Menú de navegación adicional</SheetDescription>
           </SheetHeader>
 
-          <div className="space-y-1.5 mt-6">
+          {/* Profile / Auth section */}
+          <div className="mt-4 mb-6">
+            {user && profile ? (
+              <div className="space-y-4">
+                <Link
+                  to="/mi-perfil"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 group"
+                >
+                  <Avatar className="w-12 h-12 ring-2 ring-primary/30 group-hover:ring-primary transition-all">
+                    <AvatarImage src={profile.avatar_url ?? undefined} />
+                    <AvatarFallback className="bg-muted">
+                      <User className="w-5 h-5 text-muted-foreground" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-foreground truncate">
+                      ¡Hola!, {profile.display_name ?? "Fan"}
+                    </p>
+                    {profile.username && (
+                      <p className="text-xs text-muted-foreground truncate">@{profile.username}</p>
+                    )}
+                  </div>
+                </Link>
+                <button
+                  onClick={async () => {
+                    await signOut();
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center gap-2 text-xs text-muted-foreground hover:text-destructive transition-colors"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  Cerrar sesión
+                </button>
+              </div>
+            ) : (
+              <div>
+                {showAuth ? (
+                  <AuthModal onSuccess={() => { setShowAuth(false); setIsMenuOpen(false); }} />
+                ) : (
+                  <button
+                    onClick={() => setShowAuth(true)}
+                    className="flex items-center gap-3 w-full px-3.5 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium"
+                  >
+                    <User className="w-4 h-4" />
+                    Iniciar sesión / Crear cuenta
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="h-px bg-border mb-4" />
+
+          <div className="space-y-1.5">
             <p className="text-label text-muted-foreground mb-3">Extras</p>
             {menuLinks.map((link) => {
               const NavIcon = link.icon;
