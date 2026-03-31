@@ -103,7 +103,6 @@ export function Header() {
   const [showAuth, setShowAuth] = useState(false);
   const location = useLocation();
   const { user, profile, signOut } = useAuth();
-  const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
 
   return (
