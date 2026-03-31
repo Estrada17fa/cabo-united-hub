@@ -209,7 +209,7 @@ export function Header() {
 
       {/* Sheet lateral */}
       <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-        <SheetContent side="right" className="w-[85vw] max-w-80">
+        <SheetContent side="left" className="w-[85vw] max-w-80">
           <SheetHeader>
             <SheetTitle className="text-lg">Más opciones</SheetTitle>
             <SheetDescription className="sr-only">Menú de navegación adicional</SheetDescription>
