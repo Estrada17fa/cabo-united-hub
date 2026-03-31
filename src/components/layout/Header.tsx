@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon, Facebook, Instagram } from "lucide-react";
+import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon, Facebook, Instagram, User, LogOut } from "lucide-react";
 import { soccerBall } from "@lucide/lab";
 import { motion } from "framer-motion";
 import {
@@ -10,6 +10,9 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import { useAuth } from "@/hooks/useAuth";
+import { AuthModal } from "@/components/auth/AuthModal";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
   <Icon iconNode={soccerBall} {...props} />
