@@ -82,7 +82,7 @@ export function Header() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border safe-top">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 border-b border-border safe-top">
       {/* Mobile layout */}
       <div className="md:hidden">
         {/* Top row: shield centered, hamburger top-right */}
