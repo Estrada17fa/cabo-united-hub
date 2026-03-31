@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon } from "lucide-react";
+import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon, Facebook, Instagram } from "lucide-react";
 import { soccerBall } from "@lucide/lab";
 import { motion } from "framer-motion";
 import {
