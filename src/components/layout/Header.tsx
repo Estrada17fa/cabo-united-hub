@@ -104,21 +104,39 @@ export function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 safe-top">
       {/* Mobile layout */}
       <div className="md:hidden">
-        {/* Top row: shield centered, hamburger top-right */}
+        {/* Top row: hamburger left, shield center, social right */}
         <div className="relative flex items-center justify-center h-14 px-2">
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-card border border-border text-foreground active:bg-muted transition-colors"
+            aria-label="Abrir menú"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+
           <Link to="/" className="flex items-center justify-center">
             <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center">
               <Shield className="w-6 h-6 text-primary" />
             </div>
           </Link>
 
-          <button
-            onClick={() => setIsMenuOpen(true)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-card border border-border text-foreground active:bg-muted transition-colors"
-            aria-label="Abrir menú"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            {socialLinks.map((social) => {
+              const SocialIcon = social.icon;
+              return (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground active:text-primary transition-colors"
+                  aria-label={social.label}
+                >
+                  <SocialIcon className="w-4 h-4" />
+                </a>
+              );
+            })}
+          </div>
         </div>
 
         {/* Separator line */}
@@ -135,6 +153,15 @@ export function Header() {
 
       {/* Desktop layout */}
       <div className="hidden md:flex items-center h-20 px-4 gap-1.5 border-b border-border">
+        <button
+          onClick={() => setIsMenuOpen(true)}
+          className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted active:bg-muted transition-colors"
+          aria-label="Abrir menú"
+        >
+          <Menu className="w-5 h-5" />
+          <span className="text-sm font-medium">Más</span>
+        </button>
+
         <Link to="/" className="flex-shrink-0">
           <div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center">
             <Shield className="w-7 h-7 text-primary" />
