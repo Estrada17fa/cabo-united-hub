@@ -82,7 +82,7 @@ export function Header() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 border-b border-border safe-top">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 safe-top">
       {/* Mobile layout */}
       <div className="md:hidden">
         {/* Top row: shield centered, hamburger top-right */}
@@ -102,14 +102,20 @@ export function Header() {
           </button>
         </div>
 
+        {/* Separator line */}
+        <div className="h-px bg-border" />
+
         {/* Nav row below shield */}
-        <div className="pb-2 overflow-x-auto scrollbar-hide">
+        <div className="py-2 overflow-x-auto scrollbar-hide">
           <MobileNav />
         </div>
+
+        {/* Separator line */}
+        <div className="h-px bg-border" />
       </div>
 
       {/* Desktop layout */}
-      <div className="hidden md:flex items-center h-20 px-4 gap-1.5">
+      <div className="hidden md:flex items-center h-20 px-4 gap-1.5 border-b border-border">
         <Link to="/" className="flex-shrink-0">
           <div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center">
             <Shield className="w-7 h-7 text-primary" />
