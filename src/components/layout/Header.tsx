@@ -188,14 +188,23 @@ export function Header() {
           })}
         </nav>
 
-        <button
-          onClick={() => setIsMenuOpen(true)}
-          className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted active:bg-muted transition-colors"
-          aria-label="Abrir menú"
-        >
-          <span className="text-sm font-medium">Más</span>
-          <Menu className="w-5 h-5" />
-        </button>
+        <div className="flex-shrink-0 flex items-center gap-1.5">
+          {socialLinks.map((social) => {
+            const SocialIcon = social.icon;
+            return (
+              <a
+                key={social.label}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-card active:text-primary transition-colors"
+                aria-label={social.label}
+              >
+                <SocialIcon className="w-5 h-5" />
+              </a>
+            );
+          })}
+        </div>
       </div>
 
       {/* Sheet lateral */}
