@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon } from "lucide-react";
 import { soccerBall } from "@lucide/lab";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Sheet,
   SheetContent,
