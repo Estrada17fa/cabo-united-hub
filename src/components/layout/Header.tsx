@@ -103,7 +103,7 @@ function MobileNav() {
               >
                 {/* Icon — fixed size, never participates in scaling */}
                 <div className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
-                  <NavIcon className="w-4 h-4" strokeWidth={1.5} fill="currentColor" />
+                  <NavIcon className="w-4 h-4" strokeWidth={2.5} />
                 </div>
 
                 {/* Label — only rendered when active, animates width independently */}
@@ -218,7 +218,7 @@ export function Header() {
                     : "text-foreground/50 hover:text-foreground/80 hover:bg-muted/40"
                 }`}
               >
-                <NavIcon className="w-3.5 h-3.5" strokeWidth={1.5} fill="currentColor" />
+                <NavIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
                 <span className="hidden lg:inline uppercase">{link.name}</span>
               </Link>
             );
