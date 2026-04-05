@@ -148,7 +148,7 @@ export function Header() {
         <div className="h-px bg-border" />
 
         {/* Nav row below shield */}
-        <div className="py-2 overflow-x-auto scrollbar-hide">
+        <div className="py-2.5 overflow-x-auto scrollbar-hide bg-card/50 backdrop-blur-sm">
           <MobileNav />
         </div>
 
