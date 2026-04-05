@@ -1,21 +1,20 @@
 
 
-## Plan: Sincronizar animación de desplazamiento de iconos con apertura de placa activa
+## Plan: Corregir el estiramiento del icono al cambiar de página
 
 ### Problema
-Al cambiar de página en móvil, los iconos inactivos se desplazan pero se superponen entre sí porque la animación de reposicionamiento (`layout="position"`) no está sincronizada con la expansión de la placa azul activa. El `layout="position"` solo anima la posición, no considera el cambio de tamaño del elemento activo al expandirse.
+Con `layout` completo en `motion.button`, framer-motion anima el **tamaño** del botón (de expandido con texto a solo icono y viceversa), lo que causa que el icono se estire visualmente durante la transición.
 
 ### Solución
-Cambiar `layout="position"` a `layout` completo en los botones de `MobileNav`. Esto hace que framer-motion anime tanto la posición como el tamaño de cada botón simultáneamente, evitando superposiciones. Además, envolver el contenedor en `<LayoutGroup>` para que todos los botones coordinen sus animaciones como un grupo.
+Cambiar `layout` a `layout="position"` en los `motion.button` para que solo se anime la **posición** (no el tamaño), y mover la coordinación de tamaño al contenedor flex. El truco es que el cambio de tamaño ocurra instantáneamente mientras la posición se anima suavemente.
 
-### Cambios en `src/components/layout/Header.tsx`
+Además, agregar `layout="preserve-aspect"` o simplemente envolver el icono en un div que no participe en la animación de layout para evitar la distorsión.
 
-1. **Importar `LayoutGroup`** de `framer-motion`
-2. **En `MobileNav`:**
-   - Envolver los botones en `<LayoutGroup>`
-   - Cambiar `layout="position"` a `layout` en cada `motion.button`
-   - Agregar `layoutId={link.path}` para que framer-motion rastree cada elemento correctamente
-   - Ajustar la transición del layout para que la curva de ease y duración sean consistentes entre expansión y desplazamiento
+### Cambios en `src/components/layout/Header.tsx` — `MobileNav`
 
-Estos cambios hacen que cuando la placa azul se expande, los iconos vecinos se desplacen de forma fluida y sincronizada, sin cortarse ni superponerse.
+1. Cambiar `layout` a `layout="position"` en cada `motion.button` — esto anima solo la posición, el tamaño cambia instantáneamente sin estirar
+2. Agregar `style={{ flexShrink: 0 }}` al icono para protegerlo de distorsiones
+3. Mantener `<LayoutGroup>` y `layoutId` para la coordinación entre botones
+
+Esto resuelve el estiramiento porque framer-motion ya no intentará interpolar el tamaño del botón entre estados.
 
