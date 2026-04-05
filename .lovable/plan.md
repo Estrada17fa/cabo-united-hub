@@ -1,30 +1,21 @@
 
 
-## Plan: Rediseñar la barra de navegación móvil con look moderno y minimalista
+## Plan: Sincronizar animación de desplazamiento de iconos con apertura de placa activa
 
 ### Problema
-Los iconos outline se pierden contra el fondo oscuro. No hay diferenciación visual clara entre la barra de navegación y el contenido de la página.
+Al cambiar de página en móvil, los iconos inactivos se desplazan pero se superponen entre sí porque la animación de reposicionamiento (`layout="position"`) no está sincronizada con la expansión de la placa azul activa. El `layout="position"` solo anima la posición, no considera el cambio de tamaño del elemento activo al expandirse.
 
 ### Solución
-Darle a la barra de navegación un fondo sutil diferenciado, iconos con fill/solid para que destaquen, y un estilo "glass/pill" moderno. Mantener todas las animaciones existentes (framer-motion layout, expand del nombre).
+Cambiar `layout="position"` a `layout` completo en los botones de `MobileNav`. Esto hace que framer-motion anime tanto la posición como el tamaño de cada botón simultáneamente, evitando superposiciones. Además, envolver el contenedor en `<LayoutGroup>` para que todos los botones coordinen sus animaciones como un grupo.
 
 ### Cambios en `src/components/layout/Header.tsx`
 
-**Barra de nav móvil (MobileNav):**
-- Agregar fondo con efecto glassmorphism sutil (`bg-card/60 backdrop-blur-sm`) al contenedor de la barra nav
-- Iconos inactivos: más gruesos (`strokeWidth={2.5}`) y con color más visible (`text-foreground/50` en vez de `text-muted-foreground`)
-- Icono activo: filled/bold, con sombra glow del color primario
-- Botones inactivos: agregar un fondo sutil tipo pill (`bg-muted/40 rounded-full`) para que cada icono tenga su "burbuja" y se distinga del fondo
-- Placa activa: mantener `bg-primary` con `rounded-full` (pill shape) en lugar de `rounded-xl` para un look más moderno
+1. **Importar `LayoutGroup`** de `framer-motion`
+2. **En `MobileNav`:**
+   - Envolver los botones en `<LayoutGroup>`
+   - Cambiar `layout="position"` a `layout` en cada `motion.button`
+   - Agregar `layoutId={link.path}` para que framer-motion rastree cada elemento correctamente
+   - Ajustar la transición del layout para que la curva de ease y duración sean consistentes entre expansión y desplazamiento
 
-**Contenedor de la fila nav:**
-- Agregar padding vertical y un fondo `bg-card/50` a la fila del nav para separarla visualmente del contenido
-- Las líneas divisorias (`h-px bg-border`) se mantienen
-
-**Desktop nav:**
-- Aplicar el mismo estilo pill (`rounded-full`) a los botones de nav activos
-- Iconos un poco más gruesos para consistencia
-
-### Resultado esperado
-La barra de navegación se sentirá como un componente independiente "floating pill bar", moderno y diferenciado del contenido, con iconos que se ven claramente contra el fondo oscuro.
+Estos cambios hacen que cuando la placa azul se expande, los iconos vecinos se desplacen de forma fluida y sincronizada, sin cortarse ni superponerse.
 
