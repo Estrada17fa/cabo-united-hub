@@ -44,7 +44,7 @@ const navLinks = [
   { name: "Fan Zone", path: "/fan-zone", icon: Heart },
   { name: "Boletos", path: "/boletos", icon: Ticket },
   { name: "Tienda Oficial", path: "/tienda", icon: ShoppingBag },
-  { name: "Conoce Los Cabos", path: "/conoce-los-cabos", icon: MapPin },
+  { name: "Visita Los Cabos", path: "/conoce-los-cabos", icon: MapPin },
 ];
 
 const menuLinks = [
