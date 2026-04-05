@@ -103,7 +103,7 @@ function MobileNav() {
               >
                 {/* Icon — fixed size, never participates in scaling */}
                 <div className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
-                  <NavIcon className="w-4 h-4" strokeWidth={2.5} />
+                  <NavIcon className="w-4 h-4" strokeWidth={1.5} fill="currentColor" />
                 </div>
 
                 {/* Label — only rendered when active, animates width independently */}
