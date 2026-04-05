@@ -86,7 +86,7 @@ function MobileNav() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.25, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[11px] font-semibold"
+                className="text-[11px] font-semibold uppercase"
               >
                 {link.name}
               </motion.span>
