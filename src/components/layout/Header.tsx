@@ -71,16 +71,16 @@ function MobileNav() {
             onClick={() => navigate(link.path)}
             type="button"
             style={{ willChange: "transform" }}
-            className={`relative flex items-center justify-center rounded-xl font-medium whitespace-nowrap ${
+            className={`relative flex items-center justify-center font-medium whitespace-nowrap transition-colors ${
               isActive
-                ? "gap-1.5 bg-primary text-secondary-foreground shadow-lg shadow-primary/20 px-3 py-2"
-                : "text-muted-foreground hover:text-foreground p-2"
+                ? "gap-1.5 bg-primary text-secondary-foreground shadow-lg shadow-primary/25 px-3.5 py-2 rounded-full"
+                : "text-foreground/50 hover:text-foreground/80 p-2 bg-muted/40 rounded-full"
             }`}
             transition={{
               layout: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] },
             }}
           >
-            <NavIcon className="flex-shrink-0 h-4 w-4" />
+            <NavIcon className="flex-shrink-0 h-4 w-4" strokeWidth={isActive ? 2.5 : 2.5} />
             {isActive && (
               <motion.span
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -148,7 +148,7 @@ export function Header() {
         <div className="h-px bg-border" />
 
         {/* Nav row below shield */}
-        <div className="py-2 overflow-x-auto scrollbar-hide">
+        <div className="py-2.5 overflow-x-auto scrollbar-hide bg-card/50 backdrop-blur-sm">
           <MobileNav />
         </div>
 
@@ -180,13 +180,13 @@ export function Header() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-xs lg:text-sm font-bold transition-all duration-300 ${
+                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-full text-xs lg:text-sm font-bold transition-all duration-300 ${
                   isActive(link.path)
-                    ? "bg-primary text-secondary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-card"
+                    ? "bg-primary text-secondary-foreground shadow-lg shadow-primary/25"
+                    : "text-foreground/50 hover:text-foreground/80 hover:bg-muted/40"
                 }`}
               >
-                <NavIcon className="w-3.5 h-3.5" />
+                <NavIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
                 <span className="hidden lg:inline uppercase">{link.name}</span>
               </Link>
             );
