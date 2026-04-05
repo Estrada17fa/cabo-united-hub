@@ -86,7 +86,7 @@ function MobileNav() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.25, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[11px] font-semibold uppercase"
+                className="text-[13px] font-bold uppercase"
               >
                 {link.name}
               </motion.span>
@@ -180,7 +180,7 @@ export function Header() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-[11px] lg:text-xs font-medium transition-all duration-300 ${
+                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-xs lg:text-sm font-bold transition-all duration-300 ${
                   isActive(link.path)
                     ? "bg-primary text-secondary-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-card"
