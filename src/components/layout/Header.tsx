@@ -58,7 +58,7 @@ function MobileNav() {
   const activeIndex = navLinks.findIndex((link) => link.path === location.pathname);
   const currentIndex = activeIndex >= 0 ? activeIndex : 0;
 
-  const transition = { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] };
+  const transition = { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] as const };
 
   return (
     <div className="flex items-center justify-center gap-1.5 px-2">
