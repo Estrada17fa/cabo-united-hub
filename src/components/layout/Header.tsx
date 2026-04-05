@@ -38,13 +38,13 @@ const socialLinks = [
 ];
 
 const navLinks = [
-  { name: "INICIO", path: "/", icon: Home },
-  { name: "ZONA DE PARTIDO", path: "/zona-partido", icon: SoccerBallIcon },
-  { name: "TU CLUB", path: "/club", icon: Users },
-  { name: "FAN ZONE", path: "/fan-zone", icon: Heart },
-  { name: "BOLETOS", path: "/boletos", icon: Ticket },
-  { name: "TIENDA OFICIAL", path: "/tienda", icon: ShoppingBag },
-  { name: "CONOCE LOS CABOS", path: "/conoce-los-cabos", icon: MapPin },
+  { name: "Inicio", path: "/", icon: Home },
+  { name: "Zona de Partido", path: "/zona-partido", icon: SoccerBallIcon },
+  { name: "Tu Club", path: "/club", icon: Users },
+  { name: "Fan Zone", path: "/fan-zone", icon: Heart },
+  { name: "Boletos", path: "/boletos", icon: Ticket },
+  { name: "Tienda Oficial", path: "/tienda", icon: ShoppingBag },
+  { name: "Conoce Los Cabos", path: "/conoce-los-cabos", icon: MapPin },
 ];
 
 const menuLinks = [
@@ -180,10 +180,10 @@ export function Header() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-[11px] font-medium transition-all duration-300 ${
+                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-[11px] lg:text-xs font-medium transition-all duration-300 ${
                   isActive(link.path)
                     ? "bg-primary text-secondary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-card lg:text-xs"
+                    : "text-muted-foreground hover:text-foreground hover:bg-card"
                 }`}
               >
                 <NavIcon className="w-3.5 h-3.5" />
