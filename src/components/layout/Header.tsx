@@ -58,6 +58,8 @@ function MobileNav() {
   const activeIndex = navLinks.findIndex((link) => link.path === location.pathname);
   const currentIndex = activeIndex >= 0 ? activeIndex : 0;
 
+  const transition = { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] };
+
   return (
     <div className="flex items-center justify-center gap-1.5 px-2">
       <LayoutGroup>
@@ -66,53 +68,61 @@ function MobileNav() {
           const isActive = index === currentIndex;
 
           return (
-            <motion.button
+            <motion.div
               key={link.path}
               layout="position"
               onClick={() => navigate(link.path)}
-              type="button"
-              className="relative flex items-center justify-center rounded-full overflow-hidden"
-              style={{ padding: isActive ? undefined : 8 }}
-              transition={{
-                layout: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] },
-              }}
+              className="relative flex items-center cursor-pointer"
+              transition={{ layout: transition }}
             >
-              {/* Animated background plate — shared layoutId so it slides between tabs */}
-              {isActive && (
-                <motion.div
-                  layoutId="nav-active-bg"
-                  className="absolute inset-0 bg-primary rounded-full shadow-lg shadow-primary/25"
-                  transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
-                />
-              )}
+              {/* Background plate — local per tab, scales from center */}
+              <AnimatePresence mode="wait">
+                {isActive && (
+                  <motion.div
+                    key="plate"
+                    className="absolute inset-0 bg-primary rounded-full shadow-lg shadow-primary/25"
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={{ scaleX: 1, opacity: 1 }}
+                    exit={{ scaleX: 0, opacity: 0 }}
+                    style={{ originX: 0.5, originY: 0.5 }}
+                    transition={transition}
+                  />
+                )}
+              </AnimatePresence>
 
               {/* Non-active subtle bg */}
               {!isActive && (
                 <div className="absolute inset-0 bg-muted/40 rounded-full" />
               )}
 
-              {/* Content layer — icon is fixed size, never animated */}
+              {/* Content: rigid icon + animated label */}
               <div
-                className={`relative z-10 flex items-center justify-center gap-1.5 ${
-                  isActive ? "px-3.5 py-2 text-secondary-foreground" : "text-foreground/50"
+                className={`relative z-10 flex items-center gap-1.5 ${
+                  isActive ? "px-3.5 py-2 text-secondary-foreground" : "p-2 text-foreground/50"
                 }`}
               >
+                {/* Icon — fixed size, never participates in scaling */}
                 <div className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
                   <NavIcon className="w-4 h-4" strokeWidth={2.5} />
                 </div>
-                {isActive && (
-                  <motion.span
-                    initial={{ opacity: 0, width: 0 }}
-                    animate={{ opacity: 1, width: "auto" }}
-                    exit={{ opacity: 0, width: 0 }}
-                    transition={{ duration: 0.25, delay: 0.05, ease: [0.25, 0.1, 0.25, 1] }}
-                    className="text-[13px] font-bold uppercase whitespace-nowrap overflow-hidden"
-                  >
-                    {link.name}
-                  </motion.span>
-                )}
+
+                {/* Label — only rendered when active, animates width independently */}
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.span
+                      key="label"
+                      initial={{ width: 0, opacity: 0 }}
+                      animate={{ width: "auto", opacity: 1 }}
+                      exit={{ width: 0, opacity: 0 }}
+                      transition={transition}
+                      className="text-[13px] font-bold uppercase whitespace-nowrap overflow-hidden block"
+                    >
+                      {link.name}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </div>
-            </motion.button>
+            </motion.div>
           );
         })}
       </LayoutGroup>
