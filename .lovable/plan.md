@@ -1,91 +1,70 @@
 
+## Plan: rehacer la animación móvil para que la pleca empuje los iconos sin estirarlos
 
-## Plan: Crear la página MATCH ZONE completa
+### Problema actual
+El estiramiento sigue pasando porque la opción activa todavía cambia su tamaño “desde adentro” y el icono sigue participando visualmente en esa transición. Además, la pleca actual se percibe como un elemento que viaja de una pestaña a otra, no como una que se abre desde el centro.
 
-### Visión general
-Transformar la página placeholder en una experiencia inmersiva estilo app deportiva (como FotMob/OneFootball) con dos modos: **Modo Previo** y **Modo Día de Partido**. Toda la data será mock/hardcoded inicialmente, lista para conectar a backend después.
+### Enfoque nuevo
+Voy a cambiar la estructura de `MobileNav` para separar por completo estas 3 cosas:
 
-### Arquitectura de archivos
+1. **Icono** = bloque fijo, nunca escala ni cambia de tamaño  
+2. **Pleca azul** = capa animada independiente  
+3. **Texto** = contenido que aparece dentro de la pleca, sin empujar al SVG
 
-```text
-src/pages/ZonaPartido.tsx          -- Página principal (orquesta modos)
-src/components/matchzone/
-  ├── MatchHero.tsx                -- Card grande del próximo partido + countdown
-  ├── HeadToHead.tsx               -- Frente a frente estadístico
-  ├── StandingsModule.tsx          -- Tablas con tabs (general, grupo 1/2/3, goleo)
-  ├── RecentAndUpcoming.tsx        -- Últimos 3 resultados + próximos 3 partidos
-  ├── LiveScoreboard.tsx           -- Marcador en vivo (modo día de partido)
-  ├── MinuteByMinute.tsx           -- Timeline de goles
-  ├── InteractiveLineup.tsx        -- Cancha gráfica con formación
-  ├── LiveStreamButton.tsx         -- Botón flotante "Ver en vivo"
-  ├── mockData.ts                  -- Datos mock centralizados
-```
+Con esto, la pleca será la que genere el espacio y desplace a los demás iconos, mientras los iconos solo acompañan el movimiento de posición.
 
-### Modo Previo (default)
+### Cambios en `src/components/layout/Header.tsx`
 
-**1. MatchHero — Card del próximo partido**
-- Card grande con gradiente sutil, logos de ambos equipos (placeholders con iniciales), nombre de equipos
-- Countdown animado (días, horas, minutos, segundos) con dígitos estilo flip/bento
-- Fecha, hora local del usuario (usando `Intl.DateTimeFormat` con `timeZone` del browser), sede con estadio y dirección
-- Animación de entrada con stagger
+#### 1) Quitar la lógica de “pleca viajando”
+- Dejar de depender del `layoutId` actual que hace que la pleca se mueva lateralmente entre tabs
+- En su lugar, cada tab tendrá su propia pleca local
 
-**2. HeadToHead — Frente a Frente**
-- Comparativo visual con barras: goles, posesión, victorias
-- Últimos enfrentamientos (mini lista con resultados)
-- Forma reciente: 5 badges circulares G/E/P con colores (verde/amarillo/rojo)
-- Posición en la tabla de cada equipo
+#### 2) Hacer que la pleca se abra desde el centro
+- La pleca azul se animará con origen al centro (`origin-center`)
+- Su ancho crecerá hacia ambos lados al activarse
+- El cierre también ocurrirá hacia el centro, para que no parezca que corre de izquierda a derecha
 
-**3. StandingsModule — Módulos Bento con Tabs**
-- Tabs horizontales: General | Grupo 1 | Grupo 2 | Grupo 3 | Goleo
-- Tabla con fila de LCU resaltada con borde primary
-- Tabla de goleo con jugador, equipo, goles
-- Diseño compacto tipo bento card
+#### 3) Convertir cada item en un “shell” de posicionamiento
+- El botón exterior solo animará **posición** dentro de la fila
+- El icono irá dentro de un contenedor rígido (`w/h` fijos, `shrink-0`)
+- El contenedor exterior ya no podrá deformar visualmente el SVG
 
-**4. RecentAndUpcoming — Últimos y próximos**
-- Grid de 2 columnas: izquierda = últimos 3 resultados, derecha = próximos 3 partidos
-- Cards pequeñas con logos, marcador/fecha, resultado (W/D/L badge)
+#### 4) Mover el crecimiento visual a una capa interna
+- La pleca y el label vivirán en un wrapper interno separado del icono
+- Ese wrapper será el que expanda el ancho visible
+- Los iconos vecinos se moverán porque el item activo ocupa más espacio, no porque los iconos se compriman o estiren
 
-### Modo Día de Partido
+#### 5) Evitar el efecto “cortado”
+- Quitar `overflow-hidden` del botón exterior
+- Dejar el recorte solo en la capa interna de la pleca/texto
+- Así la apertura no se verá truncada durante la transición
 
-**5. LiveScoreboard — Centro de Mando**
-- El countdown se reemplaza por marcador grande con tiempo corriendo (ej. 45'+2)
-- Indicador "LIVE" pulsante en rojo
-- Minuto a minuto debajo: timeline vertical con iconos de gol (balón), solo goles
+#### 6) Sincronizar apertura y desplazamiento
+- Mantener `LayoutGroup`
+- Usar la misma transición para:
+  - expansión de la pleca
+  - aparición del texto
+  - reposicionamiento de iconos vecinos
+- Así la apertura y el corrimiento suceden al mismo tiempo, con una sensación más fluida
 
-**6. InteractiveLineup — Alineación**
-- Cancha SVG/CSS con gradiente verde
-- Jugadores posicionados según formación (4-3-3, etc.)
-- Al tocar un jugador: modal/sheet con stats del torneo (goles, asistencias, minutos, tarjetas)
-
-**7. LiveStreamButton — Transmisión**
-- Botón flotante fixed en la esquina inferior derecha (encima del nav)
-- Gradiente primary con icono de play, pulso animado
-- Link configurable a la transmisión
-
-### Organización del scroll (evitar scroll infinito)
-
-- **Modo Previo**: MatchHero ocupa la primera vista completa. Debajo, HeadToHead y RecentAndUpcoming en grid bento. StandingsModule al final con tabs para no ocupar tanto espacio vertical.
-- **Modo Partido**: LiveScoreboard arriba, MinuteByMinute y Lineup en tabs debajo para mantener todo compacto.
-- Toggle para cambiar entre modos (dev/demo) con un switch discreto en la parte superior
-
-### Estilo visual
-- Colores LCU (azul #00abc4, rosa #f298c0) para elementos principales
-- Verde para victorias, rojo para derrotas, amarillo para empates
-- Cards con `bento-card` y `bento-card-sm` existentes
-- Animaciones framer-motion: stagger en entrada, fade-in por sección
-- Tipografía del sistema existente (text-display, text-headline, etc.)
-
-### Datos mock
-- Partido: LCU vs Dorados de Sinaloa, fecha futura configurable
-- Tabla de posiciones con 12 equipos ficticios
-- 5 últimos partidos con resultados variados
-- Alineación 4-3-3 con 11 jugadores mock
-- Stats de jugadores mock
+### Resultado esperado
+- El icono activo ya no se verá estirado
+- La pleca azul se abrirá desde el centro
+- Los iconos laterales solo se desplazarán, sin deformarse
+- La animación dejará de verse cortada
+- El menú móvil se sentirá más limpio, moderno y “premium”
 
 ### Detalle técnico
-- `useState` para toggle entre modos (previo/live) — permite demo
-- Countdown con `useEffect` + `setInterval`
-- Hora local con `new Date().toLocaleTimeString()` usando timezone del navegador
-- No se necesitan tablas de DB por ahora — todo mock
-- Componentes separados para mantener el archivo principal limpio
+La clave será cambiar de este modelo:
 
+```text
+botón que cambia de tamaño -> icono participa en el resize
+```
+
+a este:
+
+```text
+icono fijo + pleca interna que expande + botón solo reposiciona
+```
+
+Si hace falta, también definiré un ancho expandido estable para cada label (o lo mediré una vez) para evitar saltos cuando el texto entra y asegurar que la pleca abra suave y consistente.
