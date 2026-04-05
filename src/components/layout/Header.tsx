@@ -38,152 +38,27 @@ const socialLinks = [
 ];
 
 const navLinks = [
-  { name: "Inicio", path: "/", icon: Home },
-  { name: "Zona de Partido", path: "/zona-partido", icon: SoccerBallIcon },
-  { name: "Tu Club", path: "/club", icon: Users },
-  { name: "Fan Zone", path: "/fan-zone", icon: Heart },
-  { name: "Boletos", path: "/boletos", icon: Ticket },
-  { name: "Tienda Oficial", path: "/tienda", icon: ShoppingBag },
-  { name: "Conoce Los Cabos", path: "/conoce-los-cabos", icon: MapPin },
+  { name: "INICIO", path: "/", icon: Home },
+  { name: "ZONA DE PARTIDO", path: "/zona-partido", icon: SoccerBallIcon },
+  { name: "TU CLUB", path: "/club", icon: Users },
+  { name: "FAN ZONE", path: "/fan-zone", icon: Heart },
+  { name: "BOLETOS", path: "/boletos", icon: Ticket },
+  { name: "TIENDA OFICIAL", path: "/tienda", icon: ShoppingBag },
+  { name: "CONOCE LOS CABOS", path: "/conoce-los-cabos", icon: MapPin },
 ];
 
 const menuLinks = [
-  { name: "Patrocinios", path: "/patrocinios", icon: Handshake },
-  { name: "Contáctanos", path: "/contacto", icon: Mail },
-];
-
-function MobileNav() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const activeIndex = navLinks.findIndex((link) => link.path === location.pathname);
-  const currentIndex = activeIndex >= 0 ? activeIndex : 0;
-
-  return (
-    <div className="flex items-center justify-center gap-1.5 px-2">
-      {navLinks.map((link, index) => {
-        const NavIcon = link.icon;
-        const isActive = index === currentIndex;
-
-        return (
-          <motion.button
-            key={link.path}
-            layout="position"
-            onClick={() => navigate(link.path)}
-            type="button"
-            style={{ willChange: "transform" }}
-            className={`relative flex items-center justify-center rounded-xl font-medium whitespace-nowrap ${
-              isActive
-                ? "gap-1.5 bg-primary text-secondary-foreground shadow-lg shadow-primary/20 px-3 py-2"
-                : "text-muted-foreground hover:text-foreground p-2"
-            }`}
-            transition={{
-              layout: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] },
-            }}
-          >
-            <NavIcon className="flex-shrink-0 h-4 w-4" />
-            {isActive && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.25, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-[11px] font-semibold uppercase"
-              >
-                {link.name}
-              </motion.span>
-            )}
-          </motion.button>
-        );
-      })}
-    </div>
-  );
-}
-
-export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showAuth, setShowAuth] = useState(false);
-  const location = useLocation();
-  const { user, profile, signOut } = useAuth();
-  const isActive = (path: string) => location.pathname === path;
-
-  return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 safe-top">
-      {/* Mobile layout */}
-      <div className="md:hidden">
-        {/* Top row: hamburger left, shield center, social right */}
-        <div className="relative flex items-center justify-center h-14 px-2">
-          <button
-            onClick={() => setIsMenuOpen(true)}
-            className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-card border border-border text-foreground active:bg-muted transition-colors"
-            aria-label="Abrir menú"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-
-          <Link to="/" className="flex items-center justify-center">
-            <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center">
-              <Shield className="w-6 h-6 text-primary" />
-            </div>
-          </Link>
-
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-            {socialLinks.map((social) => {
-              const SocialIcon = social.icon;
-              return (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground active:text-primary transition-colors"
-                  aria-label={social.label}
-                >
-                  <SocialIcon className="w-4 h-4" />
-                </a>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Separator line */}
-        <div className="h-px bg-border" />
-
-        {/* Nav row below shield */}
-        <div className="py-2 overflow-x-auto scrollbar-hide">
-          <MobileNav />
-        </div>
-
-        {/* Separator line */}
-        <div className="h-px bg-border" />
-      </div>
-
-      {/* Desktop layout */}
-      <div className="hidden md:flex items-center h-20 px-4 gap-1.5 border-b border-border">
-        <button
-          onClick={() => setIsMenuOpen(true)}
-          className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted active:bg-muted transition-colors"
-          aria-label="Abrir menú"
-        >
-          <Menu className="w-5 h-5" />
-          <span className="text-sm font-medium">Más</span>
-        </button>
-
-        <Link to="/" className="flex-shrink-0">
-          <div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center">
-            <Shield className="w-7 h-7 text-primary" />
-          </div>
-        </Link>
-
-        <nav className="flex flex-1 items-center justify-center gap-1">
+// ... keep existing code
           {navLinks.map((link) => {
             const NavIcon = link.icon;
             return (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-[11px] lg:text-xs font-medium transition-all duration-300 ${
+                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-lg text-[11px] font-medium transition-all duration-300 ${
                   isActive(link.path)
                     ? "bg-primary text-secondary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-card"
+                    : "text-muted-foreground hover:text-foreground hover:bg-card lg:text-xs"
                 }`}
               >
                 <NavIcon className="w-3.5 h-3.5" />
