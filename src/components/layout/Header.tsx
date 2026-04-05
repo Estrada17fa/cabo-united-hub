@@ -68,7 +68,7 @@ function MobileNav() {
           return (
             <motion.button
               key={link.path}
-              layout
+              layout="position"
               layoutId={link.path}
               onClick={() => navigate(link.path)}
               type="button"
@@ -81,7 +81,7 @@ function MobileNav() {
                 layout: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] },
               }}
             >
-              <NavIcon className="flex-shrink-0 h-4 w-4" strokeWidth={2.5} />
+              <NavIcon className="flex-shrink-0 h-4 w-4" style={{ flexShrink: 0 }} strokeWidth={2.5} />
               {isActive && (
                 <motion.span
                   initial={{ opacity: 0, scale: 0.8 }}
