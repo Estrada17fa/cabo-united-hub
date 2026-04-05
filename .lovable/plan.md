@@ -1,20 +1,54 @@
 
-
-## Plan: Corregir el estiramiento del icono al cambiar de página
+## Plan: hacer que la pleca azul se anime y empuje a los iconos, sin estirar ninguno
 
 ### Problema
-Con `layout` completo en `motion.button`, framer-motion anima el **tamaño** del botón (de expandido con texto a solo icono y viceversa), lo que causa que el icono se estire visualmente durante la transición.
+El estiramiento sigue ocurriendo porque hoy el cambio visual depende del mismo `motion.button`: cuando una opción pasa de “solo icono” a “icono + nombre”, el botón cambia su ancho interno y framer termina interpolando parte de ese cambio sobre el contenido.
 
-### Solución
-Cambiar `layout` a `layout="position"` en los `motion.button` para que solo se anime la **posición** (no el tamaño), y mover la coordinación de tamaño al contenedor flex. El truco es que el cambio de tamaño ocurra instantáneamente mientras la posición se anima suavemente.
+### Enfoque correcto
+Separar la animación en 2 capas dentro de `MobileNav`:
 
-Además, agregar `layout="preserve-aspect"` o simplemente envolver el icono en un div que no participe en la animación de layout para evitar la distorsión.
+1. **Los iconos** viven en botones de ancho estable, con un contenedor fijo para el icono.
+2. **La pleca azul** se anima por separado como el elemento que crece/se desplaza para mostrar el nombre de la página activa.
 
-### Cambios en `src/components/layout/Header.tsx` — `MobileNav`
+Así el icono ya no “cambia de tamaño”; solamente:
+- la pleca se mueve y se expande
+- los demás botones se reposicionan
+- el icono acompaña el movimiento de su botón, no el resize
 
-1. Cambiar `layout` a `layout="position"` en cada `motion.button` — esto anima solo la posición, el tamaño cambia instantáneamente sin estirar
-2. Agregar `style={{ flexShrink: 0 }}` al icono para protegerlo de distorsiones
-3. Mantener `<LayoutGroup>` y `layoutId` para la coordinación entre botones
+### Cambios en `src/components/layout/Header.tsx`
 
-Esto resuelve el estiramiento porque framer-motion ya no intentará interpolar el tamaño del botón entre estados.
+#### 1) Reestructurar cada item del `MobileNav`
+- Mantener cada botón como una pieza de layout estable
+- Darle al icono un wrapper fijo, por ejemplo:
+  - ancho fijo
+  - alto fijo
+  - `shrink-0`
+- Evitar que el icono comparta la animación del ancho del label
 
+#### 2) Sacar la “pleca azul” del flujo del icono
+- En vez de hacer que el botón activo completo cambie de ancho visualmente, renderizar una **capa activa interna** o **shared element** solo para la pleca
+- Usar `motion.div` con `layoutId` común para la pleca activa, para que framer anime ese fondo entre tabs
+- El texto de la página activa vive dentro de esa pleca, no como parte del icono base
+
+#### 3) Mantener solo animación de posición en los items
+- Los botones del carrusel deben usar animación de posición, no de tamaño
+- La expansión visible debe recaer en la pleca activa
+- Esto hace que los iconos vecinos sean desplazados por layout, pero nunca deformados
+
+#### 4) Ajustar el texto activo
+- El nombre de la página debe aparecer dentro de la pleca con fade/slide suave
+- El texto no debe empujar directamente al SVG; el espacio del icono queda reservado aparte
+
+### Resultado esperado
+- El icono ya no se estira al cambiar de página
+- La pleca azul es la que crece y se mueve
+- Los iconos laterales solo se desplazan acompañando el reposicionamiento
+- La transición se verá más limpia, fluida y “premium” en móvil
+
+### Detalle técnico
+La clave no es seguir afinando `layout` vs `layout="position"` sobre el mismo botón, sino **desacoplar**:
+- `icono = tamaño fijo`
+- `pleca activa = elemento animado`
+- `texto = contenido de la pleca`
+
+Con esa separación, la interfaz hace exactamente lo que pides: la pleca desplaza a los iconos, pero los iconos no cambian de tamaño para volver a su lugar.
