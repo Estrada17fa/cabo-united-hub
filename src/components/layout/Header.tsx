@@ -218,7 +218,7 @@ export function Header() {
                     : "text-foreground/50 hover:text-foreground/80 hover:bg-muted/40"
                 }`}
               >
-                <NavIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
+                <NavIcon className="w-3.5 h-3.5" strokeWidth={1.5} fill="currentColor" />
                 <span className="hidden lg:inline uppercase">{link.name}</span>
               </Link>
             );
