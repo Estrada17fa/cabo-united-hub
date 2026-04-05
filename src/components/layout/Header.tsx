@@ -69,29 +69,49 @@ function MobileNav() {
             <motion.button
               key={link.path}
               layout="position"
-              layoutId={link.path}
               onClick={() => navigate(link.path)}
               type="button"
-              className={`relative flex items-center justify-center font-medium whitespace-nowrap transition-colors ${
-                isActive
-                  ? "gap-1.5 bg-primary text-secondary-foreground shadow-lg shadow-primary/25 px-3.5 py-2 rounded-full"
-                  : "text-foreground/50 hover:text-foreground/80 p-2 bg-muted/40 rounded-full"
-              }`}
+              className="relative flex items-center justify-center rounded-full overflow-hidden"
+              style={{ padding: isActive ? undefined : 8 }}
               transition={{
                 layout: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] },
               }}
             >
-              <NavIcon className="flex-shrink-0 h-4 w-4" style={{ flexShrink: 0 }} strokeWidth={2.5} />
+              {/* Animated background plate — shared layoutId so it slides between tabs */}
               {isActive && (
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.25, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-                  className="text-[13px] font-bold uppercase"
-                >
-                  {link.name}
-                </motion.span>
+                <motion.div
+                  layoutId="nav-active-bg"
+                  className="absolute inset-0 bg-primary rounded-full shadow-lg shadow-primary/25"
+                  transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
+                />
               )}
+
+              {/* Non-active subtle bg */}
+              {!isActive && (
+                <div className="absolute inset-0 bg-muted/40 rounded-full" />
+              )}
+
+              {/* Content layer — icon is fixed size, never animated */}
+              <div
+                className={`relative z-10 flex items-center justify-center gap-1.5 ${
+                  isActive ? "px-3.5 py-2 text-secondary-foreground" : "text-foreground/50"
+                }`}
+              >
+                <div className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
+                  <NavIcon className="w-4 h-4" strokeWidth={2.5} />
+                </div>
+                {isActive && (
+                  <motion.span
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: "auto" }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ duration: 0.25, delay: 0.05, ease: [0.25, 0.1, 0.25, 1] }}
+                    className="text-[13px] font-bold uppercase whitespace-nowrap overflow-hidden"
+                  >
+                    {link.name}
+                  </motion.span>
+                )}
+              </div>
             </motion.button>
           );
         })}
