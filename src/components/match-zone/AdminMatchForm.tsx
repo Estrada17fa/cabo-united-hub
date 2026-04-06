@@ -32,7 +32,7 @@ export function AdminMatchForm({ matches }: AdminMatchFormProps) {
     venue: "",
     jornada: 1,
     season: "2024-2025",
-    status: "scheduled" as const,
+    status: "scheduled" as "scheduled" | "live" | "finished",
     is_home_game: true,
   });
 
@@ -49,7 +49,7 @@ export function AdminMatchForm({ matches }: AdminMatchFormProps) {
       venue: "",
       jornada: 1,
       season: "2024-2025",
-      status: "scheduled",
+      status: "scheduled" as "scheduled" | "live" | "finished",
       is_home_game: true,
     });
     setEditing(null);
