@@ -4,13 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { MatchHeroCard } from "@/components/match-zone/MatchHeroCard";
 import { MatchTabs } from "@/components/match-zone/MatchTabs";
-import { UpcomingMatches } from "@/components/match-zone/UpcomingMatches";
+import { PartidosSection } from "@/components/match-zone/PartidosSection";
 import { LeagueTables } from "@/components/match-zone/LeagueTables";
 
 const ZonaPartido = () => {
-  const [activeTab, setActiveTab] = useState("upcoming");
+  const [activeTab, setActiveTab] = useState("partidos");
 
-  const { data: scheduledMatches = [], isLoading } = useQuery({
+  const { data: scheduledMatches = [] } = useQuery({
     queryKey: ["matches", "scheduled"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -27,28 +27,24 @@ const ZonaPartido = () => {
 
   return (
     <div className="space-y-6 pb-8">
-      {/* Hero */}
       <MatchHeroCard match={nextMatch} />
-
-      {/* Tabs */}
       <MatchTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {/* Dynamic content */}
       <AnimatePresence mode="wait">
-        {activeTab === "upcoming" && (
+        {activeTab === "partidos" && (
           <motion.div
-            key="upcoming"
+            key="partidos"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.25 }}
           >
-            <UpcomingMatches matches={scheduledMatches} isLoading={isLoading} />
+            <PartidosSection />
           </motion.div>
         )}
-        {activeTab === "tables" && (
+        {activeTab === "liga" && (
           <motion.div
-            key="tables"
+            key="liga"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}

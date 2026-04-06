@@ -6,8 +6,8 @@ interface MatchTabsProps {
 }
 
 const TABS = [
-  { id: "upcoming", label: "Próximos Partidos" },
-  { id: "tables", label: "Tablas de la Liga" },
+  { id: "partidos", label: "Partidos" },
+  { id: "liga", label: "Liga Premier Serie A" },
 ];
 
 export function MatchTabs({ activeTab, onTabChange }: MatchTabsProps) {
@@ -17,7 +17,7 @@ export function MatchTabs({ activeTab, onTabChange }: MatchTabsProps) {
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
-          className="relative pb-3 text-sm font-semibold transition-colors"
+          className="relative pb-3 text-sm font-semibold transition-colors whitespace-nowrap"
           style={{ color: activeTab === tab.id ? "hsl(0 0% 100%)" : "hsl(0 0% 45%)" }}
         >
           {tab.label}
