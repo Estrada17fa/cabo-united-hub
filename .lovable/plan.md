@@ -1,76 +1,57 @@
 
 
-## Plan: Match Zone - Sistema de datos de partidos (Manual + Scraping)
+## Plan: Match Zone — Interfaz Premium de Modo Previa
 
-### Resumen
-Crear un sistema completo para la página Match Zone que combine ingreso manual de resultados con scraping automático de Google como respaldo, usando Firecrawl para extraer datos de partidos de tercera division.
+Reemplazar la página placeholder `ZonaPartido.tsx` con una interfaz completa y animada que lee datos de la tabla `matches` existente y presenta la experiencia descrita.
 
-### Arquitectura
+### Estructura de archivos
 
-```text
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────┐
-│  Panel Admin    │────>│  Base de datos   │<────│  Firecrawl  │
-│  (manual entry) │     │  (matches table) │     │  (scraping) │
-└─────────────────┘     └──────┬───────────┘     └─────────────┘
-                               │
-                        ┌──────▼───────────┐
-                        │  Match Zone UI   │
-                        │  (público)       │
-                        └──────────────────┘
-```
+1. **`src/pages/ZonaPartido.tsx`** — Página principal, orquesta las secciones
+2. **`src/components/match-zone/MatchHeroCard.tsx`** — Tarjeta hero con logos, countdown y detalles
+3. **`src/components/match-zone/MatchTabs.tsx`** — Navegación por texto con subrayado cian (Próximos Partidos / Tablas de la Liga)
+4. **`src/components/match-zone/UpcomingMatches.tsx`** — Lista de próximos partidos desde la BD
+5. **`src/components/match-zone/LeagueTables.tsx`** — Sub-navegación (Tabla General, Grupos, Goleo) con contenido dinámico
+6. **`src/components/match-zone/StandingsTable.tsx`** — Tabla minimalista reutilizable con resaltado cian para LCU
+7. **`src/components/match-zone/CountdownTimer.tsx`** — Contador digital animado (días:horas:min)
 
-### Paso 1: Crear tablas en la base de datos
+### Sección Hero (MatchHeroCard)
 
-**Tabla `matches`** - almacena todos los partidos:
-- `id`, `season` (temporada), `jornada` (matchday number)
-- `home_team`, `away_team`
-- `home_score`, `away_score`
-- `match_date`, `match_time`, `venue`
-- `status` (scheduled / live / finished)
-- `is_home_game` (si el equipo del club es local)
-- `source` (manual / scraped) para saber de donde viene el dato
-- `created_at`, `updated_at`
+- Tarjeta con fondo `#1f1f1f`, borde sutil, y resplandor cian mesh gradient detrás (via CSS radial-gradient)
+- Logos grandes de LCU (izq) y rival (der) — placeholder con Shield icon hasta tener logos reales
+- `CountdownTimer` gigante al centro con fuente sans-serif gruesa, animado con `useEffect` cada segundo
+- Debajo: nombre del estadio, ciudad, fecha/hora en texto blanco bold
+- Botón FAB "COMPRAR BOLETOS" con bg cian saturado, sombra glow
+- Datos del próximo partido se leen de `matches` donde `status = 'scheduled'` ordenados por `match_date ASC LIMIT 1`
 
-**Tabla `match_events`** - eventos minuto a minuto (goles, tarjetas, etc.):
-- `id`, `match_id` (FK), `minute`, `event_type` (goal/yellow/red/substitution)
-- `player_name`, `description`
+### Navegación por texto (MatchTabs)
 
-RLS: lectura publica para ambas tablas, escritura solo para admins (via edge function protegida).
+- Dos labels: "Próximos Partidos" y "Tablas de la Liga"
+- Texto blanco limpio, sin botones rectangulares
+- Tab activo con underline cian sólido animado con `motion.div layoutId="underline"`
+- Al seleccionar "Tablas de la Liga", aparece segunda fila animada con sub-tabs: Tabla General, Grupo 1-3, Líderes de Goleo
 
-### Paso 2: Conectar Firecrawl
+### Contenido dinámico
 
-- Usar el conector de Firecrawl para scraping
-- Crear edge function `scrape-match-results` que:
-  1. Busque en Google "resultados [nombre del equipo] tercera division mexico"
-  2. Use Firecrawl search/scrape para extraer los datos
-  3. Parse los resultados y los inserte en la tabla `matches` con `source = 'scraped'`
-- Se puede invocar manualmente desde el admin o programar con cron
+- Cambios de sección con `AnimatePresence` + fade/slide
+- **Próximos Partidos**: query a `matches` con `status = 'scheduled'`, cards minimalistas
+- **Tablas de la Liga**: datos estáticos por ahora (hardcoded) ya que no hay tabla de standings en la BD — con nota de que se puede migrar después
+- **Resaltado LCU**: fila con barra lateral cian y fondo cian/10 cuando `team === "Los Cabos United"`
 
-### Paso 3: Panel Admin (ingreso manual)
+### Tablas minimalistas
 
-- Componente protegido para usuarios con rol admin
-- Formulario para agregar/editar partidos: equipos, marcador, fecha, jornada
-- Formulario para agregar eventos del partido (goles, tarjetas)
-- Botón "Buscar en Google" que invoca el scraping como respaldo
+- Sin bordes pesados, texto sobre fondo oscuro
+- Encabezados: JJ, DG, PTS, etc.
+- Tipografía Poppins bold (ya configurada en el proyecto)
 
-### Paso 4: UI publica de Match Zone
+### Datos
 
-- **Próximo partido**: cuenta regresiva al siguiente partido programado
-- **Resultados recientes**: lista de últimos partidos con marcador
-- **Tabla de posiciones**: clasificación de la liga (editable desde admin)
-- **Calendario**: vista por jornada con todos los partidos
+- Lee de la tabla `matches` existente via Supabase client
+- Si no hay datos, muestra estado vacío elegante
+- Las tablas de posiciones serán datos placeholder hardcoded por ahora (se conectarán a BD en siguiente iteración)
 
-### Detalle tecnico
+### Animaciones
 
-- Firecrawl se usa via edge function (no en el frontend)
-- Los datos scrapeados se guardan en la BD, nunca se muestran directamente
-- El admin siempre puede corregir datos scrapeados
-- La página publica lee solo de la base de datos
-
-### Orden de implementacion
-1. Crear tablas y RLS
-2. Conectar Firecrawl
-3. Edge function de scraping
-4. Panel admin con formularios
-5. UI publica de Match Zone
+- `framer-motion` para todas las transiciones entre tabs y aparición de contenido
+- Countdown con transición numérica suave
+- Tarjeta hero con entrada `initial={{ opacity: 0, y: 20 }}`
 
