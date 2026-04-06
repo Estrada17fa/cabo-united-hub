@@ -111,7 +111,7 @@ className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] 
                 boxShadow: "0 0 16px -2px hsl(189 100% 50% / 0.4), inset 0 0 8px hsl(189 100% 50% / 0.05)",
               }}
             >
-              <Ticket className="w-6 h-6 sm:w-4 sm:h-4" />
+              <Ticket className="w-4 h-4 sm:w-4 sm:h-4" />
               COMPRAR BOLETOS
             </motion.button>
           </Link>
