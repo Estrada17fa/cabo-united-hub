@@ -126,7 +126,7 @@ className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] 
                 boxShadow: "0 0 16px -2px hsl(336 80% 77% / 0.4), inset 0 0 8px hsl(336 80% 77% / 0.05)",
               }}
             >
-              <MapPin className="w-6 h-6 sm:w-4 sm:h-4" />
+              <MapPin className="w-4 h-4 sm:w-4 sm:h-4" />
               VISITA LOS CABOS
             </motion.button>
           </Link>
