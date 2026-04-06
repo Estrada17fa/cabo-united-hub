@@ -1,57 +1,67 @@
 
 
-## Plan: Match Zone — Interfaz Premium de Modo Previa
+## Plan: Auto-actualizar tablas y partidos desde Google via Firecrawl
 
-Reemplazar la página placeholder `ZonaPartido.tsx` con una interfaz completa y animada que lee datos de la tabla `matches` existente y presenta la experiencia descrita.
+### Resumen
+Crear un sistema que use Firecrawl (ya conectado) para buscar datos de la **Liga Premier de México** en Google, extraer tabla de posiciones y resultados de partidos de **Los Cabos United**, y guardarlos en la base de datos. El frontend leerá de la BD en vez de datos hardcoded.
 
-### Estructura de archivos
+### Arquitectura
 
-1. **`src/pages/ZonaPartido.tsx`** — Página principal, orquesta las secciones
-2. **`src/components/match-zone/MatchHeroCard.tsx`** — Tarjeta hero con logos, countdown y detalles
-3. **`src/components/match-zone/MatchTabs.tsx`** — Navegación por texto con subrayado cian (Próximos Partidos / Tablas de la Liga)
-4. **`src/components/match-zone/UpcomingMatches.tsx`** — Lista de próximos partidos desde la BD
-5. **`src/components/match-zone/LeagueTables.tsx`** — Sub-navegación (Tabla General, Grupos, Goleo) con contenido dinámico
-6. **`src/components/match-zone/StandingsTable.tsx`** — Tabla minimalista reutilizable con resaltado cian para LCU
-7. **`src/components/match-zone/CountdownTimer.tsx`** — Contador digital animado (días:horas:min)
+```text
+┌──────────────────────┐
+│ Edge Function        │
+│ scrape-league-data   │
+│  1. Firecrawl search │
+│  2. AI parse (Gemini)│
+│  3. Upsert to DB     │
+└──────────┬───────────┘
+           │
+    ┌──────▼──────┐
+    │  Nuevas     │
+    │  tablas BD  │
+    │  standings  │
+    │  top_scorers│
+    └──────┬──────┘
+           │
+    ┌──────▼──────┐
+    │  Frontend   │
+    │  Lee de BD  │
+    └─────────────┘
+```
 
-### Sección Hero (MatchHeroCard)
+### Paso 1: Crear tablas de standings y top scorers
 
-- Tarjeta con fondo `#1f1f1f`, borde sutil, y resplandor cian mesh gradient detrás (via CSS radial-gradient)
-- Logos grandes de LCU (izq) y rival (der) — placeholder con Shield icon hasta tener logos reales
-- `CountdownTimer` gigante al centro con fuente sans-serif gruesa, animado con `useEffect` cada segundo
-- Debajo: nombre del estadio, ciudad, fecha/hora en texto blanco bold
-- Botón FAB "COMPRAR BOLETOS" con bg cian saturado, sombra glow
-- Datos del próximo partido se leen de `matches` donde `status = 'scheduled'` ordenados por `match_date ASC LIMIT 1`
+**`league_standings`**: `id`, `team`, `pos`, `jj`, `jg`, `je`, `jp`, `gf`, `gc`, `dg`, `pts`, `group` (nullable, para grupos), `season`, `updated_at`
 
-### Navegación por texto (MatchTabs)
+**`top_scorers`**: `id`, `player_name`, `team`, `goals`, `season`, `updated_at`
 
-- Dos labels: "Próximos Partidos" y "Tablas de la Liga"
-- Texto blanco limpio, sin botones rectangulares
-- Tab activo con underline cian sólido animado con `motion.div layoutId="underline"`
-- Al seleccionar "Tablas de la Liga", aparece segunda fila animada con sub-tabs: Tabla General, Grupo 1-3, Líderes de Goleo
+RLS: lectura publica. Escritura solo via service role (edge function).
 
-### Contenido dinámico
+### Paso 2: Edge function `scrape-league-data`
 
-- Cambios de sección con `AnimatePresence` + fade/slide
-- **Próximos Partidos**: query a `matches` con `status = 'scheduled'`, cards minimalistas
-- **Tablas de la Liga**: datos estáticos por ahora (hardcoded) ya que no hay tabla de standings en la BD — con nota de que se puede migrar después
-- **Resaltado LCU**: fila con barra lateral cian y fondo cian/10 cuando `team === "Los Cabos United"`
+1. Usa Firecrawl search para buscar: `"Liga Premier de México tabla de posiciones"` y `"Los Cabos United resultados Liga Premier"`
+2. Extrae el markdown de los resultados
+3. Envía el markdown a Lovable AI (Gemini Flash) con un prompt estructurado que pida JSON con formato `{ standings: [...], matches: [...], topScorers: [...] }`
+4. Parsea el JSON y hace upsert en las tablas `league_standings`, `top_scorers`, y `matches`
+5. Usa Supabase service role key para escribir
 
-### Tablas minimalistas
+### Paso 3: Actualizar frontend
 
-- Sin bordes pesados, texto sobre fondo oscuro
-- Encabezados: JJ, DG, PTS, etc.
-- Tipografía Poppins bold (ya configurada en el proyecto)
+- **`LeagueTables.tsx`**: reemplazar datos hardcoded por queries a `league_standings` y `top_scorers` con `useQuery`
+- Tabla General: `where group is null` o todos los registros
+- Grupos: `where group = '1'`, etc.
+- Goleo: query a `top_scorers`
+- Mostrar skeleton mientras carga
+- Mantener resaltado cian para "Los Cabos United"
 
-### Datos
+### Paso 4: Botón manual + cron opcional
 
-- Lee de la tabla `matches` existente via Supabase client
-- Si no hay datos, muestra estado vacío elegante
-- Las tablas de posiciones serán datos placeholder hardcoded por ahora (se conectarán a BD en siguiente iteración)
+- En la UI agregar un botón discreto "Actualizar datos" que invoque la edge function (protegido, solo admin)
+- Opcionalmente configurar cron job para ejecutar cada 6-12 horas automáticamente
 
-### Animaciones
+### Detalle tecnico
 
-- `framer-motion` para todas las transiciones entre tabs y aparición de contenido
-- Countdown con transición numérica suave
-- Tarjeta hero con entrada `initial={{ opacity: 0, y: 20 }}`
+- Firecrawl ya está conectado (FIRECRAWL_API_KEY disponible)
+- Se usa Gemini Flash (via Lovable AI) dentro de la edge function para parsear el contenido scrapeado a JSON estructurado, ya que los datos de Google vienen en formatos inconsistentes
+- La edge function hace todo el procesamiento server-side; el frontend solo lee de la BD
 
