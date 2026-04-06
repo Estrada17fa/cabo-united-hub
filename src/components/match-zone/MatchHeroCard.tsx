@@ -103,7 +103,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           <Link to="/tickets">
             <motion.button
               whileTap={{ scale: 0.96 }}
-className="flex items-center justify-center gap-[7px] px-4 py-2.5 rounded-full font-bold text-xs tracking-wide"
+className="flex items-center justify-center gap-[2px] px-4 py-2.5 rounded-full font-bold text-xs tracking-wide"
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.3)",
                 border: "1.5px solid hsl(189 100% 50%)",
