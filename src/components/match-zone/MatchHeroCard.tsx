@@ -118,7 +118,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           <Link to="/conoce-los-cabos">
             <motion.button
               whileTap={{ scale: 0.96 }}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide"
+              className="flex items-center justify-center gap-1 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide"
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.3)",
                 border: "1.5px solid hsl(336 80% 77%)",
