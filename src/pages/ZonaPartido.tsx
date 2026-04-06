@@ -1,21 +1,63 @@
-import { motion } from "framer-motion";
-import { Swords } from "lucide-react";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { MatchHeroCard } from "@/components/match-zone/MatchHeroCard";
+import { MatchTabs } from "@/components/match-zone/MatchTabs";
+import { UpcomingMatches } from "@/components/match-zone/UpcomingMatches";
+import { LeagueTables } from "@/components/match-zone/LeagueTables";
 
 const ZonaPartido = () => {
+  const [activeTab, setActiveTab] = useState("upcoming");
+
+  const { data: scheduledMatches = [], isLoading } = useQuery({
+    queryKey: ["matches", "scheduled"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("matches")
+        .select("*")
+        .eq("status", "scheduled")
+        .order("match_date", { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const nextMatch = scheduledMatches[0] || null;
+
   return (
-    <div className="min-h-[calc(100vh-12rem)] flex flex-col items-center justify-center py-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center"
-      >
-        <div className="mb-6 mx-auto w-20 h-20 rounded-xl bg-card border border-border flex items-center justify-center">
-          <Swords className="w-10 h-10 text-primary" />
-        </div>
-        <h1 className="text-headline mb-2">Zona de Partido</h1>
-        <p className="text-body text-muted-foreground">Próximamente</p>
-      </motion.div>
+    <div className="space-y-6 pb-8">
+      {/* Hero */}
+      <MatchHeroCard match={nextMatch} />
+
+      {/* Tabs */}
+      <MatchTabs activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* Dynamic content */}
+      <AnimatePresence mode="wait">
+        {activeTab === "upcoming" && (
+          <motion.div
+            key="upcoming"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25 }}
+          >
+            <UpcomingMatches matches={scheduledMatches} isLoading={isLoading} />
+          </motion.div>
+        )}
+        {activeTab === "tables" && (
+          <motion.div
+            key="tables"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25 }}
+          >
+            <LeagueTables />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
