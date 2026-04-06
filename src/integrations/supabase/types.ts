@@ -14,57 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      league_standings: {
-        Row: {
-          dg: number
-          gc: number
-          gf: number
-          group_name: string | null
-          id: string
-          je: number
-          jg: number
-          jj: number
-          jp: number
-          pos: number
-          pts: number
-          season: string
-          team: string
-          updated_at: string
-        }
-        Insert: {
-          dg?: number
-          gc?: number
-          gf?: number
-          group_name?: string | null
-          id?: string
-          je?: number
-          jg?: number
-          jj?: number
-          jp?: number
-          pos?: number
-          pts?: number
-          season?: string
-          team: string
-          updated_at?: string
-        }
-        Update: {
-          dg?: number
-          gc?: number
-          gf?: number
-          group_name?: string | null
-          id?: string
-          je?: number
-          jg?: number
-          jj?: number
-          jp?: number
-          pos?: number
-          pts?: number
-          season?: string
-          team?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       match_events: {
         Row: {
           created_at: string
@@ -184,33 +133,6 @@ export type Database = {
           id?: string
           updated_at?: string
           username?: string | null
-        }
-        Relationships: []
-      }
-      top_scorers: {
-        Row: {
-          goals: number
-          id: string
-          player_name: string
-          season: string
-          team: string
-          updated_at: string
-        }
-        Insert: {
-          goals?: number
-          id?: string
-          player_name: string
-          season?: string
-          team: string
-          updated_at?: string
-        }
-        Update: {
-          goals?: number
-          id?: string
-          player_name?: string
-          season?: string
-          team?: string
-          updated_at?: string
         }
         Relationships: []
       }
