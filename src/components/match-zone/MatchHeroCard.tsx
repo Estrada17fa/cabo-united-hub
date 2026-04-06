@@ -37,13 +37,22 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className="relative rounded-2xl border border-border overflow-hidden"
-      style={{ background: "#1a1a1a" }}
     >
+      {/* Background image */}
+      <img
+        src={stadiumHero}
+        alt="Estadio"
+        className="absolute inset-0 w-full h-full object-cover"
+        width={1280}
+        height={720}
+      />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/70" />
       {/* Mesh gradient glow */}
       <div
-        className="absolute inset-0 opacity-30 pointer-events-none"
+        className="absolute inset-0 opacity-40 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 30% 20%, hsl(189 100% 38% / 0.25) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.15) 0%, transparent 50%)",
+          background: "radial-gradient(ellipse at 30% 20%, hsl(189 100% 38% / 0.3) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.2) 0%, transparent 50%)",
         }}
       />
 
@@ -52,7 +61,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
         <div className="flex items-center justify-center gap-6 w-full">
           {/* Home */}
           <div className="flex flex-col items-center gap-2 flex-1">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-muted/30 flex items-center justify-center border border-border">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center border border-border">
               <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
             </div>
             <span className="text-xs sm:text-sm font-bold text-foreground text-center leading-tight">
@@ -65,7 +74,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
 
           {/* Away */}
           <div className="flex flex-col items-center gap-2 flex-1">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-muted/30 flex items-center justify-center border border-border">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center border border-border">
               <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
             </div>
             <span className="text-xs sm:text-sm font-bold text-foreground text-center leading-tight">
@@ -89,17 +98,32 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           </div>
         </div>
 
-        {/* CTA */}
-        <Link to="/tickets">
-          <motion.button
-            whileTap={{ scale: 0.96 }}
-            className="flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-bold text-sm tracking-wide shadow-lg"
-            style={{ boxShadow: "0 0 24px -4px hsl(189 100% 38% / 0.5)" }}
-          >
-            <Ticket className="w-4 h-4" />
-            COMPRAR BOLETOS
-          </motion.button>
-        </Link>
+        {/* CTAs */}
+        <div className="flex flex-row gap-3 items-center justify-center">
+          <Link to="/tickets">
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-primary text-primary-foreground font-bold text-xs tracking-wide"
+              style={{ boxShadow: "0 0 20px -4px hsl(189 100% 38% / 0.5)" }}
+            >
+              <Ticket className="w-3.5 h-3.5" />
+              COMPRAR BOLETOS
+            </motion.button>
+          </Link>
+          <Link to="/conoce-los-cabos">
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide text-white"
+              style={{
+                backgroundColor: "hsl(336 80% 77%)",
+                boxShadow: "0 0 20px -4px hsl(336 80% 77% / 0.4)",
+              }}
+            >
+              <MapPin className="w-3.5 h-3.5" />
+              CONOCE LOS CABOS
+            </motion.button>
+          </Link>
+        </div>
       </div>
     </motion.div>
   );
