@@ -103,23 +103,23 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           <Link to="/tickets">
             <motion.button
               whileTap={{ scale: 0.96 }}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-primary text-primary-foreground font-bold text-xs tracking-wide"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-primary font-bold text-xs tracking-wide text-black"
               style={{ boxShadow: "0 0 20px -4px hsl(189 100% 38% / 0.5)" }}
             >
-              <Ticket className="w-3.5 h-3.5" />
+              <Ticket className="w-5 h-5 sm:w-3.5 sm:h-3.5" />
               COMPRAR BOLETOS
             </motion.button>
           </Link>
           <Link to="/conoce-los-cabos">
             <motion.button
               whileTap={{ scale: 0.96 }}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide text-white"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide text-black"
               style={{
                 backgroundColor: "hsl(336 80% 77%)",
                 boxShadow: "0 0 20px -4px hsl(336 80% 77% / 0.4)",
               }}
             >
-              <MapPin className="w-3.5 h-3.5" />
+              <MapPin className="w-5 h-5 sm:w-3.5 sm:h-3.5" />
               CONOCE LOS CABOS
             </motion.button>
           </Link>
