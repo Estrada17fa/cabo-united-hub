@@ -103,7 +103,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           <Link to="/tickets">
             <motion.button
               whileTap={{ scale: 0.96 }}
-className="flex items-center gap-1.5 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide whitespace-nowrap"
+className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.3)",
                 border: "1.5px solid hsl(189 100% 50%)",
@@ -111,14 +111,14 @@ className="flex items-center gap-1.5 px-4 py-2.5 rounded-full font-bold text-xs 
                 boxShadow: "0 0 16px -2px hsl(189 100% 50% / 0.4), inset 0 0 8px hsl(189 100% 50% / 0.05)",
               }}
             >
-              <Ticket className="w-6 h-6 sm:w-4 sm:h-4" />
+              <Ticket className="w-4 h-4 sm:w-4 sm:h-4" />
               COMPRAR BOLETOS
             </motion.button>
           </Link>
           <Link to="/conoce-los-cabos">
             <motion.button
               whileTap={{ scale: 0.96 }}
-className="flex items-center gap-1.5 px-4 py-2.5 rounded-full font-bold text-xs tracking-wide whitespace-nowrap"
+className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.3)",
                 border: "1.5px solid hsl(336 80% 77%)",
@@ -126,7 +126,7 @@ className="flex items-center gap-1.5 px-4 py-2.5 rounded-full font-bold text-xs 
                 boxShadow: "0 0 16px -2px hsl(336 80% 77% / 0.4), inset 0 0 8px hsl(336 80% 77% / 0.05)",
               }}
             >
-              <MapPin className="w-6 h-6 sm:w-4 sm:h-4" />
+              <MapPin className="w-4 h-4 sm:w-4 sm:h-4" />
               VISITA LOS CABOS
             </motion.button>
           </Link>
