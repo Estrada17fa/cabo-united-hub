@@ -111,7 +111,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 boxShadow: "0 0 16px -2px hsl(189 100% 50% / 0.4), inset 0 0 8px hsl(189 100% 50% / 0.05)",
               }}
             >
-              <Ticket className="w-5 h-5 sm:w-3.5 sm:h-3.5" />
+              <Ticket className="w-6 h-6 sm:w-4 sm:h-4" />
               COMPRAR BOLETOS
             </motion.button>
           </Link>
