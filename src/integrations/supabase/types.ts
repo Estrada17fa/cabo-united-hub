@@ -14,6 +14,101 @@ export type Database = {
   }
   public: {
     Tables: {
+      match_events: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_type: Database["public"]["Enums"]["match_event_type"]
+          id: string
+          match_id: string
+          minute: number
+          player_name: string | null
+          team: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_type: Database["public"]["Enums"]["match_event_type"]
+          id?: string
+          match_id: string
+          minute: number
+          player_name?: string | null
+          team?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_type?: Database["public"]["Enums"]["match_event_type"]
+          id?: string
+          match_id?: string
+          minute?: number
+          player_name?: string | null
+          team?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_events_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      matches: {
+        Row: {
+          away_score: number | null
+          away_team: string
+          created_at: string
+          home_score: number | null
+          home_team: string
+          id: string
+          is_home_game: boolean
+          jornada: number | null
+          match_date: string
+          match_time: string | null
+          season: string
+          source: Database["public"]["Enums"]["match_source"]
+          status: Database["public"]["Enums"]["match_status"]
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          away_score?: number | null
+          away_team: string
+          created_at?: string
+          home_score?: number | null
+          home_team: string
+          id?: string
+          is_home_game?: boolean
+          jornada?: number | null
+          match_date: string
+          match_time?: string | null
+          season?: string
+          source?: Database["public"]["Enums"]["match_source"]
+          status?: Database["public"]["Enums"]["match_status"]
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          away_score?: number | null
+          away_team?: string
+          created_at?: string
+          home_score?: number | null
+          home_team?: string
+          id?: string
+          is_home_game?: boolean
+          jornada?: number | null
+          match_date?: string
+          match_time?: string | null
+          season?: string
+          source?: Database["public"]["Enums"]["match_source"]
+          status?: Database["public"]["Enums"]["match_status"]
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -49,7 +144,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      match_event_type:
+        | "goal"
+        | "yellow_card"
+        | "red_card"
+        | "substitution"
+        | "penalty"
+        | "own_goal"
+      match_source: "manual" | "scraped"
+      match_status: "scheduled" | "live" | "finished"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -176,6 +279,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      match_event_type: [
+        "goal",
+        "yellow_card",
+        "red_card",
+        "substitution",
+        "penalty",
+        "own_goal",
+      ],
+      match_source: ["manual", "scraped"],
+      match_status: ["scheduled", "live", "finished"],
+    },
   },
 } as const
