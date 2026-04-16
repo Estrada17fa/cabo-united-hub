@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { StandingsTable, type StandingRow } from "./StandingsTable";
 import { LeagueMatchesByGroup } from "./LeagueMatchesByGroup";
 import { LeagueTeamsByGroup } from "./LeagueTeamsByGroup";
+import { TeamCrest } from "./TeamCrest";
+import { useTeamLogos } from "@/hooks/useTeamLogos";
 
 const MAIN_TABS = [
   { id: "posiciones", label: "Posiciones" },
@@ -23,6 +25,7 @@ const POSICIONES_TABS = [
 export function LeagueTables() {
   const [mainTab, setMainTab] = useState("posiciones");
   const [posTab, setPosTab] = useState("general");
+  const logoMap = useTeamLogos();
 
   const { data: standings = [] } = useQuery({
     queryKey: ["league_standings"],
@@ -129,11 +132,11 @@ export function LeagueTables() {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.15 }}
               >
-                {posTab === "general" && <StandingsTable rows={general} />}
-                {posTab === "grupo1" && <StandingsTable rows={getGroup("grupo1")} title="Grupo 1" />}
-                {posTab === "grupo2" && <StandingsTable rows={getGroup("grupo2")} title="Grupo 2" />}
-                {posTab === "grupo3" && <StandingsTable rows={getGroup("grupo3")} title="Grupo 3" />}
-                {posTab === "goleo" && <TopScorersTable scorers={scorers} />}
+                {posTab === "general" && <StandingsTable rows={general} logoMap={logoMap} />}
+                {posTab === "grupo1" && <StandingsTable rows={getGroup("grupo1")} title="Grupo 1" logoMap={logoMap} />}
+                {posTab === "grupo2" && <StandingsTable rows={getGroup("grupo2")} title="Grupo 2" logoMap={logoMap} />}
+                {posTab === "grupo3" && <StandingsTable rows={getGroup("grupo3")} title="Grupo 3" logoMap={logoMap} />}
+                {posTab === "goleo" && <TopScorersTable scorers={scorers} logoMap={logoMap} />}
               </motion.div>
             </AnimatePresence>
           </motion.div>
@@ -159,7 +162,7 @@ export function LeagueTables() {
             exit={{ opacity: 0, x: -10 }}
             transition={{ duration: 0.2 }}
           >
-            <LeagueTeamsByGroup standings={standings} />
+            <LeagueTeamsByGroup standings={standings} logoMap={logoMap} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -173,7 +176,7 @@ interface TopScorerData {
   goals: number;
 }
 
-function TopScorersTable({ scorers }: { scorers: TopScorerData[] }) {
+function TopScorersTable({ scorers, logoMap = {} }: { scorers: TopScorerData[]; logoMap?: Record<string, string> }) {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
       {scorers.length === 0 ? (
@@ -202,7 +205,12 @@ function TopScorersTable({ scorers }: { scorers: TopScorerData[] }) {
                       <span className={`font-semibold ${isLCU ? "text-primary" : "text-foreground"}`}>{s.player_name}</span>
                     </div>
                   </td>
-                  <td className="py-2.5 px-1.5 text-muted-foreground truncate max-w-[100px]">{s.team}</td>
+                  <td className="py-2.5 px-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <TeamCrest teamName={s.team} logoUrl={logoMap[s.team]} size={14} />
+                      <span className="text-muted-foreground truncate max-w-[80px]">{s.team}</span>
+                    </div>
+                  </td>
                   <td className={`text-center py-2.5 px-1.5 font-bold ${isLCU ? "text-primary" : "text-foreground"}`}>{s.goals}</td>
                 </tr>
               );
