@@ -6,7 +6,7 @@ interface MatchTabsProps {
 }
 
 const TABS = [
-  { id: "partidos", label: "Partidos" },
+  { id: "partidos", label: "Nuestros Partidos" },
   { id: "liga", label: "Liga Premier Serie A" },
 ];
 
