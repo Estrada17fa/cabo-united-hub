@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { TeamCrest } from "./TeamCrest";
 
 export interface StandingRow {
   pos: number;
@@ -16,11 +17,12 @@ export interface StandingRow {
 interface StandingsTableProps {
   rows: StandingRow[];
   title?: string;
+  logoMap?: Record<string, string>;
 }
 
 const LCU = "Los Cabos United";
 
-export function StandingsTable({ rows, title }: StandingsTableProps) {
+export function StandingsTable({ rows, title, logoMap = {} }: StandingsTableProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -45,7 +47,7 @@ export function StandingsTable({ rows, title }: StandingsTableProps) {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, i) => {
+            {rows.map((row) => {
               const isLCU = row.team === LCU;
               return (
                 <tr
@@ -55,8 +57,8 @@ export function StandingsTable({ rows, title }: StandingsTableProps) {
                   <td className="py-2.5 px-1.5 font-semibold text-muted-foreground">{row.pos}</td>
                   <td className="py-2.5 px-1.5">
                     <div className="flex items-center gap-1.5">
-                      {isLCU && <div className="w-0.5 h-4 rounded-full bg-primary shrink-0" />}
-                      <span className={`font-semibold truncate max-w-[120px] ${isLCU ? "text-primary" : "text-foreground"}`}>
+                      <TeamCrest teamName={row.team} logoUrl={logoMap[row.team]} size={16} />
+                      <span className={`font-semibold truncate max-w-[100px] ${isLCU ? "text-primary" : "text-foreground"}`}>
                         {row.team}
                       </span>
                     </div>
