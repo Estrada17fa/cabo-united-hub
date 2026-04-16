@@ -4,20 +4,25 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { StandingsTable, type StandingRow } from "./StandingsTable";
 import { LeagueMatchesByGroup } from "./LeagueMatchesByGroup";
+import { LeagueTeamsByGroup } from "./LeagueTeamsByGroup";
 
-const SUB_TABS = [
+const MAIN_TABS = [
+  { id: "posiciones", label: "Posiciones" },
+  { id: "partidos", label: "Partidos" },
+  { id: "equipos", label: "Equipos" },
+];
+
+const POSICIONES_TABS = [
   { id: "general", label: "Tabla General" },
   { id: "grupo1", label: "Grupo 1" },
   { id: "grupo2", label: "Grupo 2" },
   { id: "grupo3", label: "Grupo 3" },
   { id: "goleo", label: "Tabla de Goleo" },
-  { id: "partidos", label: "Partidos" },
 ];
 
-const LCU = "Los Cabos United";
-
 export function LeagueTables() {
-  const [subTab, setSubTab] = useState("general");
+  const [mainTab, setMainTab] = useState("posiciones");
+  const [posTab, setPosTab] = useState("general");
 
   const { data: standings = [] } = useQuery({
     queryKey: ["league_standings"],
@@ -60,23 +65,23 @@ export function LeagueTables() {
 
   return (
     <div className="space-y-4">
-      {/* Sub tabs */}
+      {/* Main sub tabs */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1"
       >
-        {SUB_TABS.map((tab) => (
+        {MAIN_TABS.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setSubTab(tab.id)}
+            onClick={() => setMainTab(tab.id)}
             className="relative whitespace-nowrap pb-2 text-xs font-semibold transition-colors shrink-0"
-            style={{ color: subTab === tab.id ? "hsl(0 0% 100%)" : "hsl(0 0% 45%)" }}
+            style={{ color: mainTab === tab.id ? "hsl(0 0% 100%)" : "hsl(0 0% 45%)" }}
           >
             {tab.label}
-            {subTab === tab.id && (
+            {mainTab === tab.id && (
               <motion.div
-                layoutId="liga-subtab"
+                layoutId="liga-maintab"
                 className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full"
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
@@ -85,22 +90,78 @@ export function LeagueTables() {
         ))}
       </motion.div>
 
-      {/* Content */}
       <AnimatePresence mode="wait">
-        <motion.div
-          key={subTab}
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -10 }}
-          transition={{ duration: 0.2 }}
-        >
-          {subTab === "general" && <StandingsTable rows={general} />}
-          {subTab === "grupo1" && <StandingsTable rows={getGroup("grupo1")} title="Grupo 1" />}
-          {subTab === "grupo2" && <StandingsTable rows={getGroup("grupo2")} title="Grupo 2" />}
-          {subTab === "grupo3" && <StandingsTable rows={getGroup("grupo3")} title="Grupo 3" />}
-          {subTab === "goleo" && <TopScorersTable scorers={scorers} />}
-          {subTab === "partidos" && <LeagueMatchesByGroup />}
-        </motion.div>
+        {mainTab === "posiciones" && (
+          <motion.div
+            key="posiciones"
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-4"
+          >
+            {/* Posiciones nested tabs */}
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+              {POSICIONES_TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setPosTab(tab.id)}
+                  className="relative whitespace-nowrap pb-2 text-[11px] font-medium transition-colors shrink-0"
+                  style={{ color: posTab === tab.id ? "hsl(var(--primary))" : "hsl(0 0% 40%)" }}
+                >
+                  {tab.label}
+                  {posTab === tab.id && (
+                    <motion.div
+                      layoutId="liga-postab"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary/60 rounded-full"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={posTab}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15 }}
+              >
+                {posTab === "general" && <StandingsTable rows={general} />}
+                {posTab === "grupo1" && <StandingsTable rows={getGroup("grupo1")} title="Grupo 1" />}
+                {posTab === "grupo2" && <StandingsTable rows={getGroup("grupo2")} title="Grupo 2" />}
+                {posTab === "grupo3" && <StandingsTable rows={getGroup("grupo3")} title="Grupo 3" />}
+                {posTab === "goleo" && <TopScorersTable scorers={scorers} />}
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
+        )}
+
+        {mainTab === "partidos" && (
+          <motion.div
+            key="partidos-liga"
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <LeagueMatchesByGroup />
+          </motion.div>
+        )}
+
+        {mainTab === "equipos" && (
+          <motion.div
+            key="equipos"
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <LeagueTeamsByGroup standings={standings} />
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );

@@ -5,13 +5,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { MatchList } from "./MatchList";
 
 const SUB_TABS = [
-  { id: "todos", label: "Todos" },
   { id: "proximos", label: "Próximos" },
   { id: "resultados", label: "Resultados" },
+  { id: "todos", label: "Todos" },
 ];
 
 export function PartidosSection() {
-  const [subTab, setSubTab] = useState("todos");
+  const [subTab, setSubTab] = useState("proximos");
 
   const { data: allMatches = [], isLoading } = useQuery({
     queryKey: ["matches", "lcu-all"],
@@ -28,11 +28,11 @@ export function PartidosSection() {
   const now = new Date();
   const upcoming = allMatches
     .filter((m) => new Date(`${m.match_date}T${m.match_time || "23:59:59"}`) >= now)
-    .sort((a, b) => a.match_date.localeCompare(b.match_date));
+    .sort((a, b) => b.match_date.localeCompare(a.match_date));
 
-  const results = allMatches.filter(
-    (m) => m.status === "finished" || new Date(`${m.match_date}T${m.match_time || "23:59:59"}`) < now
-  );
+  const results = allMatches
+    .filter((m) => m.status === "finished" || new Date(`${m.match_date}T${m.match_time || "23:59:59"}`) < now)
+    .sort((a, b) => b.match_date.localeCompare(a.match_date));
 
   const displayed =
     subTab === "proximos" ? upcoming : subTab === "resultados" ? results : allMatches;
