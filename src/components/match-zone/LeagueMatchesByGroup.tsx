@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { MatchList } from "./MatchList";
 
 const GROUPS = [
@@ -10,6 +11,8 @@ const GROUPS = [
 ];
 
 export function LeagueMatchesByGroup() {
+  const [activeGroup, setActiveGroup] = useState("grupo1");
+
   const { data: matches = [], isLoading } = useQuery({
     queryKey: ["matches", "league-all"],
     queryFn: async () => {
@@ -22,32 +25,55 @@ export function LeagueMatchesByGroup() {
     },
   });
 
-  // For now, distribute matches across groups as placeholder
-  // In production, matches would have a group field
   const third = Math.ceil(matches.length / 3);
-  const groups = [
-    matches.slice(0, third),
-    matches.slice(third, third * 2),
-    matches.slice(third * 2),
-  ];
+  const groupMatches: Record<string, typeof matches> = {
+    grupo1: matches.slice(0, third),
+    grupo2: matches.slice(third, third * 2),
+    grupo3: matches.slice(third * 2),
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
+      className="space-y-4"
     >
-      {GROUPS.map((group, idx) => (
-        <div key={group.id} className="space-y-2">
-          <h3 className="text-sm font-bold text-foreground">{group.label}</h3>
+      <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+        {GROUPS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveGroup(tab.id)}
+            className="relative whitespace-nowrap pb-2 text-[11px] font-medium transition-colors shrink-0"
+            style={{ color: activeGroup === tab.id ? "hsl(var(--primary))" : "hsl(0 0% 40%)" }}
+          >
+            {tab.label}
+            {activeGroup === tab.id && (
+              <motion.div
+                layoutId="liga-partidos-group"
+                className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary/60 rounded-full"
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              />
+            )}
+          </button>
+        ))}
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeGroup}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.15 }}
+        >
           <MatchList
-            matches={groups[idx] || []}
+            matches={groupMatches[activeGroup] || []}
             isLoading={isLoading}
             showScore
-            emptyMessage={`No hay partidos en ${group.label}`}
+            emptyMessage={`No hay partidos en ${GROUPS.find(g => g.id === activeGroup)?.label}`}
           />
-        </div>
-      ))}
+        </motion.div>
+      </AnimatePresence>
     </motion.div>
   );
 }
