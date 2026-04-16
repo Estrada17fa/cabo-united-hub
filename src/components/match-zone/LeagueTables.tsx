@@ -208,7 +208,7 @@ function TopScorersTable({ scorers, logoMap = {} }: { scorers: TopScorerData[]; 
                   <td className="py-2.5 px-1.5">
                     <div className="flex items-center gap-1.5">
                       <TeamCrest teamName={s.team} logoUrl={logoMap[s.team]} size={14} />
-                      <span className="text-muted-foreground truncate max-w-[80px]">{s.team}</span>
+                      <span className="text-muted-foreground truncate max-w-[80px] sm:max-w-[120px] md:max-w-full">{s.team}</span>
                     </div>
                   </td>
                   <td className={`text-center py-2.5 px-1.5 font-bold ${isLCU ? "text-primary" : "text-foreground"}`}>{s.goals}</td>
