@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { Ticket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { MatchList } from "./MatchList";
+import { Button } from "@/components/ui/button";
 
 const SUB_TABS = [
   { id: "proximos", label: "Próximos" },
@@ -63,6 +66,27 @@ export function PartidosSection() {
           </button>
         ))}
       </motion.div>
+
+      {/* Boletos button - only for Próximos */}
+      {subTab === "proximos" && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          className="flex justify-end"
+        >
+          <Button
+            asChild
+            size="sm"
+            className="bg-primary/20 hover:bg-primary/30 text-primary border border-primary/40 rounded-full text-xs font-semibold px-4 py-1.5 h-auto"
+          >
+            <Link to="/tickets">
+              <Ticket className="w-3.5 h-3.5 mr-1.5" />
+              Boletos
+            </Link>
+          </Button>
+        </motion.div>
+      )}
 
       <AnimatePresence mode="wait">
         <motion.div
