@@ -212,9 +212,9 @@ export function Header() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-full text-xs lg:text-sm transition-all duration-300 ${
+                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-full text-xs lg:text-sm font-bold transition-all duration-300 ${
                   isActive(link.path)
-                    ? "bg-primary text-secondary-foreground font-bold shadow-lg shadow-primary/25"
+                    ? "bg-primary text-secondary-foreground shadow-lg shadow-primary/25"
                     : "text-foreground/50 hover:text-foreground/80 hover:bg-muted/40"
                 }`}
               >
