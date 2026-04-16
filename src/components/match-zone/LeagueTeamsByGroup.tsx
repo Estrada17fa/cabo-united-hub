@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Users } from "lucide-react";
+import { TeamCrest } from "./TeamCrest";
 
 interface Standing {
   team: string;
@@ -14,7 +14,7 @@ const GROUPS = [
 
 const LCU = "Los Cabos United";
 
-export function LeagueTeamsByGroup({ standings }: { standings: Standing[] }) {
+export function LeagueTeamsByGroup({ standings, logoMap = {} }: { standings: Standing[]; logoMap?: Record<string, string> }) {
   const getTeams = (group: string) =>
     standings
       .filter((s) => s.group_name === group)
@@ -49,7 +49,7 @@ export function LeagueTeamsByGroup({ standings }: { standings: Standing[] }) {
                           : "border-border/50 bg-card/50"
                       }`}
                     >
-                      <Users className={`w-4 h-4 shrink-0 ${isLCU ? "text-primary" : "text-muted-foreground"}`} />
+                      <TeamCrest teamName={team} logoUrl={logoMap[team]} size={20} />
                       <span className={`text-xs font-semibold ${isLCU ? "text-primary" : "text-foreground"}`}>
                         {team}
                       </span>
