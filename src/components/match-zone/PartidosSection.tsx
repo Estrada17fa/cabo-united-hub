@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { Ticket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { MatchList } from "./MatchList";
+import { Button } from "@/components/ui/button";
 
 const SUB_TABS = [
   { id: "proximos", label: "Próximos" },
