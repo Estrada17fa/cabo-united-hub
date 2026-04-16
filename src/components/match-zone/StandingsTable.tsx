@@ -58,7 +58,7 @@ export function StandingsTable({ rows, title, logoMap = {} }: StandingsTableProp
                   <td className="py-2.5 px-1.5">
                     <div className="flex items-center gap-1.5">
                       <TeamCrest teamName={row.team} logoUrl={logoMap[row.team]} size={16} />
-                      <span className={`font-semibold truncate max-w-[100px] ${isLCU ? "text-primary" : "text-foreground"}`}>
+                      <span className={`font-semibold truncate max-w-[100px] sm:max-w-[140px] md:max-w-full ${isLCU ? "text-primary" : "text-foreground"}`}>
                         {row.team}
                       </span>
                     </div>
