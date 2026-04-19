@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import stadiumHero from "@/assets/stadium-hero.jpg";
+import lcuCrest from "@/assets/lcu-crest.png";
+import ligaPremierLogo from "@/assets/liga-premier-logo.png";
 
 /* ----------------------------- Placeholder data ----------------------------- */
 
@@ -301,8 +303,18 @@ function StatsCard({ className = "" }: { className?: string }) {
     <CardShell className={className} interactive>
       <div className="p-5 md:p-6 h-full flex flex-col justify-between">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-label text-muted-foreground">Temporada actual</span>
-          <Trophy className="w-4 h-4" style={{ color: PRIMARY }} />
+          <img
+            src={ligaPremierLogo}
+            alt="Liga Premier"
+            className="h-5 md:h-6 w-auto object-contain"
+            loading="lazy"
+          />
+          <img
+            src={lcuCrest}
+            alt="Los Cabos United"
+            className="h-7 md:h-8 w-auto object-contain"
+            loading="lazy"
+          />
         </div>
         <div className="grid grid-cols-3 gap-3">
           {SEASON_STATS.map((s) => (
