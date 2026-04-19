@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
-import { Shield, MapPin, Calendar, Ticket } from "lucide-react";
+import { Shield, MapPin, Calendar, Ticket, Radio } from "lucide-react";
 import { CountdownTimer } from "./CountdownTimer";
+import { LiveScoreboard } from "./LiveScoreboard";
+import { MatchTimeline } from "./MatchTimeline";
+import { useLiveMatch } from "@/hooks/useLiveMatch";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Link } from "react-router-dom";
