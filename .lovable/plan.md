@@ -1,62 +1,49 @@
 
-## Plan: Marcador en vivo + Timeline para Match Zone
 
-### Contexto
-Cuando llega la hora del partido, el countdown debe transformarse automáticamente en una experiencia "EN VIVO" con marcador, timeline de eventos y botón de transmisión.
+El usuario quiere otra opción de rediseño para la card "Temporada actual", distinta a la de scoreboard con field stripe que propuse antes. Voy a proponer un concepto totalmente diferente.
 
-### Datos disponibles
-- `matches`: tiene `home_score`, `away_score`, `status`, `match_date`, `match_time`
-- `match_events`: tiene `match_id`, `event_type`, `minute`, `team`, `player_name`, `description` — perfecto para el timeline
-- Falta: campo para URL de transmisión en vivo
+## Opción B — Card estilo "Jersey / Dorsal"
 
-### Cambios necesarios
+En vez de un scoreboard horizontal, la card se siente como la **espalda de una camiseta** o una **placa metálica de vestidor**: vertical, con jerarquía clara, número grande protagonista y stats secundarios alineados en una banda inferior.
 
-**1. Base de datos (migración)**
-- Agregar columna `live_stream_url` (text, nullable) a `matches` para el botón "VER EN VIVO"
+### Concepto visual
 
-**2. Hook `useLiveMatch` (nuevo)**
-- Detecta si el partido está "en vivo": `match_time <= now <= match_time + 2h` o `status === 'live'`
-- Calcula minuto actual del partido
-- Suscripción realtime a `matches` (cambios de score) y `match_events` (nuevos eventos)
-
-**3. Componente `LiveScoreboard` (nuevo)**
-- Reemplaza al `CountdownTimer` cuando el partido está en vivo
-- Marcador grande tipo: `2 — 1` con badge pulsante "EN VIVO" rojo
-- Minuto del partido animado (ej. `67'`)
-- Animación pulse en el marcador cuando hay gol nuevo
-
-**4. Componente `MatchTimeline` (nuevo)**
-- Timeline vertical moderna (línea central con nodos a izquierda/derecha según equipo local/visitante)
-- Iconos por tipo de evento: ⚽ gol, 🟨 amarilla, 🟥 roja, 🔄 cambio
-- Animación stagger con framer-motion al cargar
-- Nuevos eventos entran con `slide-in` + glow primary
-- Scroll horizontal en mobile, vertical en desktop
-
-**5. Actualizar `MatchHeroCard.tsx`**
-- Lógica condicional:
-  - Si `isLive` → mostrar `LiveScoreboard` + `MatchTimeline` + botón "VER EN VIVO" (rojo pulsante)
-  - Si no → mostrar `CountdownTimer` + botones existentes (Boletos / Visita Los Cabos)
-- Botón "VER EN VIVO": abre `live_stream_url` en nueva pestaña; si no hay URL, deshabilitado con tooltip
-
-**6. Actualizar realtime publication**
-- `ALTER PUBLICATION supabase_realtime ADD TABLE matches, match_events`
-
-### Estructura visual del timeline (mobile-first)
 ```text
-   LOCAL          |          VISITA
- ⚽ Pérez 23'    ●
-                  ●─── 🟨 López 31'
- 🔄 Cambio 45'   ●
-                  ●─── ⚽ García 58'
+┌──────────────────────────────────────┐
+│ [escudo LCU]              LIGA       │
+│                          PREMIER     │  ← header limpio, logos en esquinas
+│                          [logo]      │
+│ ─────────────────────────────────── │
+│                                      │
+│            3°                        │  ← número HERO gigante (60-72px)
+│       POSICIÓN ACTUAL                │     centrado, tabular-nums
+│                                      │
+│ ─────────────────────────────────── │
+│                                      │
+│   18  ·  W12 E3 D3  ·  32           │  ← banda inferior tipo
+│   PJ      RECORD       GF            │     "ficha estadística"
+└──────────────────────────────────────┘
 ```
-Línea vertical central en `hsl(189 100% 38% / 0.3)`, nodos circulares con glow.
 
-### Archivos a tocar
-- `supabase/migrations/...` — agregar `live_stream_url` + realtime
-- `src/hooks/useLiveMatch.tsx` (nuevo)
-- `src/components/match-zone/LiveScoreboard.tsx` (nuevo)
-- `src/components/match-zone/MatchTimeline.tsx` (nuevo)
-- `src/components/match-zone/MatchHeroCard.tsx` (editar — render condicional)
+### Diferencias clave vs propuesta anterior
 
-### Pregunta menor
-Si no hay `live_stream_url` cargada, el botón "VER EN VIVO" se mostrará deshabilitado. Los eventos del timeline son demo hasta que se inserten datos reales en `match_events`.
+- **Una stat protagonista** (Posición = 3°) en tamaño gigante, no tres stats iguales compitiendo
+- **Header asimétrico**: escudo grande a la izquierda, logo Liga Premier pequeño arriba a la derecha (jerarquía clara)
+- **Banda inferior tipo "ficha"**: PJ · Record (W-E-D) · Goles, separados por puntos `·`, todo en una sola línea con tipografía pequeña uppercase tracking-wide
+- **Sin chip "TEMPORADA"**, sin field stripe, sin iconos lucide — más minimalista, más editorial
+- **Acento verde** solo en el número hero (text-green) y en una línea horizontal divisoria muy fina
+
+### Cambios técnicos
+
+Solo se modifica `StatsCard` en `src/pages/Club.tsx` (líneas ~301-334):
+
+- Header con `flex justify-between items-start`: escudo h-12 a la izquierda, logo Liga Premier h-6 a la derecha
+- Divisor horizontal `border-t border-white/5`
+- Bloque central: número `text-6xl md:text-7xl font-extrabold tabular-nums text-[hsl(142_76%_55%)]` + label `text-xs uppercase tracking-[0.2em] text-muted-foreground` debajo
+- Banda inferior: `flex items-center justify-center gap-3 text-[11px] uppercase tracking-wider`, con `·` como separador y stats inline (número + label pequeño al lado)
+- Mantener `CardShell`, paleta, border-radius y responsive del Bento
+
+### Archivos modificados
+
+- `src/pages/Club.tsx` — solo función `StatsCard`
+
