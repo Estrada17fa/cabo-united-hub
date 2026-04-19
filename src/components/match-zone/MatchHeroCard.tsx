@@ -42,7 +42,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className="relative rounded-2xl border border-border overflow-hidden"
-      style={isLive ? { borderColor: "hsl(142 76% 45% / 0.5)" } : undefined}
+      style={showLiveLayout ? { borderColor: "hsl(142 76% 45% / 0.5)" } : undefined}
     >
       {/* Background image */}
       <img
