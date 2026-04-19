@@ -72,7 +72,7 @@ export function PartidosSection() {
         initial={{ opacity: 0, y: -4 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -4 }}
-        className="flex justify-end"
+        className="flex justify-start"
       >
         <Button
           asChild
@@ -81,7 +81,7 @@ export function PartidosSection() {
         >
           <Link to="/tickets">
             <Ticket className="w-3.5 h-3.5 mr-1.5" />
-            Boletos
+            Compra tus boletos
           </Link>
         </Button>
       </motion.div>
