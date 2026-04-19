@@ -171,8 +171,8 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           </div>
         </div>
 
-        {/* Timeline (only when live) */}
-        {isLive && (
+        {/* Timeline (live or recently finished) */}
+        {showLiveLayout && (
           <div className="w-full pt-2 border-t border-border/50">
             <MatchTimeline events={events} homeTeam={match.home_team} />
           </div>
