@@ -154,12 +154,6 @@ const Club = () => {
       transition={{ duration: 0.4 }}
       className="space-y-6 pb-8"
     >
-      {/* Page heading */}
-      <div className="space-y-1">
-        <h1 className="text-headline">Tu Club</h1>
-        <p className="text-caption">Todo sobre Los Cabos United</p>
-      </div>
-
       {/* Bento Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
         {/* CARD 1 — HERO ADN Cabeño */}
