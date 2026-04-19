@@ -280,9 +280,9 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
                 style={{
                   backgroundColor: "rgba(0, 0, 0, 0.3)",
-                  border: "1.5px solid hsl(48 96% 60%)",
-                  color: "hsl(48 96% 70%)",
-                  boxShadow: "0 0 16px -2px hsl(48 96% 60% / 0.5), inset 0 0 8px hsl(48 96% 60% / 0.05)",
+                  border: "1.5px solid hsl(189 100% 50%)",
+                  color: "hsl(189 100% 60%)",
+                  boxShadow: "0 0 16px -2px hsl(189 100% 50% / 0.5), inset 0 0 8px hsl(189 100% 50% / 0.05)",
                 }}
               >
                 <Trophy className="w-4 h-4" />
