@@ -100,6 +100,22 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
               </span>
             </motion.span>
           )}
+          {isFinished && (
+            <span
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full"
+              style={{
+                backgroundColor: "hsl(142 76% 45% / 0.1)",
+                border: "1px solid hsl(142 76% 45% / 0.3)",
+              }}
+            >
+              <span
+                className="text-[10px] font-extrabold tracking-widest"
+                style={{ color: "hsl(142 76% 55%)" }}
+              >
+                FINALIZADO
+              </span>
+            </span>
+          )}
         </div>
 
         {/* Teams + score (when live) */}
