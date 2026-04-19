@@ -15,6 +15,8 @@ interface MatchHeroCardProps {
 }
 
 export function MatchHeroCard({ match }: MatchHeroCardProps) {
+  const { isLive, currentMinute, events } = useLiveMatch(match);
+
   if (!match) {
     return (
       <motion.div
@@ -40,6 +42,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className="relative rounded-2xl border border-border overflow-hidden"
+      style={isLive ? { borderColor: "hsl(0 84% 60% / 0.5)" } : undefined}
     >
       {/* Background image */}
       <img
@@ -55,7 +58,9 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
       <div
         className="absolute inset-0 opacity-40 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 30% 20%, hsl(189 100% 38% / 0.3) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.2) 0%, transparent 50%)",
+          background: isLive
+            ? "radial-gradient(ellipse at 30% 20%, hsl(0 84% 60% / 0.35) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.2) 0%, transparent 50%)"
+            : "radial-gradient(ellipse at 30% 20%, hsl(189 100% 38% / 0.3) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.2) 0%, transparent 50%)",
         }}
       />
 
@@ -86,8 +91,12 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           </div>
         </div>
 
-        {/* Countdown */}
-        <CountdownTimer targetDate={matchDate} />
+        {/* Live scoreboard OR countdown */}
+        {isLive ? (
+          <LiveScoreboard match={match} currentMinute={currentMinute} />
+        ) : (
+          <CountdownTimer targetDate={matchDate} />
+        )}
 
         {/* Details */}
         <div className="flex flex-col items-center gap-1.5 text-center">
@@ -101,27 +110,70 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           </div>
         </div>
 
+        {/* Timeline (only when live) */}
+        {isLive && (
+          <div className="w-full pt-2 border-t border-border/50">
+            <MatchTimeline events={events} homeTeam={match.home_team} />
+          </div>
+        )}
+
         {/* CTAs */}
-        <div className="flex flex-row gap-3 items-center justify-center">
-          <Link to="/tickets">
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
+        <div className="flex flex-row gap-3 items-center justify-center flex-wrap">
+          {isLive ? (
+            <motion.a
+              href={match.live_stream_url || "#"}
+              target={match.live_stream_url ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              whileTap={{ scale: match.live_stream_url ? 0.96 : 1 }}
+              animate={
+                match.live_stream_url
+                  ? {
+                      boxShadow: [
+                        "0 0 16px -2px hsl(0 84% 60% / 0.5), inset 0 0 8px hsl(0 84% 60% / 0.05)",
+                        "0 0 24px 0px hsl(0 84% 60% / 0.7), inset 0 0 12px hsl(0 84% 60% / 0.1)",
+                        "0 0 16px -2px hsl(0 84% 60% / 0.5), inset 0 0 8px hsl(0 84% 60% / 0.05)",
+                      ],
+                    }
+                  : undefined
+              }
+              transition={{ duration: 1.8, repeat: Infinity }}
+              onClick={(e) => {
+                if (!match.live_stream_url) e.preventDefault();
+              }}
+              title={match.live_stream_url ? "Abrir transmisión" : "Transmisión no disponible"}
+              className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap ${
+                !match.live_stream_url ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.3)",
-                border: "1.5px solid hsl(189 100% 50%)",
-                color: "hsl(189 100% 60%)",
-                boxShadow: "0 0 16px -2px hsl(189 100% 50% / 0.4), inset 0 0 8px hsl(189 100% 50% / 0.05)",
+                border: "1.5px solid hsl(0 84% 60%)",
+                color: "hsl(0 84% 70%)",
               }}
             >
-              <Ticket className="w-4 h-4 sm:w-4 sm:h-4" />
-              COMPRAR BOLETOS
-            </motion.button>
-          </Link>
+              <Radio className="w-4 h-4" />
+              VER EN VIVO
+            </motion.a>
+          ) : (
+            <Link to="/tickets">
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
+                style={{
+                  backgroundColor: "rgba(0, 0, 0, 0.3)",
+                  border: "1.5px solid hsl(189 100% 50%)",
+                  color: "hsl(189 100% 60%)",
+                  boxShadow: "0 0 16px -2px hsl(189 100% 50% / 0.4), inset 0 0 8px hsl(189 100% 50% / 0.05)",
+                }}
+              >
+                <Ticket className="w-4 h-4 sm:w-4 sm:h-4" />
+                COMPRAR BOLETOS
+              </motion.button>
+            </Link>
+          )}
           <Link to="/conoce-los-cabos">
             <motion.button
               whileTap={{ scale: 0.96 }}
-className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
+              className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.3)",
                 border: "1.5px solid hsl(336 80% 77%)",
