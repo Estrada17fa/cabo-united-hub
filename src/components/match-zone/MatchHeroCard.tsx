@@ -156,8 +156,8 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           </div>
         </div>
 
-        {/* Countdown only when NOT live */}
-        {!isLive && <CountdownTimer targetDate={matchDate} />}
+        {/* Countdown only when match has not started yet */}
+        {!showLiveLayout && <CountdownTimer targetDate={matchDate} />}
 
         {/* Details */}
         <div className="flex flex-col items-center gap-1.5 text-center">
