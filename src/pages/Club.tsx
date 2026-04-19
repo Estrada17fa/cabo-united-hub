@@ -619,37 +619,6 @@ function NotesCard({ className = "" }: { className?: string }) {
   );
 }
 
-/* -------------------------------- CARD 7 -------------------------------- */
-
-function StaffCard({ className = "" }: { className?: string }) {
-  return (
-    <CardShell className={className} interactive>
-      <div className="p-5 md:p-6 h-full flex flex-col">
-        <h3 className="text-title mb-4">La Dirección Técnica</h3>
-        <div className="space-y-3 flex-1">
-          {STAFF.map((s) => (
-            <div
-              key={s.name}
-              className="flex items-center gap-3 rounded-xl border border-border bg-background/40 p-3"
-            >
-              <img
-                src={avatarUrl(s.name)}
-                alt={s.name}
-                className="w-11 h-11 rounded-full shrink-0"
-              />
-              <div className="min-w-0">
-                <div className="text-sm font-semibold text-foreground truncate">
-                  {s.name}
-                </div>
-                <div className="text-[11px] text-muted-foreground">{s.role}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </CardShell>
-  );
-}
 
 /* -------------------------------- CARD 8 -------------------------------- */
 
