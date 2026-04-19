@@ -14,7 +14,8 @@ interface MatchHeroCardProps {
 }
 
 export function MatchHeroCard({ match }: MatchHeroCardProps) {
-  const { isLive, currentMinute, events } = useLiveMatch(match);
+  const { isLive, isFinished, currentMinute, events } = useLiveMatch(match);
+  const showLiveLayout = isLive || isFinished;
 
   if (!match) {
     return (
