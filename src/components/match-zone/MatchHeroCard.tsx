@@ -130,8 +130,8 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
             </span>
           </div>
 
-          {/* Center: score-VS-score (live) or just VS */}
-          {isLive ? (
+          {/* Center: score-VS-score (live or finished) or just VS */}
+          {showLiveLayout ? (
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <ScoreNumber value={match.home_score ?? 0} />
               <span className="text-base sm:text-lg font-extrabold text-muted-foreground tracking-wider">
