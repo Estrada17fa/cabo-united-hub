@@ -629,7 +629,7 @@ function FanTickerCard({ className = "" }: { className?: string }) {
           <span className="text-label text-muted-foreground">La Afición · En vivo</span>
         </div>
         <div className="relative w-full overflow-hidden">
-          <div className="flex gap-10 whitespace-nowrap animate-[ticker_40s_linear_infinite]">
+          <div className="flex gap-10 whitespace-nowrap animate-marquee">
             {items.map((msg, i) => (
               <span
                 key={i}
