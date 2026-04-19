@@ -16,13 +16,28 @@ export function LiveScoreboard({ match, currentMinute }: LiveScoreboardProps) {
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="flex items-center gap-2 px-3 py-1 rounded-full bg-destructive/15 border border-destructive/40"
+        className="flex items-center gap-2 px-3 py-1 rounded-full"
+        style={{
+          backgroundColor: "hsl(142 76% 45% / 0.15)",
+          border: "1px solid hsl(142 76% 45% / 0.4)",
+        }}
       >
         <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
+          <span
+            className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+            style={{ backgroundColor: "hsl(142 76% 45%)" }}
+          />
+          <span
+            className="relative inline-flex rounded-full h-2 w-2"
+            style={{ backgroundColor: "hsl(142 76% 45%)" }}
+          />
         </span>
-        <span className="text-[10px] font-extrabold tracking-widest text-destructive">EN VIVO</span>
+        <span
+          className="text-[10px] font-extrabold tracking-widest"
+          style={{ color: "hsl(142 76% 55%)" }}
+        >
+          EN VIVO
+        </span>
       </motion.div>
 
       {/* Score */}
