@@ -123,12 +123,6 @@ const NOTES = [
   },
 ];
 
-const STAFF = [
-  { name: "Ricardo Mendoza", role: "Director Técnico" },
-  { name: "Pablo Espinoza", role: "Asistente Técnico" },
-  { name: "Héctor Lozano", role: "Preparador Físico" },
-];
-
 const FAN_TICKER = [
   "🏟️ @cabeño_4ever: ¡Amos del Paraíso siempre!",
   "⚽ @marisol_lc: Orgullosa de Los Cabos United",
