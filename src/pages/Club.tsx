@@ -161,34 +161,27 @@ const Club = () => {
       className="space-y-6 pb-8"
     >
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
-        {/* CARD 1 — HERO ADN Cabeño */}
-        <HeroCard className="lg:col-span-8 lg:row-span-2 md:col-span-4" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
+        {/* Posición y Amo de la Semana — mitad y mitad */}
+        <StatsCard className="lg:col-span-6 md:col-span-1" />
+        <PlayerOfWeekCard className="lg:col-span-6 md:col-span-1" />
 
-        {/* CARD 2 — Temporada actual */}
-        <StatsCard className="lg:col-span-4 md:col-span-2" />
+        {/* Header ADN Cabeño — ancho completo */}
+        <HeroCard className="lg:col-span-12 md:col-span-2" />
 
-        {/* CARD 3 — Amo de la Semana */}
-        <PlayerOfWeekCard className="lg:col-span-4 md:col-span-2" />
-
-        {/* CARD 4 — Plantel */}
+        {/* Nuestro Plantel — ancho completo */}
         <RosterCard
-          className="lg:col-span-8 lg:row-span-3 md:col-span-4"
+          className="lg:col-span-12 md:col-span-2"
           activePos={activePos}
           setActivePos={setActivePos}
         />
 
-        {/* CARD 5 — Academia */}
-        <AcademyCard className="lg:col-span-4 lg:row-span-3 md:col-span-4" />
+        {/* Academias — ancho completo */}
+        <AcademyCard className="lg:col-span-12 md:col-span-2" />
 
-        {/* CARD 6 — Notas del Club */}
-        <NotesCard className="lg:col-span-8 lg:row-span-2 md:col-span-4" />
-
-        {/* CARD 7 — Cuerpo Técnico */}
-        <StaffCard className="lg:col-span-4 lg:row-span-2 md:col-span-4" />
-
-        {/* CARD 8 — La Afición ticker */}
-        <FanTickerCard className="lg:col-span-12 md:col-span-4" />
+        {/* Desde el Vestuario y La Afición en vivo — mitad y mitad */}
+        <NotesCard className="lg:col-span-8 md:col-span-2" />
+        <FanTickerCard className="lg:col-span-4 md:col-span-2" />
       </div>
     </motion.div>
   );
