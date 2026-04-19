@@ -310,48 +310,46 @@ function StatsCard({ className = "" }: { className?: string }) {
 
   return (
     <CardShell className={className} interactive>
-      <div className="p-5 md:p-6 h-full flex flex-col">
+      <div className="p-4 md:p-5 flex flex-col gap-3">
         {/* Título: Temporada actual */}
         <div className="text-center">
-          <div className="text-xl md:text-2xl font-extrabold tracking-tight text-foreground">
+          <div className="text-lg md:text-xl font-extrabold tracking-tight text-foreground leading-tight">
             Apertura 2026
           </div>
-          <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mt-1">
+          <div className="text-[9px] uppercase tracking-[0.25em] text-muted-foreground mt-0.5">
             Temporada Actual
           </div>
         </div>
 
-        {/* Divisor superior */}
-        <div className="border-t border-white/5 mt-4" />
+        <div className="border-t border-white/5" />
 
         {/* Hero stat: posición */}
-        <div className="flex-1 flex flex-col items-center justify-center py-5 md:py-6">
+        <div className="flex flex-col items-center justify-center">
           <div
-            className="text-6xl md:text-7xl font-extrabold tabular-nums leading-none"
+            className="text-5xl md:text-6xl font-extrabold tabular-nums leading-none"
             style={{ color: PRIMARY }}
           >
             3°
           </div>
-          <div className="text-[10px] md:text-xs uppercase tracking-[0.25em] text-muted-foreground mt-3">
+          <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mt-2">
             Posición Actual
           </div>
         </div>
 
-        {/* Divisor inferior */}
         <div className="border-t border-white/5" />
 
         {/* Últimos 5 partidos */}
-        <div className="pt-4 flex flex-col items-center gap-2">
-          <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        <div className="flex flex-col items-center gap-1.5">
+          <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
             Últimos 5 partidos
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {LAST_5.map((r, i) => {
               const s = resultStyle(r);
               return (
                 <div
                   key={i}
-                  className="w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-[11px] md:text-xs font-bold text-background"
+                  className="w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center justify-center text-[10px] md:text-[11px] font-bold text-background"
                   style={{ backgroundColor: s.bg }}
                   title={r === "W" ? "Ganado" : r === "D" ? "Empate" : "Perdido"}
                 >
