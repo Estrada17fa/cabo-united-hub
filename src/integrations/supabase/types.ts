@@ -116,6 +116,7 @@ export type Database = {
           id: string
           is_home_game: boolean
           jornada: number | null
+          live_stream_url: string | null
           match_date: string
           match_time: string | null
           season: string
@@ -133,6 +134,7 @@ export type Database = {
           id?: string
           is_home_game?: boolean
           jornada?: number | null
+          live_stream_url?: string | null
           match_date: string
           match_time?: string | null
           season?: string
@@ -150,6 +152,7 @@ export type Database = {
           id?: string
           is_home_game?: boolean
           jornada?: number | null
+          live_stream_url?: string | null
           match_date?: string
           match_time?: string | null
           season?: string
