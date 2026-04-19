@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Shield, MapPin, Calendar, Ticket, Radio } from "lucide-react";
 import { CountdownTimer } from "./CountdownTimer";
-import { LiveScoreboard } from "./LiveScoreboard";
 import { MatchTimeline } from "./MatchTimeline";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
 import { format } from "date-fns";
@@ -233,5 +232,20 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function ScoreNumber({ value }: { value: number }) {
+  return (
+    <motion.span
+      key={value}
+      initial={{ scale: 1.4, color: "hsl(142 76% 55%)" }}
+      animate={{ scale: 1, color: "hsl(var(--foreground))" }}
+      transition={{ duration: 0.6 }}
+      className="text-4xl sm:text-5xl font-extrabold tabular-nums leading-none"
+      style={{ textShadow: "0 0 18px hsl(142 76% 45% / 0.5)" }}
+    >
+      {value}
+    </motion.span>
   );
 }
