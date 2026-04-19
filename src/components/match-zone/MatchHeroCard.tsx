@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Shield, MapPin, Calendar, Ticket, Radio, PlayCircle } from "lucide-react";
+import { Shield, MapPin, Calendar, Ticket, Radio, PlayCircle, Trophy } from "lucide-react";
 import { CountdownTimer } from "./CountdownTimer";
 import { MatchTimeline } from "./MatchTimeline";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
