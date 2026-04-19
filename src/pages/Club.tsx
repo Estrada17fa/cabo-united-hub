@@ -422,7 +422,7 @@ function RosterCard({
   setActivePos: (p: Position) => void;
 }) {
   const players = ROSTER[activePos];
-  const positions: Position[] = ["Porteros", "Defensas", "Mediocampistas", "Delanteros"];
+  const positions: Position[] = ["Porteros", "Defensas", "Mediocampistas", "Delanteros", "Cuerpo Técnico"];
 
   return (
     <CardShell className={className}>
