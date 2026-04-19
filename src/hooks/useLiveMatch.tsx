@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
 const MATCH_DURATION_MS = 2 * 60 * 60 * 1000; // 2h
+const FINISHED_VISIBILITY_MS = 24 * 60 * 60 * 1000; // 24h after end
 
 export function useLiveMatch(match: Tables<"matches"> | null) {
   const queryClient = useQueryClient();
@@ -19,20 +20,28 @@ export function useLiveMatch(match: Tables<"matches"> | null) {
     ? new Date(`${match.match_date}T${match.match_time || "19:00:00"}`).getTime()
     : null;
 
+  const matchEnd = matchStart !== null ? matchStart + MATCH_DURATION_MS : null;
+
   const isLive =
     !!match &&
+    match.status !== "finished" &&
     (match.status === "live" ||
-      (matchStart !== null && now >= matchStart && now <= matchStart + MATCH_DURATION_MS));
+      (matchStart !== null && matchEnd !== null && now >= matchStart && now <= matchEnd));
+
+  const isFinished =
+    !!match &&
+    (match.status === "finished" ||
+      (matchEnd !== null && now > matchEnd && now <= matchEnd + FINISHED_VISIBILITY_MS));
 
   const currentMinute =
     isLive && matchStart
       ? Math.max(1, Math.min(120, Math.floor((now - matchStart) / 60_000)))
       : 0;
 
-  // Fetch events for this match
+  // Fetch events for this match (live or recently finished)
   const { data: events = [] } = useQuery({
     queryKey: ["match_events", match?.id],
-    enabled: !!match?.id && isLive,
+    enabled: !!match?.id && (isLive || isFinished),
     queryFn: async () => {
       const { data, error } = await supabase
         .from("match_events")
@@ -44,7 +53,7 @@ export function useLiveMatch(match: Tables<"matches"> | null) {
     },
   });
 
-  // Realtime subscriptions
+  // Realtime subscriptions (only while live)
   useEffect(() => {
     if (!match?.id || !isLive) return;
 
@@ -71,5 +80,5 @@ export function useLiveMatch(match: Tables<"matches"> | null) {
     };
   }, [match?.id, isLive, queryClient]);
 
-  return { isLive, currentMinute, events };
+  return { isLive, isFinished, currentMinute, events };
 }

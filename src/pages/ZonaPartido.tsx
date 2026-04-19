@@ -23,7 +23,19 @@ const ZonaPartido = () => {
       if (liveError) throw liveError;
       if (liveData && liveData.length > 0) return liveData[0];
 
-      // 2) Otherwise next scheduled match
+      // 2) Recently finished match (within last 24h)
+      const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+      const { data: finishedData, error: finishedError } = await supabase
+        .from("matches")
+        .select("*")
+        .eq("status", "finished")
+        .gte("match_date", cutoff)
+        .order("match_date", { ascending: false })
+        .limit(1);
+      if (finishedError) throw finishedError;
+      if (finishedData && finishedData.length > 0) return finishedData[0];
+
+      // 3) Otherwise next scheduled match
       const { data, error } = await supabase
         .from("matches")
         .select("*")

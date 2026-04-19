@@ -118,6 +118,7 @@ export type Database = {
           jornada: number | null
           live_stream_url: string | null
           match_date: string
+          match_summary_url: string | null
           match_time: string | null
           season: string
           source: Database["public"]["Enums"]["match_source"]
@@ -136,6 +137,7 @@ export type Database = {
           jornada?: number | null
           live_stream_url?: string | null
           match_date: string
+          match_summary_url?: string | null
           match_time?: string | null
           season?: string
           source?: Database["public"]["Enums"]["match_source"]
@@ -154,6 +156,7 @@ export type Database = {
           jornada?: number | null
           live_stream_url?: string | null
           match_date?: string
+          match_summary_url?: string | null
           match_time?: string | null
           season?: string
           source?: Database["public"]["Enums"]["match_source"]

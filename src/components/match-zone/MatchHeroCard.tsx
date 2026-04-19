@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Shield, MapPin, Calendar, Ticket, Radio } from "lucide-react";
+import { Shield, MapPin, Calendar, Ticket, Radio, PlayCircle } from "lucide-react";
 import { CountdownTimer } from "./CountdownTimer";
 import { MatchTimeline } from "./MatchTimeline";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
@@ -14,7 +14,8 @@ interface MatchHeroCardProps {
 }
 
 export function MatchHeroCard({ match }: MatchHeroCardProps) {
-  const { isLive, currentMinute, events } = useLiveMatch(match);
+  const { isLive, isFinished, currentMinute, events } = useLiveMatch(match);
+  const showLiveLayout = isLive || isFinished;
 
   if (!match) {
     return (
@@ -41,7 +42,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className="relative rounded-2xl border border-border overflow-hidden"
-      style={isLive ? { borderColor: "hsl(142 76% 45% / 0.5)" } : undefined}
+      style={showLiveLayout ? { borderColor: "hsl(142 76% 45% / 0.5)" } : undefined}
     >
       {/* Background image */}
       <img
@@ -57,7 +58,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
       <div
         className="absolute inset-0 opacity-40 pointer-events-none"
         style={{
-          background: isLive
+          background: showLiveLayout
             ? "radial-gradient(ellipse at 30% 20%, hsl(142 76% 45% / 0.35) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.2) 0%, transparent 50%)"
             : "radial-gradient(ellipse at 30% 20%, hsl(189 100% 38% / 0.3) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.2) 0%, transparent 50%)",
         }}
@@ -99,6 +100,22 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
               </span>
             </motion.span>
           )}
+          {isFinished && (
+            <span
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full"
+              style={{
+                backgroundColor: "hsl(142 76% 45% / 0.1)",
+                border: "1px solid hsl(142 76% 45% / 0.3)",
+              }}
+            >
+              <span
+                className="text-[10px] font-extrabold tracking-widest"
+                style={{ color: "hsl(142 76% 55%)" }}
+              >
+                FINALIZADO
+              </span>
+            </span>
+          )}
         </div>
 
         {/* Teams + score (when live) */}
@@ -113,8 +130,8 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
             </span>
           </div>
 
-          {/* Center: score-VS-score (live) or just VS */}
-          {isLive ? (
+          {/* Center: score-VS-score (live or finished) or just VS */}
+          {showLiveLayout ? (
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <ScoreNumber value={match.home_score ?? 0} />
               <span className="text-base sm:text-lg font-extrabold text-muted-foreground tracking-wider">
@@ -139,8 +156,8 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           </div>
         </div>
 
-        {/* Countdown only when NOT live */}
-        {!isLive && <CountdownTimer targetDate={matchDate} />}
+        {/* Countdown only when match has not started yet */}
+        {!showLiveLayout && <CountdownTimer targetDate={matchDate} />}
 
         {/* Details */}
         <div className="flex flex-col items-center gap-1.5 text-center">
@@ -154,8 +171,8 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           </div>
         </div>
 
-        {/* Timeline (only when live) */}
-        {isLive && (
+        {/* Timeline (live or recently finished) */}
+        {showLiveLayout && (
           <div className="w-full pt-2 border-t border-border/50">
             <MatchTimeline events={events} homeTeam={match.home_team} />
           </div>
@@ -163,7 +180,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
 
         {/* CTAs */}
         <div className="flex flex-row gap-3 items-center justify-center flex-wrap">
-          {isLive ? (
+          {isLive && (
             <motion.a
               href={match.live_stream_url || "#"}
               target={match.live_stream_url ? "_blank" : undefined}
@@ -197,7 +214,32 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
               <Radio className="w-4 h-4" />
               VER EN VIVO
             </motion.a>
-          ) : (
+          )}
+          {isFinished && (
+            <motion.a
+              href={(match as any).match_summary_url || "#"}
+              target={(match as any).match_summary_url ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              whileTap={{ scale: (match as any).match_summary_url ? 0.96 : 1 }}
+              onClick={(e) => {
+                if (!(match as any).match_summary_url) e.preventDefault();
+              }}
+              title={(match as any).match_summary_url ? "Ver resumen" : "Resumen no disponible"}
+              className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap ${
+                !(match as any).match_summary_url ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                border: "1.5px solid hsl(142 76% 45%)",
+                color: "hsl(142 76% 60%)",
+                boxShadow: "0 0 16px -2px hsl(142 76% 45% / 0.4), inset 0 0 8px hsl(142 76% 45% / 0.05)",
+              }}
+            >
+              <PlayCircle className="w-4 h-4" />
+              RESUMEN
+            </motion.a>
+          )}
+          {!showLiveLayout && (
             <Link to="/tickets">
               <motion.button
                 whileTap={{ scale: 0.96 }}
