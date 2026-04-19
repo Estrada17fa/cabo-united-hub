@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Shield, MapPin, Calendar, Ticket, Radio } from "lucide-react";
 import { CountdownTimer } from "./CountdownTimer";
-import { LiveScoreboard } from "./LiveScoreboard";
 import { MatchTimeline } from "./MatchTimeline";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
 import { format } from "date-fns";
@@ -65,38 +64,83 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
       />
 
       <div className="relative z-10 px-5 py-8 flex flex-col items-center gap-5">
-        {/* Teams */}
-        <div className="flex items-center justify-center gap-6 w-full">
+        {/* Jornada + Live badge */}
+        <div className="flex items-center gap-2">
+          {match.jornada != null && (
+            <span className="px-3 py-1 rounded-full bg-black/40 border border-border text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
+              Jornada {match.jornada}
+            </span>
+          )}
+          {isLive && (
+            <motion.span
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full"
+              style={{
+                backgroundColor: "hsl(142 76% 45% / 0.15)",
+                border: "1px solid hsl(142 76% 45% / 0.4)",
+              }}
+            >
+              <span className="relative flex h-2 w-2">
+                <span
+                  className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                  style={{ backgroundColor: "hsl(142 76% 45%)" }}
+                />
+                <span
+                  className="relative inline-flex rounded-full h-2 w-2"
+                  style={{ backgroundColor: "hsl(142 76% 45%)" }}
+                />
+              </span>
+              <span
+                className="text-[10px] font-extrabold tracking-widest"
+                style={{ color: "hsl(142 76% 55%)" }}
+              >
+                EN VIVO {currentMinute}'
+              </span>
+            </motion.span>
+          )}
+        </div>
+
+        {/* Teams + score (when live) */}
+        <div className="flex items-center justify-center gap-3 sm:gap-4 w-full">
           {/* Home */}
-          <div className="flex flex-col items-center gap-2 flex-1">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center border border-border">
+          <div className="flex flex-col items-center gap-2 flex-1 min-w-0">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center border border-border shrink-0">
               <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
             </div>
-            <span className="text-xs sm:text-sm font-bold text-foreground text-center leading-tight">
+            <span className="text-xs sm:text-sm font-bold text-foreground text-center leading-tight truncate max-w-full">
               {match.home_team}
             </span>
           </div>
 
-          {/* VS */}
-          <span className="text-lg font-extrabold text-muted-foreground tracking-wider">VS</span>
+          {/* Center: score-VS-score (live) or just VS */}
+          {isLive ? (
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <ScoreNumber value={match.home_score ?? 0} />
+              <span className="text-base sm:text-lg font-extrabold text-muted-foreground tracking-wider">
+                VS
+              </span>
+              <ScoreNumber value={match.away_score ?? 0} />
+            </div>
+          ) : (
+            <span className="text-lg font-extrabold text-muted-foreground tracking-wider shrink-0">
+              VS
+            </span>
+          )}
 
           {/* Away */}
-          <div className="flex flex-col items-center gap-2 flex-1">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center border border-border">
+          <div className="flex flex-col items-center gap-2 flex-1 min-w-0">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center border border-border shrink-0">
               <Shield className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
             </div>
-            <span className="text-xs sm:text-sm font-bold text-foreground text-center leading-tight">
+            <span className="text-xs sm:text-sm font-bold text-foreground text-center leading-tight truncate max-w-full">
               {match.away_team}
             </span>
           </div>
         </div>
 
-        {/* Live scoreboard OR countdown */}
-        {isLive ? (
-          <LiveScoreboard match={match} currentMinute={currentMinute} />
-        ) : (
-          <CountdownTimer targetDate={matchDate} />
-        )}
+        {/* Countdown only when NOT live */}
+        {!isLive && <CountdownTimer targetDate={matchDate} />}
 
         {/* Details */}
         <div className="flex flex-col items-center gap-1.5 text-center">
@@ -188,5 +232,20 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
         </div>
       </div>
     </motion.div>
+  );
+}
+
+function ScoreNumber({ value }: { value: number }) {
+  return (
+    <motion.span
+      key={value}
+      initial={{ scale: 1.4, color: "hsl(142 76% 55%)" }}
+      animate={{ scale: 1, color: "hsl(var(--foreground))" }}
+      transition={{ duration: 0.6 }}
+      className="text-4xl sm:text-5xl font-extrabold tabular-nums leading-none"
+      style={{ textShadow: "0 0 18px hsl(142 76% 45% / 0.5)" }}
+    >
+      {value}
+    </motion.span>
   );
 }
