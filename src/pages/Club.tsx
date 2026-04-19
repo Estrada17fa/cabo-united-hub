@@ -299,23 +299,26 @@ function HeroCard({ className = "" }: { className?: string }) {
 /* -------------------------------- CARD 2 -------------------------------- */
 
 function StatsCard({ className = "" }: { className?: string }) {
+  // Últimos 5 partidos: W = ganado, D = empate, L = perdido (orden: más reciente primero)
+  const LAST_5: ("W" | "D" | "L")[] = ["W", "W", "D", "L", "W"];
+
+  const resultStyle = (r: "W" | "D" | "L") => {
+    if (r === "W") return { bg: "hsl(142 76% 45%)", label: "G" };
+    if (r === "D") return { bg: "hsl(45 95% 55%)", label: "E" };
+    return { bg: "hsl(0 84% 60%)", label: "P" };
+  };
+
   return (
     <CardShell className={className} interactive>
       <div className="p-5 md:p-6 h-full flex flex-col">
-        {/* Header asimétrico: escudo grande izq, logo liga peq der */}
-        <div className="flex items-start justify-between">
-          <img
-            src={lcuCrest}
-            alt="Los Cabos United"
-            className="h-11 md:h-12 w-auto object-contain"
-            loading="lazy"
-          />
-          <img
-            src={ligaPremierLogo}
-            alt="Liga Premier"
-            className="h-5 md:h-6 w-auto object-contain opacity-90"
-            loading="lazy"
-          />
+        {/* Título: Temporada actual */}
+        <div className="text-center">
+          <div className="text-xl md:text-2xl font-extrabold tracking-tight text-foreground">
+            Apertura 2026
+          </div>
+          <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mt-1">
+            Temporada Actual
+          </div>
         </div>
 
         {/* Divisor superior */}
@@ -337,21 +340,25 @@ function StatsCard({ className = "" }: { className?: string }) {
         {/* Divisor inferior */}
         <div className="border-t border-white/5" />
 
-        {/* Banda inferior tipo ficha estadística */}
-        <div className="flex items-center justify-center gap-3 md:gap-4 pt-4 text-[10px] md:text-[11px] uppercase tracking-wider text-muted-foreground">
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-foreground font-bold tabular-nums text-sm">18</span>
-            <span>PJ</span>
+        {/* Últimos 5 partidos */}
+        <div className="pt-4 flex flex-col items-center gap-2">
+          <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            Últimos 5 partidos
           </div>
-          <span className="text-white/20">·</span>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-foreground font-bold tabular-nums text-sm">12-3-3</span>
-            <span>G-E-P</span>
-          </div>
-          <span className="text-white/20">·</span>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-foreground font-bold tabular-nums text-sm">32</span>
-            <span>GF</span>
+          <div className="flex items-center gap-2">
+            {LAST_5.map((r, i) => {
+              const s = resultStyle(r);
+              return (
+                <div
+                  key={i}
+                  className="w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-[11px] md:text-xs font-bold text-background"
+                  style={{ backgroundColor: s.bg }}
+                  title={r === "W" ? "Ganado" : r === "D" ? "Empate" : "Perdido"}
+                >
+                  {s.label}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
