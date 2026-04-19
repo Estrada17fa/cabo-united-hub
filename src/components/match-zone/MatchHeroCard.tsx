@@ -42,7 +42,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className="relative rounded-2xl border border-border overflow-hidden"
-      style={isLive ? { borderColor: "hsl(0 84% 60% / 0.5)" } : undefined}
+      style={isLive ? { borderColor: "hsl(142 76% 45% / 0.5)" } : undefined}
     >
       {/* Background image */}
       <img
@@ -59,7 +59,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
         className="absolute inset-0 opacity-40 pointer-events-none"
         style={{
           background: isLive
-            ? "radial-gradient(ellipse at 30% 20%, hsl(0 84% 60% / 0.35) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.2) 0%, transparent 50%)"
+            ? "radial-gradient(ellipse at 30% 20%, hsl(142 76% 45% / 0.35) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.2) 0%, transparent 50%)"
             : "radial-gradient(ellipse at 30% 20%, hsl(189 100% 38% / 0.3) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.2) 0%, transparent 50%)",
         }}
       />
@@ -129,9 +129,9 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 match.live_stream_url
                   ? {
                       boxShadow: [
-                        "0 0 16px -2px hsl(0 84% 60% / 0.5), inset 0 0 8px hsl(0 84% 60% / 0.05)",
-                        "0 0 24px 0px hsl(0 84% 60% / 0.7), inset 0 0 12px hsl(0 84% 60% / 0.1)",
-                        "0 0 16px -2px hsl(0 84% 60% / 0.5), inset 0 0 8px hsl(0 84% 60% / 0.05)",
+                        "0 0 16px -2px hsl(142 76% 45% / 0.5), inset 0 0 8px hsl(142 76% 45% / 0.05)",
+                        "0 0 24px 0px hsl(142 76% 45% / 0.7), inset 0 0 12px hsl(142 76% 45% / 0.1)",
+                        "0 0 16px -2px hsl(142 76% 45% / 0.5), inset 0 0 8px hsl(142 76% 45% / 0.05)",
                       ],
                     }
                   : undefined
@@ -146,8 +146,8 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
               }`}
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.3)",
-                border: "1.5px solid hsl(0 84% 60%)",
-                color: "hsl(0 84% 70%)",
+                border: "1.5px solid hsl(142 76% 45%)",
+                color: "hsl(142 76% 60%)",
               }}
             >
               <Radio className="w-4 h-4" />
