@@ -41,11 +41,11 @@ const PLAYER_OF_WEEK = {
   assists: 6,
 };
 
-type Position = "Porteros" | "Defensas" | "Mediocampistas" | "Delanteros";
+type Position = "Porteros" | "Defensas" | "Mediocampistas" | "Delanteros" | "Cuerpo Técnico";
 
 const ROSTER: Record<
   Position,
-  { name: string; number: number; flag: string; age: number; height: string; matches: number }[]
+  { name: string; number: number | string; flag: string; age: number; height: string; matches: number; role?: string }[]
 > = {
   Porteros: [
     { name: "Luis Robles", number: 1, flag: "🇲🇽", age: 28, height: "1.88 m", matches: 16 },
