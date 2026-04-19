@@ -10,20 +10,32 @@ import { LeagueTables } from "@/components/match-zone/LeagueTables";
 const ZonaPartido = () => {
   const [activeTab, setActiveTab] = useState("partidos");
 
-  const { data: scheduledMatches = [] } = useQuery({
-    queryKey: ["matches", "scheduled"],
+  const { data: featuredMatch = null } = useQuery({
+    queryKey: ["matches", "featured"],
     queryFn: async () => {
+      // 1) Live match takes priority
+      const { data: liveData, error: liveError } = await supabase
+        .from("matches")
+        .select("*")
+        .eq("status", "live")
+        .order("match_date", { ascending: false })
+        .limit(1);
+      if (liveError) throw liveError;
+      if (liveData && liveData.length > 0) return liveData[0];
+
+      // 2) Otherwise next scheduled match
       const { data, error } = await supabase
         .from("matches")
         .select("*")
         .eq("status", "scheduled")
-        .order("match_date", { ascending: true });
+        .order("match_date", { ascending: true })
+        .limit(1);
       if (error) throw error;
-      return data;
+      return data?.[0] ?? null;
     },
   });
 
-  const nextMatch = scheduledMatches[0] || null;
+  const nextMatch = featuredMatch;
 
   return (
     <div className="space-y-6 pb-8">
