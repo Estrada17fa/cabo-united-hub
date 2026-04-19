@@ -301,32 +301,58 @@ function HeroCard({ className = "" }: { className?: string }) {
 function StatsCard({ className = "" }: { className?: string }) {
   return (
     <CardShell className={className} interactive>
-      <div className="p-5 md:p-6 h-full flex flex-col justify-between">
-        <div className="flex items-center justify-between mb-4">
-          <img
-            src={ligaPremierLogo}
-            alt="Liga Premier"
-            className="h-5 md:h-6 w-auto object-contain"
-            loading="lazy"
-          />
+      <div className="p-5 md:p-6 h-full flex flex-col">
+        {/* Header asimétrico: escudo grande izq, logo liga peq der */}
+        <div className="flex items-start justify-between">
           <img
             src={lcuCrest}
             alt="Los Cabos United"
-            className="h-7 md:h-8 w-auto object-contain"
+            className="h-11 md:h-12 w-auto object-contain"
+            loading="lazy"
+          />
+          <img
+            src={ligaPremierLogo}
+            alt="Liga Premier"
+            className="h-5 md:h-6 w-auto object-contain opacity-90"
             loading="lazy"
           />
         </div>
-        <div className="grid grid-cols-3 gap-3">
-          {SEASON_STATS.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-                {s.value}
-              </div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1 leading-tight">
-                {s.label}
-              </div>
-            </div>
-          ))}
+
+        {/* Divisor superior */}
+        <div className="border-t border-white/5 mt-4" />
+
+        {/* Hero stat: posición */}
+        <div className="flex-1 flex flex-col items-center justify-center py-5 md:py-6">
+          <div
+            className="text-6xl md:text-7xl font-extrabold tabular-nums leading-none"
+            style={{ color: PRIMARY }}
+          >
+            3°
+          </div>
+          <div className="text-[10px] md:text-xs uppercase tracking-[0.25em] text-muted-foreground mt-3">
+            Posición Actual
+          </div>
+        </div>
+
+        {/* Divisor inferior */}
+        <div className="border-t border-white/5" />
+
+        {/* Banda inferior tipo ficha estadística */}
+        <div className="flex items-center justify-center gap-3 md:gap-4 pt-4 text-[10px] md:text-[11px] uppercase tracking-wider text-muted-foreground">
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-foreground font-bold tabular-nums text-sm">18</span>
+            <span>PJ</span>
+          </div>
+          <span className="text-white/20">·</span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-foreground font-bold tabular-nums text-sm">12-3-3</span>
+            <span>G-E-P</span>
+          </div>
+          <span className="text-white/20">·</span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-foreground font-bold tabular-nums text-sm">32</span>
+            <span>GF</span>
+          </div>
         </div>
       </div>
     </CardShell>
