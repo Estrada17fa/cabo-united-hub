@@ -67,26 +67,24 @@ export function PartidosSection() {
         ))}
       </motion.div>
 
-      {/* Boletos button - only for Próximos */}
-      {subTab === "proximos" && (
-        <motion.div
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
-          className="flex justify-end"
+      {/* Boletos button - always visible */}
+      <motion.div
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -4 }}
+        className="flex justify-end"
+      >
+        <Button
+          asChild
+          size="sm"
+          className="bg-primary/20 hover:bg-primary/30 text-primary border border-primary/40 rounded-full text-xs font-semibold px-4 py-1.5 h-auto"
         >
-          <Button
-            asChild
-            size="sm"
-            className="bg-primary/20 hover:bg-primary/30 text-primary border border-primary/40 rounded-full text-xs font-semibold px-4 py-1.5 h-auto"
-          >
-            <Link to="/tickets">
-              <Ticket className="w-3.5 h-3.5 mr-1.5" />
-              Boletos
-            </Link>
-          </Button>
-        </motion.div>
-      )}
+          <Link to="/tickets">
+            <Ticket className="w-3.5 h-3.5 mr-1.5" />
+            Boletos
+          </Link>
+        </Button>
+      </motion.div>
 
       <AnimatePresence mode="wait">
         <motion.div
