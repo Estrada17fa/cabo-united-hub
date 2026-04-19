@@ -41,11 +41,11 @@ const PLAYER_OF_WEEK = {
   assists: 6,
 };
 
-type Position = "Porteros" | "Defensas" | "Mediocampistas" | "Delanteros";
+type Position = "Porteros" | "Defensas" | "Mediocampistas" | "Delanteros" | "Cuerpo Técnico";
 
 const ROSTER: Record<
   Position,
-  { name: string; number: number; flag: string; age: number; height: string; matches: number }[]
+  { name: string; number: number | string; flag: string; age: number; height: string; matches: number; role?: string }[]
 > = {
   Porteros: [
     { name: "Luis Robles", number: 1, flag: "🇲🇽", age: 28, height: "1.88 m", matches: 16 },
@@ -72,6 +72,12 @@ const ROSTER: Record<
     { name: "Bruno Cardozo", number: 11, flag: "🇧🇷", age: 25, height: "1.79 m", matches: 16 },
     { name: "Adrián Solís", number: 19, flag: "🇲🇽", age: 22, height: "1.77 m", matches: 13 },
     { name: "Tomás Rincón", number: 22, flag: "🇻🇪", age: 27, height: "1.83 m", matches: 7 },
+  ],
+  "Cuerpo Técnico": [
+    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", age: 52, height: "—", matches: 18, role: "Director Técnico" },
+    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", age: 45, height: "—", matches: 18, role: "Asistente Técnico" },
+    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", age: 41, height: "—", matches: 18, role: "Preparador Físico" },
+    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", age: 38, height: "—", matches: 18, role: "Entrenador de Porteros" },
   ],
 };
 
@@ -117,12 +123,6 @@ const NOTES = [
   },
 ];
 
-const STAFF = [
-  { name: "Ricardo Mendoza", role: "Director Técnico" },
-  { name: "Pablo Espinoza", role: "Asistente Técnico" },
-  { name: "Héctor Lozano", role: "Preparador Físico" },
-];
-
 const FAN_TICKER = [
   "🏟️ @cabeño_4ever: ¡Amos del Paraíso siempre!",
   "⚽ @marisol_lc: Orgullosa de Los Cabos United",
@@ -155,34 +155,27 @@ const Club = () => {
       className="space-y-6 pb-8"
     >
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
-        {/* CARD 1 — HERO ADN Cabeño */}
-        <HeroCard className="lg:col-span-8 lg:row-span-2 md:col-span-4" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
+        {/* Posición y Amo de la Semana — mitad y mitad */}
+        <StatsCard className="lg:col-span-6 md:col-span-1" />
+        <PlayerOfWeekCard className="lg:col-span-6 md:col-span-1" />
 
-        {/* CARD 2 — Temporada actual */}
-        <StatsCard className="lg:col-span-4 md:col-span-2" />
+        {/* Header ADN Cabeño — ancho completo */}
+        <HeroCard className="lg:col-span-12 md:col-span-2" />
 
-        {/* CARD 3 — Amo de la Semana */}
-        <PlayerOfWeekCard className="lg:col-span-4 md:col-span-2" />
-
-        {/* CARD 4 — Plantel */}
+        {/* Nuestro Plantel — ancho completo */}
         <RosterCard
-          className="lg:col-span-8 lg:row-span-3 md:col-span-4"
+          className="lg:col-span-12 md:col-span-2"
           activePos={activePos}
           setActivePos={setActivePos}
         />
 
-        {/* CARD 5 — Academia */}
-        <AcademyCard className="lg:col-span-4 lg:row-span-3 md:col-span-4" />
+        {/* Academias — ancho completo */}
+        <AcademyCard className="lg:col-span-12 md:col-span-2" />
 
-        {/* CARD 6 — Notas del Club */}
-        <NotesCard className="lg:col-span-8 lg:row-span-2 md:col-span-4" />
-
-        {/* CARD 7 — Cuerpo Técnico */}
-        <StaffCard className="lg:col-span-4 lg:row-span-2 md:col-span-4" />
-
-        {/* CARD 8 — La Afición ticker */}
-        <FanTickerCard className="lg:col-span-12 md:col-span-4" />
+        {/* Desde el Vestuario y La Afición en vivo — mitad y mitad */}
+        <NotesCard className="lg:col-span-8 md:col-span-2" />
+        <FanTickerCard className="lg:col-span-4 md:col-span-2" />
       </div>
     </motion.div>
   );
@@ -423,7 +416,7 @@ function RosterCard({
   setActivePos: (p: Position) => void;
 }) {
   const players = ROSTER[activePos];
-  const positions: Position[] = ["Porteros", "Defensas", "Mediocampistas", "Delanteros"];
+  const positions: Position[] = ["Porteros", "Defensas", "Mediocampistas", "Delanteros", "Cuerpo Técnico"];
 
   return (
     <CardShell className={className}>
@@ -480,7 +473,9 @@ function RosterCard({
               <div className="text-xs font-semibold text-foreground truncate">
                 {player.name}
               </div>
-              <div className="text-[10px] text-muted-foreground">#{player.number}</div>
+              <div className="text-[10px] text-muted-foreground truncate">
+                {player.role ? player.role : `#${player.number}`}
+              </div>
 
               {/* Hover detail overlay */}
               <div className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-center text-[11px]">
@@ -618,37 +613,6 @@ function NotesCard({ className = "" }: { className?: string }) {
   );
 }
 
-/* -------------------------------- CARD 7 -------------------------------- */
-
-function StaffCard({ className = "" }: { className?: string }) {
-  return (
-    <CardShell className={className} interactive>
-      <div className="p-5 md:p-6 h-full flex flex-col">
-        <h3 className="text-title mb-4">La Dirección Técnica</h3>
-        <div className="space-y-3 flex-1">
-          {STAFF.map((s) => (
-            <div
-              key={s.name}
-              className="flex items-center gap-3 rounded-xl border border-border bg-background/40 p-3"
-            >
-              <img
-                src={avatarUrl(s.name)}
-                alt={s.name}
-                className="w-11 h-11 rounded-full shrink-0"
-              />
-              <div className="min-w-0">
-                <div className="text-sm font-semibold text-foreground truncate">
-                  {s.name}
-                </div>
-                <div className="text-[11px] text-muted-foreground">{s.role}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </CardShell>
-  );
-}
 
 /* -------------------------------- CARD 8 -------------------------------- */
 
