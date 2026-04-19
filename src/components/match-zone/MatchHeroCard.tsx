@@ -180,7 +180,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
 
         {/* CTAs */}
         <div className="flex flex-row gap-3 items-center justify-center flex-wrap">
-          {isLive ? (
+          {isLive && (
             <motion.a
               href={match.live_stream_url || "#"}
               target={match.live_stream_url ? "_blank" : undefined}
@@ -214,7 +214,32 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
               <Radio className="w-4 h-4" />
               VER EN VIVO
             </motion.a>
-          ) : (
+          )}
+          {isFinished && (
+            <motion.a
+              href={(match as any).match_summary_url || "#"}
+              target={(match as any).match_summary_url ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              whileTap={{ scale: (match as any).match_summary_url ? 0.96 : 1 }}
+              onClick={(e) => {
+                if (!(match as any).match_summary_url) e.preventDefault();
+              }}
+              title={(match as any).match_summary_url ? "Ver resumen" : "Resumen no disponible"}
+              className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap ${
+                !(match as any).match_summary_url ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                border: "1.5px solid hsl(142 76% 45%)",
+                color: "hsl(142 76% 60%)",
+                boxShadow: "0 0 16px -2px hsl(142 76% 45% / 0.4), inset 0 0 8px hsl(142 76% 45% / 0.05)",
+              }}
+            >
+              <PlayCircle className="w-4 h-4" />
+              RESUMEN
+            </motion.a>
+          )}
+          {!showLiveLayout && (
             <Link to="/tickets">
               <motion.button
                 whileTap={{ scale: 0.96 }}
