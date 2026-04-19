@@ -479,7 +479,9 @@ function RosterCard({
               <div className="text-xs font-semibold text-foreground truncate">
                 {player.name}
               </div>
-              <div className="text-[10px] text-muted-foreground">#{player.number}</div>
+              <div className="text-[10px] text-muted-foreground truncate">
+                {player.role ? player.role : `#${player.number}`}
+              </div>
 
               {/* Hover detail overlay */}
               <div className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-center text-[11px]">
