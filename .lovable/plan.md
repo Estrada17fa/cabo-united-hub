@@ -1,49 +1,54 @@
 
 
-El usuario quiere otra opción de rediseño para la card "Temporada actual", distinta a la de scoreboard con field stripe que propuse antes. Voy a proponer un concepto totalmente diferente.
+## Reducir el scroll en móvil de `/club` sin cambiar el look
 
-## Opción B — Card estilo "Jersey / Dorsal"
+En móvil (390px), las cards se apilan en una columna y suman ~2,200px de scroll. La estrategia: **compactar alturas, colapsar contenido secundario y agrupar cards relacionadas en tabs internos** — todo solo en breakpoint `< md`. Tablet y desktop quedan idénticos.
 
-En vez de un scoreboard horizontal, la card se siente como la **espalda de una camiseta** o una **placa metálica de vestidor**: vertical, con jerarquía clara, número grande protagonista y stats secundarios alineados en una banda inferior.
+### Cambios (solo `src/pages/Club.tsx`)
 
-### Concepto visual
+**1. Hero "ADN Cabeño"**
+- `min-h-[320px]` → `min-h-[220px] md:min-h-[320px]`
+- Descripción con `line-clamp-3 md:line-clamp-none` + botón inline "Leer más" que expande
+- Timeline de hitos: tarjetas más pequeñas en móvil (`min-w-[64px]`)
+
+**2. "Tu Estadio"**
+- `min-h-[320px]` → `min-h-[160px] md:min-h-[320px]`
+- En móvil queda como banner compacto (chip + título + ubicación)
+
+**3. "Nuestro Plantel" (la card más pesada)**
+- "Amo del Partido": en móvil layout vertical compacto, stats en chips inline pequeños
+- Grid de jugadores: en móvil mostrar **solo 4** con `useState` y botón "Ver todos (N)" para expandir
+- Tabs de posiciones: sin cambio (ya tienen scroll horizontal)
+
+**4. "Academias"**
+- Las 3 categorías en móvil pasan a layout horizontal compacto (icon + nombre + `line-clamp-1`)
+- Botón "Inscribe a tu hijo" + chip "Cursos verano" en una sola fila
+
+**5. "Desde el Vestuario" + "La Afición en vivo"**
+- En móvil: una sola card con 2 tabs internos ("Vestuario" / "Afición"), altura fija ~340px
+- En `md+`: se renderizan separadas como ahora (sin cambio visual)
+- Esto elimina ~340px de scroll de un solo golpe
+
+### Resultado esperado en móvil (390×844)
 
 ```text
-┌──────────────────────────────────────┐
-│ [escudo LCU]              LIGA       │
-│                          PREMIER     │  ← header limpio, logos en esquinas
-│                          [logo]      │
-│ ─────────────────────────────────── │
-│                                      │
-│            3°                        │  ← número HERO gigante (60-72px)
-│       POSICIÓN ACTUAL                │     centrado, tabular-nums
-│                                      │
-│ ─────────────────────────────────── │
-│                                      │
-│   18  ·  W12 E3 D3  ·  32           │  ← banda inferior tipo
-│   PJ      RECORD       GF            │     "ficha estadística"
-└──────────────────────────────────────┘
+Antes (~2,200px scroll)        Después (~1,150px scroll)
+─────────────────────         ─────────────────────
+Mini posición  ~50            Mini posición  ~50
+ADN Cabeño     ~340           ADN Cabeño     ~240  (-100)
+Estadio        ~320           Estadio        ~170  (-150)
+Plantel        ~520           Plantel        ~360  (-160)
+Academias      ~360           Academias      ~220  (-140)
+Vestuario      ~340  ┐        Vest+Afición   ~360  (-320)
+Afición        ~360  ┘        (tabs)
 ```
 
-### Diferencias clave vs propuesta anterior
+Reducción aproximada: **~50% menos scroll en móvil**, sin tocar tipografías, colores, bordes, gradientes, animaciones ni el layout en tablet/desktop.
 
-- **Una stat protagonista** (Posición = 3°) en tamaño gigante, no tres stats iguales compitiendo
-- **Header asimétrico**: escudo grande a la izquierda, logo Liga Premier pequeño arriba a la derecha (jerarquía clara)
-- **Banda inferior tipo "ficha"**: PJ · Record (W-E-D) · Goles, separados por puntos `·`, todo en una sola línea con tipografía pequeña uppercase tracking-wide
-- **Sin chip "TEMPORADA"**, sin field stripe, sin iconos lucide — más minimalista, más editorial
-- **Acento verde** solo en el número hero (text-green) y en una línea horizontal divisoria muy fina
+### Detalles técnicos
 
-### Cambios técnicos
-
-Solo se modifica `StatsCard` en `src/pages/Club.tsx` (líneas ~301-334):
-
-- Header con `flex justify-between items-start`: escudo h-12 a la izquierda, logo Liga Premier h-6 a la derecha
-- Divisor horizontal `border-t border-white/5`
-- Bloque central: número `text-6xl md:text-7xl font-extrabold tabular-nums text-[hsl(142_76%_55%)]` + label `text-xs uppercase tracking-[0.2em] text-muted-foreground` debajo
-- Banda inferior: `flex items-center justify-center gap-3 text-[11px] uppercase tracking-wider`, con `·` como separador y stats inline (número + label pequeño al lado)
-- Mantener `CardShell`, paleta, border-radius y responsive del Bento
-
-### Archivos modificados
-
-- `src/pages/Club.tsx` — solo función `StatsCard`
+- Solo se modifica `src/pages/Club.tsx`
+- Se añaden 2 `useState` (expandir jugadores, tab móvil Vestuario/Afición)
+- Todos los cambios usan prefijos `md:` para preservar el desktop intacto
+- Sin cambios en colores, fuentes, animaciones ni estructura de datos
 
