@@ -321,8 +321,12 @@ function StadiumCard({ className = "" }: { className?: string }) {
         alt="Estadio Don Koll"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/20" />
-      <div className="absolute inset-0 bg-gradient-to-r from-card/70 via-transparent to-transparent" />
+      {/* Top fade — mantiene legible el chip "Tu Estadio" */}
+      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-card/80 to-transparent" />
+      {/* Side fade desktop */}
+      <div className="absolute inset-0 bg-gradient-to-r from-card/70 via-transparent to-transparent hidden md:block" />
+      {/* Bottom fade — debajo del título y ubicación para que se lean bien */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-card via-card/85 to-transparent" />
 
       <div className="relative h-full p-5 md:p-7 flex flex-col justify-between min-h-[160px] md:min-h-[320px]">
         <div className="flex items-center gap-2">
@@ -339,24 +343,14 @@ function StadiumCard({ className = "" }: { className?: string }) {
         </div>
 
         <div className="space-y-1.5 md:space-y-2">
-          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight leading-tight">
+          <h2 className="text-lg md:text-4xl font-extrabold tracking-tight leading-[1.1] md:leading-tight">
             Estadio Don Koll
           </h2>
-          <div className="flex items-center gap-1.5 text-[11px] md:text-sm text-muted-foreground">
-            <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: PRIMARY }} />
-            <span>San José del Cabo, B.C.S.</span>
+          <div className="flex items-start gap-1.5 text-[11px] md:text-sm text-muted-foreground">
+            <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: PRIMARY }} />
+            <span>C. P.º Pacífico, Los Cangrejos, 23473 Cabo San Lucas, B.C.S.</span>
           </div>
         </div>
-
-        {/* Inner glow / gradient overlay (bottom) */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-20 rounded-b-2xl"
-          style={{
-            background:
-              "linear-gradient(to top, hsl(0 0% 0% / 0.55) 0%, transparent 100%)",
-          }}
-        />
       </div>
     </CardShell>
   );
