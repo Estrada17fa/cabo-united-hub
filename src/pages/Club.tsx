@@ -510,12 +510,73 @@ function RosterCard({
   const players = ROSTER[activePos];
   const positions: Position[] = ["Porteros", "Defensas", "Mediocampistas", "Delanteros", "Cuerpo Técnico"];
 
+  const p = PLAYER_OF_WEEK;
+
   return (
     <CardShell className={className}>
       <div className="p-5 md:p-6 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-title">Nuestro Plantel</h3>
           <Shield className="w-4 h-4" style={{ color: PRIMARY }} />
+        </div>
+
+        {/* Amo del Partido — destacado */}
+        <div
+          className="relative rounded-xl border overflow-hidden mb-5 p-4 flex items-center gap-4"
+          style={{
+            borderColor: "hsl(142 76% 45% / 0.35)",
+            background:
+              "linear-gradient(90deg, hsl(142 76% 45% / 0.10) 0%, hsl(0 0% 7% / 0.4) 60%, transparent 100%)",
+          }}
+        >
+          <div
+            className="absolute left-0 top-0 bottom-0 w-1"
+            style={{ background: PRIMARY }}
+          />
+          <img
+            src={avatarUrl(p.name)}
+            alt={p.name}
+            className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 shrink-0"
+            style={{ borderColor: "hsl(142 76% 45% / 0.6)" }}
+          />
+          <div className="min-w-0 flex-1">
+            <div
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mb-1"
+              style={{ backgroundColor: "hsl(142 76% 45% / 0.15)", color: PRIMARY }}
+            >
+              <Star className="w-2.5 h-2.5" /> AMO DEL PARTIDO
+            </div>
+            <div className="text-base md:text-lg font-bold text-foreground truncate leading-tight">
+              {p.name}
+            </div>
+            <div className="text-[11px] text-muted-foreground">
+              {p.position} · #{p.number} · Último partido
+            </div>
+          </div>
+          <div className="hidden sm:flex items-stretch gap-3 shrink-0">
+            {[
+              { label: "GOL", value: p.goals },
+              { label: "AST", value: p.assists },
+              { label: "PJ", value: p.matches },
+            ].map((s, i, arr) => (
+              <div
+                key={s.label}
+                className={`flex flex-col items-center px-3 ${
+                  i < arr.length - 1 ? "border-r border-white/10" : ""
+                }`}
+              >
+                <span className="text-xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
+                  {s.value}
+                </span>
+                <span
+                  className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
+                  style={{ color: PRIMARY }}
+                >
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Filter tabs */}
