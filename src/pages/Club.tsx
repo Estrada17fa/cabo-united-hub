@@ -902,3 +902,149 @@ function SocialPost({ post }: { post: (typeof FAN_POSTS)[number] }) {
     </div>
   );
 }
+
+/* -------------------------------- Mobile-only combined Vestuario + Afición -------------------------------- */
+
+function MobileBottomTabs({
+  activeTab,
+  setActiveTab,
+}: {
+  activeTab: "vestuario" | "aficion";
+  setActiveTab: (t: "vestuario" | "aficion") => void;
+}) {
+  const [fanIndex, setFanIndex] = useState(0);
+
+  useEffect(() => {
+    if (activeTab !== "aficion") return;
+    const id = setInterval(() => {
+      setFanIndex((i) => (i + 1) % FAN_POSTS.length);
+    }, 4500);
+    return () => clearInterval(id);
+  }, [activeTab]);
+
+  return (
+    <CardShell>
+      <div className="p-4 flex flex-col" style={{ minHeight: 360 }}>
+        {/* Tabs header */}
+        <div className="flex items-center gap-1.5 mb-4 p-1 rounded-full border border-border bg-background/40 self-start">
+          {[
+            { id: "vestuario" as const, label: "Vestuario" },
+            { id: "aficion" as const, label: "Afición" },
+          ].map((t) => {
+            const active = activeTab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                className="px-3 py-1 rounded-full text-[11px] font-semibold transition-all"
+                style={
+                  active
+                    ? {
+                        backgroundColor: "hsl(189 100% 38% / 0.15)",
+                        color: PRIMARY,
+                        border: "1px solid hsl(189 100% 38% / 0.5)",
+                      }
+                    : {
+                        color: "hsl(0 0% 63%)",
+                        border: "1px solid transparent",
+                      }
+                }
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 flex flex-col">
+          {activeTab === "vestuario" ? (
+            <div className="grid grid-cols-1 gap-2.5">
+              {NOTES.map((n) => (
+                <a
+                  key={n.title}
+                  href="#"
+                  className="group rounded-xl border border-border bg-background/40 p-3 flex items-center gap-3 transition-all hover:border-[hsl(189_100%_38%/0.4)]"
+                >
+                  <span
+                    className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider shrink-0"
+                    style={{
+                      backgroundColor: "hsl(0 0% 7% / 0.8)",
+                      color: n.tagColor,
+                      border: `1px solid ${n.tagColor.replace(")", " / 0.4)")}`,
+                    }}
+                  >
+                    {n.tag}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-semibold text-foreground leading-snug line-clamp-2">
+                      {n.title}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-2">
+                      <span>{n.date}</span>
+                      <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+                      <span>{n.read}</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="w-1.5 h-1.5 rounded-full animate-pulse"
+                    style={{ backgroundColor: PRIMARY }}
+                  />
+                  <span className="text-label text-muted-foreground">En vivo</span>
+                </div>
+                <span
+                  className="text-[10px] font-bold tracking-wider"
+                  style={{ color: PRIMARY }}
+                >
+                  #AmosDelParaíso
+                </span>
+              </div>
+
+              <div className="relative flex-1 overflow-hidden" style={{ minHeight: 220 }}>
+                <AnimatePresence mode="wait">
+                  {FAN_POSTS.map((post, i) =>
+                    i === fanIndex ? (
+                      <motion.div
+                        key={post.handle + i}
+                        initial={{ y: 30, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -30, opacity: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="absolute inset-0 flex flex-col"
+                      >
+                        <SocialPost post={post} />
+                      </motion.div>
+                    ) : null,
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <div className="flex items-center justify-center gap-1.5 mt-3">
+                {FAN_POSTS.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setFanIndex(i)}
+                    aria-label={`Post ${i + 1}`}
+                    className="h-1 rounded-full transition-all"
+                    style={{
+                      width: i === fanIndex ? 18 : 6,
+                      backgroundColor:
+                        i === fanIndex ? PRIMARY : "hsl(0 0% 100% / 0.15)",
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </CardShell>
+  );
+}
