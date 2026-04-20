@@ -104,7 +104,7 @@ const ACADEMY_CATEGORIES = [
 const NOTES = [
   {
     tag: "Noticias",
-    tagColor: "hsl(142 76% 50%)",
+    tagColor: "hsl(336 80% 77%)",
     title: "Los Cabos United firma nuevo acuerdo con la afición local",
     date: "12 Abr 2025",
     read: "3 min",
@@ -162,7 +162,8 @@ const FAN_POSTS: { user: string; handle: string; network: SocialNetwork; text: s
 
 /* --------------------------------- Helpers --------------------------------- */
 
-const PRIMARY = "hsl(189 100% 38%)"; // Team accent green for "Tu Club" page
+const PRIMARY = "hsl(189 100% 38%)"; // Brand blue from LCU crest (#00abc4)
+const SECONDARY = "hsl(336 80% 77%)"; // Brand pink from LCU crest (#f298c0)
 
 function avatarUrl(name: string) {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -315,7 +316,7 @@ function StatsCard({ className = "" }: { className?: string }) {
   const LAST_5: ("W" | "D" | "L")[] = ["W", "W", "D", "L", "W"];
 
   const resultStyle = (r: "W" | "D" | "L") => {
-    if (r === "W") return { bg: "hsl(189 100% 38%)", label: "G" };
+    if (r === "W") return { bg: "hsl(142 76% 45%)", label: "G" };
     if (r === "D") return { bg: "hsl(45 95% 55%)", label: "E" };
     return { bg: "hsl(0 84% 60%)", label: "P" };
   };
