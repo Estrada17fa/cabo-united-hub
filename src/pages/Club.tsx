@@ -183,11 +183,14 @@ const Club = () => {
       transition={{ duration: 0.4 }}
       className="space-y-6 pb-8"
     >
+      {/* Mini-card de posición — centrada arriba */}
+      <PositionMiniCard />
+
       {/* Bento Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
-        {/* ADN Cabeño y Posición — 70% / 30% */}
+        {/* ADN Cabeño y Tu Estadio — 70% / 30% */}
         <HeroCard className="lg:col-span-8 md:col-span-2" />
-        <StatsCard className="lg:col-span-4 md:col-span-2 h-full" />
+        <StadiumCard className="lg:col-span-4 md:col-span-2 h-full" />
 
         {/* Nuestro Plantel — ancho completo (con Amo del Partido integrado) */}
         <RosterCard
