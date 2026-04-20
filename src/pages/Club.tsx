@@ -371,7 +371,7 @@ function PositionMiniCard() {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center pt-3 md:pt-0">
       <div className="inline-flex items-center gap-4 md:gap-6 rounded-full border border-border bg-card/80 backdrop-blur px-4 md:px-5 py-2 md:py-2.5 shadow-lg">
         {/* Lugar actual */}
         <div className="flex items-center gap-2">
