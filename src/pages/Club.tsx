@@ -50,6 +50,7 @@ const ROSTER: Record<
     number: number | string;
     flag: string;
     country: string;
+    birthState: string;
     age: number;
     height: string;
     matches: number;
@@ -61,36 +62,36 @@ const ROSTER: Record<
   }[]
 > = {
   Porteros: [
-    { name: "Luis Robles", number: 1, flag: "🇲🇽", country: "México", age: 28, height: "1.88 m", matches: 16, goals: 0, assists: 1, timesAmo: 3, positionDetail: "Portero Titular" },
-    { name: "Andrés Castillo", number: 12, flag: "🇲🇽", country: "México", age: 22, height: "1.86 m", matches: 4, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Suplente" },
-    { name: "Mateo Salinas", number: 25, flag: "🇦🇷", country: "Argentina", age: 31, height: "1.90 m", matches: 0, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Tercer Portero" },
-    { name: "Iván Flores", number: 30, flag: "🇲🇽", country: "México", age: 19, height: "1.84 m", matches: 1, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Cantera" },
+    { name: "Luis Robles", number: 1, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 28, height: "1.88 m", matches: 16, goals: 0, assists: 1, timesAmo: 3, positionDetail: "Portero Titular" },
+    { name: "Andrés Castillo", number: 12, flag: "🇲🇽", country: "México", birthState: "Sinaloa", age: 22, height: "1.86 m", matches: 4, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Suplente" },
+    { name: "Mateo Salinas", number: 25, flag: "🇦🇷", country: "Argentina", birthState: "Buenos Aires", age: 31, height: "1.90 m", matches: 0, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Tercer Portero" },
+    { name: "Iván Flores", number: 30, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 19, height: "1.84 m", matches: 1, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Cantera" },
   ],
   Defensas: [
-    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽", country: "México", age: 26, height: "1.82 m", matches: 18, goals: 1, assists: 3, timesAmo: 2, positionDetail: "Lateral Derecho" },
-    { name: "Rafael Márquez", number: 4, flag: "🇲🇽", country: "México", age: 30, height: "1.85 m", matches: 17, goals: 2, assists: 1, timesAmo: 5, positionDetail: "Defensa Central" },
-    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴", country: "Colombia", age: 24, height: "1.83 m", matches: 15, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Defensa Central" },
-    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽", country: "México", age: 22, height: "1.79 m", matches: 12, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Lateral Izquierdo" },
-    { name: "Joaquín Rivas", number: 13, flag: "🇨🇱", country: "Chile", age: 27, height: "1.81 m", matches: 9, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Defensa Suplente" },
+    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 26, height: "1.82 m", matches: 18, goals: 1, assists: 3, timesAmo: 2, positionDetail: "Lateral Derecho" },
+    { name: "Rafael Márquez", number: 4, flag: "🇲🇽", country: "México", birthState: "Michoacán", age: 30, height: "1.85 m", matches: 17, goals: 2, assists: 1, timesAmo: 5, positionDetail: "Defensa Central" },
+    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴", country: "Colombia", birthState: "Antioquia", age: 24, height: "1.83 m", matches: 15, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Defensa Central" },
+    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽", country: "México", birthState: "Sonora", age: 22, height: "1.79 m", matches: 12, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Lateral Izquierdo" },
+    { name: "Joaquín Rivas", number: 13, flag: "🇨🇱", country: "Chile", birthState: "Santiago", age: 27, height: "1.81 m", matches: 9, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Defensa Suplente" },
   ],
   Mediocampistas: [
-    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽", country: "México", age: 25, height: "1.76 m", matches: 18, goals: 2, assists: 4, timesAmo: 3, positionDetail: "Mediocampista Defensivo" },
-    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷", country: "Argentina", age: 28, height: "1.78 m", matches: 16, goals: 3, assists: 5, timesAmo: 4, positionDetail: "Mediocampista Central" },
-    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽", country: "México", age: 24, height: "1.74 m", matches: 17, goals: 5, assists: 7, timesAmo: 6, positionDetail: "Mediocampista Ofensivo" },
-    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾", country: "Uruguay", age: 23, height: "1.77 m", matches: 11, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Volante por Banda" },
-    { name: "Marco Téllez", number: 17, flag: "🇲🇽", country: "México", age: 21, height: "1.75 m", matches: 8, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Mediocampista Suplente" },
+    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 25, height: "1.76 m", matches: 18, goals: 2, assists: 4, timesAmo: 3, positionDetail: "Mediocampista Defensivo" },
+    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷", country: "Argentina", birthState: "Córdoba", age: 28, height: "1.78 m", matches: 16, goals: 3, assists: 5, timesAmo: 4, positionDetail: "Mediocampista Central" },
+    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽", country: "México", birthState: "Jalisco", age: 24, height: "1.74 m", matches: 17, goals: 5, assists: 7, timesAmo: 6, positionDetail: "Mediocampista Ofensivo" },
+    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾", country: "Uruguay", birthState: "Montevideo", age: 23, height: "1.77 m", matches: 11, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Volante por Banda" },
+    { name: "Marco Téllez", number: 17, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 21, height: "1.75 m", matches: 8, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Mediocampista Suplente" },
   ],
   Delanteros: [
-    { name: "Diego Hernández", number: 9, flag: "🇲🇽", country: "México", age: 26, height: "1.80 m", matches: 17, goals: 12, assists: 4, timesAmo: 4, positionDetail: "Delantero Centro" },
-    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷", country: "Brasil", age: 25, height: "1.79 m", matches: 16, goals: 8, assists: 6, timesAmo: 3, positionDetail: "Extremo Izquierdo" },
-    { name: "Adrián Solís", number: 19, flag: "🇲🇽", country: "México", age: 22, height: "1.77 m", matches: 13, goals: 5, assists: 3, timesAmo: 2, positionDetail: "Extremo Derecho" },
-    { name: "Tomás Rincón", number: 22, flag: "🇻🇪", country: "Venezuela", age: 27, height: "1.83 m", matches: 7, goals: 2, assists: 1, timesAmo: 0, positionDetail: "Delantero Suplente" },
+    { name: "Diego Hernández", number: 9, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 26, height: "1.80 m", matches: 17, goals: 12, assists: 4, timesAmo: 4, positionDetail: "Delantero Centro" },
+    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷", country: "Brasil", birthState: "São Paulo", age: 25, height: "1.79 m", matches: 16, goals: 8, assists: 6, timesAmo: 3, positionDetail: "Extremo Izquierdo" },
+    { name: "Adrián Solís", number: 19, flag: "🇲🇽", country: "México", birthState: "Nuevo León", age: 22, height: "1.77 m", matches: 13, goals: 5, assists: 3, timesAmo: 2, positionDetail: "Extremo Derecho" },
+    { name: "Tomás Rincón", number: 22, flag: "🇻🇪", country: "Venezuela", birthState: "Caracas", age: 27, height: "1.83 m", matches: 7, goals: 2, assists: 1, timesAmo: 0, positionDetail: "Delantero Suplente" },
   ],
   "Cuerpo Técnico": [
-    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", country: "México", age: 52, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Director Técnico", role: "Director Técnico" },
-    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", country: "México", age: 45, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Asistente Técnico", role: "Asistente Técnico" },
-    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", country: "México", age: 41, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Preparador Físico", role: "Preparador Físico" },
-    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", country: "España", age: 38, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Entrenador de Porteros", role: "Entrenador de Porteros" },
+    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", country: "México", birthState: "Ciudad de México", age: 52, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Director Técnico", role: "Director Técnico" },
+    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 45, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Asistente Técnico", role: "Asistente Técnico" },
+    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", country: "México", birthState: "Jalisco", age: 41, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Preparador Físico", role: "Preparador Físico" },
+    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", country: "España", birthState: "Madrid", age: 38, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Entrenador de Porteros", role: "Entrenador de Porteros" },
   ],
 };
 
@@ -600,42 +601,46 @@ function RosterCard({
                   className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity p-2.5 md:p-3 flex flex-col justify-between border"
                   style={{ borderColor: "hsl(189 100% 38% / 0.5)" }}
                 >
-                  {/* TOP ROW: name + position + flag/country */}
+                  {/* TOP: name + age + birth state + position + flag */}
                   <div className="flex items-start gap-1.5 min-w-0">
                     <div className="min-w-0 flex-1">
                       <div className="text-[12px] md:text-[13px] font-bold text-foreground leading-tight truncate">
                         {player.name}
                       </div>
                       <div className="text-[9px] md:text-[10px] text-muted-foreground leading-tight truncate">
+                        {player.age} años · {player.birthState}
+                      </div>
+                      <div
+                        className="text-[9px] md:text-[10px] font-semibold leading-tight truncate mt-0.5"
+                        style={{ color: PRIMARY }}
+                      >
                         {player.positionDetail}
                       </div>
                     </div>
-                    <div className="flex items-center gap-0.5 text-[9px] md:text-[10px] text-muted-foreground shrink-0 leading-tight">
-                      <span className="text-xs md:text-sm">{player.flag}</span>
-                      <span className="hidden sm:inline truncate max-w-[60px]">{player.country}</span>
-                    </div>
+                    <span className="text-base md:text-lg shrink-0 leading-none" title={player.country}>
+                      {player.flag}
+                    </span>
                   </div>
 
-                  {/* STATS ROW */}
+                  {/* STATS ROW: Goles + Partidos jugados */}
                   <div className="flex items-stretch justify-between gap-1 my-1">
                     {[
-                      { value: player.goals, label: "GOL" },
-                      { value: player.assists, label: "AST" },
+                      { value: player.goals, label: "GOLES" },
                       { value: player.matches, label: "PJ" },
                     ].map((s, i) => (
                       <div key={s.label} className="flex items-center flex-1">
                         <div className="flex flex-col items-center justify-center flex-1 min-w-0">
-                          <span className="text-[22px] md:text-[28px] font-extrabold text-foreground tabular-nums leading-none">
+                          <span className="text-[24px] md:text-[30px] font-extrabold text-foreground tabular-nums leading-none">
                             {s.value}
                           </span>
                           <span
-                            className="text-[8px] md:text-[9px] uppercase tracking-[0.12em] mt-0.5 font-semibold"
+                            className="text-[8px] md:text-[9px] uppercase tracking-[0.12em] mt-1 font-semibold"
                             style={{ color: PRIMARY }}
                           >
                             {s.label}
                           </span>
                         </div>
-                        {i < 2 && <div className="w-px self-stretch bg-white/10" />}
+                        {i < 1 && <div className="w-px self-stretch bg-white/10" />}
                       </div>
                     ))}
                   </div>
