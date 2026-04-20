@@ -182,13 +182,13 @@ const Club = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="space-y-6 pb-8"
+      className="space-y-3 md:space-y-6 pb-8"
     >
       {/* Mini-card de posición — centrada arriba */}
       <PositionMiniCard />
 
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 md:auto-rows-[minmax(140px,auto)] gap-2 md:gap-4">
         {/* ADN Cabeño y Tu Estadio — 70% / 30% */}
         <HeroCard className="lg:col-span-8 md:col-span-2" />
         <StadiumCard className="lg:col-span-4 md:col-span-2 h-full" />
