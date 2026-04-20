@@ -10,6 +10,7 @@ import {
   Shield,
   Facebook,
   Instagram,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import stadiumHero from "@/assets/stadium-hero.jpg";
@@ -183,11 +184,14 @@ const Club = () => {
       transition={{ duration: 0.4 }}
       className="space-y-6 pb-8"
     >
+      {/* Mini-card de posición — centrada arriba */}
+      <PositionMiniCard />
+
       {/* Bento Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
-        {/* ADN Cabeño y Posición — 70% / 30% */}
+        {/* ADN Cabeño y Tu Estadio — 70% / 30% */}
         <HeroCard className="lg:col-span-8 md:col-span-2" />
-        <StatsCard className="lg:col-span-4 md:col-span-2 h-full" />
+        <StadiumCard className="lg:col-span-4 md:col-span-2 h-full" />
 
         {/* Nuestro Plantel — ancho completo (con Amo del Partido integrado) */}
         <RosterCard
@@ -311,93 +315,38 @@ function HeroCard({ className = "" }: { className?: string }) {
 
 /* -------------------------------- CARD 2 -------------------------------- */
 
-function StatsCard({ className = "" }: { className?: string }) {
-  // Últimos 5 partidos: W = ganado, D = empate, L = perdido (orden: más reciente primero)
-  const LAST_5: ("W" | "D" | "L")[] = ["W", "W", "D", "L", "W"];
-
-  const resultStyle = (r: "W" | "D" | "L") => {
-    if (r === "W") return { bg: "hsl(142 76% 45%)", label: "G" };
-    if (r === "D") return { bg: "hsl(45 95% 55%)", label: "E" };
-    return { bg: "hsl(0 84% 60%)", label: "P" };
-  };
-
-  // Mini-tabla de stats
-  const MINI_STATS = [
-    { label: "PJ", value: 18 },
-    { label: "PG", value: 12 },
-    { label: "PP", value: 3 },
-  ];
-
+function StadiumCard({ className = "" }: { className?: string }) {
   return (
     <CardShell className={className} interactive>
-      <div className="relative h-full p-4 md:p-5 flex flex-col gap-3">
-        {/* Label superior */}
-        <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-          Apertura 2026 · <span className="text-foreground/70">Temporada Actual</span>
-        </div>
+      <img
+        src={stadiumHero}
+        alt="Estadio Don Koll"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/20" />
+      <div className="absolute inset-0 bg-gradient-to-r from-card/70 via-transparent to-transparent" />
 
-        {/* Hero stat: posición */}
-        <div className="flex flex-col items-center justify-center py-2 md:py-3">
-          <div
-            className="text-[80px] md:text-[96px] font-extrabold tabular-nums leading-none"
+      <div className="relative h-full p-6 md:p-7 flex flex-col justify-between min-h-[320px]">
+        <div className="flex items-center gap-2">
+          <span
+            className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
             style={{
               color: PRIMARY,
-              textShadow:
-                "0 0 24px hsl(189 100% 38% / 0.45), 0 0 60px hsl(189 100% 38% / 0.15)",
+              borderColor: "hsl(189 100% 38% / 0.4)",
+              backgroundColor: "hsl(189 100% 38% / 0.08)",
             }}
           >
-            3°
-          </div>
-          <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground mt-1.5">
-            Posición en Liga Premier
-          </div>
+            Tu Estadio
+          </span>
         </div>
 
-        {/* Mini-tabla horizontal */}
-        <div className="flex items-stretch border-y border-white/5 py-2">
-          {MINI_STATS.map((s, i) => (
-            <div
-              key={s.label}
-              className={`flex-1 flex flex-col items-center justify-center ${
-                i < MINI_STATS.length - 1 ? "border-r border-white/5" : ""
-              }`}
-            >
-              <span className="text-base md:text-lg font-bold text-foreground tabular-nums leading-none">
-                {s.value}
-              </span>
-              <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mt-1">
-                {s.label}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Últimos 5 partidos */}
-        <div className="flex flex-col items-center gap-1.5 mt-auto">
-          <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
-            Últimos 5 partidos
-          </div>
-          <div className="flex items-start gap-2">
-            {LAST_5.map((r, i) => {
-              const s = resultStyle(r);
-              return (
-                <div key={i} className="flex flex-col items-center gap-1">
-                  <div
-                    className="w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-[11px] md:text-xs font-bold text-background"
-                    style={{ backgroundColor: s.bg }}
-                    title={r === "W" ? "Ganado" : r === "D" ? "Empate" : "Perdido"}
-                  >
-                    {s.label}
-                  </div>
-                  <span
-                    className="text-[9px] uppercase tracking-wider font-semibold"
-                    style={{ color: s.bg }}
-                  >
-                    {s.label}
-                  </span>
-                </div>
-              );
-            })}
+        <div className="space-y-2">
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
+            Estadio Don Koll
+          </h2>
+          <div className="flex items-center gap-1.5 text-xs md:text-sm text-muted-foreground">
+            <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: PRIMARY }} />
+            <span>San José del Cabo, B.C.S.</span>
           </div>
         </div>
 
@@ -412,6 +361,68 @@ function StatsCard({ className = "" }: { className?: string }) {
         />
       </div>
     </CardShell>
+  );
+}
+
+/* -------------------------------- Mini-card de posición (top, centrada) -------------------------------- */
+
+function PositionMiniCard() {
+  const LAST_5: ("W" | "D" | "L")[] = ["W", "W", "D", "L", "W"];
+
+  const resultStyle = (r: "W" | "D" | "L") => {
+    if (r === "W") return { bg: "hsl(142 76% 45%)", label: "G" };
+    if (r === "D") return { bg: "hsl(45 95% 55%)", label: "E" };
+    return { bg: "hsl(0 84% 60%)", label: "P" };
+  };
+
+  return (
+    <div className="flex justify-center">
+      <div className="inline-flex items-center gap-4 md:gap-6 rounded-full border border-border bg-card/80 backdrop-blur px-4 md:px-5 py-2 md:py-2.5 shadow-lg">
+        {/* Lugar actual */}
+        <div className="flex items-center gap-2">
+          <span
+            className="text-2xl md:text-3xl font-extrabold tabular-nums leading-none"
+            style={{
+              color: PRIMARY,
+              textShadow:
+                "0 0 14px hsl(189 100% 38% / 0.55), 0 0 32px hsl(189 100% 38% / 0.18)",
+            }}
+          >
+            3°
+          </span>
+          <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted-foreground leading-tight max-w-[80px]">
+            Lugar
+            <br />
+            Actual
+          </span>
+        </div>
+
+        {/* Divider */}
+        <div className="h-7 w-px bg-white/10" />
+
+        {/* Últimos 5 partidos */}
+        <div className="flex items-center gap-2">
+          <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted-foreground leading-tight hidden sm:inline">
+            Últimos 5
+          </span>
+          <div className="flex items-center gap-1.5">
+            {LAST_5.map((r, i) => {
+              const s = resultStyle(r);
+              return (
+                <div
+                  key={i}
+                  className="w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center justify-center text-[10px] md:text-[11px] font-bold text-background"
+                  style={{ backgroundColor: s.bg }}
+                  title={r === "W" ? "Ganado" : r === "D" ? "Empate" : "Perdido"}
+                >
+                  {s.label}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
