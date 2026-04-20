@@ -446,6 +446,15 @@ function RosterCard({
   const players = ROSTER[activePos];
   const positions: Position[] = ["Porteros", "Defensas", "Mediocampistas", "Delanteros", "Cuerpo Técnico"];
   const p = PLAYER_OF_WEEK;
+  const [expandPlayers, setExpandPlayers] = useState(false);
+
+  // Reset collapse when changing position tab
+  useEffect(() => {
+    setExpandPlayers(false);
+  }, [activePos]);
+
+  const visiblePlayers = expandPlayers ? players : players.slice(0, 4);
+  const hiddenCount = players.length - visiblePlayers.length;
 
   return (
     <CardShell className={className}>
