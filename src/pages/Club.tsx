@@ -601,42 +601,46 @@ function RosterCard({
                   className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity p-2.5 md:p-3 flex flex-col justify-between border"
                   style={{ borderColor: "hsl(189 100% 38% / 0.5)" }}
                 >
-                  {/* TOP ROW: name + position + flag/country */}
+                  {/* TOP: name + age + birth state + position + flag */}
                   <div className="flex items-start gap-1.5 min-w-0">
                     <div className="min-w-0 flex-1">
                       <div className="text-[12px] md:text-[13px] font-bold text-foreground leading-tight truncate">
                         {player.name}
                       </div>
                       <div className="text-[9px] md:text-[10px] text-muted-foreground leading-tight truncate">
+                        {player.age} años · {player.birthState}
+                      </div>
+                      <div
+                        className="text-[9px] md:text-[10px] font-semibold leading-tight truncate mt-0.5"
+                        style={{ color: PRIMARY }}
+                      >
                         {player.positionDetail}
                       </div>
                     </div>
-                    <div className="flex items-center gap-0.5 text-[9px] md:text-[10px] text-muted-foreground shrink-0 leading-tight">
-                      <span className="text-xs md:text-sm">{player.flag}</span>
-                      <span className="hidden sm:inline truncate max-w-[60px]">{player.country}</span>
-                    </div>
+                    <span className="text-base md:text-lg shrink-0 leading-none" title={player.country}>
+                      {player.flag}
+                    </span>
                   </div>
 
-                  {/* STATS ROW */}
+                  {/* STATS ROW: Goles + Partidos jugados */}
                   <div className="flex items-stretch justify-between gap-1 my-1">
                     {[
-                      { value: player.goals, label: "GOL" },
-                      { value: player.assists, label: "AST" },
+                      { value: player.goals, label: "GOLES" },
                       { value: player.matches, label: "PJ" },
                     ].map((s, i) => (
                       <div key={s.label} className="flex items-center flex-1">
                         <div className="flex flex-col items-center justify-center flex-1 min-w-0">
-                          <span className="text-[22px] md:text-[28px] font-extrabold text-foreground tabular-nums leading-none">
+                          <span className="text-[24px] md:text-[30px] font-extrabold text-foreground tabular-nums leading-none">
                             {s.value}
                           </span>
                           <span
-                            className="text-[8px] md:text-[9px] uppercase tracking-[0.12em] mt-0.5 font-semibold"
+                            className="text-[8px] md:text-[9px] uppercase tracking-[0.12em] mt-1 font-semibold"
                             style={{ color: PRIMARY }}
                           >
                             {s.label}
                           </span>
                         </div>
-                        {i < 2 && <div className="w-px self-stretch bg-white/10" />}
+                        {i < 1 && <div className="w-px self-stretch bg-white/10" />}
                       </div>
                     ))}
                   </div>
