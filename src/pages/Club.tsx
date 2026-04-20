@@ -174,6 +174,7 @@ function avatarUrl(name: string) {
 const Club = () => {
   const [activePos, setActivePos] = useState<Position>("Delanteros");
   const [mobileBottomTab, setMobileBottomTab] = useState<"vestuario" | "aficion">("vestuario");
+  const [mobileTopTab, setMobileTopTab] = useState<"adn" | "estadio">("adn");
 
   return (
     <motion.div
@@ -187,9 +188,12 @@ const Club = () => {
 
       {/* Bento Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
-        {/* ADN Cabeño y Tu Estadio — 70% / 30% */}
-        <HeroCard className="lg:col-span-8 md:col-span-2" />
-        <StadiumCard className="lg:col-span-4 md:col-span-2 h-full" />
+        {/* ADN Cabeño y Tu Estadio — 70% / 30% en desktop, tabs en móvil */}
+        <div className="md:hidden col-span-1">
+          <MobileTopTabs activeTab={mobileTopTab} setActiveTab={setMobileTopTab} />
+        </div>
+        <HeroCard className="hidden md:block lg:col-span-8 md:col-span-2" />
+        <StadiumCard className="hidden md:block lg:col-span-4 md:col-span-2 h-full" />
 
         {/* Nuestro Plantel — ancho completo (con Amo del Partido integrado) */}
         <RosterCard
