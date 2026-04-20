@@ -576,40 +576,62 @@ function RosterCard({
 
         {/* Player grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 flex-1 content-start">
-          {players.map((player) => (
-            <motion.div
-              key={player.name}
-              whileHover={{ y: -3 }}
-              transition={{ type: "spring", stiffness: 300, damping: 22 }}
-              className="group relative rounded-xl border border-border bg-background/40 p-3 transition-all hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(189_100%_38%/0.4)]"
-            >
-              <div className="aspect-square rounded-lg bg-muted flex items-center justify-center mb-2 relative overflow-hidden">
-                <span className="text-3xl font-extrabold text-muted-foreground/60">
-                  {player.number}
-                </span>
-                <span className="absolute top-1 right-1 text-sm">{player.flag}</span>
-              </div>
-              <div className="text-xs font-semibold text-foreground truncate">
-                {player.name}
-              </div>
-              <div className="text-[10px] text-muted-foreground truncate">
-                {player.role ? player.role : `#${player.number}`}
-              </div>
-
-              {/* Hover detail overlay */}
-              <div className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-center text-[11px]">
-                <div className="font-semibold text-foreground mb-1.5 truncate">
+          {/* On mobile, show collapsed list. On md+, show all. */}
+          {players.map((player, idx) => {
+            const hideOnMobile = !expandPlayers && idx >= 4;
+            return (
+              <motion.div
+                key={player.name}
+                whileHover={{ y: -3 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className={`group relative rounded-xl border border-border bg-background/40 p-3 transition-all hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(189_100%_38%/0.4)] ${
+                  hideOnMobile ? "hidden md:block" : ""
+                }`}
+              >
+                <div className="aspect-square rounded-lg bg-muted flex items-center justify-center mb-2 relative overflow-hidden">
+                  <span className="text-3xl font-extrabold text-muted-foreground/60">
+                    {player.number}
+                  </span>
+                  <span className="absolute top-1 right-1 text-sm">{player.flag}</span>
+                </div>
+                <div className="text-xs font-semibold text-foreground truncate">
                   {player.name}
                 </div>
-                <div className="space-y-0.5 text-muted-foreground">
-                  <div>Edad: <span className="text-foreground">{player.age}</span></div>
-                  <div>Altura: <span className="text-foreground">{player.height}</span></div>
-                  <div>Partidos: <span className="text-foreground">{player.matches}</span></div>
+                <div className="text-[10px] text-muted-foreground truncate">
+                  {player.role ? player.role : `#${player.number}`}
                 </div>
-              </div>
-            </motion.div>
-          ))}
+
+                {/* Hover detail overlay */}
+                <div className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-center text-[11px]">
+                  <div className="font-semibold text-foreground mb-1.5 truncate">
+                    {player.name}
+                  </div>
+                  <div className="space-y-0.5 text-muted-foreground">
+                    <div>Edad: <span className="text-foreground">{player.age}</span></div>
+                    <div>Altura: <span className="text-foreground">{player.height}</span></div>
+                    <div>Partidos: <span className="text-foreground">{player.matches}</span></div>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
+
+        {/* Mobile-only "Ver todos" toggle */}
+        {players.length > 4 && (
+          <button
+            onClick={() => setExpandPlayers((v) => !v)}
+            className="md:hidden mt-3 self-center inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold border transition-all"
+            style={{
+              borderColor: "hsl(189 100% 38% / 0.4)",
+              color: PRIMARY,
+              backgroundColor: "hsl(189 100% 38% / 0.08)",
+            }}
+          >
+            {expandPlayers ? "Ver menos" : `Ver todos (${players.length})`}
+            <ArrowRight className={`w-3 h-3 transition-transform ${expandPlayers ? "rotate-90" : ""}`} />
+          </button>
+        )}
       </div>
     </CardShell>
   );
@@ -626,13 +648,13 @@ function AcademyCard({ className = "" }: { className?: string }) {
           <h3 className="text-title mt-1">Formando a los próximos Amos</h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 flex-1">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-2.5 flex-1">
           {ACADEMY_CATEGORIES.map((c) => {
             const Icon = c.icon;
             return (
               <div
                 key={c.name}
-                className="rounded-xl border border-border bg-background/40 p-3 flex items-start gap-3"
+                className="rounded-xl border border-border bg-background/40 p-2.5 md:p-3 flex items-center md:items-start gap-3"
               >
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
@@ -642,7 +664,7 @@ function AcademyCard({ className = "" }: { className?: string }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold text-foreground">{c.name}</div>
-                  <div className="text-[11px] text-muted-foreground leading-snug">
+                  <div className="text-[11px] text-muted-foreground leading-snug line-clamp-1 md:line-clamp-none">
                     {c.desc}
                   </div>
                 </div>
@@ -651,19 +673,21 @@ function AcademyCard({ className = "" }: { className?: string }) {
           })}
         </div>
 
-        <div className="mt-4 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
+        <div className="mt-3 md:mt-4 flex flex-row gap-2 items-center justify-between">
+          <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold md:h-10 md:px-4">
             Inscribe a tu hijo
           </Button>
           <a
             href="#"
-            className="inline-flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider whitespace-nowrap"
             style={{
               backgroundColor: "hsl(189 100% 38% / 0.12)",
               color: PRIMARY,
             }}
           >
-            CURSOS DE VERANO 2025 <ArrowRight className="w-3 h-3" />
+            <span className="hidden sm:inline">CURSOS DE VERANO 2025</span>
+            <span className="sm:hidden">VERANO 2025</span>
+            <ArrowRight className="w-3 h-3" />
           </a>
         </div>
       </div>
