@@ -416,6 +416,274 @@ function StatsCard({ className = "" }: { className?: string }) {
 
 /* CARD 3 (Amo de la Semana) — eliminada e integrada dentro de RosterCard */
 
+/* -------------------------------- CARD 4 (Plantel) -------------------------------- */
+
+function RosterCard({
+  className = "",
+  activePos,
+  setActivePos,
+}: {
+  className?: string;
+  activePos: Position;
+  setActivePos: (p: Position) => void;
+}) {
+  const players = ROSTER[activePos];
+  const positions: Position[] = ["Porteros", "Defensas", "Mediocampistas", "Delanteros", "Cuerpo Técnico"];
+  const p = PLAYER_OF_WEEK;
+
+  return (
+    <CardShell className={className}>
+      <div className="p-5 md:p-6 h-full flex flex-col">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-title">Nuestro Plantel</h3>
+          <Shield className="w-4 h-4" style={{ color: PRIMARY }} />
+        </div>
+
+        {/* Amo del Partido — destacado */}
+        <div
+          className="relative rounded-xl border overflow-hidden mb-5 p-4 flex items-center gap-4"
+          style={{
+            borderColor: "hsl(142 76% 45% / 0.35)",
+            background:
+              "linear-gradient(90deg, hsl(142 76% 45% / 0.10) 0%, hsl(0 0% 7% / 0.4) 60%, transparent 100%)",
+          }}
+        >
+          <div
+            className="absolute left-0 top-0 bottom-0 w-1"
+            style={{ background: PRIMARY }}
+          />
+          <img
+            src={avatarUrl(p.name)}
+            alt={p.name}
+            className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 shrink-0"
+            style={{ borderColor: "hsl(142 76% 45% / 0.6)" }}
+          />
+          <div className="min-w-0 flex-1">
+            <div
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mb-1"
+              style={{ backgroundColor: "hsl(142 76% 45% / 0.15)", color: PRIMARY }}
+            >
+              <Star className="w-2.5 h-2.5" /> AMO DEL PARTIDO
+            </div>
+            <div className="text-base md:text-lg font-bold text-foreground truncate leading-tight">
+              {p.name}
+            </div>
+            <div className="text-[11px] text-muted-foreground">
+              {p.position} · #{p.number} · Último partido
+            </div>
+          </div>
+          <div className="hidden sm:flex items-stretch gap-3 shrink-0">
+            {[
+              { label: "GOL", value: p.goals },
+              { label: "AST", value: p.assists },
+              { label: "PJ", value: p.matches },
+            ].map((s, i, arr) => (
+              <div
+                key={s.label}
+                className={`flex flex-col items-center px-3 ${
+                  i < arr.length - 1 ? "border-r border-white/10" : ""
+                }`}
+              >
+                <span className="text-xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
+                  {s.value}
+                </span>
+                <span
+                  className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
+                  style={{ color: PRIMARY }}
+                >
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Filter tabs */}
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide mb-5 -mx-1 px-1">
+          {positions.map((pos) => {
+            const active = pos === activePos;
+            return (
+              <button
+                key={pos}
+                onClick={() => setActivePos(pos)}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all border"
+                style={
+                  active
+                    ? {
+                        backgroundColor: "hsl(142 76% 45% / 0.15)",
+                        color: PRIMARY,
+                        borderColor: `${PRIMARY.replace(")", " / 0.5)")}`,
+                      }
+                    : {
+                        backgroundColor: "transparent",
+                        color: "hsl(0 0% 63%)",
+                        borderColor: "hsl(0 0% 16%)",
+                      }
+                }
+              >
+                {pos}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Player grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 flex-1 content-start">
+          {players.map((player) => (
+            <motion.div
+              key={player.name}
+              whileHover={{ y: -3 }}
+              transition={{ type: "spring", stiffness: 300, damping: 22 }}
+              className="group relative rounded-xl border border-border bg-background/40 p-3 transition-all hover:border-[hsl(142_76%_45%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(142_76%_45%/0.4)]"
+            >
+              <div className="aspect-square rounded-lg bg-muted flex items-center justify-center mb-2 relative overflow-hidden">
+                <span className="text-3xl font-extrabold text-muted-foreground/60">
+                  {player.number}
+                </span>
+                <span className="absolute top-1 right-1 text-sm">{player.flag}</span>
+              </div>
+              <div className="text-xs font-semibold text-foreground truncate">
+                {player.name}
+              </div>
+              <div className="text-[10px] text-muted-foreground truncate">
+                {player.role ? player.role : `#${player.number}`}
+              </div>
+
+              {/* Hover detail overlay */}
+              <div className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-center text-[11px]">
+                <div className="font-semibold text-foreground mb-1.5 truncate">
+                  {player.name}
+                </div>
+                <div className="space-y-0.5 text-muted-foreground">
+                  <div>Edad: <span className="text-foreground">{player.age}</span></div>
+                  <div>Altura: <span className="text-foreground">{player.height}</span></div>
+                  <div>Partidos: <span className="text-foreground">{player.matches}</span></div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </CardShell>
+  );
+}
+
+/* -------------------------------- CARD 5 (Academias) -------------------------------- */
+
+function AcademyCard({ className = "" }: { className?: string }) {
+  return (
+    <CardShell className={className} interactive>
+      <div className="p-5 md:p-6 h-full flex flex-col">
+        <div className="mb-4">
+          <span className="text-label text-muted-foreground">Academias LC United</span>
+          <h3 className="text-title mt-1">Formando a los próximos Amos</h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 flex-1">
+          {ACADEMY_CATEGORIES.map((c) => {
+            const Icon = c.icon;
+            return (
+              <div
+                key={c.name}
+                className="rounded-xl border border-border bg-background/40 p-3 flex items-start gap-3"
+              >
+                <div
+                  className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: "hsl(142 76% 45% / 0.12)" }}
+                >
+                  <Icon className="w-4 h-4" style={{ color: PRIMARY }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-semibold text-foreground">{c.name}</div>
+                  <div className="text-[11px] text-muted-foreground leading-snug">
+                    {c.desc}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
+            Inscribe a tu hijo
+          </Button>
+          <a
+            href="#"
+            className="inline-flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider"
+            style={{
+              backgroundColor: "hsl(142 76% 45% / 0.12)",
+              color: PRIMARY,
+            }}
+          >
+            CURSOS DE VERANO 2025 <ArrowRight className="w-3 h-3" />
+          </a>
+        </div>
+      </div>
+    </CardShell>
+  );
+}
+
+/* -------------------------------- CARD 6 (Vestuario) -------------------------------- */
+
+function NotesCard({ className = "" }: { className?: string }) {
+  return (
+    <CardShell className={className}>
+      <div className="p-5 md:p-6 h-full flex flex-col">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-title">Desde el Vestuario</h3>
+          <a
+            href="#"
+            className="text-xs font-semibold text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+          >
+            Ver todas <ArrowRight className="w-3 h-3" />
+          </a>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
+          {NOTES.map((n) => (
+            <motion.a
+              key={n.title}
+              href="#"
+              whileHover={{ y: -2 }}
+              className="group rounded-xl border border-border bg-background/40 overflow-hidden flex flex-col transition-all hover:border-[hsl(142_76%_45%/0.4)]"
+            >
+              <div className="relative h-24 overflow-hidden bg-muted">
+                <div
+                  className="absolute inset-0 transition-transform duration-500 group-hover:scale-110"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, hsl(0 0% 12%) 0%, hsl(0 0% 6%) 100%)",
+                  }}
+                />
+                <span
+                  className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider"
+                  style={{
+                    backgroundColor: "hsl(0 0% 7% / 0.8)",
+                    color: n.tagColor,
+                    border: `1px solid ${n.tagColor.replace(")", " / 0.4)")}`,
+                  }}
+                >
+                  {n.tag}
+                </span>
+              </div>
+              <div className="p-3 flex-1 flex flex-col">
+                <div className="text-xs font-semibold text-foreground leading-snug line-clamp-2 mb-2">
+                  {n.title}
+                </div>
+                <div className="text-[10px] text-muted-foreground mt-auto flex items-center gap-2">
+                  <span>{n.date}</span>
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+                  <span>{n.read}</span>
+                </div>
+              </div>
+            </motion.a>
+          ))}
+        </div>
+      </div>
+    </CardShell>
+  );
+}
 
 /* -------------------------------- CARD 8 -------------------------------- */
 
