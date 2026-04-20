@@ -769,33 +769,147 @@ function NotesCard({ className = "" }: { className?: string }) {
 
 /* -------------------------------- CARD 8 -------------------------------- */
 
+// Inline X (Twitter) logo since lucide doesn't ship it
+function XLogo({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+const NETWORK_META: Record<
+  SocialNetwork,
+  { label: string; color: string; Icon: React.ComponentType<{ className?: string }> }
+> = {
+  facebook: { label: "Facebook", color: "hsl(221 78% 60%)", Icon: Facebook },
+  instagram: { label: "Instagram", color: "hsl(330 78% 60%)", Icon: Instagram },
+  x: { label: "X", color: "hsl(0 0% 95%)", Icon: XLogo },
+};
+
 function FanTickerCard({ className = "" }: { className?: string }) {
-  // Duplicate list so the marquee loops seamlessly
-  const items = [...FAN_TICKER, ...FAN_TICKER];
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % FAN_POSTS.length);
+    }, 4500);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <CardShell className={className}>
-      <div className="relative py-3 overflow-hidden">
-        <div className="flex items-center gap-2 px-5 mb-2">
-          <span
-            className="w-1.5 h-1.5 rounded-full animate-pulse"
-            style={{ backgroundColor: PRIMARY }}
-          />
-          <span className="text-label text-muted-foreground">La Afición · En vivo</span>
-        </div>
-        <div className="relative w-full overflow-hidden">
-          <div className="flex gap-10 whitespace-nowrap animate-marquee">
-            {items.map((msg, i) => (
-              <span
-                key={i}
-                className="text-sm font-medium"
-                style={{ color: PRIMARY }}
-              >
-                {msg}
-              </span>
-            ))}
+      <div className="relative h-full p-5 md:p-6 flex flex-col min-h-[320px]">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ backgroundColor: PRIMARY }}
+            />
+            <span className="text-label text-muted-foreground">La Afición · En vivo</span>
           </div>
+          <span
+            className="text-[10px] font-bold tracking-wider"
+            style={{ color: PRIMARY }}
+          >
+            #AmosDelParaíso
+          </span>
+        </div>
+
+        {/* Vertical carousel */}
+        <div className="relative flex-1 overflow-hidden">
+          <AnimatePresence mode="wait">
+            {FAN_POSTS.map((post, i) =>
+              i === index ? (
+                <motion.div
+                  key={post.handle + i}
+                  initial={{ y: 40, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -40, opacity: 0 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="absolute inset-0 flex flex-col"
+                >
+                  <SocialPost post={post} />
+                </motion.div>
+              ) : null,
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Dots indicator */}
+        <div className="flex items-center justify-center gap-1.5 mt-4">
+          {FAN_POSTS.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              aria-label={`Post ${i + 1}`}
+              className="h-1 rounded-full transition-all"
+              style={{
+                width: i === index ? 18 : 6,
+                backgroundColor:
+                  i === index ? PRIMARY : "hsl(0 0% 100% / 0.15)",
+              }}
+            />
+          ))}
         </div>
       </div>
     </CardShell>
+  );
+}
+
+function SocialPost({ post }: { post: (typeof FAN_POSTS)[number] }) {
+  const meta = NETWORK_META[post.network];
+  const Icon = meta.Icon;
+  return (
+    <div
+      className="relative h-full rounded-xl border border-border bg-background/40 p-4 flex flex-col gap-3 overflow-hidden"
+    >
+      {/* Network badge */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div
+            className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: `${meta.color.replace(")", " / 0.15)")}` }}
+          >
+            <Icon className="w-4 h-4" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-foreground truncate leading-tight">
+              {post.user}
+            </div>
+            <div className="text-[10px] text-muted-foreground truncate">
+              {post.handle}
+            </div>
+          </div>
+        </div>
+        <div
+          className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
+          style={{ backgroundColor: "hsl(0 0% 100% / 0.04)", color: meta.color }}
+          aria-label={meta.label}
+        >
+          <Icon className="w-3.5 h-3.5" />
+        </div>
+      </div>
+
+      {/* Post text */}
+      <p className="text-sm text-foreground/90 leading-relaxed flex-1">
+        {post.text.split(/(#\w+)/g).map((part, i) =>
+          part.startsWith("#") ? (
+            <span key={i} className="font-semibold" style={{ color: PRIMARY }}>
+              {part}
+            </span>
+          ) : (
+            <span key={i}>{part}</span>
+          ),
+        )}
+      </p>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-2 border-t border-white/5">
+        <span className="uppercase tracking-wider">vía {meta.label}</span>
+        <span>hace 2h</span>
+      </div>
+    </div>
   );
 }
