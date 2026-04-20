@@ -270,8 +270,8 @@ function HeroCard({ className = "" }: { className?: string }) {
         </div>
 
         <div className="space-y-2 md:space-y-3 max-w-2xl">
-          <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight leading-tight">
-            Amos del Paraíso desde {FOUNDED_YEAR}
+          <h2 className="text-xl md:text-5xl font-extrabold tracking-tight leading-tight">
+            Amos del Paraíso desde el {FOUNDED_YEAR}
           </h2>
           <p className="text-xs md:text-base text-muted-foreground max-w-lg leading-relaxed line-clamp-3 md:line-clamp-none">
             Nacidos entre el desierto y el mar, Los Cabos United representa el orgullo
