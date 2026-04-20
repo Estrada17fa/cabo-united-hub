@@ -204,9 +204,12 @@ const Club = () => {
         {/* Academias — ancho completo */}
         <AcademyCard className="lg:col-span-12 md:col-span-2" />
 
-        {/* Desde el Vestuario y La Afición en vivo — 70% / 30% */}
-        <NotesCard className="lg:col-span-8 md:col-span-2" />
-        <FanTickerCard className="lg:col-span-4 md:col-span-2" />
+        {/* Desde el Vestuario y La Afición en vivo — 70% / 30% en desktop, tabs en móvil */}
+        <div className="md:hidden col-span-1">
+          <MobileBottomTabs activeTab={mobileBottomTab} setActiveTab={setMobileBottomTab} />
+        </div>
+        <NotesCard className="hidden md:block lg:col-span-8 md:col-span-2" />
+        <FanTickerCard className="hidden md:block lg:col-span-4 md:col-span-2" />
       </div>
     </motion.div>
   );
