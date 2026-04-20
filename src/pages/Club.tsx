@@ -295,57 +295,95 @@ function StatsCard({ className = "" }: { className?: string }) {
     return { bg: "hsl(0 84% 60%)", label: "P" };
   };
 
+  // Mini-tabla de stats
+  const MINI_STATS = [
+    { label: "PJ", value: 18 },
+    { label: "PG", value: 12 },
+    { label: "PP", value: 3 },
+  ];
+
   return (
     <CardShell className={className} interactive>
-      <div className="p-4 md:p-5 flex flex-col gap-3">
-        {/* Título: Temporada actual */}
-        <div className="text-center">
-          <div className="text-lg md:text-xl font-extrabold tracking-tight text-foreground leading-tight">
-            Apertura 2026
-          </div>
-          <div className="text-[9px] uppercase tracking-[0.25em] text-muted-foreground mt-0.5">
-            Temporada Actual
-          </div>
+      <div className="relative h-full p-4 md:p-5 flex flex-col gap-3">
+        {/* Label superior */}
+        <div className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          Apertura 2026 · <span className="text-foreground/70">Temporada Actual</span>
         </div>
 
-        <div className="border-t border-white/5" />
-
         {/* Hero stat: posición */}
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center py-2 md:py-3">
           <div
-            className="text-5xl md:text-6xl font-extrabold tabular-nums leading-none"
-            style={{ color: PRIMARY }}
+            className="text-[80px] md:text-[96px] font-extrabold tabular-nums leading-none"
+            style={{
+              color: PRIMARY,
+              textShadow:
+                "0 0 24px hsl(142 76% 45% / 0.45), 0 0 60px hsl(142 76% 45% / 0.15)",
+            }}
           >
             3°
           </div>
-          <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mt-2">
-            Posición Actual
+          <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground mt-1.5">
+            Posición en Liga Premier
           </div>
         </div>
 
-        <div className="border-t border-white/5" />
+        {/* Mini-tabla horizontal */}
+        <div className="flex items-stretch border-y border-white/5 py-2">
+          {MINI_STATS.map((s, i) => (
+            <div
+              key={s.label}
+              className={`flex-1 flex flex-col items-center justify-center ${
+                i < MINI_STATS.length - 1 ? "border-r border-white/5" : ""
+              }`}
+            >
+              <span className="text-base md:text-lg font-bold text-foreground tabular-nums leading-none">
+                {s.value}
+              </span>
+              <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground mt-1">
+                {s.label}
+              </span>
+            </div>
+          ))}
+        </div>
 
         {/* Últimos 5 partidos */}
-        <div className="flex flex-col items-center gap-1.5">
+        <div className="flex flex-col items-center gap-1.5 mt-auto">
           <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
             Últimos 5 partidos
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-start gap-2">
             {LAST_5.map((r, i) => {
               const s = resultStyle(r);
               return (
-                <div
-                  key={i}
-                  className="w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center justify-center text-[10px] md:text-[11px] font-bold text-background"
-                  style={{ backgroundColor: s.bg }}
-                  title={r === "W" ? "Ganado" : r === "D" ? "Empate" : "Perdido"}
-                >
-                  {s.label}
+                <div key={i} className="flex flex-col items-center gap-1">
+                  <div
+                    className="w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-[11px] md:text-xs font-bold text-background"
+                    style={{ backgroundColor: s.bg }}
+                    title={r === "W" ? "Ganado" : r === "D" ? "Empate" : "Perdido"}
+                  >
+                    {s.label}
+                  </div>
+                  <span
+                    className="text-[9px] uppercase tracking-wider font-semibold"
+                    style={{ color: s.bg }}
+                  >
+                    {s.label}
+                  </span>
                 </div>
               );
             })}
           </div>
         </div>
+
+        {/* Inner glow / gradient overlay (bottom) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-20 rounded-b-2xl"
+          style={{
+            background:
+              "linear-gradient(to top, hsl(0 0% 0% / 0.55) 0%, transparent 100%)",
+          }}
+        />
       </div>
     </CardShell>
   );
@@ -355,52 +393,81 @@ function StatsCard({ className = "" }: { className?: string }) {
 
 function PlayerOfWeekCard({ className = "" }: { className?: string }) {
   const p = PLAYER_OF_WEEK;
+  const stats = [
+    { label: "PJ", value: p.matches },
+    { label: "GOL", value: p.goals },
+    { label: "AST", value: p.assists },
+  ];
   return (
     <CardShell className={className} interactive>
+      {/* Barra acento verde a la izquierda */}
       <div
-        className="absolute left-0 top-0 bottom-0 w-1"
+        className="absolute left-0 top-0 bottom-0 w-1 z-10"
         style={{ background: PRIMARY }}
       />
-      <div className="p-5 md:p-6 h-full flex items-center gap-4">
-        <img
-          src={avatarUrl(p.name)}
-          alt={p.name}
-          className="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 shrink-0"
-          style={{ borderColor: `${PRIMARY.replace(")", " / 0.5)")}` }}
-        />
-        <div className="flex-1 min-w-0">
-          <div
-            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mb-1"
-            style={{
-              backgroundColor: "hsl(142 76% 45% / 0.12)",
-              color: PRIMARY,
-            }}
-          >
-            <Star className="w-2.5 h-2.5" /> AMO DE LA SEMANA
-          </div>
-          <div className="text-base md:text-lg font-bold text-foreground truncate">
-            {p.name}
-          </div>
-          <div className="text-xs text-muted-foreground mb-2">
-            {p.position} · #{p.number}
-          </div>
-          <div className="flex gap-3 text-[11px]">
-            <MiniStat label="PJ" value={p.matches} />
-            <MiniStat label="GOL" value={p.goals} />
-            <MiniStat label="AST" value={p.assists} />
+      <div className="relative h-full p-4 md:p-5 pl-5 md:pl-6 flex flex-col gap-4">
+        {/* Badge superior */}
+        <div
+          className="inline-flex self-start items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold"
+          style={{
+            backgroundColor: "hsl(142 76% 45% / 0.12)",
+            color: PRIMARY,
+          }}
+        >
+          <Star className="w-2.5 h-2.5" /> AMO DE LA SEMANA
+        </div>
+
+        {/* Header: avatar inline + nombre */}
+        <div className="flex items-center gap-3 min-w-0">
+          <img
+            src={avatarUrl(p.name)}
+            alt={p.name}
+            className="w-10 h-10 md:w-11 md:h-11 rounded-full border shrink-0"
+            style={{ borderColor: "hsl(142 76% 45% / 0.5)" }}
+          />
+          <div className="min-w-0">
+            <div className="text-2xl md:text-[28px] font-bold text-foreground truncate leading-tight">
+              {p.name}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {p.position} · #{p.number}
+            </div>
           </div>
         </div>
+
+        {/* Stats hero */}
+        <div className="mt-auto flex items-stretch">
+          {stats.map((s, i) => (
+            <div
+              key={s.label}
+              className={`flex-1 flex flex-col items-center justify-center py-1 ${
+                i < stats.length - 1 ? "border-r border-white/10" : ""
+              }`}
+            >
+              <span className="text-[40px] md:text-[44px] font-bold text-foreground tabular-nums leading-none">
+                {s.value}
+              </span>
+              <span
+                className="text-[10px] uppercase tracking-[0.2em] mt-1.5 font-semibold"
+                style={{ color: PRIMARY }}
+              >
+                {s.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Inner glow / gradient overlay (bottom) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-20 rounded-b-2xl"
+          style={{
+            background:
+              "linear-gradient(to top, hsl(0 0% 0% / 0.55) 0%, transparent 100%)",
+          }}
+        />
       </div>
     </CardShell>
-  );
-}
-
-function MiniStat({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="flex flex-col items-center">
-      <span className="font-bold text-foreground text-sm">{value}</span>
-      <span className="text-muted-foreground text-[9px] tracking-wider">{label}</span>
-    </div>
   );
 }
 
