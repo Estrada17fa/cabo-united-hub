@@ -10,6 +10,7 @@ import {
   Shield,
   Facebook,
   Instagram,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import stadiumHero from "@/assets/stadium-hero.jpg";
