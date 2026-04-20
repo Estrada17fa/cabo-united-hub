@@ -457,7 +457,7 @@ function RosterCard({
 
         {/* Amo del Partido — destacado */}
         <div
-          className="relative rounded-xl border overflow-hidden mb-5 p-4 flex items-center gap-4"
+          className="relative rounded-xl border overflow-hidden mb-5 p-4"
           style={{
             borderColor: "hsl(189 100% 38% / 0.35)",
             background:
@@ -468,48 +468,70 @@ function RosterCard({
             className="absolute left-0 top-0 bottom-0 w-1"
             style={{ background: PRIMARY }}
           />
-          <img
-            src={avatarUrl(p.name)}
-            alt={p.name}
-            className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 shrink-0"
-            style={{ borderColor: "hsl(189 100% 38% / 0.6)" }}
-          />
-          <div className="min-w-0 flex-1">
-            <div
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mb-1"
-              style={{ backgroundColor: "hsl(336 80% 77% / 0.15)", color: SECONDARY }}
-            >
-              <Star className="w-2.5 h-2.5" /> AMO DEL PARTIDO
+          <div className="flex items-center gap-3 md:gap-4">
+            <img
+              src={avatarUrl(p.name)}
+              alt={p.name}
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 shrink-0"
+              style={{ borderColor: "hsl(189 100% 38% / 0.6)" }}
+            />
+            <div className="min-w-0 flex-1">
+              <div
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mb-1"
+                style={{ backgroundColor: "hsl(336 80% 77% / 0.15)", color: SECONDARY }}
+              >
+                <Star className="w-2.5 h-2.5" /> AMO DEL PARTIDO
+              </div>
+              <div className="text-base md:text-lg font-bold text-foreground truncate leading-tight">
+                {p.name}
+              </div>
+              <div className="text-[11px] text-muted-foreground">
+                {p.position} · #{p.number} · Último partido
+              </div>
             </div>
-            <div className="text-base md:text-lg font-bold text-foreground truncate leading-tight">
-              {p.name}
-            </div>
-            <div className="text-[11px] text-muted-foreground">
-              {p.position} · #{p.number} · Último partido
+            <div className="hidden sm:flex items-stretch gap-3 shrink-0">
+              {[
+                { label: "GOL", value: p.goals },
+                { label: "AST", value: p.assists },
+                { label: "PJ", value: p.matches },
+              ].map((s, i, arr) => (
+                <div
+                  key={s.label}
+                  className={`flex flex-col items-center px-3 ${
+                    i < arr.length - 1 ? "border-r border-white/10" : ""
+                  }`}
+                >
+                  <span className="text-xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
+                    {s.value}
+                  </span>
+                  <span
+                    className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
+                    style={{ color: PRIMARY }}
+                  >
+                    {s.label}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="hidden sm:flex items-stretch gap-3 shrink-0">
+          {/* Mobile-only inline stats chips */}
+          <div className="flex sm:hidden items-center gap-1.5 mt-3 flex-wrap">
             {[
               { label: "GOL", value: p.goals },
               { label: "AST", value: p.assists },
               { label: "PJ", value: p.matches },
-            ].map((s, i, arr) => (
-              <div
+            ].map((s) => (
+              <span
                 key={s.label}
-                className={`flex flex-col items-center px-3 ${
-                  i < arr.length - 1 ? "border-r border-white/10" : ""
-                }`}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border"
+                style={{
+                  borderColor: "hsl(189 100% 38% / 0.3)",
+                  backgroundColor: "hsl(189 100% 38% / 0.08)",
+                }}
               >
-                <span className="text-xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
-                  {s.value}
-                </span>
-                <span
-                  className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
-                  style={{ color: PRIMARY }}
-                >
-                  {s.label}
-                </span>
-              </div>
+                <span className="tabular-nums font-bold text-foreground">{s.value}</span>
+                <span style={{ color: PRIMARY }}>{s.label}</span>
+              </span>
             ))}
           </div>
         </div>
