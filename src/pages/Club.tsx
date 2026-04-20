@@ -257,7 +257,7 @@ function HeroCard({ className = "" }: { className?: string }) {
       <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/30" />
       <div className="absolute inset-0 bg-gradient-to-r from-card/80 via-transparent to-transparent" />
 
-      <div className="relative h-full p-6 md:p-8 flex flex-col justify-between min-h-[320px]">
+      <div className="relative h-full p-5 md:p-8 flex flex-col justify-between min-h-[220px] md:min-h-[320px]">
         <div className="flex items-center gap-2">
           <span
             className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
@@ -271,11 +271,11 @@ function HeroCard({ className = "" }: { className?: string }) {
           </span>
         </div>
 
-        <div className="space-y-3 max-w-2xl">
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
+        <div className="space-y-2 md:space-y-3 max-w-2xl">
+          <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight leading-tight">
             Amos del Paraíso desde {FOUNDED_YEAR}
           </h2>
-          <p className="text-sm md:text-base text-muted-foreground max-w-lg leading-relaxed">
+          <p className="text-xs md:text-base text-muted-foreground max-w-lg leading-relaxed line-clamp-3 md:line-clamp-none">
             Nacidos entre el desierto y el mar, Los Cabos United representa el orgullo
             sudcaliforniano. Un club joven con un sueño grande: llevar a Baja California Sur a la élite del fútbol mexicano.
           </p>
@@ -293,18 +293,18 @@ function HeroCard({ className = "" }: { className?: string }) {
               {MILESTONES.map((m, i) => (
                 <div
                   key={m.year}
-                  className="relative z-10 flex flex-col items-center gap-1 min-w-[72px]"
+                  className="relative z-10 flex flex-col items-center gap-1 min-w-[64px] md:min-w-[72px]"
                 >
                   <div
-                    className="w-4 h-4 rounded-full border-2"
+                    className="w-3.5 h-3.5 md:w-4 md:h-4 rounded-full border-2"
                     style={{
                       backgroundColor: "hsl(0 0% 7%)",
                       borderColor: PRIMARY,
                       boxShadow: `0 0 10px ${PRIMARY.replace(")", " / 0.6)")}`,
                     }}
                   />
-                  <span className="text-xs font-bold text-foreground mt-1">{m.year}</span>
-                  <span className="text-[10px] text-muted-foreground text-center leading-tight">
+                  <span className="text-[11px] md:text-xs font-bold text-foreground mt-1">{m.year}</span>
+                  <span className="text-[9px] md:text-[10px] text-muted-foreground text-center leading-tight">
                     {m.label}
                   </span>
                 </div>
@@ -330,7 +330,7 @@ function StadiumCard({ className = "" }: { className?: string }) {
       <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-card/70 via-transparent to-transparent" />
 
-      <div className="relative h-full p-6 md:p-7 flex flex-col justify-between min-h-[320px]">
+      <div className="relative h-full p-5 md:p-7 flex flex-col justify-between min-h-[160px] md:min-h-[320px]">
         <div className="flex items-center gap-2">
           <span
             className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
@@ -344,11 +344,11 @@ function StadiumCard({ className = "" }: { className?: string }) {
           </span>
         </div>
 
-        <div className="space-y-2">
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
+        <div className="space-y-1.5 md:space-y-2">
+          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight leading-tight">
             Estadio Don Koll
           </h2>
-          <div className="flex items-center gap-1.5 text-xs md:text-sm text-muted-foreground">
+          <div className="flex items-center gap-1.5 text-[11px] md:text-sm text-muted-foreground">
             <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: PRIMARY }} />
             <span>San José del Cabo, B.C.S.</span>
           </div>
