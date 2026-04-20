@@ -454,15 +454,15 @@ function RosterCard({
 
   return (
     <CardShell className={className}>
-      <div className="p-5 md:p-6 h-full flex flex-col">
-        <div className="flex items-center justify-between mb-4">
+      <div className="p-4 md:p-6 h-full flex flex-col">
+        <div className="flex items-center justify-between mb-3 md:mb-4">
           <h3 className="text-title">Nuestro Plantel</h3>
           <Shield className="w-4 h-4" style={{ color: PRIMARY }} />
         </div>
 
         {/* Amo del Partido — destacado */}
         <div
-          className="relative rounded-xl border overflow-hidden mb-5 p-4 flex items-center gap-4"
+          className="relative rounded-xl border overflow-hidden mb-4 md:mb-5 p-3 md:p-4 flex items-center gap-3 md:gap-4"
           style={{
             borderColor: "hsl(189 100% 38% / 0.35)",
             background:
@@ -493,7 +493,7 @@ function RosterCard({
               {p.position} · #{p.number} · Último partido
             </div>
           </div>
-          <div className="hidden sm:flex items-stretch gap-3 shrink-0">
+          <div className="flex items-stretch gap-2 md:gap-3 shrink-0">
             {[
               { label: "GOL", value: p.goals },
               { label: "AST", value: p.assists },
@@ -501,15 +501,15 @@ function RosterCard({
             ].map((s, i, arr) => (
               <div
                 key={s.label}
-                className={`flex flex-col items-center px-3 ${
+                className={`flex flex-col items-center px-2 md:px-3 ${
                   i < arr.length - 1 ? "border-r border-white/10" : ""
                 }`}
               >
-                <span className="text-xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
+                <span className="text-2xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
                   {s.value}
                 </span>
                 <span
-                  className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
+                  className="text-[8px] md:text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
                   style={{ color: PRIMARY }}
                 >
                   {s.label}
@@ -549,24 +549,24 @@ function RosterCard({
         </div>
 
         {/* Player grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 flex-1 content-start">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 flex-1 content-start">
           {players.map((player) => (
             <motion.div
               key={player.name}
               whileHover={{ y: -3 }}
               transition={{ type: "spring", stiffness: 300, damping: 22 }}
-              className="group relative rounded-xl border border-border bg-background/40 p-3 transition-all hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(189_100%_38%/0.4)]"
+              className="group relative rounded-xl border border-border bg-background/40 p-2 md:p-3 transition-all hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(189_100%_38%/0.4)]"
             >
-              <div className="aspect-square rounded-lg bg-muted flex items-center justify-center mb-2 relative overflow-hidden">
-                <span className="text-3xl font-extrabold text-muted-foreground/60">
+              <div className="aspect-[5/4] md:aspect-square rounded-lg bg-muted flex items-center justify-center mb-1.5 md:mb-2 relative overflow-hidden">
+                <span className="text-2xl md:text-3xl font-extrabold text-muted-foreground/60">
                   {player.number}
                 </span>
-                <span className="absolute top-1 right-1 text-sm">{player.flag}</span>
+                <span className="absolute top-1 right-1 text-xs md:text-sm">{player.flag}</span>
               </div>
-              <div className="text-xs font-semibold text-foreground truncate">
+              <div className="text-[11px] md:text-xs font-semibold text-foreground truncate leading-tight">
                 {player.name}
               </div>
-              <div className="text-[10px] text-muted-foreground truncate">
+              <div className="text-[9px] md:text-[10px] text-muted-foreground truncate leading-tight">
                 {player.role ? player.role : `#${player.number}`}
               </div>
 
@@ -594,7 +594,7 @@ function RosterCard({
 function AcademyCard({ className = "" }: { className?: string }) {
   return (
     <CardShell className={className} interactive>
-      <div className="p-5 md:p-6 h-full flex flex-col">
+      <div className="p-4 md:p-6 h-full flex flex-col">
         <div className="mb-4">
           <span className="text-label text-muted-foreground">Academias LC United</span>
           <h3 className="text-title mt-1">Formando a los próximos Amos</h3>
@@ -650,7 +650,7 @@ function AcademyCard({ className = "" }: { className?: string }) {
 function NotesCard({ className = "" }: { className?: string }) {
   return (
     <CardShell className={className}>
-      <div className="p-5 md:p-6 h-full flex flex-col">
+      <div className="p-4 md:p-6 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-title">Desde el Vestuario</h3>
           <a
@@ -738,7 +738,7 @@ function FanTickerCard({ className = "" }: { className?: string }) {
 
   return (
     <CardShell className={className}>
-      <div className="relative h-full p-5 md:p-6 flex flex-col min-h-[320px]">
+      <div className="relative h-full p-4 md:p-6 flex flex-col min-h-[280px] md:min-h-[320px]">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
