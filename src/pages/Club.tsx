@@ -37,9 +37,8 @@ const PLAYER_OF_WEEK = {
   name: "Diego Hernández",
   position: "Delantero",
   number: 9,
-  matches: 17,
-  goals: 12,
-  assists: 6,
+  matchLabel: "Cabos United 3-1 Real Cabos",
+  timesAwarded: 4,
 };
 
 type Position = "Porteros" | "Defensas" | "Mediocampistas" | "Delanteros" | "Cuerpo Técnico";
