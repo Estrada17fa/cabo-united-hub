@@ -187,7 +187,15 @@ const Club = () => {
       <PositionMiniCard />
 
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+        }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4"
+      >
         {/* ADN Cabeño y Tu Estadio — 70% / 30% en desktop, tabs en móvil */}
         <div className="md:hidden col-span-1">
           <MobileTopTabs activeTab={mobileTopTab} setActiveTab={setMobileTopTab} />
@@ -211,7 +219,7 @@ const Club = () => {
         </div>
         <NotesCard className="hidden md:block lg:col-span-8 md:col-span-2" />
         <FanTickerCard className="hidden md:block lg:col-span-4 md:col-span-2" />
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
@@ -233,8 +241,11 @@ function CardShell({
 }) {
   return (
     <motion.div
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
+      }}
       whileHover={interactive ? { scale: 1.005 } : undefined}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className={`relative rounded-2xl border border-border bg-card overflow-hidden transition-all duration-300 ${
         interactive ? "hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_24px_-8px_hsl(189_100%_38%/0.4)]" : ""
       } ${className}`}
