@@ -377,11 +377,11 @@ function PositionMiniCard() {
 
   return (
     <div className="flex justify-center">
-      <div className="inline-flex items-center gap-4 md:gap-6 rounded-full border border-border bg-card/80 backdrop-blur px-4 md:px-5 py-2 md:py-2.5 shadow-lg">
+      <div className="inline-flex items-center gap-3 md:gap-6 rounded-full border border-border bg-card/80 backdrop-blur px-4 md:px-5 py-1.5 md:py-2.5 shadow-lg whitespace-nowrap">
         {/* Lugar actual */}
         <div className="flex items-center gap-2">
           <span
-            className="text-2xl md:text-3xl font-extrabold tabular-nums leading-none"
+            className="text-[28px] md:text-3xl font-extrabold tabular-nums leading-none"
             style={{
               color: PRIMARY,
               textShadow:
@@ -390,7 +390,7 @@ function PositionMiniCard() {
           >
             3°
           </span>
-          <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted-foreground leading-tight max-w-[80px]">
+          <span className="text-[8px] md:text-[10px] uppercase tracking-[0.18em] md:tracking-[0.2em] text-muted-foreground leading-tight max-w-[70px] md:max-w-[80px]">
             Lugar
             <br />
             Actual
@@ -398,20 +398,20 @@ function PositionMiniCard() {
         </div>
 
         {/* Divider */}
-        <div className="h-7 w-px bg-white/10" />
+        <div className="h-6 md:h-7 w-px bg-white/10" />
 
         {/* Últimos 5 partidos */}
         <div className="flex items-center gap-2">
           <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted-foreground leading-tight hidden sm:inline">
             Últimos 5
           </span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 md:gap-1.5">
             {LAST_5.map((r, i) => {
               const s = resultStyle(r);
               return (
                 <div
                   key={i}
-                  className="w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center justify-center text-[10px] md:text-[11px] font-bold text-background"
+                  className="w-5 h-5 md:w-7 md:h-7 rounded-full flex items-center justify-center text-[9px] md:text-[11px] font-bold text-background"
                   style={{ backgroundColor: s.bg }}
                   title={r === "W" ? "Ganado" : r === "D" ? "Empate" : "Perdido"}
                 >
