@@ -462,7 +462,7 @@ function RosterCard({
           <div className="min-w-0 flex-1">
             <div
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mb-1"
-              style={{ backgroundColor: "hsl(189 100% 38% / 0.15)", color: PRIMARY }}
+              style={{ backgroundColor: "hsl(336 80% 77% / 0.15)", color: SECONDARY }}
             >
               <Star className="w-2.5 h-2.5" /> AMO DEL PARTIDO
             </div>
