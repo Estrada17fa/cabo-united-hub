@@ -176,6 +176,7 @@ function avatarUrl(name: string) {
 
 const Club = () => {
   const [activePos, setActivePos] = useState<Position>("Delanteros");
+  const [mobileBottomTab, setMobileBottomTab] = useState<"vestuario" | "aficion">("vestuario");
 
   return (
     <motion.div
@@ -203,9 +204,12 @@ const Club = () => {
         {/* Academias — ancho completo */}
         <AcademyCard className="lg:col-span-12 md:col-span-2" />
 
-        {/* Desde el Vestuario y La Afición en vivo — 70% / 30% */}
-        <NotesCard className="lg:col-span-8 md:col-span-2" />
-        <FanTickerCard className="lg:col-span-4 md:col-span-2" />
+        {/* Desde el Vestuario y La Afición en vivo — 70% / 30% en desktop, tabs en móvil */}
+        <div className="md:hidden col-span-1">
+          <MobileBottomTabs activeTab={mobileBottomTab} setActiveTab={setMobileBottomTab} />
+        </div>
+        <NotesCard className="hidden md:block lg:col-span-8 md:col-span-2" />
+        <FanTickerCard className="hidden md:block lg:col-span-4 md:col-span-2" />
       </div>
     </motion.div>
   );
@@ -253,7 +257,7 @@ function HeroCard({ className = "" }: { className?: string }) {
       <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/30" />
       <div className="absolute inset-0 bg-gradient-to-r from-card/80 via-transparent to-transparent" />
 
-      <div className="relative h-full p-6 md:p-8 flex flex-col justify-between min-h-[320px]">
+      <div className="relative h-full p-5 md:p-8 flex flex-col justify-between min-h-[220px] md:min-h-[320px]">
         <div className="flex items-center gap-2">
           <span
             className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
@@ -267,11 +271,11 @@ function HeroCard({ className = "" }: { className?: string }) {
           </span>
         </div>
 
-        <div className="space-y-3 max-w-2xl">
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
+        <div className="space-y-2 md:space-y-3 max-w-2xl">
+          <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight leading-tight">
             Amos del Paraíso desde {FOUNDED_YEAR}
           </h2>
-          <p className="text-sm md:text-base text-muted-foreground max-w-lg leading-relaxed">
+          <p className="text-xs md:text-base text-muted-foreground max-w-lg leading-relaxed line-clamp-3 md:line-clamp-none">
             Nacidos entre el desierto y el mar, Los Cabos United representa el orgullo
             sudcaliforniano. Un club joven con un sueño grande: llevar a Baja California Sur a la élite del fútbol mexicano.
           </p>
@@ -289,18 +293,18 @@ function HeroCard({ className = "" }: { className?: string }) {
               {MILESTONES.map((m, i) => (
                 <div
                   key={m.year}
-                  className="relative z-10 flex flex-col items-center gap-1 min-w-[72px]"
+                  className="relative z-10 flex flex-col items-center gap-1 min-w-[64px] md:min-w-[72px]"
                 >
                   <div
-                    className="w-4 h-4 rounded-full border-2"
+                    className="w-3.5 h-3.5 md:w-4 md:h-4 rounded-full border-2"
                     style={{
                       backgroundColor: "hsl(0 0% 7%)",
                       borderColor: PRIMARY,
                       boxShadow: `0 0 10px ${PRIMARY.replace(")", " / 0.6)")}`,
                     }}
                   />
-                  <span className="text-xs font-bold text-foreground mt-1">{m.year}</span>
-                  <span className="text-[10px] text-muted-foreground text-center leading-tight">
+                  <span className="text-[11px] md:text-xs font-bold text-foreground mt-1">{m.year}</span>
+                  <span className="text-[9px] md:text-[10px] text-muted-foreground text-center leading-tight">
                     {m.label}
                   </span>
                 </div>
@@ -326,7 +330,7 @@ function StadiumCard({ className = "" }: { className?: string }) {
       <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-card/70 via-transparent to-transparent" />
 
-      <div className="relative h-full p-6 md:p-7 flex flex-col justify-between min-h-[320px]">
+      <div className="relative h-full p-5 md:p-7 flex flex-col justify-between min-h-[160px] md:min-h-[320px]">
         <div className="flex items-center gap-2">
           <span
             className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
@@ -340,11 +344,11 @@ function StadiumCard({ className = "" }: { className?: string }) {
           </span>
         </div>
 
-        <div className="space-y-2">
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
+        <div className="space-y-1.5 md:space-y-2">
+          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight leading-tight">
             Estadio Don Koll
           </h2>
-          <div className="flex items-center gap-1.5 text-xs md:text-sm text-muted-foreground">
+          <div className="flex items-center gap-1.5 text-[11px] md:text-sm text-muted-foreground">
             <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: PRIMARY }} />
             <span>San José del Cabo, B.C.S.</span>
           </div>
@@ -442,6 +446,15 @@ function RosterCard({
   const players = ROSTER[activePos];
   const positions: Position[] = ["Porteros", "Defensas", "Mediocampistas", "Delanteros", "Cuerpo Técnico"];
   const p = PLAYER_OF_WEEK;
+  const [expandPlayers, setExpandPlayers] = useState(false);
+
+  // Reset collapse when changing position tab
+  useEffect(() => {
+    setExpandPlayers(false);
+  }, [activePos]);
+
+  const visiblePlayers = expandPlayers ? players : players.slice(0, 4);
+  const hiddenCount = players.length - visiblePlayers.length;
 
   return (
     <CardShell className={className}>
@@ -453,7 +466,7 @@ function RosterCard({
 
         {/* Amo del Partido — destacado */}
         <div
-          className="relative rounded-xl border overflow-hidden mb-5 p-4 flex items-center gap-4"
+          className="relative rounded-xl border overflow-hidden mb-5 p-4"
           style={{
             borderColor: "hsl(189 100% 38% / 0.35)",
             background:
@@ -464,48 +477,70 @@ function RosterCard({
             className="absolute left-0 top-0 bottom-0 w-1"
             style={{ background: PRIMARY }}
           />
-          <img
-            src={avatarUrl(p.name)}
-            alt={p.name}
-            className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 shrink-0"
-            style={{ borderColor: "hsl(189 100% 38% / 0.6)" }}
-          />
-          <div className="min-w-0 flex-1">
-            <div
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mb-1"
-              style={{ backgroundColor: "hsl(336 80% 77% / 0.15)", color: SECONDARY }}
-            >
-              <Star className="w-2.5 h-2.5" /> AMO DEL PARTIDO
+          <div className="flex items-center gap-3 md:gap-4">
+            <img
+              src={avatarUrl(p.name)}
+              alt={p.name}
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 shrink-0"
+              style={{ borderColor: "hsl(189 100% 38% / 0.6)" }}
+            />
+            <div className="min-w-0 flex-1">
+              <div
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mb-1"
+                style={{ backgroundColor: "hsl(336 80% 77% / 0.15)", color: SECONDARY }}
+              >
+                <Star className="w-2.5 h-2.5" /> AMO DEL PARTIDO
+              </div>
+              <div className="text-base md:text-lg font-bold text-foreground truncate leading-tight">
+                {p.name}
+              </div>
+              <div className="text-[11px] text-muted-foreground">
+                {p.position} · #{p.number} · Último partido
+              </div>
             </div>
-            <div className="text-base md:text-lg font-bold text-foreground truncate leading-tight">
-              {p.name}
-            </div>
-            <div className="text-[11px] text-muted-foreground">
-              {p.position} · #{p.number} · Último partido
+            <div className="hidden sm:flex items-stretch gap-3 shrink-0">
+              {[
+                { label: "GOL", value: p.goals },
+                { label: "AST", value: p.assists },
+                { label: "PJ", value: p.matches },
+              ].map((s, i, arr) => (
+                <div
+                  key={s.label}
+                  className={`flex flex-col items-center px-3 ${
+                    i < arr.length - 1 ? "border-r border-white/10" : ""
+                  }`}
+                >
+                  <span className="text-xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
+                    {s.value}
+                  </span>
+                  <span
+                    className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
+                    style={{ color: PRIMARY }}
+                  >
+                    {s.label}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="hidden sm:flex items-stretch gap-3 shrink-0">
+          {/* Mobile-only inline stats chips */}
+          <div className="flex sm:hidden items-center gap-1.5 mt-3 flex-wrap">
             {[
               { label: "GOL", value: p.goals },
               { label: "AST", value: p.assists },
               { label: "PJ", value: p.matches },
-            ].map((s, i, arr) => (
-              <div
+            ].map((s) => (
+              <span
                 key={s.label}
-                className={`flex flex-col items-center px-3 ${
-                  i < arr.length - 1 ? "border-r border-white/10" : ""
-                }`}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border"
+                style={{
+                  borderColor: "hsl(189 100% 38% / 0.3)",
+                  backgroundColor: "hsl(189 100% 38% / 0.08)",
+                }}
               >
-                <span className="text-xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
-                  {s.value}
-                </span>
-                <span
-                  className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
-                  style={{ color: PRIMARY }}
-                >
-                  {s.label}
-                </span>
-              </div>
+                <span className="tabular-nums font-bold text-foreground">{s.value}</span>
+                <span style={{ color: PRIMARY }}>{s.label}</span>
+              </span>
             ))}
           </div>
         </div>
@@ -541,40 +576,62 @@ function RosterCard({
 
         {/* Player grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 flex-1 content-start">
-          {players.map((player) => (
-            <motion.div
-              key={player.name}
-              whileHover={{ y: -3 }}
-              transition={{ type: "spring", stiffness: 300, damping: 22 }}
-              className="group relative rounded-xl border border-border bg-background/40 p-3 transition-all hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(189_100%_38%/0.4)]"
-            >
-              <div className="aspect-square rounded-lg bg-muted flex items-center justify-center mb-2 relative overflow-hidden">
-                <span className="text-3xl font-extrabold text-muted-foreground/60">
-                  {player.number}
-                </span>
-                <span className="absolute top-1 right-1 text-sm">{player.flag}</span>
-              </div>
-              <div className="text-xs font-semibold text-foreground truncate">
-                {player.name}
-              </div>
-              <div className="text-[10px] text-muted-foreground truncate">
-                {player.role ? player.role : `#${player.number}`}
-              </div>
-
-              {/* Hover detail overlay */}
-              <div className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-center text-[11px]">
-                <div className="font-semibold text-foreground mb-1.5 truncate">
+          {/* On mobile, show collapsed list. On md+, show all. */}
+          {players.map((player, idx) => {
+            const hideOnMobile = !expandPlayers && idx >= 4;
+            return (
+              <motion.div
+                key={player.name}
+                whileHover={{ y: -3 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className={`group relative rounded-xl border border-border bg-background/40 p-3 transition-all hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(189_100%_38%/0.4)] ${
+                  hideOnMobile ? "hidden md:block" : ""
+                }`}
+              >
+                <div className="aspect-square rounded-lg bg-muted flex items-center justify-center mb-2 relative overflow-hidden">
+                  <span className="text-3xl font-extrabold text-muted-foreground/60">
+                    {player.number}
+                  </span>
+                  <span className="absolute top-1 right-1 text-sm">{player.flag}</span>
+                </div>
+                <div className="text-xs font-semibold text-foreground truncate">
                   {player.name}
                 </div>
-                <div className="space-y-0.5 text-muted-foreground">
-                  <div>Edad: <span className="text-foreground">{player.age}</span></div>
-                  <div>Altura: <span className="text-foreground">{player.height}</span></div>
-                  <div>Partidos: <span className="text-foreground">{player.matches}</span></div>
+                <div className="text-[10px] text-muted-foreground truncate">
+                  {player.role ? player.role : `#${player.number}`}
                 </div>
-              </div>
-            </motion.div>
-          ))}
+
+                {/* Hover detail overlay */}
+                <div className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-center text-[11px]">
+                  <div className="font-semibold text-foreground mb-1.5 truncate">
+                    {player.name}
+                  </div>
+                  <div className="space-y-0.5 text-muted-foreground">
+                    <div>Edad: <span className="text-foreground">{player.age}</span></div>
+                    <div>Altura: <span className="text-foreground">{player.height}</span></div>
+                    <div>Partidos: <span className="text-foreground">{player.matches}</span></div>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
+
+        {/* Mobile-only "Ver todos" toggle */}
+        {players.length > 4 && (
+          <button
+            onClick={() => setExpandPlayers((v) => !v)}
+            className="md:hidden mt-3 self-center inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold border transition-all"
+            style={{
+              borderColor: "hsl(189 100% 38% / 0.4)",
+              color: PRIMARY,
+              backgroundColor: "hsl(189 100% 38% / 0.08)",
+            }}
+          >
+            {expandPlayers ? "Ver menos" : `Ver todos (${players.length})`}
+            <ArrowRight className={`w-3 h-3 transition-transform ${expandPlayers ? "rotate-90" : ""}`} />
+          </button>
+        )}
       </div>
     </CardShell>
   );
@@ -591,13 +648,13 @@ function AcademyCard({ className = "" }: { className?: string }) {
           <h3 className="text-title mt-1">Formando a los próximos Amos</h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 flex-1">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-2.5 flex-1">
           {ACADEMY_CATEGORIES.map((c) => {
             const Icon = c.icon;
             return (
               <div
                 key={c.name}
-                className="rounded-xl border border-border bg-background/40 p-3 flex items-start gap-3"
+                className="rounded-xl border border-border bg-background/40 p-2.5 md:p-3 flex items-center md:items-start gap-3"
               >
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
@@ -607,7 +664,7 @@ function AcademyCard({ className = "" }: { className?: string }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold text-foreground">{c.name}</div>
-                  <div className="text-[11px] text-muted-foreground leading-snug">
+                  <div className="text-[11px] text-muted-foreground leading-snug line-clamp-1 md:line-clamp-none">
                     {c.desc}
                   </div>
                 </div>
@@ -616,19 +673,21 @@ function AcademyCard({ className = "" }: { className?: string }) {
           })}
         </div>
 
-        <div className="mt-4 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
+        <div className="mt-3 md:mt-4 flex flex-row gap-2 items-center justify-between">
+          <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold md:h-10 md:px-4">
             Inscribe a tu hijo
           </Button>
           <a
             href="#"
-            className="inline-flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider whitespace-nowrap"
             style={{
               backgroundColor: "hsl(189 100% 38% / 0.12)",
               color: PRIMARY,
             }}
           >
-            CURSOS DE VERANO 2025 <ArrowRight className="w-3 h-3" />
+            <span className="hidden sm:inline">CURSOS DE VERANO 2025</span>
+            <span className="sm:hidden">VERANO 2025</span>
+            <ArrowRight className="w-3 h-3" />
           </a>
         </div>
       </div>
@@ -841,5 +900,151 @@ function SocialPost({ post }: { post: (typeof FAN_POSTS)[number] }) {
         <span>hace 2h</span>
       </div>
     </div>
+  );
+}
+
+/* -------------------------------- Mobile-only combined Vestuario + Afición -------------------------------- */
+
+function MobileBottomTabs({
+  activeTab,
+  setActiveTab,
+}: {
+  activeTab: "vestuario" | "aficion";
+  setActiveTab: (t: "vestuario" | "aficion") => void;
+}) {
+  const [fanIndex, setFanIndex] = useState(0);
+
+  useEffect(() => {
+    if (activeTab !== "aficion") return;
+    const id = setInterval(() => {
+      setFanIndex((i) => (i + 1) % FAN_POSTS.length);
+    }, 4500);
+    return () => clearInterval(id);
+  }, [activeTab]);
+
+  return (
+    <CardShell>
+      <div className="p-4 flex flex-col" style={{ minHeight: 360 }}>
+        {/* Tabs header */}
+        <div className="flex items-center gap-1.5 mb-4 p-1 rounded-full border border-border bg-background/40 self-start">
+          {[
+            { id: "vestuario" as const, label: "Vestuario" },
+            { id: "aficion" as const, label: "Afición" },
+          ].map((t) => {
+            const active = activeTab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                className="px-3 py-1 rounded-full text-[11px] font-semibold transition-all"
+                style={
+                  active
+                    ? {
+                        backgroundColor: "hsl(189 100% 38% / 0.15)",
+                        color: PRIMARY,
+                        border: "1px solid hsl(189 100% 38% / 0.5)",
+                      }
+                    : {
+                        color: "hsl(0 0% 63%)",
+                        border: "1px solid transparent",
+                      }
+                }
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 flex flex-col">
+          {activeTab === "vestuario" ? (
+            <div className="grid grid-cols-1 gap-2.5">
+              {NOTES.map((n) => (
+                <a
+                  key={n.title}
+                  href="#"
+                  className="group rounded-xl border border-border bg-background/40 p-3 flex items-center gap-3 transition-all hover:border-[hsl(189_100%_38%/0.4)]"
+                >
+                  <span
+                    className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider shrink-0"
+                    style={{
+                      backgroundColor: "hsl(0 0% 7% / 0.8)",
+                      color: n.tagColor,
+                      border: `1px solid ${n.tagColor.replace(")", " / 0.4)")}`,
+                    }}
+                  >
+                    {n.tag}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-semibold text-foreground leading-snug line-clamp-2">
+                      {n.title}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-2">
+                      <span>{n.date}</span>
+                      <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+                      <span>{n.read}</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="w-1.5 h-1.5 rounded-full animate-pulse"
+                    style={{ backgroundColor: PRIMARY }}
+                  />
+                  <span className="text-label text-muted-foreground">En vivo</span>
+                </div>
+                <span
+                  className="text-[10px] font-bold tracking-wider"
+                  style={{ color: PRIMARY }}
+                >
+                  #AmosDelParaíso
+                </span>
+              </div>
+
+              <div className="relative flex-1 overflow-hidden" style={{ minHeight: 220 }}>
+                <AnimatePresence mode="wait">
+                  {FAN_POSTS.map((post, i) =>
+                    i === fanIndex ? (
+                      <motion.div
+                        key={post.handle + i}
+                        initial={{ y: 30, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -30, opacity: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="absolute inset-0 flex flex-col"
+                      >
+                        <SocialPost post={post} />
+                      </motion.div>
+                    ) : null,
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <div className="flex items-center justify-center gap-1.5 mt-3">
+                {FAN_POSTS.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setFanIndex(i)}
+                    aria-label={`Post ${i + 1}`}
+                    className="h-1 rounded-full transition-all"
+                    style={{
+                      width: i === fanIndex ? 18 : 6,
+                      backgroundColor:
+                        i === fanIndex ? PRIMARY : "hsl(0 0% 100% / 0.15)",
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </CardShell>
   );
 }
