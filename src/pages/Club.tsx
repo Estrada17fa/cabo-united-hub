@@ -104,7 +104,7 @@ const ACADEMY_CATEGORIES = [
 const NOTES = [
   {
     tag: "Noticias",
-    tagColor: "hsl(142 76% 50%)",
+    tagColor: "hsl(336 80% 77%)",
     title: "Los Cabos United firma nuevo acuerdo con la afición local",
     date: "12 Abr 2025",
     read: "3 min",
@@ -162,12 +162,13 @@ const FAN_POSTS: { user: string; handle: string; network: SocialNetwork; text: s
 
 /* --------------------------------- Helpers --------------------------------- */
 
-const PRIMARY = "hsl(142 76% 45%)"; // Team accent green for "Tu Club" page
+const PRIMARY = "hsl(189 100% 38%)"; // Brand blue from LCU crest (#00abc4)
+const SECONDARY = "hsl(336 80% 77%)"; // Brand pink from LCU crest (#f298c0)
 
 function avatarUrl(name: string) {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
     name,
-  )}&background=0a0a0a&color=22c55e&bold=true&size=128`;
+  )}&background=0a0a0a&color=00abc4&bold=true&size=128`;
 }
 
 /* ---------------------------------- Page ---------------------------------- */
@@ -226,7 +227,7 @@ function CardShell({
       whileHover={interactive ? { scale: 1.005 } : undefined}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className={`relative rounded-2xl border border-border bg-card overflow-hidden transition-all duration-300 ${
-        interactive ? "hover:border-[hsl(142_76%_45%/0.5)] hover:shadow-[0_0_24px_-8px_hsl(142_76%_45%/0.4)]" : ""
+        interactive ? "hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_24px_-8px_hsl(189_100%_38%/0.4)]" : ""
       } ${className}`}
       style={style}
     >
@@ -255,7 +256,7 @@ function HeroCard({ className = "" }: { className?: string }) {
             style={{
               color: PRIMARY,
               borderColor: `${PRIMARY.replace(")", " / 0.4)")}`,
-              backgroundColor: "hsl(142 76% 45% / 0.08)",
+              backgroundColor: "hsl(189 100% 38% / 0.08)",
             }}
           >
             ADN Cabeño
@@ -279,7 +280,7 @@ function HeroCard({ className = "" }: { className?: string }) {
               {/* connecting line */}
               <div
                 className="absolute left-3 right-3 top-2 h-px"
-                style={{ background: "hsl(142 76% 45% / 0.3)" }}
+                style={{ background: "hsl(189 100% 38% / 0.3)" }}
               />
               {MILESTONES.map((m, i) => (
                 <div
@@ -342,7 +343,7 @@ function StatsCard({ className = "" }: { className?: string }) {
             style={{
               color: PRIMARY,
               textShadow:
-                "0 0 24px hsl(142 76% 45% / 0.45), 0 0 60px hsl(142 76% 45% / 0.15)",
+                "0 0 24px hsl(189 100% 38% / 0.45), 0 0 60px hsl(189 100% 38% / 0.15)",
             }}
           >
             3°
@@ -443,9 +444,9 @@ function RosterCard({
         <div
           className="relative rounded-xl border overflow-hidden mb-5 p-4 flex items-center gap-4"
           style={{
-            borderColor: "hsl(142 76% 45% / 0.35)",
+            borderColor: "hsl(189 100% 38% / 0.35)",
             background:
-              "linear-gradient(90deg, hsl(142 76% 45% / 0.10) 0%, hsl(0 0% 7% / 0.4) 60%, transparent 100%)",
+              "linear-gradient(90deg, hsl(189 100% 38% / 0.10) 0%, hsl(0 0% 7% / 0.4) 60%, transparent 100%)",
           }}
         >
           <div
@@ -456,12 +457,12 @@ function RosterCard({
             src={avatarUrl(p.name)}
             alt={p.name}
             className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 shrink-0"
-            style={{ borderColor: "hsl(142 76% 45% / 0.6)" }}
+            style={{ borderColor: "hsl(189 100% 38% / 0.6)" }}
           />
           <div className="min-w-0 flex-1">
             <div
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mb-1"
-              style={{ backgroundColor: "hsl(142 76% 45% / 0.15)", color: PRIMARY }}
+              style={{ backgroundColor: "hsl(336 80% 77% / 0.15)", color: SECONDARY }}
             >
               <Star className="w-2.5 h-2.5" /> AMO DEL PARTIDO
             </div>
@@ -510,7 +511,7 @@ function RosterCard({
                 style={
                   active
                     ? {
-                        backgroundColor: "hsl(142 76% 45% / 0.15)",
+                        backgroundColor: "hsl(189 100% 38% / 0.15)",
                         color: PRIMARY,
                         borderColor: `${PRIMARY.replace(")", " / 0.5)")}`,
                       }
@@ -534,7 +535,7 @@ function RosterCard({
               key={player.name}
               whileHover={{ y: -3 }}
               transition={{ type: "spring", stiffness: 300, damping: 22 }}
-              className="group relative rounded-xl border border-border bg-background/40 p-3 transition-all hover:border-[hsl(142_76%_45%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(142_76%_45%/0.4)]"
+              className="group relative rounded-xl border border-border bg-background/40 p-3 transition-all hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(189_100%_38%/0.4)]"
             >
               <div className="aspect-square rounded-lg bg-muted flex items-center justify-center mb-2 relative overflow-hidden">
                 <span className="text-3xl font-extrabold text-muted-foreground/60">
@@ -589,7 +590,7 @@ function AcademyCard({ className = "" }: { className?: string }) {
               >
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: "hsl(142 76% 45% / 0.12)" }}
+                  style={{ backgroundColor: "hsl(189 100% 38% / 0.12)" }}
                 >
                   <Icon className="w-4 h-4" style={{ color: PRIMARY }} />
                 </div>
@@ -612,7 +613,7 @@ function AcademyCard({ className = "" }: { className?: string }) {
             href="#"
             className="inline-flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider"
             style={{
-              backgroundColor: "hsl(142 76% 45% / 0.12)",
+              backgroundColor: "hsl(189 100% 38% / 0.12)",
               color: PRIMARY,
             }}
           >
@@ -646,7 +647,7 @@ function NotesCard({ className = "" }: { className?: string }) {
               key={n.title}
               href="#"
               whileHover={{ y: -2 }}
-              className="group rounded-xl border border-border bg-background/40 overflow-hidden flex flex-col transition-all hover:border-[hsl(142_76%_45%/0.4)]"
+              className="group rounded-xl border border-border bg-background/40 overflow-hidden flex flex-col transition-all hover:border-[hsl(189_100%_38%/0.4)]"
             >
               <div className="relative h-24 overflow-hidden bg-muted">
                 <div
