@@ -45,39 +45,52 @@ type Position = "Porteros" | "Defensas" | "Mediocampistas" | "Delanteros" | "Cue
 
 const ROSTER: Record<
   Position,
-  { name: string; number: number | string; flag: string; age: number; height: string; matches: number; role?: string }[]
+  {
+    name: string;
+    number: number | string;
+    flag: string;
+    country: string;
+    age: number;
+    height: string;
+    matches: number;
+    goals: number;
+    assists: number;
+    timesAmo: number;
+    positionDetail: string;
+    role?: string;
+  }[]
 > = {
   Porteros: [
-    { name: "Luis Robles", number: 1, flag: "🇲🇽", age: 28, height: "1.88 m", matches: 16 },
-    { name: "Andrés Castillo", number: 12, flag: "🇲🇽", age: 22, height: "1.86 m", matches: 4 },
-    { name: "Mateo Salinas", number: 25, flag: "🇦🇷", age: 31, height: "1.90 m", matches: 0 },
-    { name: "Iván Flores", number: 30, flag: "🇲🇽", age: 19, height: "1.84 m", matches: 1 },
+    { name: "Luis Robles", number: 1, flag: "🇲🇽", country: "México", age: 28, height: "1.88 m", matches: 16, goals: 0, assists: 1, timesAmo: 3, positionDetail: "Portero Titular" },
+    { name: "Andrés Castillo", number: 12, flag: "🇲🇽", country: "México", age: 22, height: "1.86 m", matches: 4, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Suplente" },
+    { name: "Mateo Salinas", number: 25, flag: "🇦🇷", country: "Argentina", age: 31, height: "1.90 m", matches: 0, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Tercer Portero" },
+    { name: "Iván Flores", number: 30, flag: "🇲🇽", country: "México", age: 19, height: "1.84 m", matches: 1, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Cantera" },
   ],
   Defensas: [
-    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽", age: 26, height: "1.82 m", matches: 18 },
-    { name: "Rafael Márquez", number: 4, flag: "🇲🇽", age: 30, height: "1.85 m", matches: 17 },
-    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴", age: 24, height: "1.83 m", matches: 15 },
-    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽", age: 22, height: "1.79 m", matches: 12 },
-    { name: "Joaquín Rivas", number: 13, flag: "🇨🇱", age: 27, height: "1.81 m", matches: 9 },
+    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽", country: "México", age: 26, height: "1.82 m", matches: 18, goals: 1, assists: 3, timesAmo: 2, positionDetail: "Lateral Derecho" },
+    { name: "Rafael Márquez", number: 4, flag: "🇲🇽", country: "México", age: 30, height: "1.85 m", matches: 17, goals: 2, assists: 1, timesAmo: 5, positionDetail: "Defensa Central" },
+    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴", country: "Colombia", age: 24, height: "1.83 m", matches: 15, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Defensa Central" },
+    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽", country: "México", age: 22, height: "1.79 m", matches: 12, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Lateral Izquierdo" },
+    { name: "Joaquín Rivas", number: 13, flag: "🇨🇱", country: "Chile", age: 27, height: "1.81 m", matches: 9, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Defensa Suplente" },
   ],
   Mediocampistas: [
-    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽", age: 25, height: "1.76 m", matches: 18 },
-    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷", age: 28, height: "1.78 m", matches: 16 },
-    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽", age: 24, height: "1.74 m", matches: 17 },
-    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾", age: 23, height: "1.77 m", matches: 11 },
-    { name: "Marco Téllez", number: 17, flag: "🇲🇽", age: 21, height: "1.75 m", matches: 8 },
+    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽", country: "México", age: 25, height: "1.76 m", matches: 18, goals: 2, assists: 4, timesAmo: 3, positionDetail: "Mediocampista Defensivo" },
+    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷", country: "Argentina", age: 28, height: "1.78 m", matches: 16, goals: 3, assists: 5, timesAmo: 4, positionDetail: "Mediocampista Central" },
+    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽", country: "México", age: 24, height: "1.74 m", matches: 17, goals: 5, assists: 7, timesAmo: 6, positionDetail: "Mediocampista Ofensivo" },
+    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾", country: "Uruguay", age: 23, height: "1.77 m", matches: 11, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Volante por Banda" },
+    { name: "Marco Téllez", number: 17, flag: "🇲🇽", country: "México", age: 21, height: "1.75 m", matches: 8, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Mediocampista Suplente" },
   ],
   Delanteros: [
-    { name: "Diego Hernández", number: 9, flag: "🇲🇽", age: 26, height: "1.80 m", matches: 17 },
-    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷", age: 25, height: "1.79 m", matches: 16 },
-    { name: "Adrián Solís", number: 19, flag: "🇲🇽", age: 22, height: "1.77 m", matches: 13 },
-    { name: "Tomás Rincón", number: 22, flag: "🇻🇪", age: 27, height: "1.83 m", matches: 7 },
+    { name: "Diego Hernández", number: 9, flag: "🇲🇽", country: "México", age: 26, height: "1.80 m", matches: 17, goals: 12, assists: 4, timesAmo: 4, positionDetail: "Delantero Centro" },
+    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷", country: "Brasil", age: 25, height: "1.79 m", matches: 16, goals: 8, assists: 6, timesAmo: 3, positionDetail: "Extremo Izquierdo" },
+    { name: "Adrián Solís", number: 19, flag: "🇲🇽", country: "México", age: 22, height: "1.77 m", matches: 13, goals: 5, assists: 3, timesAmo: 2, positionDetail: "Extremo Derecho" },
+    { name: "Tomás Rincón", number: 22, flag: "🇻🇪", country: "Venezuela", age: 27, height: "1.83 m", matches: 7, goals: 2, assists: 1, timesAmo: 0, positionDetail: "Delantero Suplente" },
   ],
   "Cuerpo Técnico": [
-    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", age: 52, height: "—", matches: 18, role: "Director Técnico" },
-    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", age: 45, height: "—", matches: 18, role: "Asistente Técnico" },
-    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", age: 41, height: "—", matches: 18, role: "Preparador Físico" },
-    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", age: 38, height: "—", matches: 18, role: "Entrenador de Porteros" },
+    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", country: "México", age: 52, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Director Técnico", role: "Director Técnico" },
+    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", country: "México", age: 45, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Asistente Técnico", role: "Asistente Técnico" },
+    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", country: "México", age: 41, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Preparador Físico", role: "Preparador Físico" },
+    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", country: "España", age: 38, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Entrenador de Porteros", role: "Entrenador de Porteros" },
   ],
 };
 
@@ -583,15 +596,68 @@ function RosterCard({
                 </div>
 
                 {/* Hover detail overlay */}
-                <div className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-center text-[11px]">
-                  <div className="font-semibold text-foreground mb-1.5 truncate">
-                    {player.name}
+                <div
+                  className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity p-2.5 md:p-3 flex flex-col justify-between border"
+                  style={{ borderColor: "hsl(189 100% 38% / 0.5)" }}
+                >
+                  {/* TOP ROW: name + position + flag/country */}
+                  <div className="flex items-start gap-1.5 min-w-0">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[12px] md:text-[13px] font-bold text-foreground leading-tight truncate">
+                        {player.name}
+                      </div>
+                      <div className="text-[9px] md:text-[10px] text-muted-foreground leading-tight truncate">
+                        {player.positionDetail}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-0.5 text-[9px] md:text-[10px] text-muted-foreground shrink-0 leading-tight">
+                      <span className="text-xs md:text-sm">{player.flag}</span>
+                      <span className="hidden sm:inline truncate max-w-[60px]">{player.country}</span>
+                    </div>
                   </div>
-                  <div className="space-y-0.5 text-muted-foreground">
-                    <div>Edad: <span className="text-foreground">{player.age}</span></div>
-                    <div>Altura: <span className="text-foreground">{player.height}</span></div>
-                    <div>Partidos: <span className="text-foreground">{player.matches}</span></div>
+
+                  {/* STATS ROW */}
+                  <div className="flex items-stretch justify-between gap-1 my-1">
+                    {[
+                      { value: player.goals, label: "GOL" },
+                      { value: player.assists, label: "AST" },
+                      { value: player.matches, label: "PJ" },
+                    ].map((s, i) => (
+                      <div key={s.label} className="flex items-center flex-1">
+                        <div className="flex flex-col items-center justify-center flex-1 min-w-0">
+                          <span className="text-[22px] md:text-[28px] font-extrabold text-foreground tabular-nums leading-none">
+                            {s.value}
+                          </span>
+                          <span
+                            className="text-[8px] md:text-[9px] uppercase tracking-[0.12em] mt-0.5 font-semibold"
+                            style={{ color: PRIMARY }}
+                          >
+                            {s.label}
+                          </span>
+                        </div>
+                        {i < 2 && <div className="w-px self-stretch bg-white/10" />}
+                      </div>
+                    ))}
                   </div>
+
+                  {/* BOTTOM BADGE */}
+                  {player.timesAmo > 0 ? (
+                    <div className="flex justify-center">
+                      <span
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold border"
+                        style={{
+                          backgroundColor: "hsl(336 80% 77% / 0.12)",
+                          color: SECONDARY,
+                          borderColor: "hsl(336 80% 77% / 0.35)",
+                        }}
+                      >
+                        <Star className="w-2.5 h-2.5 fill-current" />
+                        ×{player.timesAmo} VECES AMO
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="h-[18px]" aria-hidden />
+                  )}
                 </div>
               </motion.div>
             );
