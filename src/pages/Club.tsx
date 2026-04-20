@@ -282,12 +282,12 @@ function HeroCard({ className = "" }: { className?: string }) {
           </p>
         </div>
 
-        <div className="relative pt-2 md:pt-4 self-end">
+        <div className="relative pt-2 md:pt-4 self-end md:self-stretch md:w-full">
           <div
-            className="absolute left-[16.666%] right-[16.666%] top-[9px] h-px md:left-3 md:right-3 md:top-2"
+            className="absolute left-[16.666%] right-[16.666%] top-[9px] h-px md:left-[8.333%] md:right-[8.333%] md:top-[14px]"
             style={{ background: "hsl(189 100% 38% / 0.3)" }}
           />
-          <div className="relative grid grid-cols-3 gap-2 md:flex md:min-w-0 md:justify-between">
+          <div className="relative grid grid-cols-3 gap-2 md:gap-0 md:w-full">
             {MILESTONES.map((m) => (
               <div
                 key={m.year}
