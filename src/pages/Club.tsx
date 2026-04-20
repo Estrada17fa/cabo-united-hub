@@ -182,13 +182,13 @@ const Club = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="space-y-3 md:space-y-6 pb-8"
+      className="space-y-6 pb-8"
     >
       {/* Mini-card de posición — centrada arriba */}
       <PositionMiniCard />
 
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 md:auto-rows-[minmax(140px,auto)] gap-2 md:gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
         {/* ADN Cabeño y Tu Estadio — 70% / 30% */}
         <HeroCard className="lg:col-span-8 md:col-span-2" />
         <StadiumCard className="lg:col-span-4 md:col-span-2 h-full" />
@@ -253,7 +253,7 @@ function HeroCard({ className = "" }: { className?: string }) {
       <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/30" />
       <div className="absolute inset-0 bg-gradient-to-r from-card/80 via-transparent to-transparent" />
 
-      <div className="relative h-full p-4 md:p-8 flex flex-col justify-between min-h-0 max-h-[280px] md:max-h-none md:min-h-[320px]">
+      <div className="relative h-full p-6 md:p-8 flex flex-col justify-between min-h-[320px]">
         <div className="flex items-center gap-2">
           <span
             className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
@@ -267,18 +267,18 @@ function HeroCard({ className = "" }: { className?: string }) {
           </span>
         </div>
 
-        <div className="space-y-2 md:space-y-3 max-w-2xl">
-          <h2 className="text-xl md:text-5xl font-extrabold tracking-tight leading-tight">
+        <div className="space-y-3 max-w-2xl">
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
             Amos del Paraíso desde {FOUNDED_YEAR}
           </h2>
-          <p className="text-[11px] md:text-base text-muted-foreground max-w-lg leading-relaxed line-clamp-2 md:line-clamp-none">
+          <p className="text-sm md:text-base text-muted-foreground max-w-lg leading-relaxed">
             Nacidos entre el desierto y el mar, Los Cabos United representa el orgullo
             sudcaliforniano. Un club joven con un sueño grande: llevar a Baja California Sur a la élite del fútbol mexicano.
           </p>
         </div>
 
         {/* Timeline */}
-        <div className="pt-2 md:pt-4 relative">
+        <div className="pt-4">
           <div className="relative overflow-x-auto scrollbar-hide -mx-2 px-2">
             <div className="flex items-start gap-2 min-w-max md:min-w-0 md:justify-between relative">
               {/* connecting line */}
@@ -289,7 +289,7 @@ function HeroCard({ className = "" }: { className?: string }) {
               {MILESTONES.map((m, i) => (
                 <div
                   key={m.year}
-                  className="relative z-10 flex flex-col items-center gap-1 min-w-[64px] md:min-w-[72px]"
+                  className="relative z-10 flex flex-col items-center gap-1 min-w-[72px]"
                 >
                   <div
                     className="w-4 h-4 rounded-full border-2"
@@ -299,23 +299,14 @@ function HeroCard({ className = "" }: { className?: string }) {
                       boxShadow: `0 0 10px ${PRIMARY.replace(")", " / 0.6)")}`,
                     }}
                   />
-                  <span className="text-[11px] md:text-xs font-bold text-foreground mt-1">{m.year}</span>
-                  <span className="text-[9px] md:text-[10px] text-muted-foreground text-center leading-tight">
+                  <span className="text-xs font-bold text-foreground mt-1">{m.year}</span>
+                  <span className="text-[10px] text-muted-foreground text-center leading-tight">
                     {m.label}
                   </span>
                 </div>
               ))}
             </div>
           </div>
-          {/* Right-fade hint (mobile only) */}
-          <div
-            aria-hidden
-            className="md:hidden pointer-events-none absolute right-0 top-2 bottom-0 w-10"
-            style={{
-              background:
-                "linear-gradient(to left, hsl(0 0% 7%) 0%, transparent 100%)",
-            }}
-          />
         </div>
       </div>
     </CardShell>
@@ -335,7 +326,7 @@ function StadiumCard({ className = "" }: { className?: string }) {
       <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-card/70 via-transparent to-transparent" />
 
-      <div className="relative h-full p-4 md:p-7 flex flex-col justify-between h-[160px] md:h-auto md:min-h-[320px]">
+      <div className="relative h-full p-6 md:p-7 flex flex-col justify-between min-h-[320px]">
         <div className="flex items-center gap-2">
           <span
             className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
@@ -350,10 +341,10 @@ function StadiumCard({ className = "" }: { className?: string }) {
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight leading-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
             Estadio Don Koll
           </h2>
-          <div className="hidden md:flex items-center gap-1.5 text-xs md:text-sm text-muted-foreground">
+          <div className="flex items-center gap-1.5 text-xs md:text-sm text-muted-foreground">
             <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: PRIMARY }} />
             <span>San José del Cabo, B.C.S.</span>
           </div>
@@ -386,11 +377,11 @@ function PositionMiniCard() {
 
   return (
     <div className="flex justify-center">
-      <div className="inline-flex items-center gap-3 md:gap-6 rounded-full border border-border bg-card/80 backdrop-blur px-4 md:px-5 py-1.5 md:py-2.5 shadow-lg whitespace-nowrap">
+      <div className="inline-flex items-center gap-4 md:gap-6 rounded-full border border-border bg-card/80 backdrop-blur px-4 md:px-5 py-2 md:py-2.5 shadow-lg">
         {/* Lugar actual */}
         <div className="flex items-center gap-2">
           <span
-            className="text-[28px] md:text-3xl font-extrabold tabular-nums leading-none"
+            className="text-2xl md:text-3xl font-extrabold tabular-nums leading-none"
             style={{
               color: PRIMARY,
               textShadow:
@@ -399,7 +390,7 @@ function PositionMiniCard() {
           >
             3°
           </span>
-          <span className="text-[8px] md:text-[10px] uppercase tracking-[0.18em] md:tracking-[0.2em] text-muted-foreground leading-tight max-w-[70px] md:max-w-[80px]">
+          <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted-foreground leading-tight max-w-[80px]">
             Lugar
             <br />
             Actual
@@ -407,20 +398,20 @@ function PositionMiniCard() {
         </div>
 
         {/* Divider */}
-        <div className="h-6 md:h-7 w-px bg-white/10" />
+        <div className="h-7 w-px bg-white/10" />
 
         {/* Últimos 5 partidos */}
         <div className="flex items-center gap-2">
           <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted-foreground leading-tight hidden sm:inline">
             Últimos 5
           </span>
-          <div className="flex items-center gap-1 md:gap-1.5">
+          <div className="flex items-center gap-1.5">
             {LAST_5.map((r, i) => {
               const s = resultStyle(r);
               return (
                 <div
                   key={i}
-                  className="w-5 h-5 md:w-7 md:h-7 rounded-full flex items-center justify-center text-[9px] md:text-[11px] font-bold text-background"
+                  className="w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center justify-center text-[10px] md:text-[11px] font-bold text-background"
                   style={{ backgroundColor: s.bg }}
                   title={r === "W" ? "Ganado" : r === "D" ? "Empate" : "Perdido"}
                 >
@@ -454,15 +445,15 @@ function RosterCard({
 
   return (
     <CardShell className={className}>
-      <div className="p-4 md:p-6 h-full flex flex-col">
-        <div className="flex items-center justify-between mb-3 md:mb-4">
+      <div className="p-5 md:p-6 h-full flex flex-col">
+        <div className="flex items-center justify-between mb-4">
           <h3 className="text-title">Nuestro Plantel</h3>
           <Shield className="w-4 h-4" style={{ color: PRIMARY }} />
         </div>
 
         {/* Amo del Partido — destacado */}
         <div
-          className="relative rounded-xl border overflow-hidden mb-4 md:mb-5 p-3 md:p-4 flex items-center gap-3 md:gap-4"
+          className="relative rounded-xl border overflow-hidden mb-5 p-4 flex items-center gap-4"
           style={{
             borderColor: "hsl(189 100% 38% / 0.35)",
             background:
@@ -493,7 +484,7 @@ function RosterCard({
               {p.position} · #{p.number} · Último partido
             </div>
           </div>
-          <div className="flex items-stretch gap-2 md:gap-3 shrink-0">
+          <div className="hidden sm:flex items-stretch gap-3 shrink-0">
             {[
               { label: "GOL", value: p.goals },
               { label: "AST", value: p.assists },
@@ -501,15 +492,15 @@ function RosterCard({
             ].map((s, i, arr) => (
               <div
                 key={s.label}
-                className={`flex flex-col items-center px-2 md:px-3 ${
+                className={`flex flex-col items-center px-3 ${
                   i < arr.length - 1 ? "border-r border-white/10" : ""
                 }`}
               >
-                <span className="text-2xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
+                <span className="text-xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
                   {s.value}
                 </span>
                 <span
-                  className="text-[8px] md:text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
+                  className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
                   style={{ color: PRIMARY }}
                 >
                   {s.label}
@@ -549,24 +540,24 @@ function RosterCard({
         </div>
 
         {/* Player grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3 flex-1 content-start">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 flex-1 content-start">
           {players.map((player) => (
             <motion.div
               key={player.name}
               whileHover={{ y: -3 }}
               transition={{ type: "spring", stiffness: 300, damping: 22 }}
-              className="group relative rounded-xl border border-border bg-background/40 p-2 md:p-3 transition-all hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(189_100%_38%/0.4)]"
+              className="group relative rounded-xl border border-border bg-background/40 p-3 transition-all hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(189_100%_38%/0.4)]"
             >
-              <div className="aspect-[5/4] md:aspect-square rounded-lg bg-muted flex items-center justify-center mb-1.5 md:mb-2 relative overflow-hidden">
-                <span className="text-2xl md:text-3xl font-extrabold text-muted-foreground/60">
+              <div className="aspect-square rounded-lg bg-muted flex items-center justify-center mb-2 relative overflow-hidden">
+                <span className="text-3xl font-extrabold text-muted-foreground/60">
                   {player.number}
                 </span>
-                <span className="absolute top-1 right-1 text-xs md:text-sm">{player.flag}</span>
+                <span className="absolute top-1 right-1 text-sm">{player.flag}</span>
               </div>
-              <div className="text-[11px] md:text-xs font-semibold text-foreground truncate leading-tight">
+              <div className="text-xs font-semibold text-foreground truncate">
                 {player.name}
               </div>
-              <div className="text-[9px] md:text-[10px] text-muted-foreground truncate leading-tight">
+              <div className="text-[10px] text-muted-foreground truncate">
                 {player.role ? player.role : `#${player.number}`}
               </div>
 
@@ -594,7 +585,7 @@ function RosterCard({
 function AcademyCard({ className = "" }: { className?: string }) {
   return (
     <CardShell className={className} interactive>
-      <div className="p-4 md:p-6 h-full flex flex-col">
+      <div className="p-5 md:p-6 h-full flex flex-col">
         <div className="mb-4">
           <span className="text-label text-muted-foreground">Academias LC United</span>
           <h3 className="text-title mt-1">Formando a los próximos Amos</h3>
@@ -650,7 +641,7 @@ function AcademyCard({ className = "" }: { className?: string }) {
 function NotesCard({ className = "" }: { className?: string }) {
   return (
     <CardShell className={className}>
-      <div className="p-4 md:p-6 h-full flex flex-col">
+      <div className="p-5 md:p-6 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-title">Desde el Vestuario</h3>
           <a
@@ -738,7 +729,7 @@ function FanTickerCard({ className = "" }: { className?: string }) {
 
   return (
     <CardShell className={className}>
-      <div className="relative h-full p-4 md:p-6 flex flex-col min-h-[280px] md:min-h-[320px]">
+      <div className="relative h-full p-5 md:p-6 flex flex-col min-h-[320px]">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
