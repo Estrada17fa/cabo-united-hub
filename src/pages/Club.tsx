@@ -894,10 +894,20 @@ function MobileTopTabs({
   setActiveTab: (t: "adn" | "estadio") => void;
 }) {
   return (
-    <CardShell>
-      <div className="p-4 flex flex-col" style={{ minHeight: 320 }}>
+    <CardShell interactive>
+      {/* Background image — cubre toda la card, cambia según tab */}
+      <img
+        src={stadiumHero}
+        alt={activeTab === "adn" ? "Los Cabos United" : "Estadio Don Koll"}
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      {/* Overlays para legibilidad */}
+      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/30" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-card/70 to-transparent" />
+
+      <div className="relative p-4 flex flex-col" style={{ minHeight: 340 }}>
         {/* Tabs header */}
-        <div className="flex items-center gap-1.5 mb-4 p-1 rounded-full border border-border bg-background/40 self-start">
+        <div className="flex items-center gap-1.5 mb-4 p-1 rounded-full border border-border bg-card/70 backdrop-blur-md self-start">
           {[
             { id: "adn" as const, label: "ADN Cabeño" },
             { id: "estadio" as const, label: "Tu Estadio" },
@@ -928,7 +938,7 @@ function MobileTopTabs({
         </div>
 
         {/* Content */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col justify-end">
           {activeTab === "adn" ? (
             <div className="relative flex flex-col gap-3">
               <div className="space-y-1.5">
@@ -970,21 +980,13 @@ function MobileTopTabs({
               </div>
             </div>
           ) : (
-            <div className="relative flex-1 flex flex-col rounded-xl overflow-hidden border border-border" style={{ minHeight: 220 }}>
-              <img
-                src={stadiumHero}
-                alt="Estadio Don Koll"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-card via-card/85 to-transparent" />
-              <div className="relative mt-auto p-4 space-y-1.5">
-                <h2 className="text-lg font-extrabold tracking-tight leading-[1.1]">
-                  Estadio Don Koll
-                </h2>
-                <div className="flex items-start gap-1.5 text-[11px] text-muted-foreground">
-                  <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: PRIMARY }} />
-                  <span>C. P.º Pacífico, Los Cangrejos, 23473 Cabo San Lucas, B.C.S.</span>
-                </div>
+            <div className="space-y-1.5">
+              <h2 className="text-lg font-extrabold tracking-tight leading-[1.1]">
+                Estadio Don Koll
+              </h2>
+              <div className="flex items-start gap-1.5 text-[11px] text-muted-foreground">
+                <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: PRIMARY }} />
+                <span>C. P.º Pacífico, Los Cangrejos, 23473 Cabo San Lucas, B.C.S.</span>
               </div>
             </div>
           )}
