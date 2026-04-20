@@ -608,7 +608,10 @@ function RosterCard({
                         {player.name}
                       </div>
                       <div className="text-[9px] md:text-[10px] text-muted-foreground leading-tight truncate">
-                        {player.age} años · {player.birthState}
+                        {player.age} años
+                      </div>
+                      <div className="text-[9px] md:text-[10px] text-muted-foreground leading-tight truncate">
+                        {player.birthState}
                       </div>
                       <div
                         className="text-[9px] md:text-[10px] font-semibold leading-tight truncate mt-0.5"
