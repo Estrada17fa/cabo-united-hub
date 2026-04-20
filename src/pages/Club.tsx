@@ -184,14 +184,11 @@ const Club = () => {
     >
       {/* Bento Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
-        {/* Posición y Amo de la Semana — mitad y mitad */}
-        <StatsCard className="lg:col-span-6 md:col-span-1 h-full" />
-        <PlayerOfWeekCard className="lg:col-span-6 md:col-span-1 h-full" />
+        {/* ADN Cabeño y Posición — 70% / 30% */}
+        <HeroCard className="lg:col-span-8 md:col-span-2" />
+        <StatsCard className="lg:col-span-4 md:col-span-2 h-full" />
 
-        {/* Header ADN Cabeño — ancho completo */}
-        <HeroCard className="lg:col-span-12 md:col-span-2" />
-
-        {/* Nuestro Plantel — ancho completo */}
+        {/* Nuestro Plantel — ancho completo (con Amo del Partido integrado) */}
         <RosterCard
           className="lg:col-span-12 md:col-span-2"
           activePos={activePos}
@@ -201,7 +198,7 @@ const Club = () => {
         {/* Academias — ancho completo */}
         <AcademyCard className="lg:col-span-12 md:col-span-2" />
 
-        {/* Desde el Vestuario y La Afición en vivo — mitad y mitad */}
+        {/* Desde el Vestuario y La Afición en vivo — 70% / 30% */}
         <NotesCard className="lg:col-span-8 md:col-span-2" />
         <FanTickerCard className="lg:col-span-4 md:col-span-2" />
       </div>
