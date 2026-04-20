@@ -335,7 +335,7 @@ function StadiumCard({ className = "" }: { className?: string }) {
       <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/20" />
       <div className="absolute inset-0 bg-gradient-to-r from-card/70 via-transparent to-transparent" />
 
-      <div className="relative h-full p-6 md:p-7 flex flex-col justify-between min-h-[320px]">
+      <div className="relative h-full p-4 md:p-7 flex flex-col justify-between h-[160px] md:h-auto md:min-h-[320px]">
         <div className="flex items-center gap-2">
           <span
             className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
@@ -350,10 +350,10 @@ function StadiumCard({ className = "" }: { className?: string }) {
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">
+          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight leading-tight">
             Estadio Don Koll
           </h2>
-          <div className="flex items-center gap-1.5 text-xs md:text-sm text-muted-foreground">
+          <div className="hidden md:flex items-center gap-1.5 text-xs md:text-sm text-muted-foreground">
             <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: PRIMARY }} />
             <span>San José del Cabo, B.C.S.</span>
           </div>
