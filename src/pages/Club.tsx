@@ -22,9 +22,9 @@ import ligaPremierLogo from "@/assets/liga-premier-logo.png";
 const FOUNDED_YEAR = 2022;
 
 const MILESTONES = [
-  { year: "Ene 2022", label: "Fundación" },
-  { year: "Ago 2022", label: "Debút" },
-  { year: "May 2024", label: "Campeones" },
+  { year: "Enero 2022", label: "Fundación" },
+  { year: "Agosto 2022", label: "Debút" },
+  { year: "Mayo 2024", label: "Campeones" },
 ];
 
 const SEASON_STATS = [
