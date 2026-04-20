@@ -1,12 +1,18 @@
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function MiPerfil() {
   const { profile, user } = useAuth();
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen flex items-center justify-center p-4"
+    >
       <div className="bg-card border border-border rounded-2xl p-8 max-w-md w-full text-center space-y-4">
         <Avatar className="w-20 h-20 mx-auto">
           <AvatarImage src={profile?.avatar_url ?? undefined} />
@@ -22,6 +28,6 @@ export default function MiPerfil() {
           Esta página se desarrollará próximamente.
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }

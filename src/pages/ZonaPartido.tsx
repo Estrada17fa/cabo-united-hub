@@ -50,7 +50,12 @@ const ZonaPartido = () => {
   const nextMatch = featuredMatch;
 
   return (
-    <div className="space-y-6 pb-8">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-6 pb-8"
+    >
       <MatchHeroCard match={nextMatch} />
       <MatchTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
@@ -78,7 +83,7 @@ const ZonaPartido = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 };
 
