@@ -253,7 +253,7 @@ function HeroCard({ className = "" }: { className?: string }) {
       <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/30" />
       <div className="absolute inset-0 bg-gradient-to-r from-card/80 via-transparent to-transparent" />
 
-      <div className="relative h-full p-6 md:p-8 flex flex-col justify-between min-h-[320px]">
+      <div className="relative h-full p-4 md:p-8 flex flex-col justify-between min-h-0 max-h-[280px] md:max-h-none md:min-h-[320px]">
         <div className="flex items-center gap-2">
           <span
             className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
@@ -267,18 +267,18 @@ function HeroCard({ className = "" }: { className?: string }) {
           </span>
         </div>
 
-        <div className="space-y-3 max-w-2xl">
-          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
+        <div className="space-y-2 md:space-y-3 max-w-2xl">
+          <h2 className="text-xl md:text-5xl font-extrabold tracking-tight leading-tight">
             Amos del Paraíso desde {FOUNDED_YEAR}
           </h2>
-          <p className="text-sm md:text-base text-muted-foreground max-w-lg leading-relaxed">
+          <p className="text-[11px] md:text-base text-muted-foreground max-w-lg leading-relaxed line-clamp-2 md:line-clamp-none">
             Nacidos entre el desierto y el mar, Los Cabos United representa el orgullo
             sudcaliforniano. Un club joven con un sueño grande: llevar a Baja California Sur a la élite del fútbol mexicano.
           </p>
         </div>
 
         {/* Timeline */}
-        <div className="pt-4">
+        <div className="pt-2 md:pt-4 relative">
           <div className="relative overflow-x-auto scrollbar-hide -mx-2 px-2">
             <div className="flex items-start gap-2 min-w-max md:min-w-0 md:justify-between relative">
               {/* connecting line */}
@@ -289,7 +289,7 @@ function HeroCard({ className = "" }: { className?: string }) {
               {MILESTONES.map((m, i) => (
                 <div
                   key={m.year}
-                  className="relative z-10 flex flex-col items-center gap-1 min-w-[72px]"
+                  className="relative z-10 flex flex-col items-center gap-1 min-w-[64px] md:min-w-[72px]"
                 >
                   <div
                     className="w-4 h-4 rounded-full border-2"
@@ -299,14 +299,23 @@ function HeroCard({ className = "" }: { className?: string }) {
                       boxShadow: `0 0 10px ${PRIMARY.replace(")", " / 0.6)")}`,
                     }}
                   />
-                  <span className="text-xs font-bold text-foreground mt-1">{m.year}</span>
-                  <span className="text-[10px] text-muted-foreground text-center leading-tight">
+                  <span className="text-[11px] md:text-xs font-bold text-foreground mt-1">{m.year}</span>
+                  <span className="text-[9px] md:text-[10px] text-muted-foreground text-center leading-tight">
                     {m.label}
                   </span>
                 </div>
               ))}
             </div>
           </div>
+          {/* Right-fade hint (mobile only) */}
+          <div
+            aria-hidden
+            className="md:hidden pointer-events-none absolute right-0 top-2 bottom-0 w-10"
+            style={{
+              background:
+                "linear-gradient(to left, hsl(0 0% 7%) 0%, transparent 100%)",
+            }}
+          />
         </div>
       </div>
     </CardShell>
