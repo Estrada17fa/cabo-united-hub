@@ -174,6 +174,7 @@ function avatarUrl(name: string) {
 const Club = () => {
   const [activePos, setActivePos] = useState<Position>("Delanteros");
   const [mobileBottomTab, setMobileBottomTab] = useState<"vestuario" | "aficion">("vestuario");
+  const [mobileTopTab, setMobileTopTab] = useState<"adn" | "estadio">("adn");
 
   return (
     <motion.div
@@ -187,9 +188,12 @@ const Club = () => {
 
       {/* Bento Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
-        {/* ADN Cabeño y Tu Estadio — 70% / 30% */}
-        <HeroCard className="lg:col-span-8 md:col-span-2" />
-        <StadiumCard className="lg:col-span-4 md:col-span-2 h-full" />
+        {/* ADN Cabeño y Tu Estadio — 70% / 30% en desktop, tabs en móvil */}
+        <div className="md:hidden col-span-1">
+          <MobileTopTabs activeTab={mobileTopTab} setActiveTab={setMobileTopTab} />
+        </div>
+        <HeroCard className="hidden md:block lg:col-span-8 md:col-span-2" />
+        <StadiumCard className="hidden md:block lg:col-span-4 md:col-span-2 h-full" />
 
         {/* Nuestro Plantel — ancho completo (con Amo del Partido integrado) */}
         <RosterCard
@@ -877,6 +881,116 @@ function SocialPost({ post }: { post: (typeof FAN_POSTS)[number] }) {
         <span>hace 2h</span>
       </div>
     </div>
+  );
+}
+
+/* -------------------------------- Mobile-only combined ADN + Estadio -------------------------------- */
+
+function MobileTopTabs({
+  activeTab,
+  setActiveTab,
+}: {
+  activeTab: "adn" | "estadio";
+  setActiveTab: (t: "adn" | "estadio") => void;
+}) {
+  return (
+    <CardShell>
+      <div className="p-4 flex flex-col" style={{ minHeight: 320 }}>
+        {/* Tabs header */}
+        <div className="flex items-center gap-1.5 mb-4 p-1 rounded-full border border-border bg-background/40 self-start">
+          {[
+            { id: "adn" as const, label: "ADN Cabeño" },
+            { id: "estadio" as const, label: "Tu Estadio" },
+          ].map((t) => {
+            const active = activeTab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                className="px-3 py-1 rounded-full text-[11px] font-semibold transition-all"
+                style={
+                  active
+                    ? {
+                        backgroundColor: "hsl(189 100% 38% / 0.15)",
+                        color: PRIMARY,
+                        border: "1px solid hsl(189 100% 38% / 0.5)",
+                      }
+                    : {
+                        color: "hsl(0 0% 63%)",
+                        border: "1px solid transparent",
+                      }
+                }
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 flex flex-col">
+          {activeTab === "adn" ? (
+            <div className="relative flex flex-col gap-3">
+              <div className="space-y-1.5">
+                <h2 className="text-lg font-extrabold tracking-tight leading-[1.1]">
+                  Amos del Paraíso desde el {FOUNDED_YEAR}
+                </h2>
+                <p className="text-[11px] text-muted-foreground leading-[1.4]">
+                  Nacidos entre el desierto y el mar, Los Cabos United representa el orgullo
+                  sudcaliforniano. Un club joven con un sueño grande: llevar a Baja California Sur a la élite del fútbol mexicano.
+                </p>
+              </div>
+
+              <div className="relative pt-2">
+                <div
+                  className="absolute left-[16.666%] right-[16.666%] top-[15px] h-px"
+                  style={{ background: "hsl(189 100% 38% / 0.3)" }}
+                />
+                <div className="relative grid grid-cols-3 gap-2">
+                  {MILESTONES.map((m) => (
+                    <div
+                      key={m.year}
+                      className="relative z-10 flex min-w-0 flex-col items-center gap-1 text-center"
+                    >
+                      <div
+                        className="w-3.5 h-3.5 rounded-full border-2"
+                        style={{
+                          backgroundColor: "hsl(0 0% 7%)",
+                          borderColor: PRIMARY,
+                          boxShadow: `0 0 10px ${PRIMARY.replace(")", " / 0.6)")}`,
+                        }}
+                      />
+                      <span className="text-[10px] font-bold text-foreground leading-none">{m.year}</span>
+                      <span className="text-[9px] text-muted-foreground text-center leading-tight">
+                        {m.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="relative flex-1 flex flex-col rounded-xl overflow-hidden border border-border" style={{ minHeight: 220 }}>
+              <img
+                src={stadiumHero}
+                alt="Estadio Don Koll"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-card via-card/85 to-transparent" />
+              <div className="relative mt-auto p-4 space-y-1.5">
+                <h2 className="text-lg font-extrabold tracking-tight leading-[1.1]">
+                  Estadio Don Koll
+                </h2>
+                <div className="flex items-start gap-1.5 text-[11px] text-muted-foreground">
+                  <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: PRIMARY }} />
+                  <span>C. P.º Pacífico, Los Cangrejos, 23473 Cabo San Lucas, B.C.S.</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </CardShell>
   );
 }
 
