@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Trophy,
   Star,
@@ -8,6 +8,8 @@ import {
   ArrowRight,
   Goal,
   Shield,
+  Facebook,
+  Instagram,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import stadiumHero from "@/assets/stadium-hero.jpg";
@@ -123,13 +125,39 @@ const NOTES = [
   },
 ];
 
-const FAN_TICKER = [
-  "🏟️ @cabeño_4ever: ¡Amos del Paraíso siempre!",
-  "⚽ @marisol_lc: Orgullosa de Los Cabos United",
-  "🌵 @baja_pride: La afición más caliente del noroeste",
-  "🔥 @rafa_sjc: Vamos por la Serie A 🏆",
-  "💙 @ana_p: Mi club, mi paraíso",
-  "🌊 @cabofan: ¡Aquí se respira fútbol!",
+type SocialNetwork = "facebook" | "instagram" | "x";
+
+const FAN_POSTS: { user: string; handle: string; network: SocialNetwork; text: string }[] = [
+  {
+    user: "Mariana López",
+    handle: "@marisol_lc",
+    network: "instagram",
+    text: "¡Qué partidazo! Orgullosa de ser parte de esta afición 💚 #AmosDelParaíso",
+  },
+  {
+    user: "Rafa SJC",
+    handle: "@rafa_sjc",
+    network: "x",
+    text: "Vamos por la Serie A 🏆 No hay nada como ver a Los Cabos United en casa. #AmosDelParaíso",
+  },
+  {
+    user: "Cabeño 4ever",
+    handle: "Cabeño 4ever",
+    network: "facebook",
+    text: "La afición más caliente del noroeste presente otra vez en el estadio. #AmosDelParaíso",
+  },
+  {
+    user: "Ana P.",
+    handle: "@ana_p",
+    network: "instagram",
+    text: "Mi club, mi paraíso. Aquí se respira fútbol 🌊⚽ #AmosDelParaíso",
+  },
+  {
+    user: "Baja Pride",
+    handle: "@baja_pride",
+    network: "x",
+    text: "Amos del Paraíso siempre. Esto no se compra, se vive. #AmosDelParaíso",
+  },
 ];
 
 /* --------------------------------- Helpers --------------------------------- */
@@ -156,14 +184,11 @@ const Club = () => {
     >
       {/* Bento Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
-        {/* Posición y Amo de la Semana — mitad y mitad */}
-        <StatsCard className="lg:col-span-6 md:col-span-1 h-full" />
-        <PlayerOfWeekCard className="lg:col-span-6 md:col-span-1 h-full" />
+        {/* ADN Cabeño y Posición — 70% / 30% */}
+        <HeroCard className="lg:col-span-8 md:col-span-2" />
+        <StatsCard className="lg:col-span-4 md:col-span-2 h-full" />
 
-        {/* Header ADN Cabeño — ancho completo */}
-        <HeroCard className="lg:col-span-12 md:col-span-2" />
-
-        {/* Nuestro Plantel — ancho completo */}
+        {/* Nuestro Plantel — ancho completo (con Amo del Partido integrado) */}
         <RosterCard
           className="lg:col-span-12 md:col-span-2"
           activePos={activePos}
@@ -173,7 +198,7 @@ const Club = () => {
         {/* Academias — ancho completo */}
         <AcademyCard className="lg:col-span-12 md:col-span-2" />
 
-        {/* Desde el Vestuario y La Afición en vivo — mitad y mitad */}
+        {/* Desde el Vestuario y La Afición en vivo — 70% / 30% */}
         <NotesCard className="lg:col-span-8 md:col-span-2" />
         <FanTickerCard className="lg:col-span-4 md:col-span-2" />
       </div>
@@ -389,89 +414,9 @@ function StatsCard({ className = "" }: { className?: string }) {
   );
 }
 
-/* -------------------------------- CARD 3 -------------------------------- */
+/* CARD 3 (Amo de la Semana) — eliminada e integrada dentro de RosterCard */
 
-function PlayerOfWeekCard({ className = "" }: { className?: string }) {
-  const p = PLAYER_OF_WEEK;
-  const stats = [
-    { label: "PJ", value: p.matches },
-    { label: "GOL", value: p.goals },
-    { label: "AST", value: p.assists },
-  ];
-  return (
-    <CardShell className={className} interactive>
-      {/* Barra acento verde a la izquierda */}
-      <div
-        className="absolute left-0 top-0 bottom-0 w-1 z-10"
-        style={{ background: PRIMARY }}
-      />
-      <div className="relative h-full p-4 md:p-5 pl-5 md:pl-6 flex flex-col gap-4">
-        {/* Badge superior */}
-        <div
-          className="inline-flex self-start items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold"
-          style={{
-            backgroundColor: "hsl(142 76% 45% / 0.12)",
-            color: PRIMARY,
-          }}
-        >
-          <Star className="w-2.5 h-2.5" /> AMO DE LA SEMANA
-        </div>
-
-        {/* Header: avatar inline + nombre */}
-        <div className="flex items-center gap-3 min-w-0">
-          <img
-            src={avatarUrl(p.name)}
-            alt={p.name}
-            className="w-10 h-10 md:w-11 md:h-11 rounded-full border shrink-0"
-            style={{ borderColor: "hsl(142 76% 45% / 0.5)" }}
-          />
-          <div className="min-w-0">
-            <div className="text-2xl md:text-[28px] font-bold text-foreground truncate leading-tight">
-              {p.name}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {p.position} · #{p.number}
-            </div>
-          </div>
-        </div>
-
-        {/* Stats hero */}
-        <div className="mt-auto flex items-stretch">
-          {stats.map((s, i) => (
-            <div
-              key={s.label}
-              className={`flex-1 flex flex-col items-center justify-center py-1 ${
-                i < stats.length - 1 ? "border-r border-white/10" : ""
-              }`}
-            >
-              <span className="text-[40px] md:text-[44px] font-bold text-foreground tabular-nums leading-none">
-                {s.value}
-              </span>
-              <span
-                className="text-[10px] uppercase tracking-[0.2em] mt-1.5 font-semibold"
-                style={{ color: PRIMARY }}
-              >
-                {s.label}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Inner glow / gradient overlay (bottom) */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-20 rounded-b-2xl"
-          style={{
-            background:
-              "linear-gradient(to top, hsl(0 0% 0% / 0.55) 0%, transparent 100%)",
-          }}
-        />
-      </div>
-    </CardShell>
-  );
-}
-
-/* -------------------------------- CARD 4 -------------------------------- */
+/* -------------------------------- CARD 4 (Plantel) -------------------------------- */
 
 function RosterCard({
   className = "",
@@ -484,6 +429,7 @@ function RosterCard({
 }) {
   const players = ROSTER[activePos];
   const positions: Position[] = ["Porteros", "Defensas", "Mediocampistas", "Delanteros", "Cuerpo Técnico"];
+  const p = PLAYER_OF_WEEK;
 
   return (
     <CardShell className={className}>
@@ -491,6 +437,65 @@ function RosterCard({
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-title">Nuestro Plantel</h3>
           <Shield className="w-4 h-4" style={{ color: PRIMARY }} />
+        </div>
+
+        {/* Amo del Partido — destacado */}
+        <div
+          className="relative rounded-xl border overflow-hidden mb-5 p-4 flex items-center gap-4"
+          style={{
+            borderColor: "hsl(142 76% 45% / 0.35)",
+            background:
+              "linear-gradient(90deg, hsl(142 76% 45% / 0.10) 0%, hsl(0 0% 7% / 0.4) 60%, transparent 100%)",
+          }}
+        >
+          <div
+            className="absolute left-0 top-0 bottom-0 w-1"
+            style={{ background: PRIMARY }}
+          />
+          <img
+            src={avatarUrl(p.name)}
+            alt={p.name}
+            className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 shrink-0"
+            style={{ borderColor: "hsl(142 76% 45% / 0.6)" }}
+          />
+          <div className="min-w-0 flex-1">
+            <div
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mb-1"
+              style={{ backgroundColor: "hsl(142 76% 45% / 0.15)", color: PRIMARY }}
+            >
+              <Star className="w-2.5 h-2.5" /> AMO DEL PARTIDO
+            </div>
+            <div className="text-base md:text-lg font-bold text-foreground truncate leading-tight">
+              {p.name}
+            </div>
+            <div className="text-[11px] text-muted-foreground">
+              {p.position} · #{p.number} · Último partido
+            </div>
+          </div>
+          <div className="hidden sm:flex items-stretch gap-3 shrink-0">
+            {[
+              { label: "GOL", value: p.goals },
+              { label: "AST", value: p.assists },
+              { label: "PJ", value: p.matches },
+            ].map((s, i, arr) => (
+              <div
+                key={s.label}
+                className={`flex flex-col items-center px-3 ${
+                  i < arr.length - 1 ? "border-r border-white/10" : ""
+                }`}
+              >
+                <span className="text-xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
+                  {s.value}
+                </span>
+                <span
+                  className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
+                  style={{ color: PRIMARY }}
+                >
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Filter tabs */}
@@ -563,7 +568,7 @@ function RosterCard({
   );
 }
 
-/* -------------------------------- CARD 5 -------------------------------- */
+/* -------------------------------- CARD 5 (Academias) -------------------------------- */
 
 function AcademyCard({ className = "" }: { className?: string }) {
   return (
@@ -574,7 +579,7 @@ function AcademyCard({ className = "" }: { className?: string }) {
           <h3 className="text-title mt-1">Formando a los próximos Amos</h3>
         </div>
 
-        <div className="space-y-2.5 flex-1">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 flex-1">
           {ACADEMY_CATEGORIES.map((c) => {
             const Icon = c.icon;
             return (
@@ -599,13 +604,13 @@ function AcademyCard({ className = "" }: { className?: string }) {
           })}
         </div>
 
-        <div className="mt-4 space-y-2">
-          <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
+        <div className="mt-4 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
             Inscribe a tu hijo
           </Button>
           <a
             href="#"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider"
+            className="inline-flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider"
             style={{
               backgroundColor: "hsl(142 76% 45% / 0.12)",
               color: PRIMARY,
@@ -619,7 +624,7 @@ function AcademyCard({ className = "" }: { className?: string }) {
   );
 }
 
-/* -------------------------------- CARD 6 -------------------------------- */
+/* -------------------------------- CARD 6 (Vestuario) -------------------------------- */
 
 function NotesCard({ className = "" }: { className?: string }) {
   return (
@@ -680,36 +685,149 @@ function NotesCard({ className = "" }: { className?: string }) {
   );
 }
 
-
 /* -------------------------------- CARD 8 -------------------------------- */
 
+// Inline X (Twitter) logo since lucide doesn't ship it
+function XLogo({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+const NETWORK_META: Record<
+  SocialNetwork,
+  { label: string; color: string; Icon: React.ComponentType<{ className?: string }> }
+> = {
+  facebook: { label: "Facebook", color: "hsl(221 78% 60%)", Icon: Facebook },
+  instagram: { label: "Instagram", color: "hsl(330 78% 60%)", Icon: Instagram },
+  x: { label: "X", color: "hsl(0 0% 95%)", Icon: XLogo },
+};
+
 function FanTickerCard({ className = "" }: { className?: string }) {
-  // Duplicate list so the marquee loops seamlessly
-  const items = [...FAN_TICKER, ...FAN_TICKER];
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % FAN_POSTS.length);
+    }, 4500);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <CardShell className={className}>
-      <div className="relative py-3 overflow-hidden">
-        <div className="flex items-center gap-2 px-5 mb-2">
-          <span
-            className="w-1.5 h-1.5 rounded-full animate-pulse"
-            style={{ backgroundColor: PRIMARY }}
-          />
-          <span className="text-label text-muted-foreground">La Afición · En vivo</span>
-        </div>
-        <div className="relative w-full overflow-hidden">
-          <div className="flex gap-10 whitespace-nowrap animate-marquee">
-            {items.map((msg, i) => (
-              <span
-                key={i}
-                className="text-sm font-medium"
-                style={{ color: PRIMARY }}
-              >
-                {msg}
-              </span>
-            ))}
+      <div className="relative h-full p-5 md:p-6 flex flex-col min-h-[320px]">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ backgroundColor: PRIMARY }}
+            />
+            <span className="text-label text-muted-foreground">La Afición · En vivo</span>
           </div>
+          <span
+            className="text-[10px] font-bold tracking-wider"
+            style={{ color: PRIMARY }}
+          >
+            #AmosDelParaíso
+          </span>
+        </div>
+
+        {/* Vertical carousel */}
+        <div className="relative flex-1 overflow-hidden">
+          <AnimatePresence mode="wait">
+            {FAN_POSTS.map((post, i) =>
+              i === index ? (
+                <motion.div
+                  key={post.handle + i}
+                  initial={{ y: 40, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -40, opacity: 0 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="absolute inset-0 flex flex-col"
+                >
+                  <SocialPost post={post} />
+                </motion.div>
+              ) : null,
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Dots indicator */}
+        <div className="flex items-center justify-center gap-1.5 mt-4">
+          {FAN_POSTS.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              aria-label={`Post ${i + 1}`}
+              className="h-1 rounded-full transition-all"
+              style={{
+                width: i === index ? 18 : 6,
+                backgroundColor:
+                  i === index ? PRIMARY : "hsl(0 0% 100% / 0.15)",
+              }}
+            />
+          ))}
         </div>
       </div>
     </CardShell>
+  );
+}
+
+function SocialPost({ post }: { post: (typeof FAN_POSTS)[number] }) {
+  const meta = NETWORK_META[post.network];
+  const Icon = meta.Icon;
+  return (
+    <div
+      className="relative h-full rounded-xl border border-border bg-background/40 p-4 flex flex-col gap-3 overflow-hidden"
+    >
+      {/* Network badge */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div
+            className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: `${meta.color.replace(")", " / 0.15)")}` }}
+          >
+            <Icon className="w-4 h-4" />
+          </div>
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-foreground truncate leading-tight">
+              {post.user}
+            </div>
+            <div className="text-[10px] text-muted-foreground truncate">
+              {post.handle}
+            </div>
+          </div>
+        </div>
+        <div
+          className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
+          style={{ backgroundColor: "hsl(0 0% 100% / 0.04)", color: meta.color }}
+          aria-label={meta.label}
+        >
+          <Icon className="w-3.5 h-3.5" />
+        </div>
+      </div>
+
+      {/* Post text */}
+      <p className="text-sm text-foreground/90 leading-relaxed flex-1">
+        {post.text.split(/(#\w+)/g).map((part, i) =>
+          part.startsWith("#") ? (
+            <span key={i} className="font-semibold" style={{ color: PRIMARY }}>
+              {part}
+            </span>
+          ) : (
+            <span key={i}>{part}</span>
+          ),
+        )}
+      </p>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-2 border-t border-white/5">
+        <span className="uppercase tracking-wider">vía {meta.label}</span>
+        <span>hace 2h</span>
+      </div>
+    </div>
   );
 }
