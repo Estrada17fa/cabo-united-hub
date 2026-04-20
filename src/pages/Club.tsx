@@ -596,15 +596,68 @@ function RosterCard({
                 </div>
 
                 {/* Hover detail overlay */}
-                <div className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-center text-[11px]">
-                  <div className="font-semibold text-foreground mb-1.5 truncate">
-                    {player.name}
+                <div
+                  className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity p-2.5 md:p-3 flex flex-col justify-between border"
+                  style={{ borderColor: "hsl(189 100% 38% / 0.5)" }}
+                >
+                  {/* TOP ROW: name + position + flag/country */}
+                  <div className="flex items-start gap-1.5 min-w-0">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[12px] md:text-[13px] font-bold text-foreground leading-tight truncate">
+                        {player.name}
+                      </div>
+                      <div className="text-[9px] md:text-[10px] text-muted-foreground leading-tight truncate">
+                        {player.positionDetail}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-0.5 text-[9px] md:text-[10px] text-muted-foreground shrink-0 leading-tight">
+                      <span className="text-xs md:text-sm">{player.flag}</span>
+                      <span className="hidden sm:inline truncate max-w-[60px]">{player.country}</span>
+                    </div>
                   </div>
-                  <div className="space-y-0.5 text-muted-foreground">
-                    <div>Edad: <span className="text-foreground">{player.age}</span></div>
-                    <div>Altura: <span className="text-foreground">{player.height}</span></div>
-                    <div>Partidos: <span className="text-foreground">{player.matches}</span></div>
+
+                  {/* STATS ROW */}
+                  <div className="flex items-stretch justify-between gap-1 my-1">
+                    {[
+                      { value: player.goals, label: "GOL" },
+                      { value: player.assists, label: "AST" },
+                      { value: player.matches, label: "PJ" },
+                    ].map((s, i) => (
+                      <div key={s.label} className="flex items-center flex-1">
+                        <div className="flex flex-col items-center justify-center flex-1 min-w-0">
+                          <span className="text-[22px] md:text-[28px] font-extrabold text-foreground tabular-nums leading-none">
+                            {s.value}
+                          </span>
+                          <span
+                            className="text-[8px] md:text-[9px] uppercase tracking-[0.12em] mt-0.5 font-semibold"
+                            style={{ color: PRIMARY }}
+                          >
+                            {s.label}
+                          </span>
+                        </div>
+                        {i < 2 && <div className="w-px self-stretch bg-white/10" />}
+                      </div>
+                    ))}
                   </div>
+
+                  {/* BOTTOM BADGE */}
+                  {player.timesAmo > 0 ? (
+                    <div className="flex justify-center">
+                      <span
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold border"
+                        style={{
+                          backgroundColor: "hsl(336 80% 77% / 0.12)",
+                          color: SECONDARY,
+                          borderColor: "hsl(336 80% 77% / 0.35)",
+                        }}
+                      >
+                        <Star className="w-2.5 h-2.5 fill-current" />
+                        ×{player.timesAmo} VECES AMO
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="h-[18px]" aria-hidden />
+                  )}
                 </div>
               </motion.div>
             );
