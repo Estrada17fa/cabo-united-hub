@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Trophy,
   Star,
@@ -8,6 +8,8 @@ import {
   ArrowRight,
   Goal,
   Shield,
+  Facebook,
+  Instagram,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import stadiumHero from "@/assets/stadium-hero.jpg";
