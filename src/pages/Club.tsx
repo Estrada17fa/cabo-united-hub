@@ -176,6 +176,7 @@ function avatarUrl(name: string) {
 
 const Club = () => {
   const [activePos, setActivePos] = useState<Position>("Delanteros");
+  const [mobileBottomTab, setMobileBottomTab] = useState<"vestuario" | "aficion">("vestuario");
 
   return (
     <motion.div
