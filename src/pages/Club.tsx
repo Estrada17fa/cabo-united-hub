@@ -37,9 +37,8 @@ const PLAYER_OF_WEEK = {
   name: "Diego Hernández",
   position: "Delantero",
   number: 9,
-  matches: 17,
-  goals: 12,
-  assists: 6,
+  matchLabel: "Cabos United 3-1 Real Cabos",
+  timesAwarded: 4,
 };
 
 type Position = "Porteros" | "Defensas" | "Mediocampistas" | "Delanteros" | "Cuerpo Técnico";
@@ -482,54 +481,44 @@ function RosterCard({
               <div className="text-base md:text-lg font-bold text-foreground truncate leading-tight">
                 {p.name}
               </div>
-              <div className="text-[11px] text-muted-foreground">
-                {p.position} · #{p.number} · Último partido
+              <div className="text-[11px] text-muted-foreground truncate">
+                {p.position} · #{p.number}
+              </div>
+              <div className="text-[11px] md:text-xs text-foreground/90 mt-1 truncate">
+                <span className="text-muted-foreground">Partido: </span>
+                <span className="font-semibold">{p.matchLabel}</span>
               </div>
             </div>
-            <div className="hidden sm:flex items-stretch gap-3 shrink-0">
-              {[
-                { label: "GOL", value: p.goals },
-                { label: "AST", value: p.assists },
-                { label: "PJ", value: p.matches },
-              ].map((s, i, arr) => (
-                <div
-                  key={s.label}
-                  className={`flex flex-col items-center px-3 ${
-                    i < arr.length - 1 ? "border-r border-white/10" : ""
-                  }`}
-                >
-                  <span className="text-xl md:text-2xl font-bold text-foreground tabular-nums leading-none">
-                    {s.value}
-                  </span>
-                  <span
-                    className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold"
-                    style={{ color: PRIMARY }}
-                  >
-                    {s.label}
-                  </span>
-                </div>
-              ))}
+            <div
+              className="hidden sm:flex flex-col items-center justify-center px-3 shrink-0 rounded-lg border"
+              style={{
+                borderColor: "hsl(189 100% 38% / 0.35)",
+                backgroundColor: "hsl(189 100% 38% / 0.08)",
+              }}
+            >
+              <span className="text-2xl font-bold text-foreground tabular-nums leading-none">
+                ×{p.timesAwarded}
+              </span>
+              <span
+                className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold text-center"
+                style={{ color: PRIMARY }}
+              >
+                Veces
+              </span>
             </div>
           </div>
-          {/* Mobile-only inline stats chips */}
-          <div className="flex sm:hidden items-center gap-1.5 mt-3 flex-wrap">
-            {[
-              { label: "GOL", value: p.goals },
-              { label: "AST", value: p.assists },
-              { label: "PJ", value: p.matches },
-            ].map((s) => (
-              <span
-                key={s.label}
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border"
-                style={{
-                  borderColor: "hsl(189 100% 38% / 0.3)",
-                  backgroundColor: "hsl(189 100% 38% / 0.08)",
-                }}
-              >
-                <span className="tabular-nums font-bold text-foreground">{s.value}</span>
-                <span style={{ color: PRIMARY }}>{s.label}</span>
-              </span>
-            ))}
+          {/* Mobile-only times awarded chip */}
+          <div className="flex sm:hidden items-center gap-1.5 mt-3">
+            <span
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border"
+              style={{
+                borderColor: "hsl(189 100% 38% / 0.3)",
+                backgroundColor: "hsl(189 100% 38% / 0.08)",
+              }}
+            >
+              <span className="tabular-nums font-bold text-foreground">×{p.timesAwarded}</span>
+              <span style={{ color: PRIMARY }}>VECES AMO</span>
+            </span>
           </div>
         </div>
 
