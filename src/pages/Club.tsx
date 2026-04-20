@@ -125,13 +125,39 @@ const NOTES = [
   },
 ];
 
-const FAN_TICKER = [
-  "🏟️ @cabeño_4ever: ¡Amos del Paraíso siempre!",
-  "⚽ @marisol_lc: Orgullosa de Los Cabos United",
-  "🌵 @baja_pride: La afición más caliente del noroeste",
-  "🔥 @rafa_sjc: Vamos por la Serie A 🏆",
-  "💙 @ana_p: Mi club, mi paraíso",
-  "🌊 @cabofan: ¡Aquí se respira fútbol!",
+type SocialNetwork = "facebook" | "instagram" | "x";
+
+const FAN_POSTS: { user: string; handle: string; network: SocialNetwork; text: string }[] = [
+  {
+    user: "Mariana López",
+    handle: "@marisol_lc",
+    network: "instagram",
+    text: "¡Qué partidazo! Orgullosa de ser parte de esta afición 💚 #AmosDelParaíso",
+  },
+  {
+    user: "Rafa SJC",
+    handle: "@rafa_sjc",
+    network: "x",
+    text: "Vamos por la Serie A 🏆 No hay nada como ver a Los Cabos United en casa. #AmosDelParaíso",
+  },
+  {
+    user: "Cabeño 4ever",
+    handle: "Cabeño 4ever",
+    network: "facebook",
+    text: "La afición más caliente del noroeste presente otra vez en el estadio. #AmosDelParaíso",
+  },
+  {
+    user: "Ana P.",
+    handle: "@ana_p",
+    network: "instagram",
+    text: "Mi club, mi paraíso. Aquí se respira fútbol 🌊⚽ #AmosDelParaíso",
+  },
+  {
+    user: "Baja Pride",
+    handle: "@baja_pride",
+    network: "x",
+    text: "Amos del Paraíso siempre. Esto no se compra, se vive. #AmosDelParaíso",
+  },
 ];
 
 /* --------------------------------- Helpers --------------------------------- */
