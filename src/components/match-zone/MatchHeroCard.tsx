@@ -206,9 +206,10 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 !match.live_stream_url ? "opacity-50 cursor-not-allowed" : ""
               }`}
               style={{
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
-                border: "1.5px solid hsl(142 76% 45%)",
-                color: "hsl(142 76% 60%)",
+                backgroundColor: "hsl(142 76% 45% / 0.20)",
+                border: "2px solid hsl(142 76% 45%)",
+                color: "hsl(142 76% 70%)",
+                boxShadow: "0 4px 14px -2px hsl(142 76% 45% / 0.55)",
               }}
             >
               <Radio className="w-4 h-4" />
@@ -229,10 +230,10 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 !(match as any).match_summary_url ? "opacity-50 cursor-not-allowed" : ""
               }`}
               style={{
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
-                border: "1.5px solid hsl(142 76% 45%)",
-                color: "hsl(142 76% 60%)",
-                boxShadow: "0 0 16px -2px hsl(142 76% 45% / 0.4), inset 0 0 8px hsl(142 76% 45% / 0.05)",
+                backgroundColor: "hsl(142 76% 45% / 0.20)",
+                border: "2px solid hsl(142 76% 45%)",
+                color: "hsl(142 76% 70%)",
+                boxShadow: "0 4px 14px -2px hsl(142 76% 45% / 0.55)",
               }}
             >
               <PlayCircle className="w-4 h-4" />
@@ -245,10 +246,10 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 whileTap={{ scale: 0.96 }}
                 className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
                 style={{
-                  backgroundColor: "rgba(0, 0, 0, 0.3)",
-                  border: "1.5px solid hsl(189 100% 50%)",
-                  color: "hsl(189 100% 60%)",
-                  boxShadow: "0 0 16px -2px hsl(189 100% 50% / 0.4), inset 0 0 8px hsl(189 100% 50% / 0.05)",
+                  backgroundColor: "hsl(189 100% 50% / 0.20)",
+                  border: "2px solid hsl(189 100% 50%)",
+                  color: "hsl(189 100% 75%)",
+                  boxShadow: "0 4px 14px -2px hsl(189 100% 50% / 0.55)",
                 }}
               >
                 <Ticket className="w-4 h-4 sm:w-4 sm:h-4" />
@@ -261,10 +262,10 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
               whileTap={{ scale: 0.96 }}
               className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
               style={{
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
-                border: "1.5px solid hsl(336 80% 77%)",
-                color: "hsl(336 80% 80%)",
-                boxShadow: "0 0 16px -2px hsl(336 80% 77% / 0.4), inset 0 0 8px hsl(336 80% 77% / 0.05)",
+                backgroundColor: "hsl(336 80% 77% / 0.22)",
+                border: "2px solid hsl(336 80% 77%)",
+                color: "hsl(336 90% 88%)",
+                boxShadow: "0 4px 14px -2px hsl(336 80% 77% / 0.55)",
               }}
             >
               <MapPin className="w-4 h-4 sm:w-4 sm:h-4" />
@@ -279,10 +280,10 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
                 style={{
-                  backgroundColor: "rgba(0, 0, 0, 0.3)",
-                  border: "1.5px solid hsl(189 100% 50%)",
-                  color: "hsl(189 100% 60%)",
-                  boxShadow: "0 0 16px -2px hsl(189 100% 50% / 0.5), inset 0 0 8px hsl(189 100% 50% / 0.05)",
+                  backgroundColor: "hsl(189 100% 50% / 0.20)",
+                  border: "2px solid hsl(189 100% 50%)",
+                  color: "hsl(189 100% 75%)",
+                  boxShadow: "0 4px 14px -2px hsl(189 100% 50% / 0.55)",
                 }}
               >
                 <Trophy className="w-4 h-4" />
