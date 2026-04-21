@@ -1,86 +1,34 @@
 
+## Botones sólidos con relleno completo en card de partido
 
-# Fan Zone — Hub de Juegos (Mockups Jugables)
+El estilo "tinte translúcido" no convence. Cambiar a **botones de relleno sólido al 100%** con el color del acento como fondo y texto oscuro de alto contraste, manteniendo la identidad cromática y reforzando el resalte con sombra/glow externo.
 
-Convertimos `/fan-zone` en un hub estilo "app de casino" con 6 mini-juegos, manteniendo el look Dark Bento Modular (cards #121212, cyan #00FFFF, glass-pill, Poppins). Todo con datos mock — sin backend todavía. UI completa y jugable para validar el flujo antes de conectar persistencia.
+### Cambios en `src/components/match-zone/MatchHeroCard.tsx`
 
-## Estructura de la página `/fan-zone`
+Para los 5 CTAs:
 
-```text
-┌─────────────────────────────────────────┐
-│ HERO: "Fan Zone"                        │
-│ Sub: "Juega, predice y gana puntos"     │
-│ Chip de puntos del usuario: ⭐ 240 pts  │
-├─────────────────────────────────────────┤
-│ STRIP HORIZONTAL: "Esta semana"         │
-│ → Próximo partido LCU + countdown       │
-├─────────────────────────────────────────┤
-│ GRID DE JUEGOS (Bento 2 cols móvil)     │
-│ [Quiniela]   [Arma tu 11]               │
-│ [Marcador]   [Trivia]                   │
-│ [Visitas]    [Amo del Partido]          │
-├─────────────────────────────────────────┤
-│ MINI-LEADERBOARD (top 5 mock)           │
-└─────────────────────────────────────────┘
+- **Fondo**: color sólido al 100% del acento (sin transparencia).
+- **Texto**: color oscuro casi negro (`hsl(0 0% 8%)`) para máximo contraste sobre el relleno brillante.
+- **Borde**: eliminar el borde de 2px (ya no es necesario porque el relleno define el botón) o dejar un borde sutil del mismo color para nitidez en bordes.
+- **Glow externo**: `boxShadow` reforzado con halo del color del botón para que "flote" sobre la card y no se mimetice con el fondo oscuro.
+- **Peso del texto**: subir a `font-extrabold` para que la tipografía oscura resalte sobre el fondo brillante.
+
+Mapa de colores (relleno sólido):
+- VER EN VIVO / RESUMEN → verde `hsl(142 76% 50%)` + texto `hsl(0 0% 8%)`
+- COMPRAR BOLETOS / VOTA AMO DEL PARTIDO → cyan `hsl(189 100% 55%)` + texto `hsl(0 0% 8%)`
+- VISITA LOS CABOS → rosa `hsl(336 80% 77%)` + texto `hsl(0 0% 10%)`
+
+### Snippet de referencia
+
+```tsx
+style={{
+  backgroundColor: "hsl(189 100% 55%)",
+  color: "hsl(0 0% 8%)",
+  boxShadow: "0 0 0 1px hsl(189 100% 65%), 0 6px 20px -4px hsl(189 100% 50% / 0.65)",
+}}
+className="... font-extrabold"
 ```
 
-## Las 6 cards del grid
+La animación de pulso/glow del botón "VER EN VIVO" se mantiene, ajustando los valores del `boxShadow` animado para que use el verde sólido como base.
 
-Cada card sigue el patrón visual de Match Zone: fondo oscuro, borde sutil, icono en contenedor 16x16, título bold, descripción corta, chip de puntos (`+10 pts`), badge de estado (Disponible / Bloqueado / Activo / Próximamente al min 70).
-
-| Juego | Icono | Estado mock | Puntos placeholder |
-|---|---|---|---|
-| Quiniela del Paraíso | Trophy | Disponible | +10 por acierto |
-| Arma tu 11 | Users | Disponible | +5 gol / +3 asist / +5 portería 0 |
-| Marcador Exacto | Target | Disponible | +25 por acierto exacto |
-| Trivia del Paraíso | Brain | Disponible | +5 por respuesta correcta |
-| Visitas al Paraíso | MapPin | Escanear QR | +15 por lugar |
-| Amo del Partido | Star | "Se activa al min 70" (bloqueado) | +5 por participar |
-
-Tap en una card → abre vista completa del juego (modal full-screen tipo Sheet en móvil, dialog en desktop).
-
-## Vistas de cada juego (mockups jugables)
-
-1. **Quiniela del Paraíso** — 3 partidos de la jornada (1 fijo LCU + 2 elegibles de una lista). Por cada partido: tres botones glass-pill (Local / Empate / Visita). Botón final "Guardar predicción" → toast de confirmación.
-
-2. **Arma tu 11** — Cancha vertical con 11 slots por formación (4-3-3 default). Tap en slot abre lista de jugadores (uso del ROSTER de `Club.tsx`). Resumen abajo con contador "11/11 seleccionados" + botón guardar.
-
-3. **Marcador Exacto** — Card grande con escudos LCU vs rival, dos steppers numéricos (0-9) con botones +/−. Botón "Enviar marcador".
-
-4. **Trivia del Paraíso** — 5 preguntas mock una por una, 4 opciones tipo radio-pill, barra de progreso arriba, pantalla final con "Acertaste X/5 → +Y pts".
-
-5. **Visitas al Paraíso** — Lista de lugares (reutilizamos los de `ConoceLosCabos`), cada uno con estado (Visitado ✓ / No visitado), botón grande "Escanear QR" que abre un modal con placeholder de cámara y mensaje "Acércate al QR del lugar".
-
-6. **Amo del Partido** — Estado bloqueado por defecto con countdown "Disponible al minuto 70". Mock toggle (solo dev) para mostrar la versión activa: grid de los 11 titulares con foto/número, tap = voto, barra de % de votos en vivo (mock).
-
-## Detalles técnicos
-
-- **Archivos nuevos** (todo en `src/components/fan-zone/`):
-  - `GameCard.tsx` — card genérica del grid (icono, título, descripción, badge estado, chip puntos)
-  - `GameModal.tsx` — wrapper Sheet/Dialog responsive
-  - `games/QuinielaGame.tsx`
-  - `games/ArmaTu11Game.tsx`
-  - `games/MarcadorExactoGame.tsx`
-  - `games/TriviaGame.tsx`
-  - `games/VisitasGame.tsx`
-  - `games/AmoDelPartidoGame.tsx`
-  - `UserPointsChip.tsx` — chip ⭐ con puntos mock (240)
-  - `WeeklyMatchStrip.tsx` — strip con próximo partido LCU + countdown
-  - `MiniLeaderboard.tsx` — top 5 hardcoded
-- **Archivo editado**: `src/pages/FanZone.tsx` — reemplazo completo del placeholder.
-- **Sin cambios en backend**: cero migraciones, cero edge functions. Todos los datos viven en constantes locales `MOCK_*` dentro de cada componente, claramente marcadas para reemplazar después.
-- **Animaciones**: Framer Motion — fade/slide al abrir cada juego, layoutId en chips activos, AnimatePresence para preguntas de trivia.
-- **Responsive**: grid 2 cols en móvil (`grid-cols-2`), 3 cols desde `md`. Modales = `Sheet` side="bottom" en móvil, `Dialog` en desktop.
-- **Auth-gating**: si el usuario no está logueado, tap en card abre el `AuthModal` existente en lugar del juego.
-- **Reutilizamos**: `Sheet`, `Dialog`, `Button`, `Badge`, `Progress`, `RadioGroup`, `Card` de shadcn; `useAuth` para el gate; `lcuCrest`, `ROSTER` y assets de Club.tsx.
-
-## Lo que NO se hace en esta fase
-
-- Sin tablas Supabase, sin RLS, sin guardar predicciones reales.
-- Sin lógica real de puntos (números visibles son placeholder).
-- Sin escáner QR funcional (solo UI con placeholder de cámara).
-- Sin admin para configurar la jornada activa (postponed).
-- Sin leaderboard real (top 5 hardcoded).
-
-Próxima fase (cuando apruebes esta): definir esquema de puntos, crear tablas (`weekly_quinielas`, `quiniela_picks`, `fantasy_lineups`, `exact_score_picks`, `trivia_questions`, `trivia_answers`, `venue_visits`, `motm_votes`), edge function para activar "Amo del Partido" al minuto 70, y QR scanner real con `@zxing/browser`.
-
+Sin cambios en otros archivos.
