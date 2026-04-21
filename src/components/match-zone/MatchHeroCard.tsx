@@ -226,7 +226,11 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
               )}
               <Link
                 to="/conoce-los-cabos"
-                className="h-11 flex items-center justify-center gap-2 rounded-xl text-sm font-medium text-white/60 hover:text-white transition-colors"
+                className="h-11 flex items-center justify-center gap-2 rounded-xl text-sm font-medium text-white transition-colors hover:bg-white/[0.15]"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.30)",
+                }}
               >
                 <MapPin className="w-4 h-4" />
                 Visita Los Cabos
