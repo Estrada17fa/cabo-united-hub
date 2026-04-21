@@ -288,8 +288,7 @@ function HeroCard({ className = "" }: { className?: string }) {
         alt="Estadio Los Cabos United"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/30" />
-      <div className="absolute inset-0 bg-gradient-to-r from-card/80 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-black/50" />
 
       <div className="relative grid min-h-[230px] md:min-h-[320px] grid-rows-[auto_auto_1fr] gap-3 p-4 md:flex md:h-full md:flex-col md:justify-between md:gap-0 md:p-8">
         <div className="flex items-center">
