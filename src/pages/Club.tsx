@@ -740,7 +740,7 @@ function AcademyCategoryCard({
         </div>
       </div>
       <ArrowRight
-        className="w-4 h-4 text-muted-foreground/60 shrink-0 self-center md:hidden transition-transform group-hover:translate-x-0.5"
+        className="w-4 h-4 text-muted-foreground/60 shrink-0 self-center md:self-start md:mt-0.5 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
       />
     </div>
   );
