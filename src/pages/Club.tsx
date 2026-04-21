@@ -100,8 +100,8 @@ const ROSTER: Record<
 const ACADEMY_CATEGORIES = [
   {
     icon: Sparkles,
-    name: "Grassroots",
-    age: "3 – 6 años",
+    name: "Semillero",
+    age: "3 – 8 años",
     desc: "Primer contacto con el balón, juego y motricidad.",
   },
   {
