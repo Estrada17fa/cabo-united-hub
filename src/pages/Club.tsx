@@ -756,13 +756,13 @@ function AcademyCard({ className = "" }: { className?: string }) {
         </div>
 
         <div className="flex flex-col gap-2 md:gap-2.5 flex-1">
-          {/* Row 1 — desktop: 3 cards, mobile: stacked */}
+          {/* Row 1 — tablet/desktop: 3 cards, mobile: stacked */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-2.5">
             {ACADEMY_CATEGORIES.slice(0, 3).map((c) => (
               <AcademyCategoryCard key={c.name} category={c} />
             ))}
           </div>
-          {/* Row 2 — desktop: 2 wider cards, mobile: stacked */}
+          {/* Row 2 — tablet/desktop: 2 wider cards, mobile: stacked */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-2.5">
             {ACADEMY_CATEGORIES.slice(3).map((c) => (
               <AcademyCategoryCard key={c.name} category={c} />
