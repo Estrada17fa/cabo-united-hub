@@ -808,16 +808,24 @@ function NotesCard({ className = "" }: { className?: string }) {
               whileHover={{ y: -2 }}
               className="group rounded-xl border border-border bg-background/40 overflow-hidden flex flex-col transition-all hover:border-[hsl(189_100%_38%/0.4)]"
             >
-              <div className="relative h-24 overflow-hidden bg-muted">
+              <div className="relative h-28 sm:h-24 overflow-hidden bg-muted">
                 <div
                   className="absolute inset-0 transition-transform duration-500 group-hover:scale-110"
                   style={{
-                    background:
-                      "linear-gradient(135deg, hsl(0 0% 12%) 0%, hsl(0 0% 6%) 100%)",
+                    background: `linear-gradient(135deg, ${n.tagColor.replace(")", " / 0.35)")} 0%, hsl(0 0% 6%) 100%)`,
                   }}
                 />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, transparent 40%, hsl(0 0% 4% / 0.6) 100%)",
+                  }}
+                />
+              </div>
+              <div className="p-3 flex-1 flex flex-col">
                 <span
-                  className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider"
+                  className="self-start px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider mb-1.5"
                   style={{
                     backgroundColor: "hsl(0 0% 7% / 0.8)",
                     color: n.tagColor,
@@ -826,8 +834,6 @@ function NotesCard({ className = "" }: { className?: string }) {
                 >
                   {n.tag}
                 </span>
-              </div>
-              <div className="p-3 flex-1 flex flex-col">
                 <div className="text-xs font-semibold text-foreground leading-snug line-clamp-2 mb-2">
                   {n.title}
                 </div>
