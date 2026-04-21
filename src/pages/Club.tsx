@@ -711,6 +711,41 @@ function RosterCard({
 
 /* -------------------------------- CARD 5 (Academias) -------------------------------- */
 
+function AcademyCategoryCard({
+  category,
+}: {
+  category: { icon: any; name: string; age: string; desc: string };
+}) {
+  const Icon = category.icon;
+  return (
+    <div className="group rounded-xl border border-border bg-background/40 p-3 md:p-3.5 flex items-center md:items-start gap-3 transition-colors hover:border-[hsl(189_100%_38%/0.5)] md:min-h-[100px]">
+      <div
+        className="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center shrink-0"
+        style={{ backgroundColor: "hsl(189 100% 38% / 0.12)" }}
+      >
+        <Icon className="w-4 h-4 md:w-5 md:h-5" style={{ color: PRIMARY }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-baseline gap-1.5 flex-wrap">
+          <div className="text-sm font-semibold text-foreground">{category.name}</div>
+          <div
+            className="text-[10px] font-bold tracking-wide whitespace-nowrap"
+            style={{ color: PRIMARY }}
+          >
+            {category.age}
+          </div>
+        </div>
+        <div className="text-[11px] md:text-xs text-muted-foreground leading-snug mt-0.5">
+          {category.desc}
+        </div>
+      </div>
+      <ArrowRight
+        className="w-4 h-4 text-muted-foreground/60 shrink-0 self-center md:hidden transition-transform group-hover:translate-x-0.5"
+      />
+    </div>
+  );
+}
+
 function AcademyCard({ className = "" }: { className?: string }) {
   return (
     <CardShell className={className} interactive>
