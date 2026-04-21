@@ -357,11 +357,9 @@ function StadiumCard({ className = "" }: { className?: string }) {
         className="absolute inset-0 w-full h-full object-cover"
       />
       {/* Top fade — mantiene legible el chip "Tu Estadio" */}
-      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-card/80 to-transparent" />
-      {/* Side fade desktop */}
-      <div className="absolute inset-0 bg-gradient-to-r from-card/70 via-transparent to-transparent hidden md:block" />
-      {/* Bottom fade — debajo del título y ubicación para que se lean bien */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-card via-card/85 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
+      {/* Bottom fade — degradado negro a transparente para legibilidad del título */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
 
       <div className="relative h-full p-5 md:p-7 flex flex-col justify-between min-h-[160px] md:min-h-[320px]">
         <div className="flex items-center gap-2">
