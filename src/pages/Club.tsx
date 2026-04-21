@@ -778,17 +778,6 @@ function AcademyCard({ className = "" }: { className?: string }) {
             Inscribe a tu hijo
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
-          <a
-            href="#"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider whitespace-nowrap"
-            style={{
-              backgroundColor: "hsl(189 100% 38% / 0.12)",
-              color: PRIMARY,
-            }}
-          >
-            CURSOS DE VERANO 2025
-            <ArrowRight className="w-3 h-3" />
-          </a>
         </div>
       </div>
     </CardShell>
