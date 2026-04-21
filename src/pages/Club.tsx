@@ -11,6 +11,8 @@ import {
   Facebook,
   Instagram,
   MapPin,
+  Sparkles,
+  Tent,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import stadiumHero from "@/assets/stadium-hero.jpg";
