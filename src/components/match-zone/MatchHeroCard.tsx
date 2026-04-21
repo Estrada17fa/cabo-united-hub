@@ -190,9 +190,9 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 match.live_stream_url
                   ? {
                       boxShadow: [
-                        "0 0 16px -2px hsl(142 76% 45% / 0.5), inset 0 0 8px hsl(142 76% 45% / 0.05)",
-                        "0 0 24px 0px hsl(142 76% 45% / 0.7), inset 0 0 12px hsl(142 76% 45% / 0.1)",
-                        "0 0 16px -2px hsl(142 76% 45% / 0.5), inset 0 0 8px hsl(142 76% 45% / 0.05)",
+                        "0 0 0 1px hsl(142 76% 65%), 0 6px 20px -4px hsl(142 76% 50% / 0.6)",
+                        "0 0 0 1px hsl(142 76% 70%), 0 8px 28px -2px hsl(142 76% 50% / 0.85)",
+                        "0 0 0 1px hsl(142 76% 65%), 0 6px 20px -4px hsl(142 76% 50% / 0.6)",
                       ],
                     }
                   : undefined
@@ -202,14 +202,13 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 if (!match.live_stream_url) e.preventDefault();
               }}
               title={match.live_stream_url ? "Abrir transmisión" : "Transmisión no disponible"}
-              className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap ${
+              className={`flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap ${
                 !match.live_stream_url ? "opacity-50 cursor-not-allowed" : ""
               }`}
               style={{
-                backgroundColor: "hsl(142 76% 45% / 0.20)",
-                border: "2px solid hsl(142 76% 45%)",
-                color: "hsl(142 76% 70%)",
-                boxShadow: "0 4px 14px -2px hsl(142 76% 45% / 0.55)",
+                backgroundColor: "hsl(142 76% 50%)",
+                color: "hsl(0 0% 8%)",
+                boxShadow: "0 0 0 1px hsl(142 76% 65%), 0 6px 20px -4px hsl(142 76% 50% / 0.65)",
               }}
             >
               <Radio className="w-4 h-4" />
