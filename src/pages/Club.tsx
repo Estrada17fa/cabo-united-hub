@@ -1171,23 +1171,38 @@ function MobileBottomTabs({
                 <a
                   key={n.title}
                   href="#"
-                  className="group rounded-xl border border-border bg-background/40 p-3 flex items-center gap-3 transition-all hover:border-[hsl(189_100%_38%/0.4)]"
+                  className="group rounded-xl border border-border bg-background/40 overflow-hidden flex flex-col transition-all hover:border-[hsl(189_100%_38%/0.4)]"
                 >
-                  <span
-                    className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider shrink-0"
-                    style={{
-                      backgroundColor: "hsl(0 0% 7% / 0.8)",
-                      color: n.tagColor,
-                      border: `1px solid ${n.tagColor.replace(")", " / 0.4)")}`,
-                    }}
-                  >
-                    {n.tag}
-                  </span>
-                  <div className="min-w-0 flex-1">
+                  <div className="relative h-24 overflow-hidden bg-muted">
+                    <div
+                      className="absolute inset-0 transition-transform duration-500 group-hover:scale-110"
+                      style={{
+                        background: `linear-gradient(135deg, ${n.tagColor.replace(")", " / 0.35)")} 0%, hsl(0 0% 6%) 100%)`,
+                      }}
+                    />
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(180deg, transparent 40%, hsl(0 0% 4% / 0.6) 100%)",
+                      }}
+                    />
+                  </div>
+                  <div className="p-3 min-w-0 flex-1 flex flex-col">
+                    <span
+                      className="self-start px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider mb-1.5"
+                      style={{
+                        backgroundColor: "hsl(0 0% 7% / 0.8)",
+                        color: n.tagColor,
+                        border: `1px solid ${n.tagColor.replace(")", " / 0.4)")}`,
+                      }}
+                    >
+                      {n.tag}
+                    </span>
                     <div className="text-xs font-semibold text-foreground leading-snug line-clamp-2">
                       {n.title}
                     </div>
-                    <div className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-2">
+                    <div className="text-[10px] text-muted-foreground mt-1.5 flex items-center gap-2">
                       <span>{n.date}</span>
                       <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
                       <span>{n.read}</span>
