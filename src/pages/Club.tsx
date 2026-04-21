@@ -288,7 +288,8 @@ function HeroCard({ className = "" }: { className?: string }) {
         alt="Estadio Los Cabos United"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
 
       <div className="relative grid min-h-[230px] md:min-h-[320px] grid-rows-[auto_auto_1fr] gap-3 p-4 md:flex md:h-full md:flex-col md:justify-between md:gap-0 md:p-8">
         <div className="flex items-center">
@@ -1024,7 +1025,10 @@ function MobileTopTabs({
       />
       {/* Overlays para legibilidad — coinciden con el tratamiento de las cards desktop */}
       {activeTab === "adn" ? (
-        <div className="absolute inset-0 bg-black/50" />
+        <>
+          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
+        </>
       ) : (
         <>
           <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
