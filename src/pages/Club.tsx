@@ -99,19 +99,34 @@ const ROSTER: Record<
 
 const ACADEMY_CATEGORIES = [
   {
-    icon: Goal,
-    name: "Sub-17",
-    desc: "Talentos formándose para dar el salto al primer equipo.",
+    icon: Sparkles,
+    name: "Grassroots",
+    age: "3 – 6 años",
+    desc: "Primer contacto con el balón, juego y motricidad.",
   },
   {
     icon: GraduationCap,
-    name: "Sub-15",
-    desc: "Educación deportiva integral y desarrollo técnico.",
+    name: "Academia",
+    age: "7 – 14 años",
+    desc: "Formación técnica, táctica y valores deportivos.",
+  },
+  {
+    icon: Goal,
+    name: "Fuerzas Básicas",
+    age: "Sub 15 y Sub 17",
+    desc: "Camino al primer equipo y alto rendimiento.",
   },
   {
     icon: Sun,
-    name: "Femenil",
-    desc: "Categoría en crecimiento, abriendo espacios en el paraíso.",
+    name: "Curso de Verano",
+    age: "Temporada",
+    desc: "Entrenamientos intensivos durante el verano.",
+  },
+  {
+    icon: Tent,
+    name: "Campamento",
+    age: "Experiencia",
+    desc: "Convivencia, fútbol y vida en equipo.",
   },
 ];
 
