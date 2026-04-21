@@ -720,37 +720,19 @@ function AcademyCard({ className = "" }: { className?: string }) {
           <h3 className="text-title mt-1">Academia oficial de fútbol de Los Cabos United</h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-2.5 flex-1">
-          {ACADEMY_CATEGORIES.map((c) => {
-            const Icon = c.icon;
-            return (
-              <div
-                key={c.name}
-                className="rounded-xl border border-border bg-background/40 p-2.5 md:p-3 flex items-center md:items-start gap-3 transition-colors hover:border-[hsl(189_100%_38%/0.5)]"
-              >
-                <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: "hsl(189 100% 38% / 0.12)" }}
-                >
-                  <Icon className="w-4 h-4" style={{ color: PRIMARY }} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-1.5 flex-wrap">
-                    <div className="text-sm font-semibold text-foreground">{c.name}</div>
-                    <div
-                      className="text-[10px] font-bold tracking-wide whitespace-nowrap"
-                      style={{ color: PRIMARY }}
-                    >
-                      {c.age}
-                    </div>
-                  </div>
-                  <div className="text-[11px] text-muted-foreground leading-snug line-clamp-1 md:line-clamp-2">
-                    {c.desc}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="flex flex-col gap-2 md:gap-2.5 flex-1">
+          {/* Row 1 — desktop: 3 cards, mobile: stacked */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-2.5">
+            {ACADEMY_CATEGORIES.slice(0, 3).map((c) => (
+              <AcademyCategoryCard key={c.name} category={c} />
+            ))}
+          </div>
+          {/* Row 2 — desktop: 2 wider cards, mobile: stacked */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-2.5">
+            {ACADEMY_CATEGORIES.slice(3).map((c) => (
+              <AcademyCategoryCard key={c.name} category={c} />
+            ))}
+          </div>
         </div>
 
         <div className="mt-4 md:mt-5 flex flex-col items-center gap-2">
