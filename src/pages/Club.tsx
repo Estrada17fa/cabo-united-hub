@@ -1012,11 +1012,18 @@ function MobileTopTabs({
   return (
     <CardShell interactive>
       {/* Background image — cubre toda la card, cambia según tab */}
+      {/* Ambas imágenes precargadas — solo se hace fade entre ellas (sin recarga) */}
       <img
-        key={activeTab}
-        src={activeTab === "adn" ? adnCabenoImg : donKollImg}
-        alt={activeTab === "adn" ? "Los Cabos United" : "Estadio Don Koll"}
-        className="absolute inset-0 w-full h-full object-cover"
+        src={adnCabenoImg}
+        alt="Los Cabos United"
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+        style={{ opacity: activeTab === "adn" ? 1 : 0 }}
+      />
+      <img
+        src={donKollImg}
+        alt="Estadio Don Koll"
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+        style={{ opacity: activeTab === "estadio" ? 1 : 0 }}
       />
       {/* Overlays para legibilidad */}
       <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/30" />
