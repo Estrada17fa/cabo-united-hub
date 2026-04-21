@@ -1,31 +1,34 @@
 
-## Mejorar visibilidad de botones en card de partido
+## Botones sólidos con relleno completo en card de partido
 
-Los botones (VER EN VIVO, RESUMEN, COMPRAR BOLETOS, VISITA LOS CABOS, VOTA POR EL AMO DEL PARTIDO) actualmente usan fondo casi transparente (`rgba(0,0,0,0.3)`) con borde de color, lo que los hace confundirse con la línea divisoria del timeline y otros elementos outline de la card.
+El estilo "tinte translúcido" no convence. Cambiar a **botones de relleno sólido al 100%** con el color del acento como fondo y texto oscuro de alto contraste, manteniendo la identidad cromática y reforzando el resalte con sombra/glow externo.
 
 ### Cambios en `src/components/match-zone/MatchHeroCard.tsx`
 
-Reemplazar el estilo "outline translúcido" por un estilo **"pill sólido con tinte de color"** que mantenga la identidad cromática de cada CTA pero con mucho más contraste:
+Para los 5 CTAs:
 
-- **Fondo**: cambiar de `rgba(0,0,0,0.3)` a un fill sólido tintado del color propio del botón a ~18-22% de opacidad sobre una base oscura, para que el botón "exista" visualmente sin pelear con el contenido.
-- **Borde**: mantener el borde de color pero subir a `2px` y aumentar levemente la saturación del color del texto para mejor legibilidad.
-- **Sombra/glow**: reforzar el `boxShadow` exterior para despegar el botón del fondo de la card.
-- **Texto**: subir el peso visual usando el color del acento al 100% en vez de tonos atenuados.
+- **Fondo**: color sólido al 100% del acento (sin transparencia).
+- **Texto**: color oscuro casi negro (`hsl(0 0% 8%)`) para máximo contraste sobre el relleno brillante.
+- **Borde**: eliminar el borde de 2px (ya no es necesario porque el relleno define el botón) o dejar un borde sutil del mismo color para nitidez en bordes.
+- **Glow externo**: `boxShadow` reforzado con halo del color del botón para que "flote" sobre la card y no se mimetice con el fondo oscuro.
+- **Peso del texto**: subir a `font-extrabold` para que la tipografía oscura resalte sobre el fondo brillante.
 
-Aplicar a los 5 botones manteniendo sus colores actuales:
-- VER EN VIVO / RESUMEN → verde `hsl(142 76% 45%)`
-- COMPRAR BOLETOS / VOTA AMO DEL PARTIDO → cyan `hsl(189 100% 50%)`
-- VISITA LOS CABOS → rosa `hsl(336 80% 77%)`
+Mapa de colores (relleno sólido):
+- VER EN VIVO / RESUMEN → verde `hsl(142 76% 50%)` + texto `hsl(0 0% 8%)`
+- COMPRAR BOLETOS / VOTA AMO DEL PARTIDO → cyan `hsl(189 100% 55%)` + texto `hsl(0 0% 8%)`
+- VISITA LOS CABOS → rosa `hsl(336 80% 77%)` + texto `hsl(0 0% 10%)`
 
 ### Snippet de referencia
 
 ```tsx
 style={{
-  backgroundColor: "hsl(189 100% 50% / 0.18)",
-  border: "2px solid hsl(189 100% 50%)",
-  color: "hsl(189 100% 70%)",
-  boxShadow: "0 4px 14px -2px hsl(189 100% 50% / 0.45)",
+  backgroundColor: "hsl(189 100% 55%)",
+  color: "hsl(0 0% 8%)",
+  boxShadow: "0 0 0 1px hsl(189 100% 65%), 0 6px 20px -4px hsl(189 100% 50% / 0.65)",
 }}
+className="... font-extrabold"
 ```
 
-Sin cambios en otros archivos. La animación de pulso del botón "VER EN VIVO" se mantiene.
+La animación de pulso/glow del botón "VER EN VIVO" se mantiene, ajustando los valores del `boxShadow` animado para que use el verde sólido como base.
+
+Sin cambios en otros archivos.
