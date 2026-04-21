@@ -57,13 +57,13 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.85) 100%)",
+            "linear-gradient(to bottom, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.95) 100%)",
         }}
       />
-      {/* Subtle team-green tint */}
+      {/* Subtle black tint */}
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ backgroundColor: "rgba(0, 255, 135, 0.04)" }}
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.25)" }}
       />
       {/* Mesh gradient glow */}
       <div
