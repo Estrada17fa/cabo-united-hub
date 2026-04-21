@@ -190,9 +190,9 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 match.live_stream_url
                   ? {
                       boxShadow: [
-                        "0 0 16px -2px hsl(142 76% 45% / 0.5), inset 0 0 8px hsl(142 76% 45% / 0.05)",
-                        "0 0 24px 0px hsl(142 76% 45% / 0.7), inset 0 0 12px hsl(142 76% 45% / 0.1)",
-                        "0 0 16px -2px hsl(142 76% 45% / 0.5), inset 0 0 8px hsl(142 76% 45% / 0.05)",
+                        "0 0 0 1px hsl(142 76% 65%), 0 6px 20px -4px hsl(142 76% 50% / 0.6)",
+                        "0 0 0 1px hsl(142 76% 70%), 0 8px 28px -2px hsl(142 76% 50% / 0.85)",
+                        "0 0 0 1px hsl(142 76% 65%), 0 6px 20px -4px hsl(142 76% 50% / 0.6)",
                       ],
                     }
                   : undefined
@@ -202,14 +202,13 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 if (!match.live_stream_url) e.preventDefault();
               }}
               title={match.live_stream_url ? "Abrir transmisión" : "Transmisión no disponible"}
-              className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap ${
+              className={`flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap ${
                 !match.live_stream_url ? "opacity-50 cursor-not-allowed" : ""
               }`}
               style={{
-                backgroundColor: "hsl(142 76% 45% / 0.20)",
-                border: "2px solid hsl(142 76% 45%)",
-                color: "hsl(142 76% 70%)",
-                boxShadow: "0 4px 14px -2px hsl(142 76% 45% / 0.55)",
+                backgroundColor: "hsl(142 76% 50%)",
+                color: "hsl(0 0% 8%)",
+                boxShadow: "0 0 0 1px hsl(142 76% 65%), 0 6px 20px -4px hsl(142 76% 50% / 0.65)",
               }}
             >
               <Radio className="w-4 h-4" />
@@ -226,14 +225,13 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 if (!(match as any).match_summary_url) e.preventDefault();
               }}
               title={(match as any).match_summary_url ? "Ver resumen" : "Resumen no disponible"}
-              className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap ${
+              className={`flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap ${
                 !(match as any).match_summary_url ? "opacity-50 cursor-not-allowed" : ""
               }`}
               style={{
-                backgroundColor: "hsl(142 76% 45% / 0.20)",
-                border: "2px solid hsl(142 76% 45%)",
-                color: "hsl(142 76% 70%)",
-                boxShadow: "0 4px 14px -2px hsl(142 76% 45% / 0.55)",
+                backgroundColor: "hsl(142 76% 50%)",
+                color: "hsl(0 0% 8%)",
+                boxShadow: "0 0 0 1px hsl(142 76% 65%), 0 6px 20px -4px hsl(142 76% 50% / 0.65)",
               }}
             >
               <PlayCircle className="w-4 h-4" />
@@ -244,12 +242,11 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
             <Link to="/tickets">
               <motion.button
                 whileTap={{ scale: 0.96 }}
-                className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
+                className="flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap"
                 style={{
-                  backgroundColor: "hsl(189 100% 50% / 0.20)",
-                  border: "2px solid hsl(189 100% 50%)",
-                  color: "hsl(189 100% 75%)",
-                  boxShadow: "0 4px 14px -2px hsl(189 100% 50% / 0.55)",
+                  backgroundColor: "hsl(189 100% 55%)",
+                  color: "hsl(0 0% 8%)",
+                  boxShadow: "0 0 0 1px hsl(189 100% 70%), 0 6px 20px -4px hsl(189 100% 50% / 0.65)",
                 }}
               >
                 <Ticket className="w-4 h-4 sm:w-4 sm:h-4" />
@@ -260,12 +257,11 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           <Link to="/conoce-los-cabos">
             <motion.button
               whileTap={{ scale: 0.96 }}
-              className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
+              className="flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap"
               style={{
-                backgroundColor: "hsl(336 80% 77% / 0.22)",
-                border: "2px solid hsl(336 80% 77%)",
-                color: "hsl(336 90% 88%)",
-                boxShadow: "0 4px 14px -2px hsl(336 80% 77% / 0.55)",
+                backgroundColor: "hsl(336 80% 77%)",
+                color: "hsl(0 0% 10%)",
+                boxShadow: "0 0 0 1px hsl(336 85% 85%), 0 6px 20px -4px hsl(336 80% 70% / 0.65)",
               }}
             >
               <MapPin className="w-4 h-4 sm:w-4 sm:h-4" />
@@ -278,12 +274,11 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 whileTap={{ scale: 0.96 }}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex items-center gap-1 px-3 py-2 rounded-full font-bold text-[10px] tracking-wide whitespace-nowrap"
+                className="flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap"
                 style={{
-                  backgroundColor: "hsl(189 100% 50% / 0.20)",
-                  border: "2px solid hsl(189 100% 50%)",
-                  color: "hsl(189 100% 75%)",
-                  boxShadow: "0 4px 14px -2px hsl(189 100% 50% / 0.55)",
+                  backgroundColor: "hsl(189 100% 55%)",
+                  color: "hsl(0 0% 8%)",
+                  boxShadow: "0 0 0 1px hsl(189 100% 70%), 0 6px 20px -4px hsl(189 100% 50% / 0.65)",
                 }}
               >
                 <Trophy className="w-4 h-4" />
