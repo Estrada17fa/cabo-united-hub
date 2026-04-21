@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import stadiumHero from "@/assets/stadium-hero.jpg";
+import donKollImg from "@/assets/don-koll.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
 import ligaPremierLogo from "@/assets/liga-premier-logo.png";
 
@@ -351,7 +352,7 @@ function StadiumCard({ className = "" }: { className?: string }) {
   return (
     <CardShell className={className} interactive>
       <img
-        src={stadiumHero}
+        src={donKollImg}
         alt="Estadio Don Koll"
         className="absolute inset-0 w-full h-full object-cover"
       />
@@ -1011,7 +1012,7 @@ function MobileTopTabs({
     <CardShell interactive>
       {/* Background image — cubre toda la card, cambia según tab */}
       <img
-        src={stadiumHero}
+        src={activeTab === "adn" ? stadiumHero : donKollImg}
         alt={activeTab === "adn" ? "Los Cabos United" : "Estadio Don Koll"}
         className="absolute inset-0 w-full h-full object-cover"
       />
