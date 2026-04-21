@@ -1013,6 +1013,7 @@ function MobileTopTabs({
     <CardShell interactive>
       {/* Background image — cubre toda la card, cambia según tab */}
       <img
+        key={activeTab}
         src={activeTab === "adn" ? adnCabenoImg : donKollImg}
         alt={activeTab === "adn" ? "Los Cabos United" : "Estadio Don Koll"}
         className="absolute inset-0 w-full h-full object-cover"
