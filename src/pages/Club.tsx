@@ -699,8 +699,8 @@ function AcademyCard({ className = "" }: { className?: string }) {
     <CardShell className={className} interactive>
       <div className="p-5 md:p-6 h-full flex flex-col">
         <div className="mb-4">
-          <span className="text-label text-muted-foreground">Academias LC United</span>
-          <h3 className="text-title mt-1">Formando a los próximos Amos</h3>
+          <span className="text-label text-muted-foreground">Pathway | Los Cabos United</span>
+          <h3 className="text-title mt-1">Academia oficial de fútbol de Los Cabos United</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-2.5 flex-1">
