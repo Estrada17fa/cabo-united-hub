@@ -598,46 +598,46 @@ function RosterCard({
 
                 {/* Hover detail overlay */}
                 <div
-                  className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity p-2.5 md:p-3 flex flex-col justify-between border"
+                  className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity p-2.5 md:p-4 flex flex-col justify-between border"
                   style={{ borderColor: "hsl(189 100% 38% / 0.5)" }}
                 >
                   {/* TOP: name + age + birth state + position + flag */}
-                  <div className="flex items-start gap-1.5 min-w-0">
+                  <div className="flex items-start gap-1.5 md:gap-2 min-w-0">
                     <div className="min-w-0 flex-1">
-                      <div className="text-[12px] md:text-[13px] font-bold text-foreground leading-tight truncate">
+                      <div className="text-[12px] md:text-[16px] font-bold text-foreground leading-tight truncate">
                         {player.name}
                       </div>
-                      <div className="text-[9px] md:text-[10px] text-muted-foreground leading-tight truncate">
+                      <div className="text-[9px] md:text-[12px] text-muted-foreground leading-tight truncate">
                         {player.age} años
                       </div>
-                      <div className="text-[9px] md:text-[10px] text-muted-foreground leading-tight truncate">
+                      <div className="text-[9px] md:text-[12px] text-muted-foreground leading-tight truncate">
                         {player.birthState}
                       </div>
                       <div
-                        className="text-[9px] md:text-[10px] font-semibold leading-tight truncate mt-0.5"
+                        className="text-[9px] md:text-[12px] font-semibold leading-tight truncate mt-0.5 md:mt-1"
                         style={{ color: PRIMARY }}
                       >
                         {player.positionDetail}
                       </div>
                     </div>
-                    <span className="text-base md:text-lg shrink-0 leading-none" title={player.country}>
+                    <span className="text-base md:text-2xl shrink-0 leading-none" title={player.country}>
                       {player.flag}
                     </span>
                   </div>
 
                   {/* STATS ROW: Goles + Partidos jugados */}
-                  <div className="flex items-stretch justify-between gap-1 my-1">
+                  <div className="flex items-stretch justify-between gap-1 my-1 md:my-2">
                     {[
                       { value: player.goals, label: "GOLES" },
                       { value: player.matches, label: "PJ" },
                     ].map((s, i) => (
                       <div key={s.label} className="flex items-center flex-1">
                         <div className="flex flex-col items-center justify-center flex-1 min-w-0">
-                          <span className="text-[24px] md:text-[30px] font-extrabold text-foreground tabular-nums leading-none">
+                          <span className="text-[24px] md:text-[38px] font-extrabold text-foreground tabular-nums leading-none">
                             {s.value}
                           </span>
                           <span
-                            className="text-[8px] md:text-[9px] uppercase tracking-[0.12em] mt-1 font-semibold"
+                            className="text-[8px] md:text-[11px] uppercase tracking-[0.12em] mt-1 md:mt-1.5 font-semibold"
                             style={{ color: PRIMARY }}
                           >
                             {s.label}
@@ -652,14 +652,14 @@ function RosterCard({
                   {player.timesAmo > 0 ? (
                     <div className="flex justify-center">
                       <span
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-bold border"
+                        className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-2.5 py-0.5 md:py-1 rounded-full text-[9px] md:text-[12px] font-bold border"
                         style={{
                           backgroundColor: "hsl(336 80% 77% / 0.12)",
                           color: SECONDARY,
                           borderColor: "hsl(336 80% 77% / 0.35)",
                         }}
                       >
-                        <Star className="w-2.5 h-2.5 fill-current" />
+                        <Star className="w-2.5 h-2.5 md:w-3 md:h-3 fill-current" />
                         ×{player.timesAmo} VECES AMO
                       </span>
                     </div>
