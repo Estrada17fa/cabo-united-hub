@@ -179,66 +179,80 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
         )}
 
         {/* CTAs */}
-        <div className="flex flex-row gap-3 items-center justify-center flex-wrap">
-          {isLive && (
-            <motion.a
-              href={match.live_stream_url || "#"}
-              target={match.live_stream_url ? "_blank" : undefined}
-              rel="noopener noreferrer"
-              whileTap={{ scale: match.live_stream_url ? 0.96 : 1 }}
-              animate={
-                match.live_stream_url
-                  ? {
-                      boxShadow: [
-                        "0 0 0 1px hsl(142 76% 65%), 0 6px 20px -4px hsl(142 76% 50% / 0.6)",
-                        "0 0 0 1px hsl(142 76% 70%), 0 8px 28px -2px hsl(142 76% 50% / 0.85)",
-                        "0 0 0 1px hsl(142 76% 65%), 0 6px 20px -4px hsl(142 76% 50% / 0.6)",
-                      ],
-                    }
-                  : undefined
-              }
-              transition={{ duration: 1.8, repeat: Infinity }}
-              onClick={(e) => {
-                if (!match.live_stream_url) e.preventDefault();
-              }}
-              title={match.live_stream_url ? "Abrir transmisión" : "Transmisión no disponible"}
-              className={`flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap ${
-                !match.live_stream_url ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              style={{
-                backgroundColor: "hsl(142 76% 50%)",
-                color: "hsl(0 0% 8%)",
-                boxShadow: "0 0 0 1px hsl(142 76% 65%), 0 6px 20px -4px hsl(142 76% 50% / 0.65)",
-              }}
-            >
-              <Radio className="w-4 h-4" />
-              VER EN VIVO
-            </motion.a>
-          )}
-          {isFinished && (
-            <motion.a
-              href={(match as any).match_summary_url || "#"}
-              target={(match as any).match_summary_url ? "_blank" : undefined}
-              rel="noopener noreferrer"
-              whileTap={{ scale: (match as any).match_summary_url ? 0.96 : 1 }}
-              onClick={(e) => {
-                if (!(match as any).match_summary_url) e.preventDefault();
-              }}
-              title={(match as any).match_summary_url ? "Ver resumen" : "Resumen no disponible"}
-              className={`flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap ${
-                !(match as any).match_summary_url ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              style={{
-                backgroundColor: "hsl(142 76% 50%)",
-                color: "hsl(0 0% 8%)",
-                boxShadow: "0 0 0 1px hsl(142 76% 65%), 0 6px 20px -4px hsl(142 76% 50% / 0.65)",
-              }}
-            >
-              <PlayCircle className="w-4 h-4" />
-              RESUMEN
-            </motion.a>
-          )}
-          {!showLiveLayout && (
+        {showLiveLayout ? (
+          <div className="w-full flex flex-col gap-2">
+            {/* Row 1: Ver en Vivo / Resumen + Visita Los Cabos */}
+            <div className="grid grid-cols-2 gap-2">
+              {isLive ? (
+                <a
+                  href={match.live_stream_url || "#"}
+                  target={match.live_stream_url ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    if (!match.live_stream_url) e.preventDefault();
+                  }}
+                  title={match.live_stream_url ? "Abrir transmisión" : "Transmisión no disponible"}
+                  className={`h-11 flex items-center justify-center gap-2 rounded-xl text-sm font-medium text-white transition-colors ${
+                    !match.live_stream_url ? "opacity-50 cursor-not-allowed" : "hover:bg-white/[0.15]"
+                  }`}
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(255,255,255,0.30)",
+                  }}
+                >
+                  <Radio className="w-4 h-4" />
+                  Ver en Vivo
+                </a>
+              ) : (
+                <a
+                  href={(match as any).match_summary_url || "#"}
+                  target={(match as any).match_summary_url ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  onClick={(e) => {
+                    if (!(match as any).match_summary_url) e.preventDefault();
+                  }}
+                  title={(match as any).match_summary_url ? "Ver resumen" : "Resumen no disponible"}
+                  className={`h-11 flex items-center justify-center gap-2 rounded-xl text-sm font-medium text-white transition-colors ${
+                    !(match as any).match_summary_url ? "opacity-50 cursor-not-allowed" : "hover:bg-white/[0.15]"
+                  }`}
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(255,255,255,0.30)",
+                  }}
+                >
+                  <PlayCircle className="w-4 h-4" />
+                  Resumen
+                </a>
+              )}
+              <Link
+                to="/conoce-los-cabos"
+                className="h-11 flex items-center justify-center gap-2 rounded-xl text-sm font-medium text-white/60 hover:text-white transition-colors"
+              >
+                <MapPin className="w-4 h-4" />
+                Visita Los Cabos
+              </Link>
+            </div>
+
+            {/* Row 2: Vota por el Amo del Partido (primary, full width) */}
+            <Link to="/fan-zone" className="w-full">
+              <motion.button
+                animate={{ scale: [1, 1.02, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full h-[52px] flex items-center justify-center gap-2 rounded-xl font-bold text-[15px]"
+                style={{
+                  backgroundColor: "hsl(142 76% 50%)",
+                  color: "hsl(0 0% 6%)",
+                  boxShadow: "0 8px 24px -6px hsl(142 76% 50% / 0.55)",
+                }}
+              >
+                <Trophy className="w-5 h-5" />
+                Vota por el Amo del Partido
+              </motion.button>
+            </Link>
+          </div>
+        ) : (
+          <div className="flex flex-row gap-3 items-center justify-center flex-wrap">
             <Link to="/tickets">
               <motion.button
                 whileTap={{ scale: 0.96 }}
@@ -249,44 +263,26 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                   boxShadow: "0 0 0 1px hsl(189 100% 70%), 0 6px 20px -4px hsl(189 100% 50% / 0.65)",
                 }}
               >
-                <Ticket className="w-4 h-4 sm:w-4 sm:h-4" />
+                <Ticket className="w-4 h-4" />
                 COMPRAR BOLETOS
               </motion.button>
             </Link>
-          )}
-          <Link to="/conoce-los-cabos">
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-              className="flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap"
-              style={{
-                backgroundColor: "hsl(336 80% 77%)",
-                color: "hsl(0 0% 10%)",
-                boxShadow: "0 0 0 1px hsl(336 85% 85%), 0 6px 20px -4px hsl(336 80% 70% / 0.65)",
-              }}
-            >
-              <MapPin className="w-4 h-4 sm:w-4 sm:h-4" />
-              VISITA LOS CABOS
-            </motion.button>
-          </Link>
-          {showLiveLayout && isLive && currentMinute >= 70 && (
-            <Link to="/fan-zone" className="w-full md:w-auto flex justify-center">
+            <Link to="/conoce-los-cabos">
               <motion.button
                 whileTap={{ scale: 0.96 }}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
                 className="flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap"
                 style={{
-                  backgroundColor: "hsl(189 100% 55%)",
-                  color: "hsl(0 0% 8%)",
-                  boxShadow: "0 0 0 1px hsl(189 100% 70%), 0 6px 20px -4px hsl(189 100% 50% / 0.65)",
+                  backgroundColor: "hsl(336 80% 77%)",
+                  color: "hsl(0 0% 10%)",
+                  boxShadow: "0 0 0 1px hsl(336 85% 85%), 0 6px 20px -4px hsl(336 80% 70% / 0.65)",
                 }}
               >
-                <Trophy className="w-4 h-4" />
-                VOTA POR EL AMO DEL PARTIDO
+                <MapPin className="w-4 h-4" />
+                VISITA LOS CABOS
               </motion.button>
             </Link>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );
