@@ -298,7 +298,7 @@ function HeroCard({ className = "" }: { className?: string }) {
             style={{
               color: PRIMARY,
               borderColor: `${PRIMARY.replace(")", " / 0.4)")}`,
-              backgroundColor: "hsl(189 100% 38% / 0.08)",
+              backgroundColor: "hsl(0 0% 0% / 0.5)",
             }}
           >
             ADN Cabeño
