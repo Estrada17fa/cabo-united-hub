@@ -192,7 +192,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                     if (!match.live_stream_url) e.preventDefault();
                   }}
                   title={match.live_stream_url ? "Abrir transmisión" : "Transmisión no disponible"}
-                  className={`h-11 flex items-center justify-center gap-2 rounded-xl text-sm font-medium text-white transition-colors ${
+                  className={`h-11 flex items-center justify-center gap-2 rounded-xl text-xs sm:text-sm font-medium text-white transition-colors ${
                     !match.live_stream_url ? "opacity-50 cursor-not-allowed" : "hover:bg-white/[0.15]"
                   }`}
                   style={{
@@ -212,7 +212,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                     if (!(match as any).match_summary_url) e.preventDefault();
                   }}
                   title={(match as any).match_summary_url ? "Ver resumen" : "Resumen no disponible"}
-                  className={`h-11 flex items-center justify-center gap-2 rounded-xl text-sm font-medium text-white transition-colors ${
+                  className={`h-11 flex items-center justify-center gap-2 rounded-xl text-xs sm:text-sm font-medium text-white transition-colors ${
                     !(match as any).match_summary_url ? "opacity-50 cursor-not-allowed" : "hover:bg-white/[0.15]"
                   }`}
                   style={{
@@ -226,7 +226,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
               )}
               <Link
                 to="/conoce-los-cabos"
-                className="h-11 flex items-center justify-center gap-2 rounded-xl text-sm font-medium text-white transition-colors hover:bg-white/[0.15]"
+                className="h-11 flex items-center justify-center gap-2 rounded-xl text-xs sm:text-sm font-medium text-white transition-colors hover:bg-white/[0.15]"
                 style={{
                   backgroundColor: "rgba(255,255,255,0.08)",
                   border: "1px solid rgba(255,255,255,0.30)",
@@ -243,7 +243,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full h-[52px] flex items-center justify-center gap-2 rounded-xl font-bold text-[15px]"
+                className="w-full h-[52px] flex items-center justify-center gap-2 rounded-xl font-bold text-[13px] sm:text-[15px]"
                 style={{
                   backgroundColor: "hsl(142 76% 50%)",
                   color: "hsl(0 0% 6%)",
