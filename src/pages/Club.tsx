@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import stadiumHero from "@/assets/stadium-hero.jpg";
 import donKollImg from "@/assets/don-koll.jpg";
+import adnCabenoImg from "@/assets/adn-cabeno.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
 import ligaPremierLogo from "@/assets/liga-premier-logo.png";
 
@@ -283,7 +284,7 @@ function HeroCard({ className = "" }: { className?: string }) {
   return (
     <CardShell className={className} interactive>
       <img
-        src={stadiumHero}
+        src={adnCabenoImg}
         alt="Estadio Los Cabos United"
         className="absolute inset-0 w-full h-full object-cover"
       />
@@ -1012,7 +1013,7 @@ function MobileTopTabs({
     <CardShell interactive>
       {/* Background image — cubre toda la card, cambia según tab */}
       <img
-        src={activeTab === "adn" ? stadiumHero : donKollImg}
+        src={activeTab === "adn" ? adnCabenoImg : donKollImg}
         alt={activeTab === "adn" ? "Los Cabos United" : "Estadio Don Koll"}
         className="absolute inset-0 w-full h-full object-cover"
       />
