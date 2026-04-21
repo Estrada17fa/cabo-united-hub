@@ -1,54 +1,31 @@
 
+## Mejorar visibilidad de botones en card de partido
 
-## Reducir el scroll en móvil de `/club` sin cambiar el look
+Los botones (VER EN VIVO, RESUMEN, COMPRAR BOLETOS, VISITA LOS CABOS, VOTA POR EL AMO DEL PARTIDO) actualmente usan fondo casi transparente (`rgba(0,0,0,0.3)`) con borde de color, lo que los hace confundirse con la línea divisoria del timeline y otros elementos outline de la card.
 
-En móvil (390px), las cards se apilan en una columna y suman ~2,200px de scroll. La estrategia: **compactar alturas, colapsar contenido secundario y agrupar cards relacionadas en tabs internos** — todo solo en breakpoint `< md`. Tablet y desktop quedan idénticos.
+### Cambios en `src/components/match-zone/MatchHeroCard.tsx`
 
-### Cambios (solo `src/pages/Club.tsx`)
+Reemplazar el estilo "outline translúcido" por un estilo **"pill sólido con tinte de color"** que mantenga la identidad cromática de cada CTA pero con mucho más contraste:
 
-**1. Hero "ADN Cabeño"**
-- `min-h-[320px]` → `min-h-[220px] md:min-h-[320px]`
-- Descripción con `line-clamp-3 md:line-clamp-none` + botón inline "Leer más" que expande
-- Timeline de hitos: tarjetas más pequeñas en móvil (`min-w-[64px]`)
+- **Fondo**: cambiar de `rgba(0,0,0,0.3)` a un fill sólido tintado del color propio del botón a ~18-22% de opacidad sobre una base oscura, para que el botón "exista" visualmente sin pelear con el contenido.
+- **Borde**: mantener el borde de color pero subir a `2px` y aumentar levemente la saturación del color del texto para mejor legibilidad.
+- **Sombra/glow**: reforzar el `boxShadow` exterior para despegar el botón del fondo de la card.
+- **Texto**: subir el peso visual usando el color del acento al 100% en vez de tonos atenuados.
 
-**2. "Tu Estadio"**
-- `min-h-[320px]` → `min-h-[160px] md:min-h-[320px]`
-- En móvil queda como banner compacto (chip + título + ubicación)
+Aplicar a los 5 botones manteniendo sus colores actuales:
+- VER EN VIVO / RESUMEN → verde `hsl(142 76% 45%)`
+- COMPRAR BOLETOS / VOTA AMO DEL PARTIDO → cyan `hsl(189 100% 50%)`
+- VISITA LOS CABOS → rosa `hsl(336 80% 77%)`
 
-**3. "Nuestro Plantel" (la card más pesada)**
-- "Amo del Partido": en móvil layout vertical compacto, stats en chips inline pequeños
-- Grid de jugadores: en móvil mostrar **solo 4** con `useState` y botón "Ver todos (N)" para expandir
-- Tabs de posiciones: sin cambio (ya tienen scroll horizontal)
+### Snippet de referencia
 
-**4. "Academias"**
-- Las 3 categorías en móvil pasan a layout horizontal compacto (icon + nombre + `line-clamp-1`)
-- Botón "Inscribe a tu hijo" + chip "Cursos verano" en una sola fila
-
-**5. "Desde el Vestuario" + "La Afición en vivo"**
-- En móvil: una sola card con 2 tabs internos ("Vestuario" / "Afición"), altura fija ~340px
-- En `md+`: se renderizan separadas como ahora (sin cambio visual)
-- Esto elimina ~340px de scroll de un solo golpe
-
-### Resultado esperado en móvil (390×844)
-
-```text
-Antes (~2,200px scroll)        Después (~1,150px scroll)
-─────────────────────         ─────────────────────
-Mini posición  ~50            Mini posición  ~50
-ADN Cabeño     ~340           ADN Cabeño     ~240  (-100)
-Estadio        ~320           Estadio        ~170  (-150)
-Plantel        ~520           Plantel        ~360  (-160)
-Academias      ~360           Academias      ~220  (-140)
-Vestuario      ~340  ┐        Vest+Afición   ~360  (-320)
-Afición        ~360  ┘        (tabs)
+```tsx
+style={{
+  backgroundColor: "hsl(189 100% 50% / 0.18)",
+  border: "2px solid hsl(189 100% 50%)",
+  color: "hsl(189 100% 70%)",
+  boxShadow: "0 4px 14px -2px hsl(189 100% 50% / 0.45)",
+}}
 ```
 
-Reducción aproximada: **~50% menos scroll en móvil**, sin tocar tipografías, colores, bordes, gradientes, animaciones ni el layout en tablet/desktop.
-
-### Detalles técnicos
-
-- Solo se modifica `src/pages/Club.tsx`
-- Se añaden 2 `useState` (expandir jugadores, tab móvil Vestuario/Afición)
-- Todos los cambios usan prefijos `md:` para preservar el desktop intacto
-- Sin cambios en colores, fuentes, animaciones ni estructura de datos
-
+Sin cambios en otros archivos. La animación de pulso del botón "VER EN VIVO" se mantiene.
