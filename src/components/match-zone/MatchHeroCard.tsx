@@ -206,9 +206,10 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 !match.live_stream_url ? "opacity-50 cursor-not-allowed" : ""
               }`}
               style={{
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
-                border: "1.5px solid hsl(142 76% 45%)",
-                color: "hsl(142 76% 60%)",
+                backgroundColor: "hsl(142 76% 45% / 0.20)",
+                border: "2px solid hsl(142 76% 45%)",
+                color: "hsl(142 76% 70%)",
+                boxShadow: "0 4px 14px -2px hsl(142 76% 45% / 0.55)",
               }}
             >
               <Radio className="w-4 h-4" />
@@ -229,10 +230,10 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 !(match as any).match_summary_url ? "opacity-50 cursor-not-allowed" : ""
               }`}
               style={{
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
-                border: "1.5px solid hsl(142 76% 45%)",
-                color: "hsl(142 76% 60%)",
-                boxShadow: "0 0 16px -2px hsl(142 76% 45% / 0.4), inset 0 0 8px hsl(142 76% 45% / 0.05)",
+                backgroundColor: "hsl(142 76% 45% / 0.20)",
+                border: "2px solid hsl(142 76% 45%)",
+                color: "hsl(142 76% 70%)",
+                boxShadow: "0 4px 14px -2px hsl(142 76% 45% / 0.55)",
               }}
             >
               <PlayCircle className="w-4 h-4" />
