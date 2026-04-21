@@ -70,8 +70,8 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
         className="absolute inset-0 opacity-40 pointer-events-none"
         style={{
           background: showLiveLayout
-            ? "radial-gradient(ellipse at 30% 20%, hsl(142 76% 45% / 0.35) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.2) 0%, transparent 50%)"
-            : "radial-gradient(ellipse at 30% 20%, hsl(189 100% 38% / 0.3) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, hsl(189 100% 38% / 0.2) 0%, transparent 50%)",
+            ? "radial-gradient(ellipse at 30% 20%, rgba(0,0,0,0.5) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, rgba(0,0,0,0.4) 0%, transparent 50%)"
+            : "radial-gradient(ellipse at 30% 20%, rgba(0,0,0,0.5) 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, rgba(0,0,0,0.4) 0%, transparent 50%)",
         }}
       />
 
