@@ -11,6 +11,8 @@ import {
   Facebook,
   Instagram,
   MapPin,
+  Sparkles,
+  Tent,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import stadiumHero from "@/assets/stadium-hero.jpg";
@@ -97,19 +99,34 @@ const ROSTER: Record<
 
 const ACADEMY_CATEGORIES = [
   {
-    icon: Goal,
-    name: "Sub-17",
-    desc: "Talentos formándose para dar el salto al primer equipo.",
+    icon: Sparkles,
+    name: "Grassroots",
+    age: "3 – 6 años",
+    desc: "Primer contacto con el balón, juego y motricidad.",
   },
   {
     icon: GraduationCap,
-    name: "Sub-15",
-    desc: "Educación deportiva integral y desarrollo técnico.",
+    name: "Academia",
+    age: "7 – 14 años",
+    desc: "Formación técnica, táctica y valores deportivos.",
+  },
+  {
+    icon: Goal,
+    name: "Fuerzas Básicas",
+    age: "Sub 15 y Sub 17",
+    desc: "Camino al primer equipo y alto rendimiento.",
   },
   {
     icon: Sun,
-    name: "Femenil",
-    desc: "Categoría en crecimiento, abriendo espacios en el paraíso.",
+    name: "Curso de Verano",
+    age: "Temporada",
+    desc: "Entrenamientos intensivos durante el verano.",
+  },
+  {
+    icon: Tent,
+    name: "Campamento",
+    age: "Experiencia",
+    desc: "Convivencia, fútbol y vida en equipo.",
   },
 ];
 
@@ -703,13 +720,13 @@ function AcademyCard({ className = "" }: { className?: string }) {
           <h3 className="text-title mt-1">Academia oficial de fútbol de Los Cabos United</h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-2.5 flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-2.5 flex-1">
           {ACADEMY_CATEGORIES.map((c) => {
             const Icon = c.icon;
             return (
               <div
                 key={c.name}
-                className="rounded-xl border border-border bg-background/40 p-2.5 md:p-3 flex items-center md:items-start gap-3"
+                className="rounded-xl border border-border bg-background/40 p-2.5 md:p-3 flex items-center md:items-start gap-3 transition-colors hover:border-[hsl(189_100%_38%/0.5)]"
               >
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
@@ -718,8 +735,16 @@ function AcademyCard({ className = "" }: { className?: string }) {
                   <Icon className="w-4 h-4" style={{ color: PRIMARY }} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-foreground">{c.name}</div>
-                  <div className="text-[11px] text-muted-foreground leading-snug line-clamp-1 md:line-clamp-none">
+                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                    <div className="text-sm font-semibold text-foreground">{c.name}</div>
+                    <div
+                      className="text-[10px] font-bold tracking-wide whitespace-nowrap"
+                      style={{ color: PRIMARY }}
+                    >
+                      {c.age}
+                    </div>
+                  </div>
+                  <div className="text-[11px] text-muted-foreground leading-snug line-clamp-1 md:line-clamp-2">
                     {c.desc}
                   </div>
                 </div>
@@ -728,9 +753,13 @@ function AcademyCard({ className = "" }: { className?: string }) {
           })}
         </div>
 
-        <div className="mt-3 md:mt-4 flex flex-row gap-2 items-center justify-between">
-          <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold md:h-10 md:px-4">
+        <div className="mt-4 md:mt-5 flex flex-col items-center gap-2">
+          <Button
+            size="lg"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold w-full md:w-auto md:min-w-[320px] h-12 px-8 text-base shadow-lg shadow-primary/20"
+          >
             Inscribe a tu hijo
+            <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
           <a
             href="#"
@@ -740,8 +769,7 @@ function AcademyCard({ className = "" }: { className?: string }) {
               color: PRIMARY,
             }}
           >
-            <span className="hidden sm:inline">CURSOS DE VERANO 2025</span>
-            <span className="sm:hidden">VERANO 2025</span>
+            CURSOS DE VERANO 2025
             <ArrowRight className="w-3 h-3" />
           </a>
         </div>
