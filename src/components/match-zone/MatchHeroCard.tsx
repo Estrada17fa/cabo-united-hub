@@ -48,12 +48,23 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
       <img
         src={stadiumHero}
         alt="Estadio"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover [object-position:20%_40%] sm:[object-position:center_40%]"
         width={1280}
         height={720}
       />
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/70" />
+      {/* Multi-stop dark gradient for readability */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.85) 100%)",
+        }}
+      />
+      {/* Subtle team-green tint */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ backgroundColor: "rgba(0, 255, 135, 0.04)" }}
+      />
       {/* Mesh gradient glow */}
       <div
         className="absolute inset-0 opacity-40 pointer-events-none"
