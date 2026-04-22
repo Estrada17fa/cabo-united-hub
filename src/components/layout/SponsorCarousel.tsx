@@ -44,50 +44,42 @@ export function SponsorCarousel() {
   }, []);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border py-2.5 sm:py-3 z-40 safe-bottom">
-      <div className="overflow-hidden">
+    <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border py-4 sm:py-3 z-40 safe-bottom">
+      <div className="overflow-hidden flex items-center justify-center">
         <motion.div
           className="flex w-max items-center"
           animate={singleSetWidth > 0 ? { x: [0, -singleSetWidth] } : { x: 0 }}
           transition={{
             x: {
-              duration: 16,
+              duration: 20,
               repeat: Infinity,
               ease: "linear",
+              repeatType: "loop",
             },
           }}
         >
-          <div ref={singleSetRef} className="flex items-center gap-2 sm:gap-8">
-            {sponsors.map((sponsor) => (
-              <div
-                key={sponsor.id}
-                className="flex h-7 sm:h-8 flex-shrink-0 items-center justify-center px-2 sm:px-6"
-              >
-                <img
-                  src={sponsor.logo}
-                  alt={sponsor.name}
-                  className="h-7 sm:h-8 max-w-[72px] sm:max-w-none w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
-
-          <div aria-hidden="true" className="flex items-center gap-2 sm:gap-8">
-            {sponsors.map((sponsor) => (
-              <div
-                key={`duplicate-${sponsor.id}`}
-                className="flex h-7 sm:h-8 flex-shrink-0 items-center justify-center px-2 sm:px-6"
-              >
-                <img
-                  src={sponsor.logo}
-                  alt=""
-                  className="h-7 sm:h-8 max-w-[72px] sm:max-w-none w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
+          {[0, 1, 2].map((copyIdx) => (
+            <div
+              key={`set-${copyIdx}`}
+              ref={copyIdx === 0 ? singleSetRef : undefined}
+              aria-hidden={copyIdx !== 0}
+              className="flex items-center gap-3 sm:gap-8"
+            >
+              {sponsors.map((sponsor) => (
+                <div
+                  key={`${copyIdx}-${sponsor.id}`}
+                  className="flex h-9 sm:h-8 flex-shrink-0 items-center justify-center px-3 sm:px-6"
+                >
+                  <img
+                    src={sponsor.logo}
+                    alt={copyIdx === 0 ? sponsor.name : ""}
+                    className="h-9 sm:h-8 max-w-[88px] sm:max-w-none w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
         </motion.div>
       </div>
     </div>
