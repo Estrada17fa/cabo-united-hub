@@ -53,16 +53,6 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
         className="pointer-events-none absolute -bottom-24 -right-16 w-72 h-72 rounded-full blur-3xl opacity-25"
         style={{ background: SECONDARY }}
       />
-      {/* subtle grid pattern */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(hsl(0 0% 100%) 1px, transparent 1px), linear-gradient(90deg, hsl(0 0% 100%) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
-        }}
-      />
-
       <div className="relative p-5 md:p-7 space-y-5">
         {/* Top row: chip + avatar */}
         <div className="flex items-center justify-between gap-3">
