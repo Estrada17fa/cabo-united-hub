@@ -55,10 +55,13 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
+            <p className="text-[12px] font-bold text-foreground truncate leading-none">
+              {displayName}
+            </p>
             <div className="flex items-center gap-1.5">
               <Crown className="w-4 h-4 shrink-0" style={{ color: AMBER }} />
               <span
-                className="font-extrabold leading-none truncate"
+                className="font-extrabold leading-none truncate mt-2"
                 style={{ color: AMBER, fontSize: "20px" }}
               >
                 {LEVEL_NAME}
@@ -66,9 +69,6 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
             </div>
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mt-1 leading-none">
               Nivel {stats.level}
-            </p>
-            <p className="text-[11px] text-muted-foreground mt-2 truncate leading-none">
-              {displayName}
             </p>
           </div>
         </div>
