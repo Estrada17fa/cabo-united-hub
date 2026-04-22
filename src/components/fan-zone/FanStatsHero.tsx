@@ -44,8 +44,8 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
       transition={{ duration: 0.5 }}
       className="space-y-3"
     >
-      {/* Top row — 2 mini cards */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* Top row — 2 mini cards (stack on mobile, 50/50 on md+) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* CARD 1 — Profile + Level */}
         <div className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3 min-w-0">
           <Avatar className="w-12 h-12 shrink-0 ring-1 ring-border">
