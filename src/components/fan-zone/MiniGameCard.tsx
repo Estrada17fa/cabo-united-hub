@@ -56,15 +56,6 @@ export function MiniGameCard({ game, index, onClick }: Props) {
           opacity: 0.6,
         }}
       />
-      {/* Dot pattern */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage: `radial-gradient(circle, hsl(0 0% 100%) 1px, transparent 1px)`,
-          backgroundSize: "14px 14px",
-        }}
-      />
-
       {/* Top: icon + reward */}
       <div className="relative flex items-start justify-between">
         <div
