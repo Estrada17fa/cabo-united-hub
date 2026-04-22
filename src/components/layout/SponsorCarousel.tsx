@@ -18,12 +18,16 @@ const sponsors = [
 
 export function SponsorCarousel() {
   const singleSetRef = useRef<HTMLDivElement>(null);
-  const [singleSetWidth, setSingleSetWidth] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [travelDistance, setTravelDistance] = useState(0);
 
   useEffect(() => {
     const updateWidth = () => {
-      if (singleSetRef.current) {
-        setSingleSetWidth(singleSetRef.current.scrollWidth);
+      if (singleSetRef.current && containerRef.current) {
+        const setWidth = singleSetRef.current.getBoundingClientRect().width;
+        const styles = window.getComputedStyle(containerRef.current);
+        const gap = parseFloat(styles.columnGap || styles.gap || "0") || 0;
+        setTravelDistance(setWidth + gap);
       }
     };
 
@@ -47,8 +51,9 @@ export function SponsorCarousel() {
     <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border py-4 sm:py-3 z-40 safe-bottom">
       <div className="overflow-hidden flex items-center justify-center">
         <motion.div
+          ref={containerRef}
           className="flex w-max items-center gap-3 sm:gap-8"
-          animate={singleSetWidth > 0 ? { x: [0, -singleSetWidth] } : { x: 0 }}
+          animate={travelDistance > 0 ? { x: [0, -travelDistance] } : { x: 0 }}
           transition={{
             x: {
               duration: 30,
