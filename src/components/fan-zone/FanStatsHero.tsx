@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Sparkles, Trophy, LogIn } from "lucide-react";
+import { LogIn } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -43,82 +43,69 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
       transition={{ duration: 0.5 }}
       className="space-y-3"
     >
-      {/* Mini card: avatar + puntos + ranking */}
-      <div className="relative rounded-2xl border border-border bg-card overflow-hidden">
-        <div
-          className="pointer-events-none absolute -top-16 -left-10 w-48 h-48 rounded-full blur-3xl opacity-25"
-          style={{ background: PRIMARY }}
-        />
-        <div
-          className="pointer-events-none absolute -bottom-16 -right-10 w-48 h-48 rounded-full blur-3xl opacity-20"
-          style={{ background: SECONDARY }}
-        />
-        <div className="relative flex items-center gap-3 p-3.5">
-          <Avatar className="w-12 h-12 ring-2 ring-[hsl(189_100%_45%/0.4)] shrink-0">
+      {/* Card unificada: identidad + stats + nivel */}
+      <div className="rounded-2xl border border-border bg-card p-5">
+        {/* Fila 1: avatar + nombre + stats */}
+        <div className="flex items-center gap-4">
+          <Avatar className="w-14 h-14 shrink-0 ring-1 ring-border">
             <AvatarImage src={profile?.avatar_url ?? undefined} />
-            <AvatarFallback className="bg-muted text-xs font-bold">
+            <AvatarFallback className="bg-muted text-sm font-bold text-foreground">
               {displayName.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
 
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground font-semibold">
               Fan Zone
             </p>
-            <p className="text-sm font-bold text-foreground truncate">{displayName}</p>
+            <p className="text-base font-bold text-foreground truncate leading-tight">
+              {displayName}
+            </p>
           </div>
 
-          <div className="flex items-center gap-3 pr-1">
-            <div className="text-right leading-tight">
-              <div className="flex items-center justify-end gap-1">
-                <Sparkles className="w-3 h-3" style={{ color: PRIMARY }} />
-                <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
-                  Puntos
-                </span>
-              </div>
-              <span
-                className="text-lg font-extrabold tabular-nums tracking-tight"
-                style={{ color: PRIMARY, textShadow: "0 0 12px hsl(189 100% 45% / 0.45)" }}
-              >
+          <div className="flex items-center gap-5 shrink-0">
+            <div className="text-right">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                Puntos
+              </p>
+              <p className="text-xl font-extrabold tabular-nums tracking-tight text-foreground leading-tight">
                 {stats.points.toLocaleString()}
-              </span>
+              </p>
             </div>
-            <div className="w-px h-9 bg-border" />
-            <div className="text-right leading-tight">
-              <div className="flex items-center justify-end gap-1">
-                <Trophy className="w-3 h-3" style={{ color: SECONDARY }} />
-                <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
-                  Rank
-                </span>
-              </div>
-              <span
-                className="text-lg font-extrabold tabular-nums tracking-tight"
-                style={{ color: SECONDARY }}
-              >
+            <div className="w-px h-8 bg-border" />
+            <div className="text-right">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                Ranking
+              </p>
+              <p className="text-xl font-extrabold tabular-nums tracking-tight text-foreground leading-tight">
                 #{stats.rank}
-              </span>
+              </p>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Barra de progreso de nivel */}
-      <div className="relative rounded-2xl border border-border bg-card p-3.5">
-        <div className="flex items-center justify-between text-[11px] mb-1.5">
-          <span className="font-bold text-foreground">Nivel {stats.level}</span>
-          <span className="text-muted-foreground">
-            {stats.pointsToNext.toLocaleString()} pts al Nivel {stats.level + 1}
-          </span>
-        </div>
-        <div className="relative h-2 w-full overflow-hidden rounded-full bg-[hsl(0_0%_100%/0.06)]">
-          <div
-            className="h-full rounded-full transition-all"
-            style={{
-              width: `${progressPct}%`,
-              background: `linear-gradient(90deg, ${PRIMARY}, ${SECONDARY})`,
-              boxShadow: "0 0 12px hsl(189 100% 45% / 0.6)",
-            }}
-          />
+        {/* Separador */}
+        <div className="h-px bg-border my-4" />
+
+        {/* Fila 2: progreso de nivel */}
+        <div>
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-xs font-semibold text-foreground">
+              Nivel <span className="font-extrabold">{stats.level}</span>
+            </span>
+            <span className="text-[11px] text-muted-foreground">
+              {stats.pointsToNext.toLocaleString()} pts al Nivel {stats.level + 1}
+            </span>
+          </div>
+          <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-[hsl(0_0%_100%/0.06)]">
+            <div
+              className="h-full rounded-full transition-all"
+              style={{
+                width: `${progressPct}%`,
+                background: `linear-gradient(90deg, ${PRIMARY}, ${SECONDARY})`,
+              }}
+            />
+          </div>
         </div>
       </div>
 
