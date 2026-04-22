@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
-import { LogIn, Crown, Trophy } from "lucide-react";
+import { LogIn, Crown, Trophy, Gift } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { useIsMobile } from "@/hooks/use-mobile";
 
-const PRIMARY = "hsl(var(--primary))";
-const ACCENT = "hsl(var(--accent))";
+const CYAN = "hsl(189 100% 45%)";
+const GREEN = "hsl(152 76% 50%)";
+const AMBER = "hsl(42 95% 58%)";
 
 interface FanStats {
   rank: number;
@@ -31,7 +31,6 @@ const NEXT_LEVEL_NAME = "Amo Élite";
 
 export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
   const { user, profile } = useAuth();
-  const isMobile = useIsMobile();
   const stats = MOCK_STATS;
   const earned = stats.levelTotal - stats.pointsToNext;
   const progressPct = Math.max(0, Math.min(100, (earned / stats.levelTotal) * 100));
@@ -45,72 +44,82 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
       transition={{ duration: 0.5 }}
       className="space-y-3"
     >
-      <div
-        className={isMobile ? "flex flex-col gap-3" : "grid gap-3"}
-        style={isMobile ? undefined : { gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)" }}
-      >
-        <div className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3 min-w-0 h-full">
-          <Avatar className="w-12 h-12 md:w-14 md:h-14 shrink-0 ring-1 ring-border">
+      {/* Top row — 2 mini cards */}
+      <div className="grid grid-cols-2 gap-3">
+        {/* CARD 1 — Profile + Level */}
+        <div className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3 min-w-0">
+          <Avatar className="w-12 h-12 shrink-0 ring-1 ring-border">
             <AvatarImage src={profile?.avatar_url ?? undefined} />
             <AvatarFallback className="bg-muted text-xs font-bold text-foreground">
               {displayName.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-extrabold text-foreground truncate leading-none">
+            <div className="flex items-center gap-1.5">
+              <Crown className="w-4 h-4 shrink-0" style={{ color: AMBER }} />
+              <span
+                className="font-extrabold leading-none truncate"
+                style={{ color: AMBER, fontSize: "18px" }}
+              >
+                {LEVEL_NAME}
+              </span>
+            </div>
+            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mt-1 leading-none">
+              Nivel {stats.level}
+            </p>
+            <p className="text-[11px] text-muted-foreground mt-2 truncate leading-none">
               {displayName}
             </p>
-            <div className="flex items-center gap-1.5 mt-2 min-w-0">
-              <Crown className="w-4 h-4 shrink-0" style={{ color: "hsl(var(--accent))" }} />
-              <div className="min-w-0">
-                <p className="text-[28px] md:text-[30px] font-black truncate leading-none" style={{ color: "hsl(var(--accent))" }}>
-                  {LEVEL_NAME}
-                </p>
-                <p className="text-[12px] uppercase tracking-[0.16em] text-muted-foreground font-semibold mt-1 leading-none">
-                  Nivel {stats.level}
-                </p>
-              </div>
-            </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-card overflow-hidden h-full">
+        {/* CARD 2 — Ranking + Points */}
+        <div className="rounded-2xl border border-border bg-card overflow-hidden">
           <div className="grid grid-cols-2 h-full">
+            {/* Ranking */}
             <div
-              className="p-4 flex flex-col justify-center min-w-0"
+              className="p-3 flex flex-col justify-center min-w-0"
               style={{
-                backgroundColor: "hsl(0 0% 0% / 0.28)",
-                borderTop: "2px solid hsl(var(--accent))",
-                borderRight: "1px solid hsl(var(--border))",
+                backgroundColor: "hsl(0 0% 0% / 0.35)",
+                borderTop: `2px solid ${GREEN}`,
+                borderRight: "1px solid hsl(0 0% 100% / 0.06)",
               }}
             >
-              <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground font-semibold leading-none">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold leading-none">
                 Ranking
               </p>
-              <p className="text-[28px] md:text-[30px] font-black tabular-nums leading-none mt-2 flex items-center gap-1.5" style={{ color: ACCENT }}>
-                <Trophy className="w-4 h-4" />#{stats.rank}
+              <p
+                className="font-extrabold tabular-nums tracking-tight leading-none mt-1.5 flex items-center gap-1"
+                style={{ color: GREEN, fontSize: "22px" }}
+              >
+                <Trophy className="w-3.5 h-3.5" />
+                #{stats.rank}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1.5 leading-none truncate">
+              <p className="text-[10px] text-muted-foreground mt-1 leading-none">
                 de {stats.totalFans.toLocaleString()}
               </p>
             </div>
-
+            {/* Points */}
             <div
-              className="p-4 flex flex-col justify-center min-w-0"
+              className="p-3 flex flex-col justify-center min-w-0"
               style={{
-                backgroundColor: "hsl(0 0% 0% / 0.28)",
-                borderTop: "2px solid hsl(var(--primary))",
+                backgroundColor: "hsl(0 0% 0% / 0.35)",
+                borderTop: `2px solid ${CYAN}`,
               }}
             >
-              <p className="text-[10px] uppercase tracking-[0.14em] font-semibold leading-none" style={{ color: PRIMARY }}>
+              <p
+                className="text-[10px] uppercase tracking-wider font-semibold leading-none"
+                style={{ color: CYAN }}
+              >
                 Puntos
               </p>
               <p
-                className="text-[28px] md:text-[30px] font-black tabular-nums leading-none mt-2 text-foreground truncate"
+                className="font-extrabold tabular-nums tracking-tight leading-none mt-1.5 text-foreground"
+                style={{ fontSize: "22px" }}
               >
                 {stats.points.toLocaleString()}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1.5 leading-none">
+              <p className="text-[10px] text-muted-foreground mt-1 leading-none">
                 acumulados
               </p>
             </div>
@@ -118,11 +127,12 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
         </div>
       </div>
 
+      {/* CARD 3 — Progress bar */}
       <div className="rounded-2xl border border-border bg-card p-4">
-        <div className="flex items-center justify-between gap-3 mb-3">
+        <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex items-center gap-1.5 min-w-0">
-            <Crown className="w-4 h-4 shrink-0" style={{ color: "hsl(var(--accent))" }} />
-            <span className="text-sm font-extrabold text-foreground truncate">
+            <Crown className="w-3.5 h-3.5 shrink-0" style={{ color: AMBER }} />
+            <span className="text-[12px] font-bold text-foreground truncate">
               Nivel {stats.level} · {LEVEL_NAME}
             </span>
           </div>
@@ -132,38 +142,39 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
         </div>
 
         <div
-          className="relative h-3 w-full overflow-visible rounded-full"
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={stats.levelTotal}
-          aria-valuenow={earned}
-          aria-label="Progreso al siguiente nivel"
-          style={{ backgroundColor: "hsl(0 0% 100% / 0.08)" }}
+          className="relative h-2.5 w-full overflow-visible"
+          style={{
+            borderRadius: "9999px",
+            backgroundColor: "hsl(0 0% 100% / 0.08)",
+          }}
         >
           <div
-            className="h-full relative transition-all duration-500 ease-out"
+            className="h-full relative transition-all"
             style={{
               width: `${progressPct}%`,
-              background: `linear-gradient(90deg, ${PRIMARY}, ${ACCENT})`,
-              boxShadow: "0 0 14px hsl(var(--primary) / 0.4)",
+              borderRadius: "9999px",
+              background: `linear-gradient(90deg, ${CYAN}, ${GREEN})`,
+              boxShadow: "0 0 10px hsl(160 100% 50% / 0.45)",
             }}
           >
+            {/* Tick at end */}
             <span
               className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 right-0 w-2.5 h-2.5 rounded-full"
               style={{
-                backgroundColor: "hsl(var(--background))",
-                boxShadow: "0 0 0 3px hsl(var(--primary) / 0.25), 0 0 10px hsl(var(--primary) / 0.45)",
+                backgroundColor: "hsl(0 0% 100%)",
+                boxShadow: "0 0 6px hsl(0 0% 100% / 0.85)",
               }}
             />
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1.5 mt-2.5">
-          <span className="text-[11px] text-muted-foreground">
+        <div className="flex items-center justify-between gap-2 mt-2.5">
+          <span className="text-[11px] text-muted-foreground truncate">
             Próximo: Nivel {stats.level + 1} · {NEXT_LEVEL_NAME}
           </span>
-          <span className="text-[11px] text-muted-foreground">
-            Faltan <span className="font-semibold text-foreground">{stats.pointsToNext.toLocaleString()} pts</span>
+          <span className="text-[11px] text-muted-foreground flex items-center gap-1 shrink-0">
+            <Gift className="w-3 h-3" />
+            Pase del Amo · 20% descuento
           </span>
         </div>
       </div>
@@ -173,9 +184,9 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
           onClick={onLoginClick}
           className="w-full font-bold"
           style={{
-            backgroundColor: PRIMARY,
-            color: "hsl(var(--primary-foreground))",
-            boxShadow: "0 6px 20px -4px hsl(var(--primary) / 0.55)",
+            backgroundColor: CYAN,
+            color: "hsl(0 0% 8%)",
+            boxShadow: "0 6px 20px -4px hsl(189 100% 45% / 0.55)",
           }}
         >
           <LogIn className="w-4 h-4 mr-1" />
