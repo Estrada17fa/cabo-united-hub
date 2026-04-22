@@ -78,7 +78,7 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
           <div className="grid grid-cols-2 h-full">
             {/* Ranking */}
             <div
-              className="p-3 flex flex-col justify-center min-w-0"
+              className="p-3 flex flex-col justify-center gap-1.5 min-w-0"
               style={{
                 backgroundColor: "hsl(0 0% 0% / 0.35)",
                 borderTop: `2px solid ${GREEN}`,
@@ -89,19 +89,19 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
                 Ranking
               </p>
               <p
-                className="font-extrabold tabular-nums tracking-tight leading-none mt-1.5 flex items-center gap-1"
+                className="font-extrabold tabular-nums tracking-tight leading-none flex items-center gap-1"
                 style={{ color: GREEN, fontSize: "22px" }}
               >
                 <Trophy className="w-3.5 h-3.5" />
                 #{stats.rank}
               </p>
-              <p className="text-[10px] text-muted-foreground mt-1 leading-none">
+              <p className="text-[10px] text-muted-foreground leading-none">
                 de {stats.totalFans.toLocaleString()}
               </p>
             </div>
             {/* Points */}
             <div
-              className="p-3 flex flex-col justify-center min-w-0"
+              className="p-3 flex flex-col justify-center gap-1.5 min-w-0"
               style={{
                 backgroundColor: "hsl(0 0% 0% / 0.35)",
                 borderTop: `2px solid ${CYAN}`,
@@ -114,12 +114,12 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
                 Puntos
               </p>
               <p
-                className="font-extrabold tabular-nums tracking-tight leading-none mt-1.5 text-foreground"
+                className="font-extrabold tabular-nums tracking-tight leading-none text-foreground"
                 style={{ fontSize: "22px" }}
               >
                 {stats.points.toLocaleString()}
               </p>
-              <p className="text-[10px] text-muted-foreground mt-1 leading-none">
+              <p className="text-[10px] text-muted-foreground leading-none">
                 acumulados
               </p>
             </div>
