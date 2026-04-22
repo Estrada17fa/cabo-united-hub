@@ -16,14 +16,14 @@ const sponsors = [
 ];
 
 export function SponsorCarousel() {
-  const duplicatedSponsors = [...sponsors, ...sponsors];
+  const duplicatedSponsors = [...sponsors, ...sponsors, ...sponsors];
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border py-2.5 sm:py-3 z-40 safe-bottom">
       <div className="overflow-hidden">
         <motion.div
-          className="flex gap-6 sm:gap-8 items-center"
-          animate={{ x: [0, "-50%"] }}
+          className="flex gap-4 sm:gap-8 items-center"
+          animate={{ x: ["0%", "-33.333%"] }}
           transition={{
             x: {
               duration: 20,
@@ -35,7 +35,7 @@ export function SponsorCarousel() {
           {duplicatedSponsors.map((sponsor, index) => (
             <div
               key={`${sponsor.id}-${index}`}
-              className="flex-shrink-0 h-9 sm:h-8 px-5 sm:px-6 flex items-center justify-center"
+              className="flex-shrink-0 h-9 sm:h-8 px-3 sm:px-6 flex items-center justify-center"
             >
               <img
                 src={sponsor.logo}
