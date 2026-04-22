@@ -47,11 +47,11 @@ export function SponsorCarousel() {
     <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border py-4 sm:py-3 z-40 safe-bottom">
       <div className="overflow-hidden flex items-center justify-center">
         <motion.div
-          className="flex w-max items-center"
+          className="flex w-max items-center gap-3 sm:gap-8"
           animate={singleSetWidth > 0 ? { x: [0, -singleSetWidth] } : { x: 0 }}
           transition={{
             x: {
-              duration: 20,
+              duration: 30,
               repeat: Infinity,
               ease: "linear",
               repeatType: "loop",
