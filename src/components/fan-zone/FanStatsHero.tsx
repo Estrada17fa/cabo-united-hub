@@ -45,10 +45,10 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
       className="space-y-3"
     >
       {/* Top row — 2 mini cards */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* CARD 1 — Profile + Level */}
         <div className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3 min-w-0">
-          <Avatar className="w-12 h-12 shrink-0 ring-1 ring-border">
+          <Avatar className="w-11 h-11 shrink-0 ring-1 ring-border">
             <AvatarImage src={profile?.avatar_url ?? undefined} />
             <AvatarFallback className="bg-muted text-xs font-bold text-foreground">
               {displayName.slice(0, 2).toUpperCase()}
@@ -59,7 +59,7 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
               <Crown className="w-4 h-4 shrink-0" style={{ color: AMBER }} />
               <span
                 className="font-extrabold leading-none truncate"
-                style={{ color: AMBER, fontSize: "18px" }}
+                style={{ color: AMBER, fontSize: "20px" }}
               >
                 {LEVEL_NAME}
               </span>
@@ -78,7 +78,7 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
           <div className="grid grid-cols-2 h-full">
             {/* Ranking */}
             <div
-              className="p-3 flex flex-col justify-center min-w-0"
+              className="p-4 flex flex-col justify-center min-w-0"
               style={{
                 backgroundColor: "hsl(0 0% 0% / 0.35)",
                 borderTop: `2px solid ${GREEN}`,
@@ -89,19 +89,19 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
                 Ranking
               </p>
               <p
-                className="font-extrabold tabular-nums tracking-tight leading-none mt-1.5 flex items-center gap-1"
-                style={{ color: GREEN, fontSize: "22px" }}
+                className="font-extrabold tabular-nums tracking-tight leading-none mt-2 flex items-center gap-1"
+                style={{ color: GREEN, fontSize: "24px" }}
               >
                 <Trophy className="w-3.5 h-3.5" />
                 #{stats.rank}
               </p>
-              <p className="text-[10px] text-muted-foreground mt-1 leading-none">
+              <p className="text-[10px] text-muted-foreground mt-1.5 leading-none">
                 de {stats.totalFans.toLocaleString()}
               </p>
             </div>
             {/* Points */}
             <div
-              className="p-3 flex flex-col justify-center min-w-0"
+              className="p-4 flex flex-col justify-center min-w-0"
               style={{
                 backgroundColor: "hsl(0 0% 0% / 0.35)",
                 borderTop: `2px solid ${CYAN}`,
@@ -114,12 +114,12 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
                 Puntos
               </p>
               <p
-                className="font-extrabold tabular-nums tracking-tight leading-none mt-1.5 text-foreground"
-                style={{ fontSize: "22px" }}
+                className="font-extrabold tabular-nums tracking-tight leading-none mt-2 text-foreground"
+                style={{ fontSize: "24px" }}
               >
                 {stats.points.toLocaleString()}
               </p>
-              <p className="text-[10px] text-muted-foreground mt-1 leading-none">
+              <p className="text-[10px] text-muted-foreground mt-1.5 leading-none">
                 acumulados
               </p>
             </div>
@@ -168,11 +168,11 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-2 mt-2.5">
-          <span className="text-[11px] text-muted-foreground truncate">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 mt-2.5">
+          <span className="text-[11px] text-muted-foreground">
             Próximo: Nivel {stats.level + 1} · {NEXT_LEVEL_NAME}
           </span>
-          <span className="text-[11px] text-muted-foreground flex items-center gap-1 shrink-0">
+          <span className="text-[11px] text-muted-foreground flex items-center gap-1">
             <Gift className="w-3 h-3" />
             Pase del Amo · 20% descuento
           </span>
