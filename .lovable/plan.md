@@ -1,77 +1,25 @@
 
 
-# Fan Zone — Header rediseñado en 3 mini cards
+# Fix: Carrusel de patrocinadores corta logos en móvil
 
-Voy a reemplazar el header actual de Fan Zone (`FanStatsHero.tsx`) por una composición de **3 mini cards** independientes, manteniendo el lenguaje minimal premium ya aprobado (fondo `bg-card`, bordes sutiles, sin glows excesivos, tipografía Poppins).
+## Problema
+En móvil (390px) solo se ven 3 logos rotando en lugar de los 6. Causa: el carrusel duplica el array `[...sponsors, ...sponsors]` (12 items) y anima `x: [0, "-50%"]`, lo cual asume que la primera mitad cabe completa fuera de pantalla antes de reiniciar. Pero como el contenedor `flex` no tiene `width` explícito y los items son `flex-shrink-0`, la animación de `-50%` desplaza la mitad del ancho total — funciona en desktop pero en móvil el loop visual se corta porque los items siguientes aún no han entrado por la derecha cuando el reset ocurre.
 
-## Layout
+El issue real: con solo 2 copias y `-50%`, el efecto seamless requiere que la primera copia ocupe ≥ 100% del viewport. En móvil con padding/gaps reducidos, los 6 logos miden menos que el ancho de pantalla, así que al hacer `-50%` se ve un salto y solo parecen pasar 3.
 
-```text
-┌──────────────────────┬──────────────────────┐
-│  CARD 1 — Perfil     │  CARD 2 — Stats      │
-│  + Nivel             │  Ranking + Puntos    │
-│  (50% width)         │  (50% width)         │
-└──────────────────────┴──────────────────────┘
-┌─────────────────────────────────────────────┐
-│  CARD 3 — Barra de progreso (100% width)    │
-└─────────────────────────────────────────────┘
-```
+## Solución
+En `src/components/layout/SponsorCarousel.tsx`:
 
-Grid `grid-cols-2 gap-3` arriba, card full-width debajo. En mobile se mantiene 50/50 arriba (las cards son compactas, caben bien).
+1. **Triplicar el array** en lugar de duplicar: `[...sponsors, ...sponsors, ...sponsors]` (18 items) y animar a `-33.333%`. Esto garantiza que siempre haya contenido visible llenando el viewport en cualquier tamaño de pantalla.
+2. **Reducir gaps en móvil** para que más logos sean visibles a la vez: `gap-4 sm:gap-8` (en lugar de `gap-6 sm:gap-8`).
+3. **Reducir padding horizontal de cada item en móvil**: `px-3 sm:px-6` (en lugar de `px-5 sm:px-6`) para que no se sientan tan separados.
+4. **Mantener** altura, opacidad, animación de 20s lineal infinita y `loading="lazy"`.
 
----
+## Archivos modificados
+- `src/components/layout/SponsorCarousel.tsx` — único cambio.
 
-## Card 1 — Perfil + Nivel (izquierda, 50%)
-
-- Avatar circular 48px a la izquierda con `ring-1 ring-border`.
-- A la derecha del avatar, jerarquía vertical:
-  - **Arriba grande**: nombre del nivel — `"Amo"` — Poppins extrabold, 18px, color **ámbar** (`hsl(42 95% 58%)`) con un mini ícono `Crown` al lado.
-  - **Abajo pequeño**: `"Nivel 3"` en 11px uppercase tracking-wider muted.
-- Debajo del bloque (o como tercera línea pequeña): nombre del usuario en 11px muted (secundario, ya no es protagonista del header — lo importante ahora es el nivel).
-- Padding `p-4`, `rounded-2xl`, `border border-border bg-card`.
-
-## Card 2 — Ranking + Puntos (derecha, 50%)
-
-Dividida internamente en 2 mitades verticales con un divisor sutil (1px border en el medio):
-
-- **Mitad izquierda — Ranking**:
-  - Label arriba: `"RANKING"` 10px uppercase muted.
-  - Número grande: `#42` Poppins extrabold 22px en **verde** (`hsl(152 76% 50%)`) con mini ícono `Trophy`.
-  - Sublabel: `"de 1,250"` 10px muted.
-- **Mitad derecha — Puntos**:
-  - Label arriba: `"PUNTOS"` 10px uppercase en **cyan** (`hsl(189 100% 45%)`).
-  - Número grande: `12,450` Poppins extrabold 22px en blanco con `tabular-nums tracking-tight`.
-  - Sublabel: `"acumulados"` 10px muted.
-- Para "resaltar" los dos números: pequeño `inset` con `bg-black/40` + `border-t` del color correspondiente (verde / cyan) en cada mitad — un acento sutil arriba de cada bloque, como un mini "indicator".
-
-## Card 3 — Barra de progreso (full width, abajo)
-
-- `rounded-2xl border border-border bg-card p-4`.
-- **Fila superior** (flex justify-between):
-  - Izquierda: `"Nivel 3 · Amo"` con ícono `Crown` ámbar pequeño — bold 12px.
-  - Derecha: `"1,550 / 2,000 pts"` tabular-nums 12px muted.
-- **Barra de progreso moderna**:
-  - Altura **10px** (más prominente que la actual de 8px).
-  - Fondo: `bg-white/8` rounded-full.
-  - Fill: gradiente **cyan → verde** (`linear-gradient(90deg, cyan, green)`) con glow sutil (`box-shadow: 0 0 10px hsl(160 100% 50% / 0.45)`).
-  - Pequeño "tick" o marca al final del fill (un punto blanco brillante de 4px) que indica la posición actual — toque "moderno" tipo XP bar.
-  - Border-radius full pill.
-- **Fila inferior** (flex justify-between, 11px muted):
-  - Izquierda: `"Próximo: Nivel 4 · Amo Élite"`.
-  - Derecha: `"🎁 Pase del Amo · 20% descuento"` con ícono `Gift`.
-
----
-
-## CTA login (sin cambios)
-
-Si `!user`, debajo de las 3 cards mantengo el botón cyan `"Inicia sesión para competir"` igual que ahora.
-
----
-
-## Detalles técnicos
-
-- **Archivo único modificado**: `src/components/fan-zone/FanStatsHero.tsx` — reescritura completa del JSX manteniendo el mismo export, props (`onLoginClick`) y data mock (`MOCK_STATS`, `LEVEL_NAME`, etc.). No toco `FanZone.tsx`, `MiniGameCard.tsx`, `games.ts` ni nada del grid de juegos.
-- Conservo `useAuth()` para avatar/nombre y la animación de entrada con `framer-motion`.
-- Colores reutilizados de las constantes ya definidas (`CYAN`, `GREEN`, `AMBER`).
-- Sin cambios de dependencias, sin cambios de backend.
+## Lo que NO se toca
+- Imágenes de los logos (ya están bien).
+- Posición fixed bottom, z-index, backdrop, border-top.
+- Ningún otro componente, página o layout.
 
