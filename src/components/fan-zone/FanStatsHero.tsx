@@ -3,10 +3,10 @@ import { LogIn, Crown, Trophy, Gift } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-const CYAN = "hsl(189 100% 45%)";
-const GREEN = "hsl(152 76% 50%)";
-const AMBER = "hsl(42 95% 58%)";
+const PRIMARY = "hsl(var(--primary))";
+const ACCENT = "hsl(var(--accent))";
 
 interface FanStats {
   rank: number;
@@ -31,6 +31,7 @@ const NEXT_LEVEL_NAME = "Amo Élite";
 
 export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
   const { user, profile } = useAuth();
+  const isMobile = useIsMobile();
   const stats = MOCK_STATS;
   const earned = stats.levelTotal - stats.pointsToNext;
   const progressPct = Math.max(0, Math.min(100, (earned / stats.levelTotal) * 100));
