@@ -54,7 +54,10 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
               {displayName.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 flex flex-col justify-center gap-1.5">
+            <p className="text-[13px] font-semibold text-foreground truncate leading-none">
+              {displayName}
+            </p>
             <div className="flex items-center gap-1.5">
               <Crown className="w-4 h-4 shrink-0" style={{ color: AMBER }} />
               <span
@@ -64,11 +67,8 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
                 {LEVEL_NAME}
               </span>
             </div>
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mt-1 leading-none">
+            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold leading-none">
               Nivel {stats.level}
-            </p>
-            <p className="text-[11px] text-muted-foreground mt-2 truncate leading-none">
-              {displayName}
             </p>
           </div>
         </div>
@@ -78,7 +78,7 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
           <div className="grid grid-cols-2 h-full">
             {/* Ranking */}
             <div
-              className="p-3 flex flex-col justify-center min-w-0"
+              className="p-3 flex flex-col justify-center gap-1.5 min-w-0"
               style={{
                 backgroundColor: "hsl(0 0% 0% / 0.35)",
                 borderTop: `2px solid ${GREEN}`,
@@ -89,19 +89,19 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
                 Ranking
               </p>
               <p
-                className="font-extrabold tabular-nums tracking-tight leading-none mt-1.5 flex items-center gap-1"
+                className="font-extrabold tabular-nums tracking-tight leading-none flex items-center gap-1"
                 style={{ color: GREEN, fontSize: "22px" }}
               >
                 <Trophy className="w-3.5 h-3.5" />
                 #{stats.rank}
               </p>
-              <p className="text-[10px] text-muted-foreground mt-1 leading-none">
+              <p className="text-[10px] text-muted-foreground leading-none">
                 de {stats.totalFans.toLocaleString()}
               </p>
             </div>
             {/* Points */}
             <div
-              className="p-3 flex flex-col justify-center min-w-0"
+              className="p-3 flex flex-col justify-center gap-1.5 min-w-0"
               style={{
                 backgroundColor: "hsl(0 0% 0% / 0.35)",
                 borderTop: `2px solid ${CYAN}`,
@@ -114,12 +114,12 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
                 Puntos
               </p>
               <p
-                className="font-extrabold tabular-nums tracking-tight leading-none mt-1.5 text-foreground"
+                className="font-extrabold tabular-nums tracking-tight leading-none text-foreground"
                 style={{ fontSize: "22px" }}
               >
                 {stats.points.toLocaleString()}
               </p>
-              <p className="text-[10px] text-muted-foreground mt-1 leading-none">
+              <p className="text-[10px] text-muted-foreground leading-none">
                 acumulados
               </p>
             </div>
