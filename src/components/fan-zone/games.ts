@@ -1,16 +1,15 @@
 import { Ticket, Users, Target, MapPin, Brain, Crown, type LucideIcon } from "lucide-react";
 
-/** Game lifecycle status (badge top-right) */
-export type GameStatus = "open" | "closed" | "played" | "live" | "active";
+export type GameStatus = "play" | "available" | "soon";
 
 export interface MiniGame {
   id: string;
   name: string;
   subtitle: string;
   icon: LucideIcon;
-  /** Permanent brand color for icon + CTA */
+  /** HSL color string for accents */
   color: string;
-  /** Secondary color for icon background gradient */
+  /** HSL secondary color for gradient */
   colorAlt: string;
   status: GameStatus;
   reward: string;
@@ -22,10 +21,9 @@ export const GAMES: MiniGame[] = [
     name: "Quiniela del Paraíso",
     subtitle: "Predice la jornada completa",
     icon: Ticket,
-    // Cyan / teal
     color: "hsl(189 100% 45%)",
     colorAlt: "hsl(189 100% 60%)",
-    status: "open",
+    status: "play",
     reward: "+150 pts",
   },
   {
@@ -33,10 +31,9 @@ export const GAMES: MiniGame[] = [
     name: "Arma tu 11",
     subtitle: "Tu alineación ideal",
     icon: Users,
-    // Team green
-    color: "hsl(150 100% 50%)",
-    colorAlt: "hsl(160 100% 60%)",
-    status: "open",
+    color: "hsl(336 80% 70%)",
+    colorAlt: "hsl(336 90% 80%)",
+    status: "available",
     reward: "+100 pts",
   },
   {
@@ -44,10 +41,9 @@ export const GAMES: MiniGame[] = [
     name: "Marcador Exacto",
     subtitle: "Acierta el resultado",
     icon: Target,
-    // Amber / gold
     color: "hsl(38 95% 55%)",
     colorAlt: "hsl(45 100% 65%)",
-    status: "played",
+    status: "play",
     reward: "+200 pts",
   },
   {
@@ -55,32 +51,29 @@ export const GAMES: MiniGame[] = [
     name: "Visitas al Paraíso",
     subtitle: "Check-in en el estadio",
     icon: MapPin,
-    // Pin green
     color: "hsl(142 76% 45%)",
     colorAlt: "hsl(160 80% 55%)",
-    status: "active",
+    status: "available",
     reward: "+50 pts",
   },
   {
     id: "trivia",
-    name: "Trivia del Paraíso",
+    name: "Trivia",
     subtitle: "Pon a prueba tu fanatismo",
     icon: Brain,
-    // Purple / violet
-    color: "hsl(270 85% 65%)",
-    colorAlt: "hsl(285 90% 75%)",
-    status: "closed",
-    reward: "+120 pts",
+    color: "hsl(270 80% 65%)",
+    colorAlt: "hsl(290 85% 75%)",
+    status: "soon",
+    reward: "Próximamente",
   },
   {
     id: "amo-del-partido",
     name: "Amo del Partido",
     subtitle: "Vota al MVP del juego",
     icon: Crown,
-    // Coral / red — urgency, live
-    color: "hsl(8 90% 60%)",
-    colorAlt: "hsl(15 95% 68%)",
-    status: "live",
-    reward: "+80 pts",
+    color: "hsl(45 100% 55%)",
+    colorAlt: "hsl(38 100% 65%)",
+    status: "soon",
+    reward: "Próximamente",
   },
 ];
