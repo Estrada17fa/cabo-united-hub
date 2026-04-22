@@ -54,7 +54,10 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
               {displayName.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 flex flex-col justify-center gap-1.5">
+            <p className="text-[13px] font-semibold text-foreground truncate leading-none">
+              {displayName}
+            </p>
             <div className="flex items-center gap-1.5">
               <Crown className="w-4 h-4 shrink-0" style={{ color: AMBER }} />
               <span
@@ -64,11 +67,8 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
                 {LEVEL_NAME}
               </span>
             </div>
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mt-1 leading-none">
+            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold leading-none">
               Nivel {stats.level}
-            </p>
-            <p className="text-[11px] text-muted-foreground mt-2 truncate leading-none">
-              {displayName}
             </p>
           </div>
         </div>
