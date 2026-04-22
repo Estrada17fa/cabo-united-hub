@@ -12,15 +12,14 @@ const FanZone = () => {
   const [authOpen, setAuthOpen] = useState(false);
 
   const handleGameClick = (game: MiniGame) => {
-    if (game.status === "soon") {
-      toast(`${game.name}`, {
-        description: "Próximamente. ¡Mantente atento!",
-      });
-      return;
-    }
-    toast(`${game.name}`, {
-      description: "Próximamente disponible para jugar.",
-    });
+    const messages: Record<typeof game.status, string> = {
+      open: "¡Listo para jugar! Próximamente disponible.",
+      active: "Activa ahora. Próximamente disponible.",
+      live: "Votación en vivo. Próximamente disponible.",
+      played: "Ya jugaste esta ronda.",
+      closed: "Esta ronda ya cerró. Próximamente verás resultados.",
+    };
+    toast(game.name, { description: messages[game.status] });
   };
 
   return (
