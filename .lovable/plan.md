@@ -1,53 +1,55 @@
 
 
-# Fan Zone header — fix amontonamiento en móvil
+# Forzar layout 50/50 + barra full width en tablet/PC
 
-En 390px de ancho, las 2 cards superiores (Card 1 perfil+nivel y Card 2 ranking+puntos dividida en 2 mitades) quedan demasiado apretadas: el avatar de 48px + textos en Card 1 y los dos números de 22px en mitades de ~85px en Card 2 se sienten ahogados.
+El código ya tiene `grid-cols-1 sm:grid-cols-2`, pero en el screenshot de 1446px las cards siguen apiladas. Voy a hacerlo a prueba de cualquier conflicto de estilos.
 
-## Cambios — solo `src/components/fan-zone/FanStatsHero.tsx`
+## Cambio único — `src/components/fan-zone/FanStatsHero.tsx`
 
-### Layout móvil reorganizado
+Reemplazar el contenedor del top row para usar **flex con anchos explícitos** en vez de grid, garantizando comportamiento predecible:
 
-Cambio el grid superior `grid-cols-2` por **stack vertical en móvil** y mantengo 2 columnas solo desde `sm:` (≥640px):
+```tsx
+{/* Top row — apilado en móvil, 50/50 desde md (≥768px) */}
+<div className="flex flex-col md:flex-row gap-3">
+  {/* CARD 1 — Perfil + Nivel */}
+  <div className="md:w-1/2 rounded-2xl border border-border bg-card p-4 flex items-center gap-3 min-w-0">
+    ...
+  </div>
 
-```text
-MÓVIL (<640px)              DESKTOP (≥640px)
-┌─────────────────────┐     ┌──────────┬──────────┐
-│  Card 1 — Perfil    │     │ Card 1   │ Card 2   │
-├─────────────────────┤     ├──────────┴──────────┤
-│  Card 2 — Stats     │     │ Card 3 — Progress   │
-├─────────────────────┤     └─────────────────────┘
-│  Card 3 — Progress  │
-└─────────────────────┘
+  {/* CARD 2 — Ranking + Puntos */}
+  <div className="md:w-1/2 rounded-2xl border border-border bg-card overflow-hidden">
+    ...
+  </div>
+</div>
+
+{/* CARD 3 — Barra de progreso (siempre full width) */}
+<div className="rounded-2xl border border-border bg-card p-4">
+  ...
+</div>
 ```
 
-Grid: `grid-cols-1 sm:grid-cols-2 gap-3` para las 2 primeras cards; Card 3 sigue full-width con `sm:col-span-2`.
+### Comportamiento resultante
 
-### Card 1 — Perfil + Nivel (full width en móvil)
+```text
+MÓVIL (<768px)              TABLET / PC (≥768px)
+┌─────────────────────┐     ┌──────────┬──────────┐
+│  Card 1 — Perfil    │     │ Card 1   │ Card 2   │
+├─────────────────────┤     │  50%     │  50%     │
+│  Card 2 — Stats     │     ├──────────┴──────────┤
+├─────────────────────┤     │ Card 3 — Progress   │
+│  Card 3 — Progress  │     │      100%           │
+└─────────────────────┘     └─────────────────────┘
+```
 
-- Avatar 44px (antes 48px), sigue a la izquierda.
-- Textos respirando: nombre del nivel "Amo" en 20px (antes 18px) ya que hay espacio horizontal completo.
-- Layout horizontal: avatar | (Nivel name + "Nivel 3" + nombre usuario en línea inferior con · separador).
-- Padding `p-4`.
+### Por qué `md:` (768px) en vez de `sm:` (640px)
 
-### Card 2 — Ranking + Puntos (full width en móvil)
-
-Sigue dividida en 2 mitades horizontales pero ahora con todo el ancho disponible:
-- Cada mitad con padding `p-4` (antes `p-3`).
-- Números en 24px (antes 22px) — más impacto.
-- Labels y sublabels con más aire (margin-top 2px extra).
-- Mantiene divisor vertical y los acentos `border-t` cyan/verde.
-
-### Card 3 — Barra de progreso
-
-Sin cambios estructurales, solo:
-- En móvil, la fila inferior ("Próximo: Nivel 4" + "Pase del Amo · 20%") pasa a **stack vertical** (`flex-col sm:flex-row`) para evitar que el texto del premio se trunque o quede pegado.
-- Gap `gap-1 sm:gap-2` entre filas.
+- Más seguro para tablets en portrait y evita conflictos con cualquier breakpoint heredado.
+- A 1446px (PC actual del usuario) entrará sin duda en el layout 50/50.
 
 ### Detalles
 
-- Sin nuevas dependencias.
-- Sin tocar `FanZone.tsx` ni el grid de minijuegos.
-- Sin cambios en data mock ni en `useAuth`.
-- Mantiene animación framer-motion y CTA de login.
+- Solo cambio el contenedor del top row y agrego `md:w-1/2` a cada card.
+- Card 3 (barra de progreso) queda fuera del flex, siempre 100%.
+- Sin tocar contenido interno, colores, tipografía, ni la animación framer-motion.
+- Sin cambios en `FanZone.tsx` ni nada más.
 
