@@ -1,22 +1,63 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Heart } from "lucide-react";
+import { Gamepad2 } from "lucide-react";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { FanStatsHero } from "@/components/fan-zone/FanStatsHero";
+import { MiniGameCard } from "@/components/fan-zone/MiniGameCard";
+import { GAMES, type MiniGame } from "@/components/fan-zone/games";
+import { AuthModal } from "@/components/auth/AuthModal";
 
 const FanZone = () => {
+  const [authOpen, setAuthOpen] = useState(false);
+
+  const handleGameClick = (game: MiniGame) => {
+    if (game.status === "soon") {
+      toast(`${game.name}`, {
+        description: "Próximamente. ¡Mantente atento!",
+      });
+      return;
+    }
+    toast(`${game.name}`, {
+      description: "Próximamente disponible para jugar.",
+    });
+  };
+
   return (
-    <div className="min-h-[calc(100vh-12rem)] flex flex-col items-center justify-center py-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center"
-      >
-        <div className="mb-6 mx-auto w-20 h-20 rounded-xl bg-card border border-border flex items-center justify-center">
-          <Heart className="w-10 h-10 text-primary" />
-        </div>
-        <h1 className="text-headline mb-2">Fan Zone</h1>
-        <p className="text-body text-muted-foreground">Próximamente</p>
-      </motion.div>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-5 pb-8 pt-2"
+    >
+      <FanStatsHero onLoginClick={() => setAuthOpen(true)} />
+
+      <div className="flex items-center gap-2 px-1">
+        <Gamepad2 className="w-4 h-4 text-primary" />
+        <h2 className="text-sm font-extrabold uppercase tracking-wider text-foreground">
+          Minijuegos
+        </h2>
+        <div className="flex-1 h-px bg-border" />
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          {GAMES.length} juegos
+        </span>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+        {GAMES.map((game, i) => (
+          <MiniGameCard key={game.id} game={game} index={i} onClick={handleGameClick} />
+        ))}
+      </div>
+
+      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
+        <DialogContent className="bg-card border-border max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Únete a Fan Zone</DialogTitle>
+          </DialogHeader>
+          <AuthModal onSuccess={() => setAuthOpen(false)} />
+        </DialogContent>
+      </Dialog>
+    </motion.div>
   );
 };
 
