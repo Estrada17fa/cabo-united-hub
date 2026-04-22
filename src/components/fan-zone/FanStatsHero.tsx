@@ -44,10 +44,10 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
       transition={{ duration: 0.5 }}
       className="space-y-3"
     >
-      {/* Top row — 2 mini cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {/* Top row — apilado en móvil, 50/50 desde md (≥768px) */}
+      <div className="flex flex-col md:flex-row gap-3">
         {/* CARD 1 — Profile + Level */}
-        <div className="rounded-2xl border border-border bg-card p-4 flex items-center gap-3 min-w-0">
+        <div className="md:w-1/2 rounded-2xl border border-border bg-card p-4 flex items-center gap-3 min-w-0">
           <Avatar className="w-11 h-11 shrink-0 ring-1 ring-border">
             <AvatarImage src={profile?.avatar_url ?? undefined} />
             <AvatarFallback className="bg-muted text-xs font-bold text-foreground">
@@ -74,7 +74,7 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
         </div>
 
         {/* CARD 2 — Ranking + Points */}
-        <div className="rounded-2xl border border-border bg-card overflow-hidden">
+        <div className="md:w-1/2 rounded-2xl border border-border bg-card overflow-hidden">
           <div className="grid grid-cols-2 h-full">
             {/* Ranking */}
             <div
