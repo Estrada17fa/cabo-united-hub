@@ -56,17 +56,6 @@ const ConoceLosCabos = () => {
       transition={{ duration: 0.4 }}
       className="space-y-3 -mx-1"
     >
-      {/* Title */}
-      <div className="flex items-center gap-2 px-1">
-        <MapPin className="w-5 h-5 text-primary" />
-        <h1 className="text-[20px] md:text-[24px] font-extrabold text-foreground tracking-tight">
-          Visita Los Cabos
-        </h1>
-      </div>
-      <p className="text-[12px] text-muted-foreground px-1 -mt-2">
-        Guía interactiva para fans de LC United
-      </p>
-
       {/* DESKTOP — split layout */}
       <div className="hidden md:grid grid-cols-12 gap-3" style={{ height: "calc(100vh - 18rem)", minHeight: 540 }}>
         {/* LEFT — Map */}
