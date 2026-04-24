@@ -3,9 +3,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { MatchHeroCard } from "@/components/match-zone/MatchHeroCard";
+import { LiveMatchPlayer } from "@/components/match-zone/LiveMatchPlayer";
 import { MatchTabs } from "@/components/match-zone/MatchTabs";
 import { PartidosSection } from "@/components/match-zone/PartidosSection";
 import { LeagueTables } from "@/components/match-zone/LeagueTables";
+import { useLiveMatch } from "@/hooks/useLiveMatch";
 
 const ZonaPartido = () => {
   const [activeTab, setActiveTab] = useState("partidos");
@@ -48,6 +50,7 @@ const ZonaPartido = () => {
   });
 
   const nextMatch = featuredMatch;
+  const { isLive } = useLiveMatch(nextMatch);
 
   return (
     <motion.div
@@ -56,7 +59,11 @@ const ZonaPartido = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6 pb-8"
     >
-      <MatchHeroCard match={nextMatch} />
+      {isLive && nextMatch ? (
+        <LiveMatchPlayer match={nextMatch} />
+      ) : (
+        <MatchHeroCard match={nextMatch} />
+      )}
       <MatchTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
       <AnimatePresence mode="wait">
