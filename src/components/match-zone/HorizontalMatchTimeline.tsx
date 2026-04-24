@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
 import { Goal, Square, RefreshCw, AlertTriangle } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface HorizontalMatchTimelineProps {
   events: Tables<"match_events">[];
@@ -45,7 +50,7 @@ export function HorizontalMatchTimeline({
       </div>
 
       {/* Track with home (top) / away (bottom) lanes */}
-      <div className="relative h-14">
+      <div className="relative h-16">
         {/* Center horizontal line */}
         <div
           className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2"
@@ -83,38 +88,68 @@ export function HorizontalMatchTimeline({
                 top: isHome ? "0" : "auto",
                 bottom: isHome ? "auto" : "0",
               }}
-              title={`${event.minute}' · ${config.label}${event.player_name ? ` · ${event.player_name}` : ""}`}
             >
               {/* Stem from center to node */}
               <div
-                className="absolute left-1/2 w-px -translate-x-1/2"
+                className="absolute left-1/2 w-px -translate-x-1/2 pointer-events-none"
                 style={{
-                  height: "12px",
+                  height: "14px",
                   top: isHome ? "100%" : "auto",
                   bottom: isHome ? "auto" : "100%",
                   backgroundColor: `${config.color}80`,
                 }}
               />
-              <div
-                className="relative z-10 w-6 h-6 rounded-full flex items-center justify-center border"
-                style={{
-                  backgroundColor: "hsl(0 0% 7%)",
-                  borderColor: config.color,
-                  boxShadow: `0 0 10px ${config.color}66`,
-                }}
-              >
-                <Icon className="w-3 h-3" style={{ color: config.color }} />
-              </div>
-              <span
-                className="absolute text-[9px] font-bold tabular-nums"
-                style={{
-                  color: config.color,
-                  top: isHome ? "-12px" : "auto",
-                  bottom: isHome ? "auto" : "-12px",
-                }}
-              >
-                {event.minute}'
-              </span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label={`${event.minute}' ${config.label}${event.player_name ? ` ${event.player_name}` : ""}`}
+                    className="relative z-10 w-7 h-7 rounded-full flex items-center justify-center border transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-background"
+                    style={{
+                      backgroundColor: "hsl(0 0% 7%)",
+                      borderColor: config.color,
+                      boxShadow: `0 0 10px ${config.color}66`,
+                    }}
+                  >
+                    <Icon className="w-3.5 h-3.5" style={{ color: config.color }} />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  side={isHome ? "top" : "bottom"}
+                  align="center"
+                  sideOffset={8}
+                  className="w-auto min-w-[180px] max-w-[240px] p-3 border"
+                  style={{
+                    backgroundColor: "#121212",
+                    borderColor: `${config.color}80`,
+                    boxShadow: `0 8px 24px -8px ${config.color}55`,
+                  }}
+                >
+                  <div className="flex flex-col gap-1.5">
+                    <div
+                      className="text-[10px] font-extrabold tracking-widest tabular-nums"
+                      style={{ color: config.color }}
+                    >
+                      {event.minute}' · {config.label.toUpperCase()}
+                    </div>
+                    {event.player_name && (
+                      <div className="text-sm font-semibold text-foreground leading-tight">
+                        {event.player_name}
+                      </div>
+                    )}
+                    {event.team && (
+                      <div className="text-[11px] text-muted-foreground font-medium">
+                        {event.team}
+                      </div>
+                    )}
+                    {event.description && (
+                      <div className="text-[11px] text-muted-foreground leading-snug pt-1 border-t border-border/40">
+                        {event.description}
+                      </div>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
             </motion.div>
           );
         })}
