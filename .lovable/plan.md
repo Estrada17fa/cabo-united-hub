@@ -1,25 +1,80 @@
 
 
-# Fix: Carrusel de patrocinadores corta logos en móvil
+# Match Zone en vivo: reproductor + card compacta
 
-## Problema
-En móvil (390px) solo se ven 3 logos rotando en lugar de los 6. Causa: el carrusel duplica el array `[...sponsors, ...sponsors]` (12 items) y anima `x: [0, "-50%"]`, lo cual asume que la primera mitad cabe completa fuera de pantalla antes de reiniciar. Pero como el contenedor `flex` no tiene `width` explícito y los items son `flex-shrink-0`, la animación de `-50%` desplaza la mitad del ancho total — funciona en desktop pero en móvil el loop visual se corta porque los items siguientes aún no han entrado por la derecha cuando el reset ocurre.
+## Qué cambia
 
-El issue real: con solo 2 copias y `-50%`, el efecto seamless requiere que la primera copia ocupe ≥ 100% del viewport. En móvil con padding/gaps reducidos, los 6 logos miden menos que el ancho de pantalla, así que al hacer `-50%` se ve un salto y solo parecen pasar 3.
+Cuando un partido está **EN VIVO** (no aplica a finalizado ni próximo), la página `/zona-partido` muestra:
 
-## Solución
-En `src/components/layout/SponsorCarousel.tsx`:
+1. **Reproductor embebido en vivo** (YouTube o Facebook) ocupando el ancho completo arriba.
+2. **Card compacta debajo** (ancho 100%, más baja que la actual) con:
+   - Marcador y escudos de los equipos
+   - Línea del tiempo (`MatchTimeline`)
+   - Solo 2 botones: **Vota por el Amo del Partido** (primario) + **Visita Los Cabos** (secundario)
+   - Se elimina **Ver en Vivo** (ya no aplica, el video está arriba)
 
-1. **Triplicar el array** en lugar de duplicar: `[...sponsors, ...sponsors, ...sponsors]` (18 items) y animar a `-33.333%`. Esto garantiza que siempre haya contenido visible llenando el viewport en cualquier tamaño de pantalla.
-2. **Reducir gaps en móvil** para que más logos sean visibles a la vez: `gap-4 sm:gap-8` (en lugar de `gap-6 sm:gap-8`).
-3. **Reducir padding horizontal de cada item en móvil**: `px-3 sm:px-6` (en lugar de `px-5 sm:px-6`) para que no se sientan tan separados.
-4. **Mantener** altura, opacidad, animación de 20s lineal infinita y `loading="lazy"`.
+Para partidos **próximos** o **finalizados**, la `MatchHeroCard` actual se queda exactamente como está (sin cambios).
 
-## Archivos modificados
-- `src/components/layout/SponsorCarousel.tsx` — único cambio.
+## Layout en vivo
+
+```text
+┌───────────────────────────────────────┐
+│   🔴 EN VIVO  ·  Jornada X  ·  45'    │  ← badge live
+├───────────────────────────────────────┤
+│                                       │
+│       [ REPRODUCTOR YOUTUBE/FB ]      │  ← 16:9, ancho 100%
+│                                       │
+├───────────────────────────────────────┤
+│  🛡 Local  2 — VS — 1  Visitante 🛡   │  ← card compacta
+│  ─────────●──────●──────────────●──   │  ← timeline
+│  [ 🏆 Vota por el Amo ] [ 📍 Visita ] │  ← 2 CTAs
+└───────────────────────────────────────┘
+```
+
+## Detalles técnicos
+
+**1. Fuente del stream**
+- Usar el campo existente `match.live_stream_url` de la tabla `matches`.
+- Detectar plataforma por URL:
+  - YouTube (`youtube.com/watch?v=`, `youtu.be/`, `youtube.com/live/`) → embed `https://www.youtube.com/embed/{id}?autoplay=1&mute=1`
+  - Facebook (`facebook.com/.../videos/`, `fb.watch/`) → embed `https://www.facebook.com/plugins/video.php?href={encoded}&autoplay=1&mute=1`
+- Si `live_stream_url` está vacío o el formato no se reconoce: mostrar fallback con mensaje "Transmisión próximamente" + botón a redes sociales del club.
+
+**2. Componente nuevo: `LiveMatchPlayer.tsx`**
+- Recibe `match` como prop.
+- Renderiza:
+  - Header pequeño con badge `EN VIVO {minuto}'` + jornada
+  - `<iframe>` 16:9 responsive con `aspect-video` de Tailwind, `rounded-2xl`, borde verde sutil (mismo `hsl(142 76% 45% / 0.5)` que ya se usa)
+  - Card compacta debajo con: escudos pequeños (usar `TeamCrest`), marcador grande centrado, timeline, 2 botones
+- Mantener estética dark bento: fondo `#121212`, primary cyan para acentos del marcador, tipografía Poppins bold.
+
+**3. Integración en `ZonaPartido.tsx`**
+- Si `featuredMatch.status === "live"` → renderizar `<LiveMatchPlayer match={featuredMatch} />` en lugar de `<MatchHeroCard />`.
+- En cualquier otro caso (scheduled / finished) → mantener `<MatchHeroCard />` como hoy.
+- Tabs (`MatchTabs`) y secciones (`PartidosSection`, `LeagueTables`) no cambian.
+
+**4. Botones en la card compacta**
+- **Vota por el Amo del Partido**: mismo estilo primario verde animado que ya existe en `MatchHeroCard` (full width o 60%).
+- **Visita Los Cabos**: estilo secundario glass/outline (40%).
+- Layout: grid 2 columnas en mobile y desktop, gap-2.
+
+**5. Responsive**
+- Mobile: reproductor full width con padding lateral mínimo, card compacta debajo apilada.
+- Desktop: mismo layout vertical (no se divide en columnas) para mantener foco en el video.
+
+## Archivos a crear / modificar
+
+- **Nuevo**: `src/components/match-zone/LiveMatchPlayer.tsx`
+- **Nuevo**: `src/lib/streamUrl.ts` (helper `getEmbedUrl(url): { platform, embedUrl } | null`)
+- **Modificado**: `src/pages/ZonaPartido.tsx` (switch entre `LiveMatchPlayer` y `MatchHeroCard` según `status`)
 
 ## Lo que NO se toca
-- Imágenes de los logos (ya están bien).
-- Posición fixed bottom, z-index, backdrop, border-top.
-- Ningún otro componente, página o layout.
+
+- `MatchHeroCard.tsx` (queda igual para próximos/finalizados)
+- Tablas de liga, lista de partidos, tabs, hook `useLiveMatch`, esquema de DB
+- Estética general, navegación, otras páginas
+
+## Requisito de datos
+
+Para que el reproductor funcione, cada partido en vivo necesita tener `live_stream_url` poblado con el link público del stream de YouTube o Facebook. Si está vacío, se muestra el fallback automáticamente.
 
