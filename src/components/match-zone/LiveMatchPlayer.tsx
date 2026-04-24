@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
 import { useTeamLogos } from "@/hooks/useTeamLogos";
 import { TeamCrest } from "./TeamCrest";
-import { HorizontalMatchTimeline } from "./HorizontalMatchTimeline";
+import { ResponsiveMatchTimeline } from "./ResponsiveMatchTimeline";
 import { getEmbedUrl } from "@/lib/streamUrl";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -151,9 +151,9 @@ export function LiveMatchPlayer({ match }: LiveMatchPlayerProps) {
             </div>
           </div>
 
-          {/* Timeline (horizontal to keep card compact) */}
+          {/* Timeline (vertical on mobile, horizontal on tablet/desktop) */}
           <div className="w-full pt-3 border-t border-border/50">
-            <HorizontalMatchTimeline events={events} homeTeam={match.home_team} />
+            <ResponsiveMatchTimeline events={events} homeTeam={match.home_team} />
           </div>
 
           {/* CTAs */}

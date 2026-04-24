@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Shield, MapPin, Calendar, Ticket, Radio, PlayCircle, Trophy } from "lucide-react";
 import { CountdownTimer } from "./CountdownTimer";
-import { MatchTimeline } from "./MatchTimeline";
+import { ResponsiveMatchTimeline } from "./ResponsiveMatchTimeline";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -185,7 +185,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
         {/* Timeline (live or recently finished) */}
         {showLiveLayout && (
           <div className="w-full pt-2 border-t border-border/50">
-            <MatchTimeline events={events} homeTeam={match.home_team} />
+            <ResponsiveMatchTimeline events={events} homeTeam={match.home_team} />
           </div>
         )}
 
