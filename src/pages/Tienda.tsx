@@ -8,6 +8,7 @@ import { HeroCarousel } from "@/components/tienda/HeroCarousel";
 import { CategoryTabs } from "@/components/tienda/CategoryTabs";
 import { useShopifyProducts } from "@/hooks/useShopify";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSearchStore } from "@/stores/searchStore";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -119,6 +120,7 @@ const Tienda = () => {
   const [category, setCategory] = useState<CategoryKey>("jerseys");
   const [subFilter, setSubFilter] = useState<SubFilterKey>("todo");
   const [sort, setSort] = useState<SortKey>("newest");
+  const searchQuery = useSearchStore((s) => s.query);
 
   // Jerseys oficiales destacados: hasta 4 jerseys del catálogo
   const featuredJerseys = useMemo(() => {
@@ -132,7 +134,21 @@ const Tienda = () => {
     if (!products) return [];
     const cat = CATEGORIES.find((x) => x.id === category)!;
     const sub = SUB_FILTERS.find((x) => x.key === subFilter)!;
-    const list = products.filter((p) => cat.match(p) && sub.match(p));
+    const term = searchQuery.trim().toLowerCase();
+    const list = products.filter((p) => {
+      // Si hay búsqueda activa, ignorar categoría/subfiltro y buscar en todo
+      if (term) {
+        const n = p.node;
+        return (
+          n.title.toLowerCase().includes(term) ||
+          n.description?.toLowerCase().includes(term) ||
+          n.productType?.toLowerCase().includes(term) ||
+          n.vendor?.toLowerCase().includes(term) ||
+          n.tags?.some((t) => t.toLowerCase().includes(term))
+        );
+      }
+      return cat.match(p) && sub.match(p);
+    });
     const sorted = [...list];
     if (sort === "price-asc") {
       sorted.sort(
@@ -150,22 +166,25 @@ const Tienda = () => {
       sorted.sort((a, b) => a.node.title.localeCompare(b.node.title));
     }
     return sorted;
-  }, [products, category, subFilter, sort]);
+  }, [products, category, subFilter, sort, searchQuery]);
 
   const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? "Más nuevo";
   const activeCategoryLabel = CATEGORIES.find((c) => c.id === category)?.label ?? "";
+  const isSearching = searchQuery.trim().length > 0;
 
   return (
     <div className="pb-20">
       <ShopHeader />
 
-      {/* HERO CAROUSEL — full width */}
-      <section className="mb-10 md:mb-14">
-        <HeroCarousel />
-      </section>
+      {!isSearching && (
+        <>
+          {/* HERO CAROUSEL — full width */}
+          <section className="mb-10 md:mb-14">
+            <HeroCarousel />
+          </section>
 
-      {/* JERSEYS OFICIALES — Sección destacada */}
-      <section
+          {/* JERSEYS OFICIALES — Sección destacada */}
+          <section
         className="my-8 relative overflow-hidden rounded-2xl border border-white/[0.08] p-5 md:p-7"
         style={{
           background:
@@ -241,10 +260,10 @@ const Tienda = () => {
             </div>
           </>
         )}
-      </section>
+          </section>
 
-      {/* CATEGORÍAS PRINCIPALES (estilo Match Zone) */}
-      <section id="catalogo" className="mb-6">
+          {/* CATEGORÍAS PRINCIPALES (estilo Match Zone) */}
+          <section id="catalogo" className="mb-6">
         <CategoryTabs
           tabs={CATEGORIES.map((c) => ({ id: c.id, label: c.label }))}
           activeTab={category}
@@ -253,10 +272,10 @@ const Tienda = () => {
             setSubFilter("todo");
           }}
         />
-      </section>
+          </section>
 
-      {/* SUB-FILTROS + SORT */}
-      <section className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* SUB-FILTROS + SORT */}
+          <section className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
           {SUB_FILTERS.map((f) => {
             const active = f.key === subFilter;
@@ -301,18 +320,22 @@ const Tienda = () => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-      </section>
+          </section>
+        </>
+      )}
 
       {/* GRID DE PRODUCTOS */}
       <motion.section
-        key={`${category}-${subFilter}-${sort}`}
+        key={`${category}-${subFilter}-${sort}-${searchQuery}`}
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="flex items-end justify-between mb-4">
           <p className="text-xs text-muted-foreground">
-            <span className="text-foreground font-semibold">{activeCategoryLabel}</span>
+            <span className="text-foreground font-semibold">
+              {isSearching ? `Resultados para "${searchQuery}"` : activeCategoryLabel}
+            </span>
             {filteredAndSorted.length > 0 && (
               <>
                 {" · "}
