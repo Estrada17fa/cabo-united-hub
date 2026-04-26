@@ -52,7 +52,7 @@ export function EditorialProductCard({ product, index = 0 }: Props) {
         className="group block rounded-xl overflow-hidden border border-white/[0.06] bg-card transition-all duration-300 hover:border-white/[0.12] hover:-translate-y-1"
       >
         {/* IMAGE — 65% */}
-        <div className="relative aspect-square w-full overflow-hidden" style={{ background: "#0a0a0a" }}>
+        <div className="relative aspect-square w-full overflow-hidden" style={{ background: "#0f0f0f" }}>
           {img && (
             <>
               <img
@@ -87,7 +87,7 @@ export function EditorialProductCard({ product, index = 0 }: Props) {
             {!soldOut && !lowStock && isNew && (
               <span
                 className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-black"
-                style={{ background: "#00FF87" }}
+                style={{ background: "#00abc4" }}
               >
                 Nuevo
               </span>
@@ -98,8 +98,8 @@ export function EditorialProductCard({ product, index = 0 }: Props) {
         {/* INFO — 35% */}
         <div className="p-3">
           <p
-            className="text-[10px] font-semibold uppercase mb-1 text-white/40"
-            style={{ letterSpacing: "0.08em" }}
+            className="text-[10px] font-semibold uppercase mb-1"
+            style={{ letterSpacing: "0.08em", color: "#00abc4" }}
           >
             {translateType(node.productType)}
           </p>
@@ -116,8 +116,17 @@ export function EditorialProductCard({ product, index = 0 }: Props) {
               {formatPrice(price.amount, price.currencyCode)}
             </p>
             {!soldOut && (
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-white/40 group-hover:text-[#00FF87] transition-colors">
-                Ver →
+              <span
+                className="font-bold"
+                style={{
+                  background: "#00abc4",
+                  color: "#000",
+                  fontSize: "10px",
+                  borderRadius: "6px",
+                  padding: "4px 10px",
+                }}
+              >
+                + Agregar
               </span>
             )}
           </div>

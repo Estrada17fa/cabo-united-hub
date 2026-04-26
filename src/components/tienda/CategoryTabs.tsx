@@ -27,7 +27,8 @@ export function CategoryTabs({ tabs, activeTab, onTabChange }: Props) {
           {activeTab === tab.id && (
             <motion.div
               layoutId="tienda-tab-underline"
-              className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full"
+              className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
+              style={{ background: "#00abc4" }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
             />
           )}

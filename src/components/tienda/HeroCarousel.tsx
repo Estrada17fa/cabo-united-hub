@@ -47,7 +47,8 @@ export function HeroCarousel() {
   const slide = SLIDES[index];
 
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-card">
+    <div className="relative w-full">
+      <div className="relative w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-card">
       <div className="relative w-full aspect-[16/9] md:aspect-[21/9]">
         <AnimatePresence mode="wait">
           <motion.div
@@ -62,6 +63,14 @@ export function HeroCarousel() {
               src={slide.image}
               alt={slide.title}
               className="absolute inset-0 w-full h-full object-cover"
+            />
+            {/* Right-to-left fade into dark background (removes hard cut) */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(to left, transparent 40%, #0d0d0d 100%)",
+              }}
             />
             {/* Vignette / overlay */}
             <div
@@ -136,12 +145,21 @@ export function HeroCarousel() {
               className="h-1.5 rounded-full transition-all"
               style={{
                 width: i === index ? 24 : 8,
-                background: i === index ? "#00FF87" : "rgba(255,255,255,0.45)",
+                background: i === index ? "#00abc4" : "rgba(255,255,255,0.45)",
               }}
             />
           ))}
         </div>
       </div>
+      </div>
+      {/* Bottom fade — bleeds carousel into page */}
+      <div
+        className="pointer-events-none absolute left-0 right-0 -bottom-[1px]"
+        style={{
+          height: "60px",
+          background: "linear-gradient(to bottom, transparent, #0a0a0a)",
+        }}
+      />
     </div>
   );
 }
