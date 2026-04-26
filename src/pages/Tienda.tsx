@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronDown, Flame } from "lucide-react";
 import { ShopHeader } from "@/components/tienda/ShopHeader";
@@ -157,23 +158,30 @@ const Tienda = () => {
       </section>
 
       {/* MÁS VENDIDOS */}
-      <section className="mb-12 md:mb-16">
+      <section className="my-8">
         <div className="flex items-end justify-between mb-5">
           <div>
             <p
-              className="text-[11px] font-semibold uppercase mb-1.5 inline-flex items-center gap-1.5"
-              style={{ color: "#00FF87", letterSpacing: "0.15em" }}
+              className="font-semibold uppercase mb-1.5 inline-flex items-center gap-1.5"
+              style={{ color: "#00abc4", letterSpacing: "0.15em", fontSize: "10px" }}
             >
               <Flame className="w-3 h-3" />
               Más vendidos
             </p>
             <h2
-              className="text-2xl md:text-3xl font-bold text-foreground"
-              style={{ letterSpacing: "-0.02em" }}
+              className="font-bold text-foreground"
+              style={{ letterSpacing: "-0.02em", fontSize: "20px" }}
             >
-              Lo que todos quieren
+              Los favoritos de la afición
             </h2>
           </div>
+          <Link
+            to="#catalogo"
+            className="font-semibold whitespace-nowrap hover:opacity-80 transition-opacity"
+            style={{ color: "#00abc4", fontSize: "12px" }}
+          >
+            Ver todos →
+          </Link>
         </div>
 
         {isLoading && (
@@ -189,16 +197,31 @@ const Tienda = () => {
         )}
 
         {!isLoading && bestsellers.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {bestsellers.map((p, i) => (
-              <EditorialProductCard key={p.node.id} product={p} index={i} />
-            ))}
-          </div>
+          <>
+            {/* Mobile: horizontal scroll snap */}
+            <div className="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
+              {bestsellers.map((p, i) => (
+                <div
+                  key={p.node.id}
+                  className="snap-start shrink-0"
+                  style={{ width: "72vw" }}
+                >
+                  <EditorialProductCard product={p} index={i} />
+                </div>
+              ))}
+            </div>
+            {/* Desktop: 4-col grid */}
+            <div className="hidden md:grid grid-cols-4 gap-3">
+              {bestsellers.map((p, i) => (
+                <EditorialProductCard key={p.node.id} product={p} index={i} />
+              ))}
+            </div>
+          </>
         )}
       </section>
 
       {/* CATEGORÍAS PRINCIPALES (estilo Match Zone) */}
-      <section className="mb-6">
+      <section id="catalogo" className="mb-6">
         <CategoryTabs
           tabs={CATEGORIES.map((c) => ({ id: c.id, label: c.label }))}
           activeTab={category}
@@ -225,7 +248,7 @@ const Tienda = () => {
                 }`}
                 style={
                   active
-                    ? { background: "#00FF87", boxShadow: "0 4px 14px -4px #00FF8780" }
+                    ? { background: "#00abc4", boxShadow: "0 4px 14px -4px #00abc480" }
                     : undefined
                 }
               >
