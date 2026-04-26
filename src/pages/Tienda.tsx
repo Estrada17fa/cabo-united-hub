@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronDown, Flame } from "lucide-react";
+import { ChevronDown, Shield } from "lucide-react";
 import { ShopHeader } from "@/components/tienda/ShopHeader";
 import { EditorialProductCard } from "@/components/tienda/EditorialProductCard";
 import { HeroCarousel } from "@/components/tienda/HeroCarousel";
@@ -17,9 +17,18 @@ import {
 import type { ShopifyProduct } from "@/lib/shopify";
 
 /* ========== Categorías principales (audiencia) ========== */
-type CategoryKey = "hombre" | "mujer" | "nino" | "accesorios" | "limitada";
+type CategoryKey = "jerseys" | "hombre" | "mujer" | "nino" | "accesorios" | "limitada";
+
+const isJersey = (p: ShopifyProduct) =>
+  /jersey|camiseta de juego|kit oficial/i.test(p.node.productType ?? "") ||
+  (p.node.tags ?? []).some((t) => /jersey|kit-oficial|jersey-oficial/i.test(t));
 
 const CATEGORIES: { id: CategoryKey; label: string; match: (p: ShopifyProduct) => boolean }[] = [
+  {
+    id: "jerseys",
+    label: "Jerseys Oficiales",
+    match: isJersey,
+  },
   {
     id: "hombre",
     label: "Hombre",
@@ -107,17 +116,15 @@ const SORTS: { key: SortKey; label: string }[] = [
 
 const Tienda = () => {
   const { data: products, isLoading, error } = useShopifyProducts({ first: 50 });
-  const [category, setCategory] = useState<CategoryKey>("hombre");
+  const [category, setCategory] = useState<CategoryKey>("jerseys");
   const [subFilter, setSubFilter] = useState<SubFilterKey>("todo");
   const [sort, setSort] = useState<SortKey>("newest");
 
-  // Más vendidos: heurística — primeros 4 con tag bestseller, o si no hay, los primeros 4 del catálogo.
-  const bestsellers = useMemo(() => {
+  // Jerseys oficiales destacados: hasta 4 jerseys del catálogo
+  const featuredJerseys = useMemo(() => {
     if (!products) return [];
-    const tagged = products.filter((p) =>
-      (p.node.tags ?? []).some((t) => /bestseller|mas vendid|most-sold|top/i.test(t)),
-    );
-    const list = tagged.length >= 4 ? tagged : products;
+    const jerseys = products.filter(isJersey);
+    const list = jerseys.length > 0 ? jerseys : products;
     return list.slice(0, 4);
   }, [products]);
 
@@ -157,35 +164,51 @@ const Tienda = () => {
         <HeroCarousel />
       </section>
 
-      {/* MÁS VENDIDOS */}
-      <section className="my-8">
-        <div className="flex items-end justify-between mb-5">
+      {/* JERSEYS OFICIALES — Sección destacada */}
+      <section
+        className="my-8 relative overflow-hidden rounded-2xl border border-white/[0.08] p-5 md:p-7"
+        style={{
+          background:
+            "radial-gradient(ellipse at top right, rgba(0,171,196,0.18), transparent 60%), linear-gradient(180deg, rgba(0,171,196,0.06) 0%, transparent 100%), #0d0d0d",
+        }}
+      >
+        {/* Glow accent */}
+        <div
+          className="pointer-events-none absolute -top-20 -right-20 w-60 h-60 rounded-full blur-3xl opacity-30"
+          style={{ background: "#00abc4" }}
+        />
+
+        <div className="relative flex items-end justify-between mb-5">
           <div>
             <p
               className="font-semibold uppercase mb-1.5 inline-flex items-center gap-1.5"
               style={{ color: "#00abc4", letterSpacing: "0.15em", fontSize: "10px" }}
             >
-              <Flame className="w-3 h-3" />
-              Más vendidos
+              <Shield className="w-3 h-3" />
+              Jerseys Oficiales
             </p>
             <h2
               className="font-bold text-foreground"
-              style={{ letterSpacing: "-0.02em", fontSize: "20px" }}
+              style={{ letterSpacing: "-0.02em", fontSize: "22px" }}
             >
-              Los favoritos de la afición
+              Viste los colores del equipo
             </h2>
           </div>
-          <Link
-            to="#catalogo"
+          <button
+            onClick={() => {
+              setCategory("jerseys");
+              setSubFilter("todo");
+              document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
             className="font-semibold whitespace-nowrap hover:opacity-80 transition-opacity"
             style={{ color: "#00abc4", fontSize: "12px" }}
           >
             Ver todos →
-          </Link>
+          </button>
         </div>
 
         {isLoading && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 relative">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="space-y-2">
                 <Skeleton className="aspect-square w-full rounded-xl" />
@@ -196,11 +219,11 @@ const Tienda = () => {
           </div>
         )}
 
-        {!isLoading && bestsellers.length > 0 && (
+        {!isLoading && featuredJerseys.length > 0 && (
           <>
             {/* Mobile: horizontal scroll snap */}
-            <div className="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-4 px-4 pb-2">
-              {bestsellers.map((p, i) => (
+            <div className="md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide -mx-1 px-1 pb-2 relative">
+              {featuredJerseys.map((p, i) => (
                 <div
                   key={p.node.id}
                   className="snap-start shrink-0"
@@ -211,8 +234,8 @@ const Tienda = () => {
               ))}
             </div>
             {/* Desktop: 4-col grid */}
-            <div className="hidden md:grid grid-cols-4 gap-3">
-              {bestsellers.map((p, i) => (
+            <div className="hidden md:grid grid-cols-4 gap-3 relative">
+              {featuredJerseys.map((p, i) => (
                 <EditorialProductCard key={p.node.id} product={p} index={i} />
               ))}
             </div>
