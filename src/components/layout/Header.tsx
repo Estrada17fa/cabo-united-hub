@@ -140,13 +140,7 @@ export function Header() {
   const totalCartItems = useCartStore((s) =>
     s.items.reduce((sum, item) => sum + item.quantity, 0),
   );
-  const setCartOpen = useCartStore((s) => s.setOpen);
   const hasCartItems = totalCartItems > 0;
-
-  const openMenuWithCart = () => {
-    setIsMenuOpen(true);
-    if (hasCartItems) setCartOpen(true);
-  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 safe-top">
