@@ -173,7 +173,12 @@ const Tienda = () => {
   const isSearching = searchQuery.trim().length > 0;
 
   return (
-    <div className="pb-20">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="pb-20"
+    >
       <ShopHeader />
 
       {!isSearching && (
@@ -383,7 +388,7 @@ const Tienda = () => {
           </div>
         )}
       </motion.section>
-    </div>
+    </motion.div>
   );
 };
 
