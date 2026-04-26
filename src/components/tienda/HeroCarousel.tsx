@@ -36,6 +36,14 @@ const SLIDES: Slide[] = [
 export function HeroCarousel() {
   const [index, setIndex] = useState(0);
 
+  // Precarga todas las imágenes una sola vez para evitar flash al cambiar slide
+  useEffect(() => {
+    SLIDES.forEach((s) => {
+      const img = new Image();
+      img.src = s.image;
+    });
+  }, []);
+
   useEffect(() => {
     const id = setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), 5500);
     return () => clearInterval(id);
@@ -50,18 +58,21 @@ export function HeroCarousel() {
     <div className="relative w-full">
       <div className="relative w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-card">
       <div className="relative w-full aspect-[16/9] md:aspect-[21/9]">
-        <AnimatePresence mode="wait">
+        {/* Render all slides; only animate opacity for instant cross-fade */}
+        {SLIDES.map((s, i) => (
           <motion.div
-            key={index}
-            initial={{ opacity: 0, scale: 1.04 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            key={i}
+            initial={false}
+            animate={{ opacity: i === index ? 1 : 0 }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
             className="absolute inset-0"
+            style={{ pointerEvents: i === index ? "auto" : "none" }}
           >
             <img
-              src={slide.image}
-              alt={slide.title}
+              src={s.image}
+              alt={s.title}
+              loading={i === 0 ? "eager" : "lazy"}
+              decoding="async"
               className="absolute inset-0 w-full h-full object-cover"
             />
             {/* Right-to-left fade into dark background (removes hard cut) */}
@@ -88,7 +99,7 @@ export function HeroCarousel() {
               }}
             />
           </motion.div>
-        </AnimatePresence>
+        ))}
 
         {/* Copy */}
         <div className="absolute inset-0 flex items-end md:items-center">
@@ -96,10 +107,10 @@ export function HeroCarousel() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               >
                 <p
                   className="text-[11px] font-semibold uppercase mb-3"
