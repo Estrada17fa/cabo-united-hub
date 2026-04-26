@@ -1,20 +1,27 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Search, ShoppingBag } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Search, ShoppingBag, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCartStore } from "@/stores/cartStore";
+import { useSearchStore } from "@/stores/searchStore";
 
 export function ShopHeader() {
   const navigate = useNavigate();
+  const location = useLocation();
   const setCartOpen = useCartStore((s) => s.setOpen);
   const totalItems = useCartStore((s) =>
     s.items.reduce((sum, item) => sum + item.quantity, 0),
   );
-  const [q, setQ] = useState("");
+  const query = useSearchStore((s) => s.query);
+  const setQuery = useSearchStore((s) => s.setQuery);
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (q.trim()) navigate(`/tienda/buscar?q=${encodeURIComponent(q.trim())}`);
+    if (location.pathname !== "/tienda") navigate("/tienda");
+  };
+
+  const onChange = (val: string) => {
+    setQuery(val);
+    if (val && location.pathname !== "/tienda") navigate("/tienda");
   };
 
   return (
@@ -29,11 +36,21 @@ export function ShopHeader() {
             <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <input
               type="search"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
+              value={query}
+              onChange={(e) => onChange(e.target.value)}
               placeholder="Buscar jerseys, playeras, accesorios…"
-              className="h-11 w-full rounded-xl bg-background/40 border border-white/[0.06] pl-10 md:pl-11 pr-3 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-[#00abc4]/60 transition-colors"
+              className="h-11 w-full rounded-xl bg-background/40 border border-white/[0.06] pl-10 md:pl-11 pr-9 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-[#00abc4]/60 transition-colors"
             />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                aria-label="Limpiar búsqueda"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </form>
 
