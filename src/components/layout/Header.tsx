@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon, Facebook, Instagram, User, LogOut } from "lucide-react";
+import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon, Facebook, Instagram, User, LogOut, ChevronRight } from "lucide-react";
 import { soccerBall } from "@lucide/lab";
 import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
 import {
@@ -141,6 +141,14 @@ export function Header() {
     s.items.reduce((sum, item) => sum + item.quantity, 0),
   );
   const hasCartItems = totalCartItems > 0;
+  const setCartOpen = useCartStore((s) => s.setOpen);
+
+  const handleOpenCart = () => {
+    setIsMenuOpen(false);
+    // Pequeño delay para que la animación del sheet del menú se cierre
+    // antes de abrir el del carrito y evitar conflictos del overlay.
+    setTimeout(() => setCartOpen(true), 200);
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 safe-top">
@@ -327,6 +335,26 @@ export function Header() {
               </div>
             )}
           </div>
+
+          {/* Ver Carrito */}
+          <button
+            onClick={handleOpenCart}
+            className="flex items-center gap-3 w-full px-3.5 py-3 rounded-xl text-sm font-bold transition-all active:scale-[0.99]"
+            style={{
+              background: "#00abc4",
+              color: "#000",
+              boxShadow: "0 4px 14px -4px #00abc480",
+            }}
+          >
+            <ShoppingBag className="w-4 h-4 flex-shrink-0" />
+            <span className="flex-1 text-left">Ver Carrito</span>
+            {hasCartItems && (
+              <span className="min-w-[20px] h-[20px] px-1 rounded-full bg-black text-[10px] font-bold text-white flex items-center justify-center">
+                {totalCartItems}
+              </span>
+            )}
+            <ChevronRight className="w-4 h-4 opacity-70" />
+          </button>
 
           {/* Spacer pushes Extras to the bottom */}
           <div className="flex-1" />
