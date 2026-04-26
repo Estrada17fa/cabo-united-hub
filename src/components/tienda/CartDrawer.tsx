@@ -47,7 +47,7 @@ export function CartDrawer() {
 
   return (
     <Sheet open={isOpen} onOpenChange={setOpen}>
-      <SheetContent className="w-full sm:max-w-md flex flex-col h-full p-0">
+      <SheetContent side="left" className="w-full sm:max-w-md flex flex-col h-full p-0">
         <SheetHeader className="px-6 pt-6 pb-4 border-b border-border flex-shrink-0">
           <SheetTitle className="text-xl font-semibold">Tu carrito</SheetTitle>
           <SheetDescription className="text-xs text-muted-foreground">
