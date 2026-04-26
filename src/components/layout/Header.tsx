@@ -13,6 +13,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useCartStore } from "@/stores/cartStore";
 
 const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
   <Icon iconNode={soccerBall} {...props} />
@@ -136,6 +137,16 @@ export function Header() {
   const location = useLocation();
   const { user, profile, signOut } = useAuth();
   const isActive = (path: string) => location.pathname === path;
+  const totalCartItems = useCartStore((s) =>
+    s.items.reduce((sum, item) => sum + item.quantity, 0),
+  );
+  const setCartOpen = useCartStore((s) => s.setOpen);
+  const hasCartItems = totalCartItems > 0;
+
+  const openMenuWithCart = () => {
+    setIsMenuOpen(true);
+    if (hasCartItems) setCartOpen(true);
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 safe-top">
@@ -148,7 +159,18 @@ export function Header() {
             className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-card border border-border text-foreground active:bg-muted transition-colors"
             aria-label="Abrir menú"
           >
-            <Menu className="w-5 h-5" />
+            <div className="relative">
+              <Menu className="w-5 h-5" />
+              {hasCartItems && (
+                <span
+                  className="absolute -top-1.5 -right-1.5 min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-bold flex items-center justify-center"
+                  style={{ background: "#00abc4", color: "#000" }}
+                  aria-label={`${totalCartItems} en carrito`}
+                >
+                  {totalCartItems}
+                </span>
+              )}
+            </div>
           </button>
 
           <Link to="/" className="flex items-center justify-center">
@@ -192,11 +214,19 @@ export function Header() {
       <div className="hidden md:flex items-center h-20 px-4 gap-1.5 border-b border-border">
         <button
           onClick={() => setIsMenuOpen(true)}
-          className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted active:bg-muted transition-colors"
+          className="relative flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted active:bg-muted transition-colors"
           aria-label="Abrir menú"
         >
           <Menu className="w-5 h-5" />
-          <span className="text-sm font-medium">Más</span>
+          {hasCartItems && (
+            <span
+              className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold flex items-center justify-center"
+              style={{ background: "#00abc4", color: "#000" }}
+              aria-label={`${totalCartItems} en carrito`}
+            >
+              {totalCartItems}
+            </span>
+          )}
         </button>
 
         <Link to="/" className="flex-shrink-0">
@@ -246,7 +276,7 @@ export function Header() {
 
       {/* Sheet lateral */}
       <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-        <SheetContent side="left" className="w-[85vw] max-w-80">
+        <SheetContent side="left" className="w-[85vw] max-w-80 flex flex-col">
           <SheetHeader>
             <SheetTitle className="sr-only">Menú</SheetTitle>
             <SheetDescription className="sr-only">Menú de navegación adicional</SheetDescription>
@@ -304,9 +334,12 @@ export function Header() {
             )}
           </div>
 
+          {/* Spacer pushes Extras to the bottom */}
+          <div className="flex-1" />
+
           <div className="h-px bg-border mb-4" />
 
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 pb-2">
             <p className="text-label text-muted-foreground mb-3">Extras</p>
             {menuLinks.map((link) => {
               const NavIcon = link.icon;
