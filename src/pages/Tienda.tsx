@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, Shield } from "lucide-react";
+import { ChevronDown, Flame } from "lucide-react";
 import { ShopHeader } from "@/components/tienda/ShopHeader";
 import { EditorialProductCard } from "@/components/tienda/EditorialProductCard";
-import { FeaturedDrop } from "@/components/tienda/FeaturedDrop";
+import { HeroCarousel } from "@/components/tienda/HeroCarousel";
+import { CategoryTabs } from "@/components/tienda/CategoryTabs";
 import { useShopifyProducts } from "@/hooks/useShopify";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -14,20 +15,56 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { ShopifyProduct } from "@/lib/shopify";
 
-type FilterKey =
-  | "todo"
-  | "jerseys"
-  | "playeras"
-  | "hoodies"
-  | "accesorios"
-  | "limitada";
+/* ========== Categorías principales (audiencia) ========== */
+type CategoryKey = "hombre" | "mujer" | "nino" | "accesorios" | "limitada";
 
-const FILTERS: { key: FilterKey; label: string; match: (p: ShopifyProduct) => boolean }[] = [
+const CATEGORIES: { id: CategoryKey; label: string; match: (p: ShopifyProduct) => boolean }[] = [
+  {
+    id: "hombre",
+    label: "Hombre",
+    match: (p) =>
+      (p.node.tags ?? []).some((t) => /hombre|men|man|masculino/i.test(t)) ||
+      // por defecto, productos sin clasificación clara entran a "Hombre"
+      !(p.node.tags ?? []).some((t) =>
+        /mujer|women|woman|niño|nino|kid|child|accesor|gorra|cap|bag|limit|edition|edicion/i.test(t),
+      ),
+  },
+  {
+    id: "mujer",
+    label: "Mujer",
+    match: (p) => (p.node.tags ?? []).some((t) => /mujer|women|woman|femenino/i.test(t)),
+  },
+  {
+    id: "nino",
+    label: "Niño",
+    match: (p) => (p.node.tags ?? []).some((t) => /niño|nino|kid|child|infantil|junior/i.test(t)),
+  },
+  {
+    id: "accesorios",
+    label: "Accesorios",
+    match: (p) =>
+      /accessor|gorra|cap|hat|bag|bolsa|bufanda|scarf/i.test(p.node.productType ?? "") ||
+      (p.node.tags ?? []).some((t) => /accesor|gorra|cap|bag|bufanda/i.test(t)),
+  },
+  {
+    id: "limitada",
+    label: "Edición Limitada",
+    match: (p) =>
+      (p.node.tags ?? []).some((t) => /limit|edition|edicion|drop|exclusive/i.test(t)),
+  },
+];
+
+/* ========== Sub-filtros por tipo de prenda ========== */
+type SubFilterKey = "todo" | "jerseys" | "playeras" | "hoodies" | "pants" | "accesorios";
+
+const SUB_FILTERS: { key: SubFilterKey; label: string; match: (p: ShopifyProduct) => boolean }[] = [
   { key: "todo", label: "Todo", match: () => true },
   {
     key: "jerseys",
     label: "Jerseys",
-    match: (p) => /jersey|camiseta de juego/i.test(p.node.productType ?? "") || (p.node.tags ?? []).some((t) => /jersey/i.test(t)),
+    match: (p) =>
+      /jersey|camiseta de juego/i.test(p.node.productType ?? "") ||
+      (p.node.tags ?? []).some((t) => /jersey/i.test(t)),
   },
   {
     key: "playeras",
@@ -44,16 +81,18 @@ const FILTERS: { key: FilterKey; label: string; match: (p: ShopifyProduct) => bo
       (p.node.tags ?? []).some((t) => /hoodie|sudadera/i.test(t)),
   },
   {
+    key: "pants",
+    label: "Pants",
+    match: (p) =>
+      /pant|short|jogger|legging/i.test(p.node.productType ?? "") ||
+      (p.node.tags ?? []).some((t) => /pant|short|jogger/i.test(t)),
+  },
+  {
     key: "accesorios",
     label: "Accesorios",
     match: (p) =>
       /accessor|gorra|cap|hat|bag|bolsa/i.test(p.node.productType ?? "") ||
       (p.node.tags ?? []).some((t) => /accesor|gorra|cap|bag/i.test(t)),
-  },
-  {
-    key: "limitada",
-    label: "Edición Limitada",
-    match: (p) => (p.node.tags ?? []).some((t) => /limit|edition|edicion/i.test(t)),
   },
 ];
 
@@ -67,15 +106,25 @@ const SORTS: { key: SortKey; label: string }[] = [
 
 const Tienda = () => {
   const { data: products, isLoading, error } = useShopifyProducts({ first: 50 });
-  const [filter, setFilter] = useState<FilterKey>("todo");
+  const [category, setCategory] = useState<CategoryKey>("hombre");
+  const [subFilter, setSubFilter] = useState<SubFilterKey>("todo");
   const [sort, setSort] = useState<SortKey>("newest");
 
-  const featured = products?.[0];
+  // Más vendidos: heurística — primeros 4 con tag bestseller, o si no hay, los primeros 4 del catálogo.
+  const bestsellers = useMemo(() => {
+    if (!products) return [];
+    const tagged = products.filter((p) =>
+      (p.node.tags ?? []).some((t) => /bestseller|mas vendid|most-sold|top/i.test(t)),
+    );
+    const list = tagged.length >= 4 ? tagged : products;
+    return list.slice(0, 4);
+  }, [products]);
 
   const filteredAndSorted = useMemo(() => {
     if (!products) return [];
-    const f = FILTERS.find((x) => x.key === filter)!;
-    const list = products.filter(f.match);
+    const cat = CATEGORIES.find((x) => x.id === category)!;
+    const sub = SUB_FILTERS.find((x) => x.key === subFilter)!;
+    const list = products.filter((p) => cat.match(p) && sub.match(p));
     const sorted = [...list];
     if (sort === "price-asc") {
       sorted.sort(
@@ -93,125 +142,139 @@ const Tienda = () => {
       sorted.sort((a, b) => a.node.title.localeCompare(b.node.title));
     }
     return sorted;
-  }, [products, filter, sort]);
+  }, [products, category, subFilter, sort]);
 
   const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? "Más nuevo";
+  const activeCategoryLabel = CATEGORIES.find((c) => c.id === category)?.label ?? "";
 
   return (
     <div className="pb-20">
       <ShopHeader />
 
-      {/* EDITORIAL HERO */}
-      <section className="relative mb-10 md:mb-14">
-        {/* Watermark shield (desktop) */}
-        <div
-          className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none"
-          style={{ opacity: 0.06 }}
-          aria-hidden
-        >
-          <Shield className="w-[200px] h-[200px] text-foreground" strokeWidth={1.2} />
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative max-w-3xl"
-        >
-          <p
-            className="text-[11px] font-semibold uppercase mb-4"
-            style={{ color: "#00FF87", letterSpacing: "0.15em" }}
-          >
-            Tienda Oficial
-          </p>
-          <h1
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[0.95] mb-4"
-            style={{ letterSpacing: "-0.02em" }}
-          >
-            Viste los colores
-          </h1>
-          <p className="text-base text-muted-foreground">
-            Merch exclusivo de los Amos del Paraíso
-          </p>
-        </motion.div>
-
-        {/* Filter pills + sort */}
-        <div className="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-            {FILTERS.map((f) => {
-              const active = f.key === filter;
-              return (
-                <button
-                  key={f.key}
-                  onClick={() => setFilter(f.key)}
-                  className={`shrink-0 px-3.5 py-1.5 rounded-full text-[12px] font-semibold transition-all whitespace-nowrap ${
-                    active
-                      ? "text-black"
-                      : "bg-card border border-white/40 text-foreground hover:border-foreground"
-                  }`}
-                  style={
-                    active
-                      ? { background: "#00FF87", boxShadow: "0 4px 14px -4px #00FF8780" }
-                      : undefined
-                  }
-                >
-                  {f.label}
-                </button>
-              );
-            })}
-          </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="shrink-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-[12px] font-semibold bg-card border border-border text-foreground hover:border-white/40 transition-colors">
-                Ordenar: <span className="text-muted-foreground font-medium">{sortLabel}</span>
-                <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-card border-border">
-              {SORTS.map((s) => (
-                <DropdownMenuItem
-                  key={s.key}
-                  onClick={() => setSort(s.key)}
-                  className="text-xs cursor-pointer"
-                >
-                  {s.label}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+      {/* HERO CAROUSEL — full width */}
+      <section className="mb-10 md:mb-14">
+        <HeroCarousel />
       </section>
 
-      {/* FEATURED DROP */}
-      {featured && (
-        <section className="mb-12 md:mb-16">
-          <FeaturedDrop product={featured} />
-        </section>
-      )}
-
-      {/* PRODUCTS GRID */}
-      <section>
-        <div className="flex items-end justify-between mb-6">
+      {/* MÁS VENDIDOS */}
+      <section className="mb-12 md:mb-16">
+        <div className="flex items-end justify-between mb-5">
           <div>
             <p
-              className="text-[11px] font-semibold uppercase mb-1.5 text-muted-foreground"
-              style={{ letterSpacing: "0.15em" }}
+              className="text-[11px] font-semibold uppercase mb-1.5 inline-flex items-center gap-1.5"
+              style={{ color: "#00FF87", letterSpacing: "0.15em" }}
             >
-              Drop completo
+              <Flame className="w-3 h-3" />
+              Más vendidos
             </p>
             <h2
               className="text-2xl md:text-3xl font-bold text-foreground"
               style={{ letterSpacing: "-0.02em" }}
             >
-              Toda la colección
+              Lo que todos quieren
             </h2>
           </div>
-          {filteredAndSorted.length > 0 && (
-            <span className="text-xs text-muted-foreground">
-              {filteredAndSorted.length} {filteredAndSorted.length === 1 ? "pieza" : "piezas"}
-            </span>
-          )}
+        </div>
+
+        {isLoading && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <Skeleton className="aspect-square w-full rounded-xl" />
+                <Skeleton className="h-3 w-1/3" />
+                <Skeleton className="h-4 w-2/3" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!isLoading && bestsellers.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {bestsellers.map((p, i) => (
+              <EditorialProductCard key={p.node.id} product={p} index={i} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* CATEGORÍAS PRINCIPALES (estilo Match Zone) */}
+      <section className="mb-6">
+        <CategoryTabs
+          tabs={CATEGORIES.map((c) => ({ id: c.id, label: c.label }))}
+          activeTab={category}
+          onTabChange={(id) => {
+            setCategory(id as CategoryKey);
+            setSubFilter("todo");
+          }}
+        />
+      </section>
+
+      {/* SUB-FILTROS + SORT */}
+      <section className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+          {SUB_FILTERS.map((f) => {
+            const active = f.key === subFilter;
+            return (
+              <button
+                key={f.key}
+                onClick={() => setSubFilter(f.key)}
+                className={`shrink-0 px-3.5 py-1.5 rounded-full text-[12px] font-semibold transition-all whitespace-nowrap ${
+                  active
+                    ? "text-black"
+                    : "bg-card border border-white/40 text-foreground hover:border-foreground"
+                }`}
+                style={
+                  active
+                    ? { background: "#00FF87", boxShadow: "0 4px 14px -4px #00FF8780" }
+                    : undefined
+                }
+              >
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="shrink-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-[12px] font-semibold bg-card border border-border text-foreground hover:border-white/40 transition-colors">
+              Ordenar:{" "}
+              <span className="text-muted-foreground font-medium">{sortLabel}</span>
+              <ChevronDown className="w-3.5 h-3.5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="bg-card border-border">
+            {SORTS.map((s) => (
+              <DropdownMenuItem
+                key={s.key}
+                onClick={() => setSort(s.key)}
+                className="text-xs cursor-pointer"
+              >
+                {s.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </section>
+
+      {/* GRID DE PRODUCTOS */}
+      <motion.section
+        key={`${category}-${subFilter}-${sort}`}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="flex items-end justify-between mb-4">
+          <p className="text-xs text-muted-foreground">
+            <span className="text-foreground font-semibold">{activeCategoryLabel}</span>
+            {filteredAndSorted.length > 0 && (
+              <>
+                {" · "}
+                {filteredAndSorted.length}{" "}
+                {filteredAndSorted.length === 1 ? "pieza" : "piezas"}
+              </>
+            )}
+          </p>
         </div>
 
         {isLoading && (
@@ -235,9 +298,10 @@ const Tienda = () => {
 
         {!isLoading && !error && filteredAndSorted.length === 0 && (
           <div className="text-center py-20 border border-dashed border-border rounded-2xl">
-            <p className="text-base font-semibold mb-1">No products found</p>
+            <p className="text-base font-semibold mb-1">Sin piezas por ahora</p>
             <p className="text-sm text-muted-foreground">
-              Aún no hay piezas en esta categoría.
+              Aún no hay productos en {activeCategoryLabel}
+              {subFilter !== "todo" ? ` · ${SUB_FILTERS.find((s) => s.key === subFilter)?.label}` : ""}.
             </p>
           </div>
         )}
@@ -249,7 +313,7 @@ const Tienda = () => {
             ))}
           </div>
         )}
-      </section>
+      </motion.section>
     </div>
   );
 };
