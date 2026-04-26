@@ -11,13 +11,41 @@ import ZonaPartido from "./pages/ZonaPartido";
 import FanZone from "./pages/FanZone";
 import Tickets from "./pages/Tickets";
 import Tienda from "./pages/Tienda";
+import TiendaProducto from "./pages/TiendaProducto";
+import TiendaBuscar from "./pages/TiendaBuscar";
 import ConoceLosCabos from "./pages/ConoceLosCabos";
 import Patrocinios from "./pages/Patrocinios";
 import Contacto from "./pages/Contacto";
 import MiPerfil from "./pages/MiPerfil";
 import NotFound from "./pages/NotFound";
+import { CartDrawer } from "@/components/tienda/CartDrawer";
+import { useCartSync } from "@/hooks/useCartSync";
 
 const queryClient = new QueryClient();
+
+const AppShell = () => {
+  useCartSync();
+  return (
+    <AppLayout>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/zona-partido" element={<ZonaPartido />} />
+        <Route path="/club" element={<Club />} />
+        <Route path="/fan-zone" element={<FanZone />} />
+        <Route path="/boletos" element={<Tickets />} />
+        <Route path="/tienda" element={<Tienda />} />
+        <Route path="/tienda/producto/:handle" element={<TiendaProducto />} />
+        <Route path="/tienda/buscar" element={<TiendaBuscar />} />
+        <Route path="/conoce-los-cabos" element={<ConoceLosCabos />} />
+        <Route path="/patrocinios" element={<Patrocinios />} />
+        <Route path="/contacto" element={<Contacto />} />
+        <Route path="/mi-perfil" element={<MiPerfil />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <CartDrawer />
+    </AppLayout>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -26,21 +54,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <AppLayout>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/zona-partido" element={<ZonaPartido />} />
-              <Route path="/club" element={<Club />} />
-              <Route path="/fan-zone" element={<FanZone />} />
-              <Route path="/boletos" element={<Tickets />} />
-              <Route path="/tienda" element={<Tienda />} />
-              <Route path="/conoce-los-cabos" element={<ConoceLosCabos />} />
-              <Route path="/patrocinios" element={<Patrocinios />} />
-              <Route path="/contacto" element={<Contacto />} />
-              <Route path="/mi-perfil" element={<MiPerfil />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AppLayout>
+          <AppShell />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
