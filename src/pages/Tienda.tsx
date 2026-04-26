@@ -8,6 +8,7 @@ import { HeroCarousel } from "@/components/tienda/HeroCarousel";
 import { CategoryTabs } from "@/components/tienda/CategoryTabs";
 import { useShopifyProducts } from "@/hooks/useShopify";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSearchStore } from "@/stores/searchStore";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -119,6 +120,7 @@ const Tienda = () => {
   const [category, setCategory] = useState<CategoryKey>("jerseys");
   const [subFilter, setSubFilter] = useState<SubFilterKey>("todo");
   const [sort, setSort] = useState<SortKey>("newest");
+  const searchQuery = useSearchStore((s) => s.query);
 
   // Jerseys oficiales destacados: hasta 4 jerseys del catálogo
   const featuredJerseys = useMemo(() => {
@@ -132,7 +134,21 @@ const Tienda = () => {
     if (!products) return [];
     const cat = CATEGORIES.find((x) => x.id === category)!;
     const sub = SUB_FILTERS.find((x) => x.key === subFilter)!;
-    const list = products.filter((p) => cat.match(p) && sub.match(p));
+    const term = searchQuery.trim().toLowerCase();
+    const list = products.filter((p) => {
+      // Si hay búsqueda activa, ignorar categoría/subfiltro y buscar en todo
+      if (term) {
+        const n = p.node;
+        return (
+          n.title.toLowerCase().includes(term) ||
+          n.description?.toLowerCase().includes(term) ||
+          n.productType?.toLowerCase().includes(term) ||
+          n.vendor?.toLowerCase().includes(term) ||
+          n.tags?.some((t) => t.toLowerCase().includes(term))
+        );
+      }
+      return cat.match(p) && sub.match(p);
+    });
     const sorted = [...list];
     if (sort === "price-asc") {
       sorted.sort(
@@ -150,10 +166,11 @@ const Tienda = () => {
       sorted.sort((a, b) => a.node.title.localeCompare(b.node.title));
     }
     return sorted;
-  }, [products, category, subFilter, sort]);
+  }, [products, category, subFilter, sort, searchQuery]);
 
   const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? "Más nuevo";
   const activeCategoryLabel = CATEGORIES.find((c) => c.id === category)?.label ?? "";
+  const isSearching = searchQuery.trim().length > 0;
 
   return (
     <div className="pb-20">
