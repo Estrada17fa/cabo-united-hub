@@ -176,13 +176,15 @@ const Tienda = () => {
     <div className="pb-20">
       <ShopHeader />
 
-      {/* HERO CAROUSEL — full width */}
-      <section className="mb-10 md:mb-14">
-        <HeroCarousel />
-      </section>
+      {!isSearching && (
+        <>
+          {/* HERO CAROUSEL — full width */}
+          <section className="mb-10 md:mb-14">
+            <HeroCarousel />
+          </section>
 
-      {/* JERSEYS OFICIALES — Sección destacada */}
-      <section
+          {/* JERSEYS OFICIALES — Sección destacada */}
+          <section
         className="my-8 relative overflow-hidden rounded-2xl border border-white/[0.08] p-5 md:p-7"
         style={{
           background:
@@ -258,10 +260,10 @@ const Tienda = () => {
             </div>
           </>
         )}
-      </section>
+          </section>
 
-      {/* CATEGORÍAS PRINCIPALES (estilo Match Zone) */}
-      <section id="catalogo" className="mb-6">
+          {/* CATEGORÍAS PRINCIPALES (estilo Match Zone) */}
+          <section id="catalogo" className="mb-6">
         <CategoryTabs
           tabs={CATEGORIES.map((c) => ({ id: c.id, label: c.label }))}
           activeTab={category}
@@ -270,10 +272,10 @@ const Tienda = () => {
             setSubFilter("todo");
           }}
         />
-      </section>
+          </section>
 
-      {/* SUB-FILTROS + SORT */}
-      <section className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* SUB-FILTROS + SORT */}
+          <section className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
           {SUB_FILTERS.map((f) => {
             const active = f.key === subFilter;
@@ -318,18 +320,22 @@ const Tienda = () => {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-      </section>
+          </section>
+        </>
+      )}
 
       {/* GRID DE PRODUCTOS */}
       <motion.section
-        key={`${category}-${subFilter}-${sort}`}
+        key={`${category}-${subFilter}-${sort}-${searchQuery}`}
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="flex items-end justify-between mb-4">
           <p className="text-xs text-muted-foreground">
-            <span className="text-foreground font-semibold">{activeCategoryLabel}</span>
+            <span className="text-foreground font-semibold">
+              {isSearching ? `Resultados para "${searchQuery}"` : activeCategoryLabel}
+            </span>
             {filteredAndSorted.length > 0 && (
               <>
                 {" · "}
