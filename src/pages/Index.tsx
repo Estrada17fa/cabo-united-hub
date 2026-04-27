@@ -25,6 +25,12 @@ import { useLiveMatch } from "@/hooks/useLiveMatch";
 import { EditorialProductCard } from "@/components/tienda/EditorialProductCard";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { GAMES } from "@/components/fan-zone/games";
 import { PLACES, FEATURED_PLACE_IDS, CATEGORY_META } from "@/lib/visita-los-cabos-data";
 import stadiumHero from "@/assets/stadium-hero.jpg";
@@ -771,7 +777,14 @@ const Index = () => {
         <SponsorsMicroCta />
       </motion.div>
 
-      <AuthModal open={authOpen} onOpenChange={setAuthOpen} />
+      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
+        <DialogContent className="bg-card border-border max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Únete a Los Cabos United</DialogTitle>
+          </DialogHeader>
+          <AuthModal onSuccess={() => setAuthOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
