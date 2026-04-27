@@ -234,7 +234,7 @@ function SectionHeader({
 function HomeHero() {
   return (
     <section className="relative -mx-3 sm:-mx-4 lg:-mx-[calc((100vw-100%)/2)] overflow-hidden">
-      <div className="relative w-full" style={{ minHeight: 520 }}>
+      <div className="relative w-full" style={{ minHeight: 460 }}>
         <img
           src={stadiumHero}
           alt="Estadio Don Koll"
@@ -256,7 +256,7 @@ function HomeHero() {
           }}
         />
 
-        <div className="relative z-10 px-4 pt-14 md:pt-24 pb-32 md:pb-40 text-center max-w-3xl mx-auto">
+        <div className="relative z-10 px-4 pt-12 md:pt-20 pb-12 md:pb-16 text-center max-w-3xl mx-auto">
           <motion.img
             src={lcuCrest}
             alt="Los Cabos United"
