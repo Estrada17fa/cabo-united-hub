@@ -177,13 +177,11 @@ export function Header() {
           </button>
 
           <Link to="/" className="flex items-center justify-center" aria-label="Inicio">
-            <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center overflow-hidden">
-              <img
-                src={lcuCrest}
-                alt="Los Cabos United"
-                className="h-8 w-auto object-contain"
-              />
-            </div>
+            <img
+              src={lcuCrest}
+              alt="Los Cabos United"
+              className="h-10 w-auto object-contain"
+            />
           </Link>
 
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -237,13 +235,11 @@ export function Header() {
         </button>
 
         <Link to="/" className="flex-shrink-0" aria-label="Inicio">
-          <div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center overflow-hidden">
-            <img
-              src={lcuCrest}
-              alt="Los Cabos United"
-              className="h-10 w-auto object-contain"
-            />
-          </div>
+          <img
+            src={lcuCrest}
+            alt="Los Cabos United"
+            className="h-12 w-auto object-contain"
+          />
         </Link>
 
         <nav className="flex flex-1 items-center justify-center gap-1">
