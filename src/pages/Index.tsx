@@ -1836,7 +1836,7 @@ function LosCabosStrip() {
             return (
               <Link
                 key={place.id}
-                to="/conoce-los-cabos"
+                to={`/conoce-los-cabos?place=${place.id}`}
                 className="snap-start shrink-0 w-[240px] h-[150px] relative rounded-2xl overflow-hidden border border-white/[0.07] hover:border-white/[0.18] transition-all group"
                 style={{ background: meta.bg }}
               >
