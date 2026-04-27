@@ -516,7 +516,7 @@ const Accesos = () => {
         </div>
 
         {/* Mobile cards (horizontal scroll) */}
-        <div className="md:hidden -mx-3 mt-[-220px] relative z-20 mb-6">
+        <div className="md:hidden -mx-3 mt-[-340px] relative z-20 mb-6">
           <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-3 pb-2">
             {tiers.map((t) => (
               <div
@@ -532,7 +532,7 @@ const Accesos = () => {
         </div>
 
         {/* Desktop pricing/CTA aligned to columns */}
-        <div className="hidden md:block max-w-[1100px] mx-auto px-4 mt-6">
+        <div className="hidden md:block max-w-[1100px] mx-auto px-4 mt-2">
           <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
             {tiers.map((t) => (
               <PriceAndCta key={t.id} tier={t} />
