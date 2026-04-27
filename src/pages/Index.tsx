@@ -82,7 +82,7 @@ const CATEGORY_THEME: Record<
 
 function SectionDivider() {
   return (
-    <div className="relative my-2">
+    <div className="relative">
       <div
         className="h-px w-full"
         style={{
