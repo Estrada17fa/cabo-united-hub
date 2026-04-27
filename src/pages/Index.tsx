@@ -48,6 +48,7 @@ import lcuCrest from "@/assets/lcu-crest.png";
 import tiendaHero from "@/assets/tienda-hero-jersey.jpg";
 import accesosHero from "@/assets/accesos-hero.jpg";
 import adnCabenoImg from "@/assets/adn-cabeno.jpg";
+import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
 import { RankingCard } from "@/components/fan-zone/RankingCard";
 import { PrizesCarouselCard } from "@/components/fan-zone/PrizesCarouselCard";
 
