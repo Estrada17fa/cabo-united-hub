@@ -46,6 +46,7 @@ import { es } from "date-fns/locale";
 import stadiumHero from "@/assets/stadium-hero.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
 import tiendaHero from "@/assets/tienda-hero-jersey.jpg";
+import accesosHero from "@/assets/accesos-hero.jpg";
 import adnCabenoImg from "@/assets/adn-cabeno.jpg";
 import { RankingCard } from "@/components/fan-zone/RankingCard";
 import { PrizesCarouselCard } from "@/components/fan-zone/PrizesCarouselCard";
@@ -408,8 +409,24 @@ const HERO_ABONOS: {
 
 function HeroAbonoCards() {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
-      {HERO_ABONOS.map((a) => (
+    <div className="relative max-w-4xl mx-auto rounded-2xl overflow-hidden">
+      {/* Background image */}
+      <img
+        src={accesosHero}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      {/* Overlay for readability */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.8) 100%)",
+        }}
+      />
+      <div className="relative grid grid-cols-2 lg:grid-cols-4 gap-3 text-left p-3 md:p-4">
+        {HERO_ABONOS.map((a) => (
         <div key={a.id} className="relative pt-2.5">
           {a.isPopular && (
             <div
@@ -485,7 +502,8 @@ function HeroAbonoCards() {
             </div>
           </Link>
         </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
