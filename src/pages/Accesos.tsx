@@ -427,7 +427,7 @@ const POS = [
   },
 ];
 
-const Tickets = () => {
+const Accesos = () => {
   return (
     <TooltipProvider delayDuration={150}>
       <style>{`
@@ -748,4 +748,4 @@ const Tickets = () => {
   );
 };
 
-export default Tickets;
+export default Accesos;

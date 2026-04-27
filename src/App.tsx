@@ -9,7 +9,7 @@ import Index from "./pages/Index";
 import Club from "./pages/Club";
 import ZonaPartido from "./pages/ZonaPartido";
 import FanZone from "./pages/FanZone";
-import Tickets from "./pages/Tickets";
+import Accesos from "./pages/Accesos";
 import Tienda from "./pages/Tienda";
 import TiendaProducto from "./pages/TiendaProducto";
 import TiendaBuscar from "./pages/TiendaBuscar";
@@ -32,7 +32,7 @@ const AppShell = () => {
         <Route path="/zona-partido" element={<ZonaPartido />} />
         <Route path="/club" element={<Club />} />
         <Route path="/fan-zone" element={<FanZone />} />
-        <Route path="/boletos" element={<Tickets />} />
+        <Route path="/accesos" element={<Accesos />} />
         <Route path="/tienda" element={<Tienda />} />
         <Route path="/tienda/producto/:handle" element={<TiendaProducto />} />
         <Route path="/tienda/buscar" element={<TiendaBuscar />} />
