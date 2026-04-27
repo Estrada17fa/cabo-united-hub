@@ -106,7 +106,7 @@ function SectionHeader({
   hrefLabel?: string;
 }) {
   return (
-    <div className="flex items-end justify-between mb-5 px-1">
+    <div className="flex items-end justify-between mb-4 px-1">
       <div>
         {eyebrow && (
           <div
@@ -120,7 +120,16 @@ function SectionHeader({
             {eyebrow}
           </div>
         )}
-        <h2 className="sr-only">{title}</h2>
+        <h2
+          className="font-extrabold text-white"
+          style={{
+            fontSize: "clamp(28px, 4vw, 44px)",
+            letterSpacing: "-0.03em",
+            lineHeight: 1.05,
+          }}
+        >
+          {title}
+        </h2>
       </div>
       {href && (
         <Link
