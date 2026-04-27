@@ -61,9 +61,14 @@ function MobileNav() {
   const currentIndex = activeIndex >= 0 ? activeIndex : 0;
 
   const transition = { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] as const };
+  const handleNavigate = (path: string) => {
+    if (path === location.pathname) return;
+    window.scrollTo(0, 0);
+    navigate(path);
+  };
 
   return (
-    <div className="flex items-center justify-center gap-1.5 px-2">
+    <motion.div layoutRoot className="flex items-center justify-center gap-1.5 px-2">
       <LayoutGroup>
         {navLinks.map((link, index) => {
           const NavIcon = link.icon;
@@ -73,12 +78,12 @@ function MobileNav() {
             <motion.div
               key={link.path}
               layout="position"
-              onClick={() => navigate(link.path)}
+              onClick={() => handleNavigate(link.path)}
               className="relative flex items-center cursor-pointer"
               transition={{ layout: transition }}
             >
               {/* Background plate — local per tab, scales from center */}
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="wait" initial={false}>
                 {isActive && (
                   <motion.div
                     key="plate"
@@ -109,7 +114,7 @@ function MobileNav() {
                 </div>
 
                 {/* Label — only rendered when active, animates width independently */}
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
                   {isActive && (
                     <motion.span
                       key="label"
@@ -128,7 +133,7 @@ function MobileNav() {
           );
         })}
       </LayoutGroup>
-    </div>
+    </motion.div>
   );
 }
 
@@ -152,7 +157,7 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 safe-top">
+    <motion.header layoutRoot className="fixed top-0 left-0 right-0 z-50 bg-background/95 safe-top">
       {/* Mobile + Tablet layout */}
       <div className="lg:hidden">
         {/* Top row: hamburger left, shield center, social right */}
@@ -389,6 +394,6 @@ export function Header() {
           </div>
         </SheetContent>
       </Sheet>
-    </header>
+    </motion.header>
   );
 }
