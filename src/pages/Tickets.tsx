@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Info, MapPin, Calendar, Phone, Clock, ArrowRight } from "lucide-react";
 import stadiumHero from "@/assets/stadium-hero.jpg";
-import lcuCrest from "@/assets/lcu-crest.png";
 import {
   Tooltip,
   TooltipContent,
