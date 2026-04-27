@@ -120,12 +120,7 @@ function SectionHeader({
             {eyebrow}
           </div>
         )}
-        <h2
-          className="font-extrabold text-white"
-          style={{ fontSize: "clamp(22px, 3vw, 30px)", letterSpacing: "-0.025em" }}
-        >
-          {title}
-        </h2>
+        <h2 className="sr-only">{title}</h2>
       </div>
       {href && (
         <Link
