@@ -35,6 +35,43 @@ import lcuCrest from "@/assets/lcu-crest.png";
 
 const ACCENT = "#00abc4";
 
+const HERO_STATS = [
+  { icon: "⚽", label: "6 temporadas" },
+  { icon: "🏟️", label: "Liga Premier Serie A" },
+  { icon: "📍", label: "Los Cabos, BCS" },
+];
+
+const CATEGORY_THEME: Record<
+  string,
+  { label: string; color: string; bg: string }
+> = {
+  restaurantes: {
+    label: "Restaurantes",
+    color: "#F59E0B",
+    bg: "linear-gradient(135deg, #1a0f00 0%, #111 100%)",
+  },
+  bares: {
+    label: "Bares",
+    color: "#FF6B6B",
+    bg: "linear-gradient(135deg, #1a0008 0%, #111 100%)",
+  },
+  tours: {
+    label: "Tours",
+    color: "#00abc4",
+    bg: "linear-gradient(135deg, #001a1f 0%, #111 100%)",
+  },
+  tiendas: {
+    label: "Tiendas",
+    color: "#A78BFA",
+    bg: "linear-gradient(135deg, #0f0a1a 0%, #111 100%)",
+  },
+  hoteles: {
+    label: "Hoteles",
+    color: "#5EEAD4",
+    bg: "linear-gradient(135deg, #00140f 0%, #111 100%)",
+  },
+};
+
 /* ============================================================ */
 /*  HERO                                                         */
 /* ============================================================ */
