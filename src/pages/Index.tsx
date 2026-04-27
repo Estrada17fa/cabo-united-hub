@@ -1289,7 +1289,7 @@ const Index = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4 }}
         className="pb-10"
-        style={{ display: "flex", flexDirection: "column", gap: 56 }}
+        style={{ display: "flex", flexDirection: "column", gap: 32 }}
       >
         <HomeHero />
         <SectionDivider />
