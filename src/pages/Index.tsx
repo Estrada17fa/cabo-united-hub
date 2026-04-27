@@ -234,7 +234,7 @@ function SectionHeader({
 function HomeHero() {
   return (
     <section className="relative -mx-3 sm:-mx-4 lg:-mx-[calc((100vw-100%)/2)] overflow-hidden">
-      <div className="relative w-full" style={{ minHeight: 520 }}>
+      <div className="relative w-full" style={{ minHeight: 460 }}>
         <img
           src={stadiumHero}
           alt="Estadio Don Koll"
@@ -256,7 +256,7 @@ function HomeHero() {
           }}
         />
 
-        <div className="relative z-10 px-4 pt-14 md:pt-24 pb-32 md:pb-40 text-center max-w-3xl mx-auto">
+        <div className="relative z-10 px-4 pt-12 md:pt-20 pb-12 md:pb-16 text-center max-w-3xl mx-auto">
           <motion.img
             src={lcuCrest}
             alt="Los Cabos United"
@@ -394,39 +394,39 @@ function HeroAbonoCards() {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
       {HERO_ABONOS.map((a) => (
-        <Link
-          key={a.id}
-          to="/accesos"
-          className="group relative rounded-xl overflow-hidden flex flex-col transition-transform hover:-translate-y-0.5"
-          style={{
-            background: a.bg,
-            borderTop: `3px solid ${a.accent}`,
-            boxShadow:
-              a.id === "premium"
-                ? "0 0 30px rgba(0,171,196,0.25)"
-                : "0 8px 24px rgba(0,0,0,0.4)",
-            minHeight: 150,
-          }}
-        >
-          {/* Top label area */}
-          <div
-            className="relative flex items-center justify-center px-3"
-            style={{ background: a.topBg, height: 64 }}
+        <div key={a.id} className="relative pt-2.5">
+          {a.isPopular && (
+            <div
+              className="absolute top-0 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md font-bold shadow z-10 whitespace-nowrap"
+              style={{
+                background: a.accent,
+                color: "#0a0a0a",
+                fontSize: 9,
+                letterSpacing: "0.08em",
+              }}
+            >
+              MÁS POPULAR
+            </div>
+          )}
+          <Link
+            to="/accesos"
+            className="group relative rounded-xl overflow-hidden flex flex-col transition-transform hover:-translate-y-0.5 h-full"
+            style={{
+              background: a.bg,
+              borderTop: `3px solid ${a.accent}`,
+              boxShadow:
+                a.id === "premium"
+                  ? "0 0 30px rgba(0,171,196,0.25)"
+                  : "0 8px 24px rgba(0,0,0,0.4)",
+              minHeight: 150,
+            }}
           >
-            {a.isPopular && (
-              <div
-                className="absolute -top-px left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-b-md font-bold shadow"
-                style={{
-                  background: a.accent,
-                  color: "#0a0a0a",
-                  fontSize: 9,
-                  letterSpacing: "0.08em",
-                }}
-              >
-                MÁS POPULAR
-              </div>
-            )}
-            <div className="flex flex-col items-center text-center">
+            {/* Top label area */}
+            <div
+              className="relative flex items-center justify-center px-3"
+              style={{ background: a.topBg, height: 64 }}
+            >
+              <div className="flex flex-col items-center text-center">
               <span
                 className="font-medium text-white/55"
                 style={{ fontSize: 9, letterSpacing: "0.15em" }}
@@ -444,30 +444,31 @@ function HeroAbonoCards() {
               >
                 {a.badge}
               </span>
+              </div>
             </div>
-          </div>
 
-          {/* Bottom info */}
-          <div className="px-3 py-3 flex-1 flex flex-col justify-between gap-2">
-            <div>
-              <div
-                className="font-bold text-white tracking-tight leading-none"
-                style={{ fontSize: 20 }}
+            {/* Bottom info */}
+            <div className="px-3 py-3 flex-1 flex flex-col justify-between gap-2">
+              <div>
+                <div
+                  className="font-bold text-white tracking-tight leading-none"
+                  style={{ fontSize: 20 }}
+                >
+                  {a.price}
+                </div>
+                <div className="text-[10px] text-white/55 mt-0.5">
+                  por temporada
+                </div>
+              </div>
+              <p
+                className="text-white/70 leading-snug line-clamp-2"
+                style={{ fontSize: 11 }}
               >
-                {a.price}
-              </div>
-              <div className="text-[10px] text-white/55 mt-0.5">
-                por temporada
-              </div>
+                {a.tagline}
+              </p>
             </div>
-            <p
-              className="text-white/70 leading-snug line-clamp-2"
-              style={{ fontSize: 11 }}
-            >
-              {a.tagline}
-            </p>
-          </div>
-        </Link>
+          </Link>
+        </div>
       ))}
     </div>
   );
