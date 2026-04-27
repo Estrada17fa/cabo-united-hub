@@ -82,7 +82,7 @@ const CATEGORY_THEME: Record<
 
 function SectionDivider() {
   return (
-    <div className="relative my-2">
+    <div className="relative">
       <div
         className="h-px w-full"
         style={{
@@ -106,7 +106,7 @@ function SectionHeader({
   hrefLabel?: string;
 }) {
   return (
-    <div className="flex items-end justify-between mb-5 px-1">
+    <div className="flex items-end justify-between mb-4 px-1">
       <div>
         {eyebrow && (
           <div
@@ -120,7 +120,16 @@ function SectionHeader({
             {eyebrow}
           </div>
         )}
-        <h2 className="sr-only">{title}</h2>
+        <h2
+          className="font-extrabold text-white"
+          style={{
+            fontSize: "clamp(28px, 4vw, 44px)",
+            letterSpacing: "-0.03em",
+            lineHeight: 1.05,
+          }}
+        >
+          {title}
+        </h2>
       </div>
       {href && (
         <Link
@@ -1280,7 +1289,7 @@ const Index = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4 }}
         className="pb-10"
-        style={{ display: "flex", flexDirection: "column", gap: 56 }}
+        style={{ display: "flex", flexDirection: "column", gap: 32 }}
       >
         <HomeHero />
         <SectionDivider />
