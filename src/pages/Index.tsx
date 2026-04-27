@@ -47,10 +47,8 @@ import stadiumHero from "@/assets/stadium-hero.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
 import tiendaHero from "@/assets/tienda-hero-1.jpg";
 import adnCabenoImg from "@/assets/adn-cabeno.jpg";
-import prizeTickets from "@/assets/prize-tickets.jpg";
-import prizeJersey from "@/assets/prize-jersey.jpg";
-import prizePass from "@/assets/prize-pass.jpg";
-import prizeVestuario from "@/assets/prize-vestuario.jpg";
+import { RankingCard } from "@/components/fan-zone/RankingCard";
+import { PrizesCarouselCard } from "@/components/fan-zone/PrizesCarouselCard";
 
 const ACCENT = "#00abc4";
 const LCU = "Los Cabos United";
