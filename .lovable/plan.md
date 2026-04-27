@@ -1,70 +1,74 @@
-## Mejorar las cards de los abonos en `/boletos`
+## Nueva página de inicio — hub editorial de Los Cabos United
 
-Las cards actuales se ven elegantes pero el contenido (label del tier, badge, escudo) es demasiado pequeño y la card se siente vacía. Voy a hacerlas más grandes, con tipografía más legible y mejor jerarquía visual, manteniendo el mismo estilo dark + acento `#00abc4`.
+La página `/` actual es un placeholder (logo + 3 contadores en 0). La voy a reconstruir como una **experiencia real de inicio** que muestra lo más importante de cada sección de la app y lleva al usuario a explorarla. Sigue el sistema de diseño dark + acento `#00abc4` ya establecido y reutiliza datos/lógica que ya existen.
 
-### Cambios en `MembershipCard` (`src/pages/Tickets.tsx`)
+### Estructura (de arriba hacia abajo)
 
-1. **Card más alta y con presencia**
-   - `minHeight`: 200 → 280px
-   - Top visual area: 100 → 160px
-   - Padding interno bottom: `p-5` → `p-6`
-   - Border-top más gruesa en tiers premium/gold/platino (3px en lugar de 2px) para que el acento de color sea visible.
+1. **Hero atmosférico**
+   - Imagen de fondo `stadium-hero.jpg` con gradient overlay oscuro.
+   - Escudo + "TEMPORADA 2025–26" en label cyan, título "Los Cabos United", subtítulo corto sobre la pasión y el club.
+   - Dos CTAs: "Ver Match Zone" (primario cyan) y "Únete a la afición" (glass) → `/accesos`.
+   - Animación de entrada con framer-motion.
 
-2. **Escudo de fondo más grande**
-   - Tamaño: 80×80 → 140×140 px
-   - Mantener opacidades actuales (sutil watermark).
+2. **Próximo partido / Partido en vivo**
+   - Reusa `MatchHeroCard` y la query exacta de `ZonaPartido` (live → finished < 24h → next scheduled).
+   - Si está en vivo, renderiza `LiveMatchPlayer`; si no, `MatchHeroCard` con countdown.
+   - Header de sección "PRÓXIMO PARTIDO" + link "Ver todos →" hacia `/zona-partido`.
 
-3. **Label del tier (encabezado)**
-   - Font-size: 11 → 15 px en mobile, 17 px en desktop
-   - Mantener letter-spacing y color por tier
-   - Agregar un pequeño separador/línea bajo el label para reforzar jerarquía
-   - Mostrar también el nombre completo "Amo del Paraíso" arriba en 11px, y debajo en grande "GOLD / PREMIUM / PLATINO / GRATIS" como título principal del tier (más legible y rápido de escanear).
+3. **Accesos rápidos (bento grid)**
+   - Grid 2×3 (mobile) / 3 columnas (desktop) de tarjetas con icon + título + subtítulo:
+     - Tu Club → `/club`
+     - Match Zone → `/zona-partido`
+     - Fan Zone → `/fan-zone`
+     - Accesos → `/accesos`
+     - Tienda → `/tienda`
+     - Conoce Los Cabos → `/conoce-los-cabos`
+   - Cada card con hover glow sutil del acento de la sección, animación stagger al entrar.
 
-4. **Pill "MÁS POPULAR" del Premium**
-   - Font-size: 10 → 11 px
-   - Padding ligeramente mayor (`px-3 py-1`)
-   - Posicionar arriba-centro con un ligero offset hacia afuera de la card (efecto "destacado").
+4. **Sé Amo del Paraíso (banner de membresías)**
+   - Banner full-width con gradient `#001a1f → #0a0a0a`, título "Únete y sé Amo del Paraíso", 3 chips con los tiers (Gold / Premium / Platino) y precio desde, CTA "Ver accesos" → `/accesos`.
+   - Reutiliza el mismo lenguaje visual de la página `/accesos`.
 
-5. **Badge inferior (GRATIS / GOLD / PREMIUM / PLATINO)**
-   - Reemplazarlo por un bloque de información más útil:
-     - Tagline corto del tier (12–13px, blanco 70%) que resume el beneficio principal:
-       - Free: "Acceso digital y comunidad"
-       - Gold: "Entrada + kit oficial básico"
-       - Premium: "VIP + foto con jugadores"
-       - Platino: "Experiencia completa + jersey personalizado"
-   - Esto da contenido real a la card y elimina la sensación de vacío.
+5. **Tienda Oficial — destacados**
+   - Carrusel horizontal scroll-snap de productos destacados de Shopify usando `useShopifyProducts` (los primeros 6).
+   - Reusa `EditorialProductCard` para mantener consistencia.
+   - Header "TIENDA OFICIAL" + link "Ver tienda →".
+   - Skeletons mientras carga; oculta la sección elegantemente si no hay productos.
 
-6. **Card del tier Premium**
-   - Glow más visible: `boxShadow: 0 0 40px rgba(0,171,196,0.2)` (antes 30px / 0.12)
-   - Mantener pill "MÁS POPULAR".
+6. **Fan Zone — minijuegos teaser**
+   - Si hay sesión: muestra mini versión de `FanStatsHero` (puntos + nivel + ranking).
+   - Si no hay sesión: card invitando a registrarse para ganar puntos, con CTA que abre `AuthModal`.
+   - Debajo, 3 cards horizontales con los minijuegos destacados desde `GAMES`.
 
-### Cambios en `PriceAndCta`
+7. **Conoce Los Cabos — strip editorial**
+   - Strip horizontal con 4–5 lugares destacados (`FeaturedStrip` o cards propias usando `PLACES`).
+   - Header "VISITA LOS CABOS" + link "Explorar mapa →" hacia `/conoce-los-cabos`.
 
-1. **Precio más grande y dominante**
-   - `text-2xl` (24px) → `text-3xl md:text-4xl` (30–36px)
-   - "por temporada" en 13px (antes 12) y blanco 60%
-   - Línea mensual del Platino en 13px también, color acento blanco 70%.
+8. **Patrocinadores**
+   - Mini reminder: "Hecho posible por nuestros patrocinadores" + link a `/patrocinios`.
+   - El sponsor carousel global del footer ya lo cubre, así que aquí solo un micro-CTA — no duplicar.
 
-2. **Botón CTA**
-   - Altura: 48 → 52px
-   - Font-size: 14 → 15px
-   - Mantener estilos por tier (transparente/borde para Free, acento para los demás, blanco para Platino).
+### Detalles técnicos
 
-### Layout
-
-- Sin cambios en la grilla 4 columnas desktop ni en el snap-scroll mobile.
-- En mobile, el ancho de la card mobile se mantiene en `80vw` pero la mayor altura mejora la legibilidad.
-- Ajustar el `top: "55%"` del overlap del hero a `top: "50%"` para acomodar las cards más altas sin que se corten contra el hero.
-- Ajustar el `mt-[-180px]` de mobile a `mt-[-220px]` por la misma razón.
+- Todo en `src/pages/Index.tsx`. Componentes auxiliares pequeños inline o en `src/components/home/` si crecen (`HomeHero`, `QuickAccessGrid`, `AccesosBanner`, `ShopStrip`, `FanZoneTeaser`, `LosCabosStrip`).
+- Reutilizar componentes existentes: `MatchHeroCard`, `LiveMatchPlayer`, `EditorialProductCard`, `FanStatsHero`, `FeaturedStrip`, `AuthModal`.
+- Datos:
+  - Match: `supabase.from("matches")` con la lógica live/finished/scheduled de `ZonaPartido`.
+  - Productos: `useShopifyProducts()`.
+  - Lugares: `PLACES` de `@/lib/visita-los-cabos-data`.
+  - Juegos: `GAMES` de `@/components/fan-zone/games`.
+  - Usuario: `useAuth()`.
+- Animaciones: framer-motion con `whileInView` para revelar secciones al hacer scroll, stagger en grids.
+- Mobile-first: todo el layout funciona en 375px; carruseles horizontales con `snap-x snap-mandatory` y `scrollbar-hide`.
+- Sin tocar navbar, footer, sponsor carousel, ni otras páginas. Sin cambiar tokens globales.
 
 ### Lo que NO cambia
 
-- Hero atmosférico, gradientes, colores de acento por tier.
-- Tabla de comparación de beneficios.
-- Sección Boletomovil ni puntos de venta físicos.
-- Navbar, footer, sponsor carousel.
-- Tokens globales de diseño / variables CSS.
+- Rutas existentes, navbar, footer, sponsor carousel global.
+- Otras páginas (`/zona-partido`, `/tienda`, `/accesos`, etc.) quedan intactas.
+- Tokens de diseño / variables CSS globales.
 
-### Archivo a editar
+### Archivos a crear/editar
 
-- `src/pages/Tickets.tsx` (único archivo afectado).
+- Editar: `src/pages/Index.tsx` (reescritura completa).
+- Crear (opcional, si los componentes inline crecen demasiado): `src/components/home/HomeHero.tsx`, `QuickAccessGrid.tsx`, `AccesosBanner.tsx`, `ShopStrip.tsx`, `FanZoneTeaser.tsx`, `LosCabosStrip.tsx`.
