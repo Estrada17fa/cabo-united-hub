@@ -63,39 +63,53 @@ type ClubPosition =
   | "Delanteros"
   | "Cuerpo Técnico";
 
-const CLUB_ROSTER: Record<
-  ClubPosition,
-  { name: string; number: number | string; flag: string; role?: string }[]
-> = {
+type ClubPlayer = {
+  name: string;
+  number: number | string;
+  flag: string;
+  country: string;
+  birthState: string;
+  age: number;
+  matches: number;
+  goals: number;
+  assists: number;
+  timesAmo: number;
+  positionDetail: string;
+  role?: string;
+};
+
+const CLUB_ROSTER: Record<ClubPosition, ClubPlayer[]> = {
   Porteros: [
-    { name: "Luis Robles", number: 1, flag: "🇲🇽" },
-    { name: "Andrés Castillo", number: 12, flag: "🇲🇽" },
-    { name: "Mateo Salinas", number: 25, flag: "🇦🇷" },
-    { name: "Iván Flores", number: 30, flag: "🇲🇽" },
+    { name: "Luis Robles", number: 1, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 28, matches: 16, goals: 0, assists: 1, timesAmo: 3, positionDetail: "Portero Titular" },
+    { name: "Andrés Castillo", number: 12, flag: "🇲🇽", country: "México", birthState: "Sinaloa", age: 22, matches: 4, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Suplente" },
+    { name: "Mateo Salinas", number: 25, flag: "🇦🇷", country: "Argentina", birthState: "Buenos Aires", age: 31, matches: 0, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Tercer Portero" },
+    { name: "Iván Flores", number: 30, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 19, matches: 1, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Cantera" },
   ],
   Defensas: [
-    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽" },
-    { name: "Rafael Márquez", number: 4, flag: "🇲🇽" },
-    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴" },
-    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽" },
+    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 26, matches: 18, goals: 1, assists: 3, timesAmo: 2, positionDetail: "Lateral Derecho" },
+    { name: "Rafael Márquez", number: 4, flag: "🇲🇽", country: "México", birthState: "Michoacán", age: 30, matches: 17, goals: 2, assists: 1, timesAmo: 5, positionDetail: "Defensa Central" },
+    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴", country: "Colombia", birthState: "Antioquia", age: 24, matches: 15, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Defensa Central" },
+    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽", country: "México", birthState: "Sonora", age: 22, matches: 12, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Lateral Izquierdo" },
+    { name: "Joaquín Rivas", number: 13, flag: "🇨🇱", country: "Chile", birthState: "Santiago", age: 27, matches: 9, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Defensa Suplente" },
   ],
   Mediocampistas: [
-    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽" },
-    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷" },
-    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽" },
-    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾" },
+    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 25, matches: 18, goals: 2, assists: 4, timesAmo: 3, positionDetail: "Mediocampista Defensivo" },
+    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷", country: "Argentina", birthState: "Córdoba", age: 28, matches: 16, goals: 3, assists: 5, timesAmo: 4, positionDetail: "Mediocampista Central" },
+    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽", country: "México", birthState: "Jalisco", age: 24, matches: 17, goals: 5, assists: 7, timesAmo: 6, positionDetail: "Mediocampista Ofensivo" },
+    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾", country: "Uruguay", birthState: "Montevideo", age: 23, matches: 11, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Volante por Banda" },
+    { name: "Marco Téllez", number: 17, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 21, matches: 8, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Mediocampista Suplente" },
   ],
   Delanteros: [
-    { name: "Diego Hernández", number: 9, flag: "🇲🇽" },
-    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷" },
-    { name: "Adrián Solís", number: 19, flag: "🇲🇽" },
-    { name: "Tomás Rincón", number: 22, flag: "🇻🇪" },
+    { name: "Diego Hernández", number: 9, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 26, matches: 17, goals: 12, assists: 4, timesAmo: 4, positionDetail: "Delantero Centro" },
+    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷", country: "Brasil", birthState: "São Paulo", age: 25, matches: 16, goals: 8, assists: 6, timesAmo: 3, positionDetail: "Extremo Izquierdo" },
+    { name: "Adrián Solís", number: 19, flag: "🇲🇽", country: "México", birthState: "Nuevo León", age: 22, matches: 13, goals: 5, assists: 3, timesAmo: 2, positionDetail: "Extremo Derecho" },
+    { name: "Tomás Rincón", number: 22, flag: "🇻🇪", country: "Venezuela", birthState: "Caracas", age: 27, matches: 7, goals: 2, assists: 1, timesAmo: 0, positionDetail: "Delantero Suplente" },
   ],
   "Cuerpo Técnico": [
-    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", role: "Director Técnico" },
-    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", role: "Asistente Técnico" },
-    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", role: "Preparador Físico" },
-    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", role: "Entren. Porteros" },
+    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", country: "México", birthState: "Ciudad de México", age: 52, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Director Técnico", role: "Director Técnico" },
+    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 45, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Asistente Técnico", role: "Asistente Técnico" },
+    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", country: "México", birthState: "Jalisco", age: 41, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Preparador Físico", role: "Preparador Físico" },
+    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", country: "España", birthState: "Madrid", age: 38, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Entren. Porteros", role: "Entren. Porteros" },
   ],
 };
 
