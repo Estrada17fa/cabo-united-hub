@@ -45,7 +45,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import stadiumHero from "@/assets/stadium-hero.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
-import tiendaHero from "@/assets/tienda-hero-1.jpg";
+import tiendaHero from "@/assets/tienda-hero-jersey.jpg";
 import adnCabenoImg from "@/assets/adn-cabeno.jpg";
 import { RankingCard } from "@/components/fan-zone/RankingCard";
 import { PrizesCarouselCard } from "@/components/fan-zone/PrizesCarouselCard";
