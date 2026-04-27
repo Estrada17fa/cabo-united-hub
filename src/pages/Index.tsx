@@ -254,9 +254,15 @@ function HomeHero() {
     <section className="relative -mx-3 sm:-mx-4 lg:-mx-[calc((100vw-100%)/2)] overflow-hidden">
       <div className="relative w-full" style={{ minHeight: 460 }}>
         <img
+          src={mobileTeamBg}
+          alt="Plantel Los Cabos United"
+          className="md:hidden absolute inset-0 w-full h-full object-cover"
+          loading="eager"
+        />
+        <img
           src={stadiumHero}
           alt="Estadio Don Koll"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="hidden md:block absolute inset-0 w-full h-full object-cover"
           loading="eager"
         />
         <div
