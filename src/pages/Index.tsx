@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
@@ -16,6 +16,12 @@ import {
   Gift,
   Medal,
   ShoppingBag,
+  Sparkles,
+  Goal,
+  Sun,
+  Tent,
+  Shield,
+  Star,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -44,6 +50,82 @@ import adnCabenoImg from "@/assets/adn-cabeno.jpg";
 
 const ACCENT = "#00abc4";
 const LCU = "Los Cabos United";
+
+/* --- Tu Club: data mirrors src/pages/Club.tsx --- */
+type ClubPosition =
+  | "Porteros"
+  | "Defensas"
+  | "Mediocampistas"
+  | "Delanteros"
+  | "Cuerpo Técnico";
+
+const CLUB_ROSTER: Record<
+  ClubPosition,
+  { name: string; number: number | string; flag: string; role?: string }[]
+> = {
+  Porteros: [
+    { name: "Luis Robles", number: 1, flag: "🇲🇽" },
+    { name: "Andrés Castillo", number: 12, flag: "🇲🇽" },
+    { name: "Mateo Salinas", number: 25, flag: "🇦🇷" },
+    { name: "Iván Flores", number: 30, flag: "🇲🇽" },
+  ],
+  Defensas: [
+    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽" },
+    { name: "Rafael Márquez", number: 4, flag: "🇲🇽" },
+    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴" },
+    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽" },
+  ],
+  Mediocampistas: [
+    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽" },
+    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷" },
+    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽" },
+    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾" },
+  ],
+  Delanteros: [
+    { name: "Diego Hernández", number: 9, flag: "🇲🇽" },
+    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷" },
+    { name: "Adrián Solís", number: 19, flag: "🇲🇽" },
+    { name: "Tomás Rincón", number: 22, flag: "🇻🇪" },
+  ],
+  "Cuerpo Técnico": [
+    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", role: "Director Técnico" },
+    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", role: "Asistente Técnico" },
+    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", role: "Preparador Físico" },
+    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", role: "Entren. Porteros" },
+  ],
+};
+
+const CLUB_ACADEMY_CATEGORIES = [
+  { icon: Sparkles, name: "Semillero", age: "3 – 8 años" },
+  { icon: GraduationCap, name: "Academia", age: "7 – 14 años" },
+  { icon: Goal, name: "Fuerzas Básicas", age: "Sub 15 y Sub 17" },
+  { icon: Sun, name: "Curso de Verano", age: "Temporada" },
+  { icon: Tent, name: "Campamento", age: "Experiencia" },
+];
+
+const CLUB_NEWS = [
+  {
+    tag: "Noticias",
+    tagColor: "hsl(336 80% 77%)",
+    title: "Los Cabos United firma nuevo acuerdo con la afición local",
+    date: "12 Abr 2025",
+    read: "3 min",
+  },
+  {
+    tag: "Entrevista",
+    tagColor: "hsl(38 92% 60%)",
+    title: "Diego Hernández: 'Quiero romper el récord de goles de la Serie A'",
+    date: "08 Abr 2025",
+    read: "5 min",
+  },
+  {
+    tag: "Detrás de Cámaras",
+    tagColor: "hsl(199 89% 60%)",
+    title: "Un día con el plantel: la rutina antes del clásico del noroeste",
+    date: "02 Abr 2025",
+    read: "4 min",
+  },
+];
 
 const CATEGORY_THEME: Record<
   string,
@@ -697,162 +779,306 @@ function TuClubSection() {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        {/* Plantel — 50% */}
-        <Link
-          to="/club"
-          className="lg:col-span-2 group relative rounded-2xl overflow-hidden border transition-all hover:border-[#00abc4]/40"
-          style={{
-            background: "#0f0f0f",
-            borderColor: "rgba(255,255,255,0.07)",
-            minHeight: 280,
-          }}
-        >
-          <img
-            src={adnCabenoImg}
-            alt="Plantel"
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(to top, #050505 0%, rgba(5,5,5,0.6) 50%, rgba(5,5,5,0.2) 100%)",
-            }}
-          />
-          <div className="relative h-full flex flex-col justify-between p-5 z-10 min-h-[280px]">
-            <div className="flex items-center gap-2">
-              <span
-                className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
-                style={{
-                  color: ACCENT,
-                  borderColor: `${ACCENT}66`,
-                  background: "rgba(0,0,0,0.5)",
-                }}
-              >
-                Plantel
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-white/55">
-                Temporada 2025–26
-              </span>
-            </div>
-            <div>
-              <h3
-                className="font-extrabold text-white mb-2"
-                style={{ fontSize: "clamp(20px, 2.4vw, 28px)", letterSpacing: "-0.02em" }}
-              >
-                Los Amos del Paraíso
-              </h3>
-              <p className="text-white/70 text-[13px] mb-4 max-w-md leading-relaxed">
-                Conoce a los jugadores que defienden los colores del club:
-                porteros, defensas, mediocampistas, delanteros y cuerpo técnico.
-              </p>
-              <div className="inline-flex items-center gap-2 text-[13px] font-bold text-white">
-                <Users className="w-4 h-4" style={{ color: ACCENT }} />
-                Ver plantel completo
-                <ArrowRight
-                  className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                  style={{ color: ACCENT }}
-                />
-              </div>
-            </div>
-          </div>
-        </Link>
-
-        {/* Academia — 25% */}
-        <Link
-          to="/club"
-          className="lg:col-span-1 group relative rounded-2xl overflow-hidden border transition-all hover:border-[#00abc4]/40 flex flex-col"
-          style={{
-            background:
-              "linear-gradient(135deg, #001a1f 0%, #0a0a0a 60%, #001218 100%)",
-            borderColor: "rgba(255,255,255,0.07)",
-            minHeight: 280,
-          }}
-        >
-          <div className="p-5 flex flex-col h-full justify-between">
-            <div>
-              <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
-                style={{ background: `${ACCENT}1f`, border: `1px solid ${ACCENT}40` }}
-              >
-                <GraduationCap className="w-6 h-6" style={{ color: ACCENT }} />
-              </div>
-              <span
-                className="block font-bold mb-1"
-                style={{ color: ACCENT, fontSize: 10, letterSpacing: "0.18em" }}
-              >
-                ACADEMIA
-              </span>
-              <h3
-                className="font-extrabold text-white leading-tight mb-2"
-                style={{ fontSize: 20, letterSpacing: "-0.02em" }}
-              >
-                Forma parte del semillero
-              </h3>
-              <p className="text-white/60 text-[12px] leading-relaxed">
-                Semillero, academia, fuerzas básicas y campamentos para todas las edades.
-              </p>
-            </div>
-            <div className="inline-flex items-center gap-1.5 text-[12px] font-bold mt-4" style={{ color: ACCENT }}>
-              Ver categorías
-              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-            </div>
-          </div>
-        </Link>
-
-        {/* Noticias — 25% */}
-        <Link
-          to="/club"
-          className="lg:col-span-1 group relative rounded-2xl overflow-hidden border transition-all hover:border-white/20 flex flex-col"
-          style={{
-            background: "#0f0f0f",
-            borderColor: "rgba(255,255,255,0.07)",
-            minHeight: 280,
-          }}
-        >
-          <div className="p-5 flex flex-col h-full justify-between">
-            <div>
-              <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
-                style={{
-                  background: "hsl(336 80% 77% / 0.15)",
-                  border: "1px solid hsl(336 80% 77% / 0.35)",
-                }}
-              >
-                <Newspaper className="w-6 h-6" style={{ color: "hsl(336 80% 77%)" }} />
-              </div>
-              <span
-                className="block font-bold mb-1"
-                style={{ color: "hsl(336 80% 77%)", fontSize: 10, letterSpacing: "0.18em" }}
-              >
-                NOTICIAS
-              </span>
-              <h3
-                className="font-extrabold text-white leading-tight mb-3"
-                style={{ fontSize: 20, letterSpacing: "-0.02em" }}
-              >
-                Lo más reciente del club
-              </h3>
-              <ul className="space-y-2">
-                <li className="text-[12px] text-white/70 leading-snug line-clamp-2">
-                  · Nuevo acuerdo con la afición local
-                </li>
-                <li className="text-[12px] text-white/70 leading-snug line-clamp-2">
-                  · Diego Hernández: rumbo al récord
-                </li>
-                <li className="text-[12px] text-white/70 leading-snug line-clamp-2">
-                  · Detrás de cámaras del clásico
-                </li>
-              </ul>
-            </div>
-            <div className="inline-flex items-center gap-1.5 text-[12px] font-bold mt-4 text-white/85">
-              Ver noticias
-              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-            </div>
-          </div>
-        </Link>
+        <TuClubPlantelCard />
+        <TuClubAcademiaCard />
+        <TuClubNoticiasCard />
       </div>
     </section>
+  );
+}
+
+/* ---------- Tu Club: Plantel ---------- */
+function TuClubPlantelCard() {
+  const [activePos, setActivePos] = useState<ClubPosition>("Delanteros");
+  const positions: ClubPosition[] = [
+    "Porteros",
+    "Defensas",
+    "Mediocampistas",
+    "Delanteros",
+    "Cuerpo Técnico",
+  ];
+  const players = CLUB_ROSTER[activePos].slice(0, 4);
+
+  return (
+    <div
+      className="lg:col-span-2 rounded-2xl border overflow-hidden flex flex-col"
+      style={{
+        background: "#0f0f0f",
+        borderColor: "rgba(255,255,255,0.07)",
+        minHeight: 280,
+      }}
+    >
+      <div className="p-5 flex flex-col h-full">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Shield className="w-4 h-4" style={{ color: ACCENT }} />
+            <h3
+              className="font-extrabold text-white"
+              style={{ fontSize: 18, letterSpacing: "-0.01em" }}
+            >
+              Nuestro plantel
+            </h3>
+          </div>
+          <Link
+            to="/club"
+            className="inline-flex items-center gap-1 text-[12px] font-bold transition-colors hover:text-white"
+            style={{ color: ACCENT }}
+          >
+            Ver todo
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        {/* Position tabs */}
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide mb-4 -mx-1 px-1">
+          {positions.map((pos) => {
+            const active = pos === activePos;
+            return (
+              <button
+                key={pos}
+                onClick={() => setActivePos(pos)}
+                className="px-3 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all border shrink-0"
+                style={
+                  active
+                    ? {
+                        backgroundColor: `${ACCENT}26`,
+                        color: ACCENT,
+                        borderColor: `${ACCENT}80`,
+                      }
+                    : {
+                        backgroundColor: "transparent",
+                        color: "rgba(255,255,255,0.55)",
+                        borderColor: "rgba(255,255,255,0.1)",
+                      }
+                }
+              >
+                {pos}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Players grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 flex-1 content-start">
+          <AnimatePresence mode="popLayout">
+            {players.map((player) => (
+              <motion.div
+                key={`${activePos}-${player.name}`}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.25 }}
+                className="rounded-xl border bg-black/30 p-2.5 transition-colors hover:border-[#00abc4]/50"
+                style={{ borderColor: "rgba(255,255,255,0.07)" }}
+              >
+                <div className="aspect-square rounded-lg bg-white/5 flex items-center justify-center mb-1.5 relative overflow-hidden">
+                  <span className="text-2xl font-extrabold text-white/55">
+                    {player.number}
+                  </span>
+                  <span className="absolute top-1 right-1 text-sm">
+                    {player.flag}
+                  </span>
+                </div>
+                <div className="text-[11px] font-semibold text-white truncate">
+                  {player.name}
+                </div>
+                <div className="text-[10px] text-white/50 truncate">
+                  {player.role ? player.role : `#${player.number}`}
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Tu Club: Academia ---------- */
+function TuClubAcademiaCard() {
+  return (
+    <div
+      className="lg:col-span-1 rounded-2xl border overflow-hidden flex flex-col"
+      style={{
+        background:
+          "linear-gradient(135deg, #001a1f 0%, #0a0a0a 60%, #001218 100%)",
+        borderColor: "rgba(255,255,255,0.07)",
+        minHeight: 280,
+      }}
+    >
+      <div className="p-5 flex flex-col h-full">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <GraduationCap className="w-4 h-4" style={{ color: ACCENT }} />
+            <h3
+              className="font-extrabold text-white"
+              style={{ fontSize: 18, letterSpacing: "-0.01em" }}
+            >
+              Academia
+            </h3>
+          </div>
+          <Link
+            to="/club"
+            className="inline-flex items-center gap-1 text-[12px] font-bold transition-colors hover:text-white"
+            style={{ color: ACCENT }}
+          >
+            Ver
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="flex flex-col gap-1.5 flex-1">
+          {CLUB_ACADEMY_CATEGORIES.map((c) => {
+            const Icon = c.icon;
+            return (
+              <Link
+                key={c.name}
+                to="/club"
+                className="group flex items-center gap-2.5 rounded-lg border bg-black/20 px-2.5 py-2 transition-all hover:border-[#00abc4]/50"
+                style={{ borderColor: "rgba(255,255,255,0.07)" }}
+              >
+                <div
+                  className="w-8 h-8 rounded-md flex items-center justify-center shrink-0"
+                  style={{ background: `${ACCENT}1f` }}
+                >
+                  <Icon className="w-4 h-4" style={{ color: ACCENT }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[12px] font-semibold text-white truncate leading-tight">
+                    {c.name}
+                  </div>
+                  <div
+                    className="text-[10px] font-bold tracking-wide truncate"
+                    style={{ color: ACCENT }}
+                  >
+                    {c.age}
+                  </div>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5 text-white/40 shrink-0 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Tu Club: Noticias (carousel) ---------- */
+function TuClubNoticiasCard() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % CLUB_NEWS.length);
+    }, 4500);
+    return () => clearInterval(id);
+  }, []);
+
+  const current = CLUB_NEWS[index];
+
+  return (
+    <div
+      className="lg:col-span-1 rounded-2xl border overflow-hidden flex flex-col"
+      style={{
+        background: "#0f0f0f",
+        borderColor: "rgba(255,255,255,0.07)",
+        minHeight: 280,
+      }}
+    >
+      <div className="p-5 flex flex-col h-full">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Newspaper
+              className="w-4 h-4"
+              style={{ color: "hsl(336 80% 77%)" }}
+            />
+            <h3
+              className="font-extrabold text-white"
+              style={{ fontSize: 18, letterSpacing: "-0.01em" }}
+            >
+              Noticias
+            </h3>
+          </div>
+          <Link
+            to="/club"
+            className="inline-flex items-center gap-1 text-[12px] font-bold text-white/85 hover:text-white transition-colors"
+          >
+            Ver todas
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        {/* Carousel */}
+        <Link
+          to="/club"
+          className="relative flex-1 rounded-xl border overflow-hidden block group"
+          style={{
+            background: "rgba(255,255,255,0.02)",
+            borderColor: "rgba(255,255,255,0.07)",
+            minHeight: 180,
+          }}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -16 }}
+              transition={{ duration: 0.35 }}
+              className="absolute inset-0 flex flex-col"
+            >
+              <div
+                className="h-20 relative overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, ${current.tagColor.replace(
+                    ")",
+                    " / 0.4)",
+                  )} 0%, #0a0a0a 100%)`,
+                }}
+              />
+              <div className="p-3 flex-1 flex flex-col">
+                <span
+                  className="self-start px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider mb-1.5"
+                  style={{
+                    backgroundColor: "rgba(0,0,0,0.5)",
+                    color: current.tagColor,
+                    border: `1px solid ${current.tagColor.replace(")", " / 0.4)")}`,
+                  }}
+                >
+                  {current.tag}
+                </span>
+                <div className="text-[12px] font-semibold text-white leading-snug line-clamp-2 mb-2">
+                  {current.title}
+                </div>
+                <div className="text-[10px] text-white/55 mt-auto flex items-center gap-2">
+                  <span>{current.date}</span>
+                  <span className="w-1 h-1 rounded-full bg-white/40" />
+                  <span>{current.read}</span>
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </Link>
+
+        {/* Dots */}
+        <div className="flex items-center justify-center gap-1.5 mt-3">
+          {CLUB_NEWS.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              aria-label={`Ir a noticia ${i + 1}`}
+              className="h-1.5 rounded-full transition-all"
+              style={{
+                width: i === index ? 18 : 6,
+                background:
+                  i === index ? "hsl(336 80% 77%)" : "rgba(255,255,255,0.2)",
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
