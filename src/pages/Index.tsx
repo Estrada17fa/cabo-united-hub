@@ -6,16 +6,22 @@ import {
   ArrowRight,
   ChevronRight,
   Crown,
-  Gamepad2,
   MapPin,
   Radio,
+  Trophy,
+  Ticket,
+  Users,
+  GraduationCap,
+  Newspaper,
+  Gift,
+  Medal,
+  ShoppingBag,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useShopifyProducts } from "@/hooks/useShopify";
 import { MatchHeroCard } from "@/components/match-zone/MatchHeroCard";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
-import { ResponsiveMatchTimeline } from "@/components/match-zone/ResponsiveMatchTimeline";
 import { TeamCrest } from "@/components/match-zone/TeamCrest";
 import { useTeamLogos } from "@/hooks/useTeamLogos";
 import type { Tables } from "@/integrations/supabase/types";
@@ -29,16 +35,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PLACES, FEATURED_PLACE_IDS } from "@/lib/visita-los-cabos-data";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 import stadiumHero from "@/assets/stadium-hero.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
+import tiendaHero from "@/assets/tienda-hero-1.jpg";
+import adnCabenoImg from "@/assets/adn-cabeno.jpg";
+import donKollImg from "@/assets/don-koll.jpg";
 
 const ACCENT = "#00abc4";
-
-const HERO_STATS = [
-  { icon: "⚽", label: "6 temporadas" },
-  { icon: "🏟️", label: "Liga Premier Serie A" },
-  { icon: "📍", label: "Los Cabos, BCS" },
-];
+const LCU = "Los Cabos United";
 
 const CATEGORY_THEME: Record<
   string,
@@ -72,6 +78,71 @@ const CATEGORY_THEME: Record<
 };
 
 /* ============================================================ */
+/*  SECTION DIVIDER + HEADER                                     */
+/* ============================================================ */
+
+function SectionDivider() {
+  return (
+    <div className="relative my-2">
+      <div
+        className="h-px w-full"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.10) 50%, transparent 100%)",
+        }}
+      />
+    </div>
+  );
+}
+
+function SectionHeader({
+  eyebrow,
+  title,
+  href,
+  hrefLabel = "Ver todo",
+}: {
+  eyebrow?: string;
+  title: string;
+  href?: string;
+  hrefLabel?: string;
+}) {
+  return (
+    <div className="flex items-end justify-between mb-5 px-1">
+      <div>
+        {eyebrow && (
+          <div
+            className="font-bold mb-1.5 inline-flex items-center gap-2"
+            style={{ color: ACCENT, fontSize: 11, letterSpacing: "0.2em" }}
+          >
+            <span
+              className="inline-block w-6 h-px"
+              style={{ background: ACCENT }}
+            />
+            {eyebrow}
+          </div>
+        )}
+        <h2
+          className="font-extrabold text-white"
+          style={{ fontSize: "clamp(22px, 3vw, 30px)", letterSpacing: "-0.025em" }}
+        >
+          {title}
+        </h2>
+      </div>
+      {href && (
+        <Link
+          to={href}
+          className="inline-flex items-center gap-1 text-white/70 hover:text-white transition-colors font-semibold"
+          style={{ fontSize: 13 }}
+        >
+          {hrefLabel}
+          <ChevronRight className="w-4 h-4" />
+        </Link>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================ */
 /*  HERO                                                         */
 /* ============================================================ */
 
@@ -92,7 +163,6 @@ function HomeHero() {
               "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.7) 55%, #050505 100%)",
           }}
         />
-        {/* radial accent glow */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -170,25 +240,6 @@ function HomeHero() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           </motion.div>
-
-          {/* Stat pills */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.55 }}
-            className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-white/55"
-            style={{ fontSize: 11, letterSpacing: "0.02em" }}
-          >
-            {HERO_STATS.map((s, i) => (
-              <span key={s.label} className="inline-flex items-center gap-1.5">
-                <span>{s.icon}</span>
-                <span>{s.label}</span>
-                {i < HERO_STATS.length - 1 && (
-                  <span className="text-white/30 ml-2">·</span>
-                )}
-              </span>
-            ))}
-          </motion.div>
         </div>
       </div>
     </section>
@@ -196,58 +247,11 @@ function HomeHero() {
 }
 
 /* ============================================================ */
-/*  SECTION HEADER                                               */
+/*  MATCH ZONE SECTION                                           */
 /* ============================================================ */
 
-function SectionHeader({
-  eyebrow,
-  title,
-  href,
-  hrefLabel = "Ver todo",
-}: {
-  eyebrow?: string;
-  title: string;
-  href?: string;
-  hrefLabel?: string;
-}) {
-  return (
-    <div className="flex items-end justify-between mb-4 px-1">
-      <div>
-        {eyebrow && (
-          <div
-            className="font-bold mb-1"
-            style={{ color: ACCENT, fontSize: 11, letterSpacing: "0.18em" }}
-          >
-            {eyebrow}
-          </div>
-        )}
-        <h2
-          className="font-extrabold text-white"
-          style={{ fontSize: "clamp(20px, 3vw, 26px)", letterSpacing: "-0.02em" }}
-        >
-          {title}
-        </h2>
-      </div>
-      {href && (
-        <Link
-          to={href}
-          className="inline-flex items-center gap-1 text-white/70 hover:text-white transition-colors font-semibold"
-          style={{ fontSize: 13 }}
-        >
-          {hrefLabel}
-          <ChevronRight className="w-4 h-4" />
-        </Link>
-      )}
-    </div>
-  );
-}
-
-/* ============================================================ */
-/*  NEXT MATCH SECTION                                           */
-/* ============================================================ */
-
-function NextMatchSection() {
-  const { data: featuredMatch = null, isLoading } = useQuery({
+function MatchZoneSection() {
+  const { data: featuredMatch = null, isLoading: loadingFeatured } = useQuery({
     queryKey: ["matches", "featured"],
     queryFn: async () => {
       const { data: liveData } = await supabase
@@ -282,31 +286,83 @@ function NextMatchSection() {
 
   const { isLive } = useLiveMatch(featuredMatch);
 
+  const { data: upcoming = [] } = useQuery({
+    queryKey: ["matches", "upcoming-3"],
+    queryFn: async () => {
+      const today = new Date().toISOString().split("T")[0];
+      const { data } = await supabase
+        .from("matches")
+        .select("*")
+        .eq("status", "scheduled")
+        .gte("match_date", today)
+        .order("match_date", { ascending: true })
+        .limit(3);
+      return data ?? [];
+    },
+  });
+
+  const { data: standings = [] } = useQuery({
+    queryKey: ["league_standings", "home"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("league_standings")
+        .select("*")
+        .order("pos", { ascending: true });
+      return data ?? [];
+    },
+  });
+
+  const lcuRow = standings.find((r) => r.team === LCU);
+  const lcuPos = lcuRow?.pos ?? null;
+
+  // Build a focused 5-row window around LCU
+  const standingsWindow = (() => {
+    if (standings.length === 0) return [];
+    if (!lcuPos) return standings.slice(0, 5);
+    const idx = standings.findIndex((r) => r.team === LCU);
+    const start = Math.max(0, idx - 2);
+    const end = Math.min(standings.length, start + 5);
+    return standings.slice(start, end);
+  })();
+
   return (
     <section>
       <SectionHeader
-        eyebrow={isLive ? "PARTIDO EN CURSO" : "PRÓXIMO PARTIDO"}
-        title={isLive ? "Estamos jugando ahora" : "No te lo pierdas"}
+        eyebrow="MATCH ZONE"
+        title={isLive ? "Estamos jugando ahora" : "Próximo partido"}
         href="/zona-partido"
-        hrefLabel="Ver todos"
+        hrefLabel="Ir a Match Zone"
       />
-      {isLoading ? (
-        <Skeleton className="h-[260px] rounded-2xl" />
-      ) : isLive && featuredMatch ? (
-        <LiveMatchPreview match={featuredMatch} />
-      ) : (
-        <MatchHeroCard match={featuredMatch} />
-      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        {/* Featured match — 50% (2/4) */}
+        <div className="lg:col-span-2">
+          {loadingFeatured ? (
+            <Skeleton className="h-[320px] rounded-2xl" />
+          ) : isLive && featuredMatch ? (
+            <LiveScoreOnly match={featuredMatch} />
+          ) : (
+            <MatchHeroCard match={featuredMatch} />
+          )}
+        </div>
+
+        {/* Upcoming 3 — 25% */}
+        <div className="lg:col-span-1">
+          <UpcomingMini matches={upcoming} />
+        </div>
+
+        {/* Standings — 25% */}
+        <div className="lg:col-span-1">
+          <StandingsMini rows={standingsWindow} lcuPos={lcuPos} />
+        </div>
+      </div>
     </section>
   );
 }
 
-/* ============================================================ */
-/*  LIVE MATCH PREVIEW (timeline + Ver en vivo CTA)             */
-/* ============================================================ */
-
-function LiveMatchPreview({ match }: { match: Tables<"matches"> }) {
-  const { events } = useLiveMatch(match);
+/* ---------- LIVE SCORE ONLY (no timeline) ---------- */
+function LiveScoreOnly({ match }: { match: Tables<"matches"> }) {
+  const { currentMinute } = useLiveMatch(match);
   const logos = useTeamLogos();
 
   return (
@@ -314,59 +370,87 @@ function LiveMatchPreview({ match }: { match: Tables<"matches"> }) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45 }}
-      className="rounded-2xl border overflow-hidden"
+      className="rounded-2xl border overflow-hidden h-full flex flex-col"
       style={{
         backgroundColor: "#121212",
         borderColor: "hsl(142 76% 45% / 0.45)",
         boxShadow: "0 0 30px -12px hsl(142 76% 45% / 0.45)",
+        minHeight: 320,
       }}
     >
-      <div className="px-4 py-4 sm:px-5 sm:py-5 flex flex-col gap-4">
+      <div className="px-5 py-6 flex flex-col gap-5 flex-1 justify-between">
+        {/* Live badge */}
+        <div className="flex items-center justify-between">
+          <span
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full"
+            style={{
+              backgroundColor: "hsl(142 76% 45% / 0.15)",
+              border: "1px solid hsl(142 76% 45% / 0.4)",
+            }}
+          >
+            <span className="relative flex h-2 w-2">
+              <span
+                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                style={{ backgroundColor: "hsl(142 76% 45%)" }}
+              />
+              <span
+                className="relative inline-flex rounded-full h-2 w-2"
+                style={{ backgroundColor: "hsl(142 76% 45%)" }}
+              />
+            </span>
+            <span
+              className="text-[10px] font-extrabold tracking-widest"
+              style={{ color: "hsl(142 76% 55%)" }}
+            >
+              EN VIVO {currentMinute}'
+            </span>
+          </span>
+          {match.jornada != null && (
+            <span className="text-[10px] font-bold tracking-widest text-white/50 uppercase">
+              Jornada {match.jornada}
+            </span>
+          )}
+        </div>
+
         {/* Teams + score */}
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-          <div className="flex items-center gap-2 min-w-0 justify-end sm:justify-center">
-            <span className="text-xs sm:text-sm font-bold text-foreground truncate text-right sm:text-center order-1 sm:order-2">
-              {match.home_team}
-            </span>
+          <div className="flex flex-col items-center gap-2 min-w-0">
             <TeamCrest
               teamName={match.home_team}
               logoUrl={logos[match.home_team]}
-              size={28}
-              className="order-2 sm:order-1"
+              size={56}
             />
+            <span className="text-sm font-bold text-foreground truncate text-center max-w-full">
+              {match.home_team}
+            </span>
           </div>
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <span
-              className="text-3xl sm:text-4xl font-extrabold tabular-nums leading-none text-white"
+              className="text-5xl sm:text-6xl font-extrabold tabular-nums leading-none text-white"
               style={{ textShadow: "0 0 18px hsl(142 76% 45% / 0.5)" }}
             >
               {match.home_score ?? 0}
             </span>
-            <span className="text-sm font-extrabold text-muted-foreground tracking-wider">
-              VS
+            <span className="text-base font-extrabold text-white/40 tracking-wider">
+              ·
             </span>
             <span
-              className="text-3xl sm:text-4xl font-extrabold tabular-nums leading-none text-white"
+              className="text-5xl sm:text-6xl font-extrabold tabular-nums leading-none text-white"
               style={{ textShadow: "0 0 18px hsl(142 76% 45% / 0.5)" }}
             >
               {match.away_score ?? 0}
             </span>
           </div>
-          <div className="flex items-center gap-2 min-w-0 justify-start sm:justify-center">
+          <div className="flex flex-col items-center gap-2 min-w-0">
             <TeamCrest
               teamName={match.away_team}
               logoUrl={logos[match.away_team]}
-              size={28}
+              size={56}
             />
-            <span className="text-xs sm:text-sm font-bold text-foreground truncate">
+            <span className="text-sm font-bold text-foreground truncate text-center max-w-full">
               {match.away_team}
             </span>
           </div>
-        </div>
-
-        {/* Live timeline */}
-        <div className="w-full pt-3 border-t border-border/50">
-          <ResponsiveMatchTimeline events={events} homeTeam={match.home_team} />
         </div>
 
         {/* Ver en vivo CTA */}
@@ -375,7 +459,7 @@ function LiveMatchPreview({ match }: { match: Tables<"matches"> }) {
             animate={{ scale: [1, 1.02, 1] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             whileTap={{ scale: 0.98 }}
-            className="w-full h-12 flex items-center justify-center gap-2 rounded-xl font-bold text-[13px] sm:text-[15px]"
+            className="w-full h-12 flex items-center justify-center gap-2 rounded-xl font-bold text-[14px]"
             style={{
               backgroundColor: ACCENT,
               color: "#000",
@@ -391,134 +475,425 @@ function LiveMatchPreview({ match }: { match: Tables<"matches"> }) {
   );
 }
 
-/* ============================================================ */
-/*  QUICK ACCESS GRID                                            */
-/* ============================================================ */
-
-/* ============================================================ */
-/*  ACCESOS / MEMBRESÍAS BANNER                                  */
-/* ============================================================ */
-
-const TIER_CHIPS = [
-  { name: "Gold", price: "$1,499", color: "#F59E0B" },
-  { name: "Premium", price: "$2,499", color: "#00abc4" },
-  { name: "Platino", price: "$4,499", color: "#E2E8F0" },
-];
-
-function AccesosBanner() {
+/* ---------- UPCOMING MINI (3 next matches) ---------- */
+function UpcomingMini({ matches }: { matches: Tables<"matches">[] }) {
+  const logos = useTeamLogos();
   return (
-    <section>
-      <SectionHeader
-        eyebrow="MEMBRESÍAS"
-        title="Sé Amo del Paraíso"
-        href="/accesos"
-        hrefLabel="Ver membresías"
-      />
-      <Link
-        to="/accesos"
-        className="flex items-center justify-between gap-4 rounded-2xl border border-white/[0.08] px-4 py-4 md:px-5 transition-all hover:border-[#00abc4]/40 group"
-        style={{
-          background:
-            "linear-gradient(135deg, #001a1f 0%, #0a0a0a 60%, #001218 100%)",
-          maxHeight: 160,
-        }}
-      >
-        <div className="flex flex-wrap items-center gap-2 min-w-0">
-          {TIER_CHIPS.map((t) => (
-            <div
-              key={t.name}
-              className="flex items-center gap-2 rounded-full px-3 py-1.5"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: `1px solid ${t.color}40`,
-              }}
-            >
-              <span
-                className="w-2 h-2 rounded-full"
-                style={{ background: t.color }}
-              />
-              <span
-                className="font-bold text-white"
-                style={{ fontSize: 12, letterSpacing: "0.04em" }}
-              >
-                {t.name}
-              </span>
-              <span className="text-white/60" style={{ fontSize: 12 }}>
-                {t.price}
-              </span>
-            </div>
-          ))}
-        </div>
-        <span
-          className="hidden sm:inline-flex items-center gap-1 font-bold shrink-0 transition-transform group-hover:translate-x-1"
-          style={{ color: ACCENT, fontSize: 13 }}
+    <div
+      className="rounded-2xl border h-full flex flex-col"
+      style={{
+        backgroundColor: "#0f0f0f",
+        borderColor: "rgba(255,255,255,0.07)",
+        minHeight: 320,
+      }}
+    >
+      <div className="px-4 pt-4 pb-3 flex items-center gap-2">
+        <Trophy className="w-4 h-4" style={{ color: ACCENT }} />
+        <h3
+          className="font-extrabold text-white uppercase tracking-wider"
+          style={{ fontSize: 12, letterSpacing: "0.1em" }}
         >
-          Ver membresías
-          <ArrowRight className="w-4 h-4" />
-        </span>
+          Próximos 3 partidos
+        </h3>
+      </div>
+      <div className="flex-1 px-3 pb-3 flex flex-col gap-2">
+        {matches.length === 0 ? (
+          <div className="flex-1 flex items-center justify-center text-white/40 text-xs px-4 text-center">
+            No hay partidos programados
+          </div>
+        ) : (
+          matches.map((m) => {
+            const date = new Date(`${m.match_date}T${m.match_time || "19:00:00"}`);
+            return (
+              <div
+                key={m.id}
+                className="flex items-center gap-2 rounded-xl px-3 py-2.5"
+                style={{ background: "rgba(255,255,255,0.03)" }}
+              >
+                <div
+                  className="text-[10px] font-bold tabular-nums shrink-0 text-white/50 w-8 text-center"
+                >
+                  J{m.jornada ?? "—"}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <TeamCrest
+                      teamName={m.home_team}
+                      logoUrl={logos[m.home_team]}
+                      size={14}
+                    />
+                    <span className="text-[12px] font-semibold text-white truncate">
+                      {m.home_team}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <TeamCrest
+                      teamName={m.away_team}
+                      logoUrl={logos[m.away_team]}
+                      size={14}
+                    />
+                    <span className="text-[12px] font-medium text-white/70 truncate">
+                      {m.away_team}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="text-[11px] font-bold text-white capitalize">
+                    {format(date, "dd MMM", { locale: es })}
+                  </div>
+                  <div className="text-[10px] text-white/50 tabular-nums">
+                    {format(date, "h:mm a")}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+      <Link
+        to="/zona-partido"
+        className="mx-3 mb-3 inline-flex items-center justify-center gap-1 rounded-lg py-2 text-[12px] font-bold transition-colors hover:bg-white/5"
+        style={{ color: ACCENT }}
+      >
+        Ver calendario <ChevronRight className="w-3.5 h-3.5" />
       </Link>
-    </section>
+    </div>
+  );
+}
+
+/* ---------- STANDINGS MINI ---------- */
+function StandingsMini({
+  rows,
+  lcuPos,
+}: {
+  rows: Tables<"league_standings">[];
+  lcuPos: number | null;
+}) {
+  const logos = useTeamLogos();
+  return (
+    <div
+      className="rounded-2xl border h-full flex flex-col overflow-hidden"
+      style={{
+        backgroundColor: "#0f0f0f",
+        borderColor: "rgba(255,255,255,0.07)",
+        minHeight: 320,
+      }}
+    >
+      <div className="px-4 pt-4 pb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Medal className="w-4 h-4" style={{ color: ACCENT }} />
+          <h3
+            className="font-extrabold text-white uppercase tracking-wider"
+            style={{ fontSize: 12, letterSpacing: "0.1em" }}
+          >
+            Tabla de posiciones
+          </h3>
+        </div>
+        {lcuPos && (
+          <span
+            className="text-[11px] font-extrabold px-2 py-0.5 rounded-md"
+            style={{
+              color: ACCENT,
+              background: `${ACCENT}1a`,
+              border: `1px solid ${ACCENT}33`,
+            }}
+          >
+            LCU #{lcuPos}
+          </span>
+        )}
+      </div>
+      <div className="flex-1 px-3 pb-3 flex flex-col gap-1">
+        {rows.length === 0 ? (
+          <div className="flex-1 flex items-center justify-center text-white/40 text-xs">
+            Sin datos
+          </div>
+        ) : (
+          <>
+            <div
+              className="grid grid-cols-[24px_1fr_28px_28px] items-center text-[10px] font-bold uppercase tracking-wider text-white/40 px-2 pb-1"
+            >
+              <span>#</span>
+              <span>Equipo</span>
+              <span className="text-center">DG</span>
+              <span className="text-center">PTS</span>
+            </div>
+            {rows.map((row) => {
+              const isLCU = row.team === LCU;
+              return (
+                <div
+                  key={row.id}
+                  className="grid grid-cols-[24px_1fr_28px_28px] items-center px-2 py-1.5 rounded-lg"
+                  style={{
+                    background: isLCU ? `${ACCENT}14` : "transparent",
+                    border: isLCU ? `1px solid ${ACCENT}33` : "1px solid transparent",
+                  }}
+                >
+                  <span
+                    className={`text-[12px] font-bold tabular-nums ${
+                      isLCU ? "" : "text-white/55"
+                    }`}
+                    style={isLCU ? { color: ACCENT } : undefined}
+                  >
+                    {row.pos}
+                  </span>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <TeamCrest
+                      teamName={row.team}
+                      logoUrl={logos[row.team]}
+                      size={16}
+                    />
+                    <span
+                      className={`text-[12px] font-semibold truncate ${
+                        isLCU ? "" : "text-white/85"
+                      }`}
+                      style={isLCU ? { color: ACCENT } : undefined}
+                    >
+                      {row.team}
+                    </span>
+                  </div>
+                  <span className="text-center text-[11px] tabular-nums text-white/55">
+                    {row.dg > 0 ? `+${row.dg}` : row.dg}
+                  </span>
+                  <span
+                    className={`text-center text-[12px] font-extrabold tabular-nums ${
+                      isLCU ? "" : "text-white"
+                    }`}
+                    style={isLCU ? { color: ACCENT } : undefined}
+                  >
+                    {row.pts}
+                  </span>
+                </div>
+              );
+            })}
+          </>
+        )}
+      </div>
+      <Link
+        to="/zona-partido"
+        className="mx-3 mb-3 inline-flex items-center justify-center gap-1 rounded-lg py-2 text-[12px] font-bold transition-colors hover:bg-white/5"
+        style={{ color: ACCENT }}
+      >
+        Ver tabla completa <ChevronRight className="w-3.5 h-3.5" />
+      </Link>
+    </div>
   );
 }
 
 /* ============================================================ */
-/*  SHOP STRIP                                                   */
+/*  TU CLUB SECTION                                              */
 /* ============================================================ */
 
-function ShopStrip() {
-  const { data: products = [], isLoading } = useShopifyProducts({ first: 8 });
-  const featured = products.slice(0, 8);
-
-  if (!isLoading && featured.length === 0) return null;
-
+function TuClubSection() {
   return (
     <section>
       <SectionHeader
-        eyebrow="TIENDA OFICIAL"
-        title="Lleva el escudo a donde vayas"
-        href="/tienda"
-        hrefLabel="Ver tienda"
+        eyebrow="TU CLUB"
+        title="Conoce al equipo"
+        href="/club"
+        hrefLabel="Ir al Club"
       />
-      <div className="-mx-3 md:mx-0">
-        <div className="flex gap-3 md:gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-3 md:px-0 pb-2">
-          {isLoading
-            ? Array.from({ length: 4 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="snap-start shrink-0"
-                  style={{ width: "60vw", maxWidth: 240 }}
-                >
-                  <Skeleton className="aspect-square rounded-xl mb-3" />
-                  <Skeleton className="h-3 w-16 mb-2" />
-                  <Skeleton className="h-4 w-3/4" />
-                </div>
-              ))
-            : featured.map((product, i) => (
-                <div
-                  key={product.node.id}
-                  className="snap-start shrink-0"
-                  style={{ width: "60vw", maxWidth: 240 }}
-                >
-                  <EditorialProductCard product={product} index={i} />
-                </div>
-              ))}
-        </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        {/* Plantel — 50% */}
+        <Link
+          to="/club"
+          className="lg:col-span-2 group relative rounded-2xl overflow-hidden border transition-all hover:border-[#00abc4]/40"
+          style={{
+            background: "#0f0f0f",
+            borderColor: "rgba(255,255,255,0.07)",
+            minHeight: 280,
+          }}
+        >
+          <img
+            src={adnCabenoImg}
+            alt="Plantel"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to top, #050505 0%, rgba(5,5,5,0.6) 50%, rgba(5,5,5,0.2) 100%)",
+            }}
+          />
+          <div className="relative h-full flex flex-col justify-between p-5 z-10 min-h-[280px]">
+            <div className="flex items-center gap-2">
+              <span
+                className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
+                style={{
+                  color: ACCENT,
+                  borderColor: `${ACCENT}66`,
+                  background: "rgba(0,0,0,0.5)",
+                }}
+              >
+                Plantel
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-white/55">
+                Temporada 2025–26
+              </span>
+            </div>
+            <div>
+              <h3
+                className="font-extrabold text-white mb-2"
+                style={{ fontSize: "clamp(20px, 2.4vw, 28px)", letterSpacing: "-0.02em" }}
+              >
+                Los Amos del Paraíso
+              </h3>
+              <p className="text-white/70 text-[13px] mb-4 max-w-md leading-relaxed">
+                Conoce a los jugadores que defienden los colores del club:
+                porteros, defensas, mediocampistas, delanteros y cuerpo técnico.
+              </p>
+              <div className="inline-flex items-center gap-2 text-[13px] font-bold text-white">
+                <Users className="w-4 h-4" style={{ color: ACCENT }} />
+                Ver plantel completo
+                <ArrowRight
+                  className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                  style={{ color: ACCENT }}
+                />
+              </div>
+            </div>
+          </div>
+        </Link>
+
+        {/* Academia — 25% */}
+        <Link
+          to="/club"
+          className="lg:col-span-1 group relative rounded-2xl overflow-hidden border transition-all hover:border-[#00abc4]/40 flex flex-col"
+          style={{
+            background:
+              "linear-gradient(135deg, #001a1f 0%, #0a0a0a 60%, #001218 100%)",
+            borderColor: "rgba(255,255,255,0.07)",
+            minHeight: 280,
+          }}
+        >
+          <div className="p-5 flex flex-col h-full justify-between">
+            <div>
+              <div
+                className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
+                style={{ background: `${ACCENT}1f`, border: `1px solid ${ACCENT}40` }}
+              >
+                <GraduationCap className="w-6 h-6" style={{ color: ACCENT }} />
+              </div>
+              <span
+                className="block font-bold mb-1"
+                style={{ color: ACCENT, fontSize: 10, letterSpacing: "0.18em" }}
+              >
+                ACADEMIA
+              </span>
+              <h3
+                className="font-extrabold text-white leading-tight mb-2"
+                style={{ fontSize: 20, letterSpacing: "-0.02em" }}
+              >
+                Forma parte del semillero
+              </h3>
+              <p className="text-white/60 text-[12px] leading-relaxed">
+                Semillero, academia, fuerzas básicas y campamentos para todas las edades.
+              </p>
+            </div>
+            <div className="inline-flex items-center gap-1.5 text-[12px] font-bold mt-4" style={{ color: ACCENT }}>
+              Ver categorías
+              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+            </div>
+          </div>
+        </Link>
+
+        {/* Noticias — 25% */}
+        <Link
+          to="/club"
+          className="lg:col-span-1 group relative rounded-2xl overflow-hidden border transition-all hover:border-white/20 flex flex-col"
+          style={{
+            background: "#0f0f0f",
+            borderColor: "rgba(255,255,255,0.07)",
+            minHeight: 280,
+          }}
+        >
+          <div className="p-5 flex flex-col h-full justify-between">
+            <div>
+              <div
+                className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
+                style={{
+                  background: "hsl(336 80% 77% / 0.15)",
+                  border: "1px solid hsl(336 80% 77% / 0.35)",
+                }}
+              >
+                <Newspaper className="w-6 h-6" style={{ color: "hsl(336 80% 77%)" }} />
+              </div>
+              <span
+                className="block font-bold mb-1"
+                style={{ color: "hsl(336 80% 77%)", fontSize: 10, letterSpacing: "0.18em" }}
+              >
+                NOTICIAS
+              </span>
+              <h3
+                className="font-extrabold text-white leading-tight mb-3"
+                style={{ fontSize: 20, letterSpacing: "-0.02em" }}
+              >
+                Lo más reciente del club
+              </h3>
+              <ul className="space-y-2">
+                <li className="text-[12px] text-white/70 leading-snug line-clamp-2">
+                  · Nuevo acuerdo con la afición local
+                </li>
+                <li className="text-[12px] text-white/70 leading-snug line-clamp-2">
+                  · Diego Hernández: rumbo al récord
+                </li>
+                <li className="text-[12px] text-white/70 leading-snug line-clamp-2">
+                  · Detrás de cámaras del clásico
+                </li>
+              </ul>
+            </div>
+            <div className="inline-flex items-center gap-1.5 text-[12px] font-bold mt-4 text-white/85">
+              Ver noticias
+              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+            </div>
+          </div>
+        </Link>
       </div>
     </section>
   );
 }
 
 /* ============================================================ */
-/*  FAN ZONE TEASER                                              */
+/*  FAN ZONE SECTION — Ranking + Premios                         */
 /* ============================================================ */
 
-function FanZoneTeaser({ onLoginClick }: { onLoginClick: () => void }) {
-  const { user, profile } = useAuth();
-  const displayName =
-    profile?.display_name ?? user?.email?.split("@")[0] ?? "Invitado";
+const RANKING = [
+  { name: "Mariana López", points: 18920, badge: "Amo Élite" },
+  { name: "Rafa SJC", points: 17450, badge: "Amo Élite" },
+  { name: "Cabeño 4ever", points: 15280, badge: "Amo" },
+  { name: "Ana P.", points: 14110, badge: "Amo" },
+  { name: "Baja Pride", points: 13560, badge: "Amo" },
+];
 
-  // Mock stats — same source as FanStatsHero. Wire to real data later.
-  const stats = { rank: 42, points: 12450, level: 3, levelName: "Amo" };
+const PRIZES = [
+  {
+    icon: Ticket,
+    color: ACCENT,
+    title: "Boletos para el próximo partido",
+    threshold: "5,000 pts",
+  },
+  {
+    icon: ShoppingBag,
+    color: "hsl(336 80% 77%)",
+    title: "Jersey oficial firmado",
+    threshold: "15,000 pts",
+  },
+  {
+    icon: Crown,
+    color: "#F59E0B",
+    title: "Pase del Amo · 20% en tienda",
+    threshold: "10,000 pts",
+  },
+  {
+    icon: Gift,
+    color: "#A78BFA",
+    title: "Experiencia en el vestuario",
+    threshold: "25,000 pts",
+  },
+];
+
+function FanZoneSection({ onLoginClick }: { onLoginClick: () => void }) {
+  const { user } = useAuth();
 
   return (
     <section>
@@ -529,80 +904,152 @@ function FanZoneTeaser({ onLoginClick }: { onLoginClick: () => void }) {
         hrefLabel="Ir a Fan Zone"
       />
 
-      <div
-        className="rounded-2xl p-4 md:p-5 border border-white/[0.07] flex flex-col sm:flex-row sm:items-center gap-4"
-        style={{
-          background: "linear-gradient(135deg, #0d0d12 0%, #0a0a0a 100%)",
-        }}
-      >
-        {/* Left — concept + copy */}
-        <div className="flex items-start gap-3 flex-1 min-w-0">
-          <div
-            className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-            style={{
-              background: `${ACCENT}1f`,
-              border: `1px solid ${ACCENT}40`,
-            }}
-          >
-            <Gamepad2 className="w-6 h-6" style={{ color: ACCENT }} />
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        {/* Ranking — 60% */}
+        <div
+          className="lg:col-span-3 rounded-2xl border overflow-hidden flex flex-col"
+          style={{
+            background:
+              "linear-gradient(135deg, #0d0d12 0%, #0a0a0a 100%)",
+            borderColor: "rgba(255,255,255,0.07)",
+          }}
+        >
+          <div className="px-5 pt-5 pb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Trophy className="w-4 h-4" style={{ color: ACCENT }} />
+              <h3
+                className="font-extrabold text-white uppercase"
+                style={{ fontSize: 12, letterSpacing: "0.16em" }}
+              >
+                Ranking general
+              </h3>
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">
+              Top 5 de la semana
+            </span>
           </div>
-          <div className="min-w-0">
-            <div
-              className="font-bold mb-1"
-              style={{ color: ACCENT, fontSize: 11, letterSpacing: "0.14em" }}
-            >
-              FAN ZONE · LIGA DE AMOS
-            </div>
-            <div
-              className="font-extrabold text-white leading-tight"
-              style={{ fontSize: 15 }}
-            >
-              Juega, suma puntos y gana premios cada semana
-            </div>
-            <div className="text-white/55 mt-1" style={{ fontSize: 13 }}>
-              {user
-                ? `Hola, ${displayName}. Sigue subiendo en la tabla.`
-                : "Crea tu cuenta y empieza a competir."}
-            </div>
+
+          <div className="flex-1 px-3 pb-4 flex flex-col gap-1">
+            {RANKING.map((r, i) => {
+              const medalColor =
+                i === 0
+                  ? "#F59E0B"
+                  : i === 1
+                  ? "#CBD5E1"
+                  : i === 2
+                  ? "#D97706"
+                  : "rgba(255,255,255,0.4)";
+              return (
+                <div
+                  key={r.name}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
+                  style={{
+                    background:
+                      i < 3 ? "rgba(255,255,255,0.03)" : "transparent",
+                  }}
+                >
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-[12px] tabular-nums shrink-0"
+                    style={{
+                      background:
+                        i < 3 ? `${medalColor}22` : "rgba(255,255,255,0.06)",
+                      color: i < 3 ? medalColor : "rgba(255,255,255,0.65)",
+                      border: `1px solid ${i < 3 ? medalColor + "55" : "rgba(255,255,255,0.08)"}`,
+                    }}
+                  >
+                    {i + 1}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[13px] font-bold text-white truncate">
+                      {r.name}
+                    </div>
+                    <div className="text-[11px] text-white/50">{r.badge}</div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div
+                      className="text-[14px] font-extrabold tabular-nums"
+                      style={{ color: ACCENT }}
+                    >
+                      {r.points.toLocaleString()}
+                    </div>
+                    <div className="text-[10px] text-white/40 uppercase tracking-wider">
+                      pts
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
+
+          {!user && (
+            <div className="px-5 pb-5">
+              <button
+                onClick={onLoginClick}
+                className="w-full inline-flex items-center justify-center gap-2 font-bold rounded-full transition-opacity hover:opacity-90 h-10"
+                style={{ background: ACCENT, color: "#000", fontSize: 13 }}
+              >
+                Inicia sesión para competir
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Right — rank or CTA */}
-        <div className="flex items-center justify-between sm:justify-end gap-3 sm:shrink-0">
-          {user ? (
-            <div className="text-right">
-              <div
-                className="font-extrabold text-white tabular-nums"
-                style={{ fontSize: 16 }}
-              >
-                #{stats.rank} · {stats.points.toLocaleString()} pts
-              </div>
-              <div className="text-white/55" style={{ fontSize: 12 }}>
-                Nivel {stats.level} {stats.levelName}
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={onLoginClick}
-              className="shrink-0 inline-flex items-center gap-2 font-bold rounded-full transition-opacity hover:opacity-90"
-              style={{
-                background: ACCENT,
-                color: "#000",
-                height: 38,
-                padding: "0 14px",
-                fontSize: 13,
-              }}
+        {/* Premios — 40% */}
+        <div
+          className="lg:col-span-2 rounded-2xl border overflow-hidden flex flex-col"
+          style={{
+            background: "#0f0f0f",
+            borderColor: "rgba(255,255,255,0.07)",
+          }}
+        >
+          <div className="px-5 pt-5 pb-3 flex items-center gap-2">
+            <Gift className="w-4 h-4" style={{ color: ACCENT }} />
+            <h3
+              className="font-extrabold text-white uppercase"
+              style={{ fontSize: 12, letterSpacing: "0.16em" }}
             >
-              Inicia sesión
-            </button>
-          )}
+              Premios por puntos
+            </h3>
+          </div>
+          <div className="flex-1 px-3 pb-3 grid grid-cols-1 gap-2">
+            {PRIZES.map((p) => {
+              const Icon = p.icon;
+              return (
+                <div
+                  key={p.title}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
+                  style={{ background: "rgba(255,255,255,0.03)" }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                    style={{
+                      background: `${p.color}1f`,
+                      border: `1px solid ${p.color}40`,
+                    }}
+                  >
+                    <Icon className="w-4 h-4" style={{ color: p.color }} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[12.5px] font-bold text-white leading-tight">
+                      {p.title}
+                    </div>
+                    <div
+                      className="text-[10px] uppercase tracking-wider mt-0.5 font-bold"
+                      style={{ color: p.color }}
+                    >
+                      A partir de {p.threshold}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           <Link
             to="/fan-zone"
-            className="hidden sm:inline-flex items-center gap-1 font-bold"
-            style={{ color: ACCENT, fontSize: 13 }}
+            className="mx-3 mb-3 inline-flex items-center justify-center gap-1 rounded-lg py-2 text-[12px] font-bold transition-colors hover:bg-white/5"
+            style={{ color: ACCENT }}
           >
-            Ir a Fan Zone
-            <ArrowRight className="w-4 h-4" />
+            Ver todos los premios <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>
@@ -611,7 +1058,150 @@ function FanZoneTeaser({ onLoginClick }: { onLoginClick: () => void }) {
 }
 
 /* ============================================================ */
-/*  LOS CABOS STRIP                                              */
+/*  TIENDA OFICIAL — 50/50                                       */
+/* ============================================================ */
+
+function TiendaSection() {
+  const { data: products = [], isLoading } = useShopifyProducts({ first: 6 });
+  const featured = products.slice(0, 4);
+
+  return (
+    <section>
+      <SectionHeader
+        eyebrow="TIENDA OFICIAL"
+        title="Lleva el escudo a donde vayas"
+        href="/tienda"
+        hrefLabel="Ver tienda"
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Hero card 50% */}
+        <Link
+          to="/tienda"
+          className="group relative rounded-2xl overflow-hidden border transition-all hover:border-[#00abc4]/40"
+          style={{
+            background: "#0f0f0f",
+            borderColor: "rgba(255,255,255,0.07)",
+            minHeight: 360,
+          }}
+        >
+          <img
+            src={tiendaHero}
+            alt="Tienda Oficial Los Cabos United"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to top, #050505 0%, rgba(5,5,5,0.5) 55%, rgba(5,5,5,0.1) 100%)",
+            }}
+          />
+          <div className="relative h-full flex flex-col justify-between p-6 z-10 min-h-[360px]">
+            <div className="flex items-center gap-2">
+              <span
+                className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
+                style={{
+                  color: ACCENT,
+                  borderColor: `${ACCENT}66`,
+                  background: "rgba(0,0,0,0.55)",
+                }}
+              >
+                Tienda Oficial
+              </span>
+              <span
+                className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md"
+                style={{
+                  background: ACCENT,
+                  color: "#000",
+                }}
+              >
+                Nueva colección
+              </span>
+            </div>
+            <div>
+              <h3
+                className="font-extrabold text-white mb-3"
+                style={{ fontSize: "clamp(24px, 3vw, 34px)", letterSpacing: "-0.025em", lineHeight: 1.05 }}
+              >
+                Jersey 2025–26
+              </h3>
+              <p className="text-white/75 text-[13px] mb-5 max-w-sm leading-relaxed">
+                Vístete como un Amo del Paraíso. Edición de temporada con detalles bordados.
+              </p>
+              <div
+                className="inline-flex items-center gap-2 font-bold rounded-full"
+                style={{
+                  background: ACCENT,
+                  color: "#000",
+                  height: 42,
+                  padding: "0 18px",
+                  fontSize: 13,
+                }}
+              >
+                <ShoppingBag className="w-4 h-4" />
+                Comprar ahora
+                <ArrowRight className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+        </Link>
+
+        {/* Products grid 50% — 2x2 */}
+        <div
+          className="rounded-2xl border p-4"
+          style={{
+            background: "#0f0f0f",
+            borderColor: "rgba(255,255,255,0.07)",
+            minHeight: 360,
+          }}
+        >
+          <div className="flex items-center justify-between mb-3 px-1">
+            <h3
+              className="font-extrabold text-white uppercase"
+              style={{ fontSize: 12, letterSpacing: "0.16em" }}
+            >
+              Destacados
+            </h3>
+            <Link
+              to="/tienda"
+              className="text-[12px] font-bold inline-flex items-center gap-1"
+              style={{ color: ACCENT }}
+            >
+              Ver más <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {isLoading
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i}>
+                    <Skeleton className="aspect-square rounded-xl mb-2" />
+                    <Skeleton className="h-3 w-2/3 mb-1" />
+                    <Skeleton className="h-3 w-1/2" />
+                  </div>
+                ))
+              : featured.length === 0
+              ? (
+                <div className="col-span-2 flex items-center justify-center py-12 text-white/40 text-sm">
+                  No hay productos disponibles
+                </div>
+              )
+              : featured.map((product, i) => (
+                  <EditorialProductCard
+                    key={product.node.id}
+                    product={product}
+                    index={i}
+                  />
+                ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================ */
+/*  VISITA LOS CABOS                                             */
 /* ============================================================ */
 
 function LosCabosStrip() {
@@ -696,13 +1286,18 @@ const Index = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4 }}
         className="pb-10"
-        style={{ display: "flex", flexDirection: "column", gap: 48 }}
+        style={{ display: "flex", flexDirection: "column", gap: 56 }}
       >
         <HomeHero />
-        <NextMatchSection />
-        <FanZoneTeaser onLoginClick={() => setAuthOpen(true)} />
-        <AccesosBanner />
-        <ShopStrip />
+        <SectionDivider />
+        <MatchZoneSection />
+        <SectionDivider />
+        <TuClubSection />
+        <SectionDivider />
+        <FanZoneSection onLoginClick={() => setAuthOpen(true)} />
+        <SectionDivider />
+        <TiendaSection />
+        <SectionDivider />
         <LosCabosStrip />
       </motion.div>
 
