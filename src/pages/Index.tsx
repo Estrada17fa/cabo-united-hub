@@ -1218,10 +1218,10 @@ function TuClubAcademiaCard() {
           </div>
           <Link
             to="/club"
-            className="inline-flex items-center gap-1 text-[12px] font-bold transition-colors hover:text-white"
+            className="inline-flex items-center gap-1 text-[12px] font-bold transition-colors hover:text-white whitespace-nowrap"
             style={{ color: ACCENT }}
           >
-            Ver
+            Inscribe a tu hijo
             <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>
