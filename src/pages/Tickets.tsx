@@ -78,8 +78,6 @@ function MembershipCard({ tier }: { tier: Tier }) {
   let topStyle: React.CSSProperties = {};
   let cardStyle: React.CSSProperties = {};
   let labelColor = "#FFFFFF";
-  let shieldOpacity = 0.08;
-  let shieldFilter = "";
   let topBorder = "1px solid rgba(255,255,255,0.1)";
   let extraShadow = "";
 
@@ -92,16 +90,12 @@ function MembershipCard({ tier }: { tier: Tier }) {
       cardStyle = { background: "linear-gradient(135deg, #1a1200, #1a1a1a)" };
       topStyle = { background: "linear-gradient(135deg, #2a1f00, #1a1400)" };
       labelColor = "#F59E0B";
-      shieldOpacity = 0.15;
-      shieldFilter = "sepia(1) saturate(5) hue-rotate(-15deg) brightness(1.1)";
       topBorder = "3px solid #F59E0B";
       break;
     case "premium":
       cardStyle = { background: "linear-gradient(135deg, #001a1f, #0a1a1f)" };
       topStyle = { background: "linear-gradient(135deg, #002a35, #001a22)" };
       labelColor = "#00abc4";
-      shieldOpacity = 0.2;
-      shieldFilter = "hue-rotate(160deg) saturate(2)";
       topBorder = "3px solid #00abc4";
       extraShadow = "0 0 40px rgba(0,171,196,0.2)";
       break;
@@ -109,8 +103,6 @@ function MembershipCard({ tier }: { tier: Tier }) {
       cardStyle = { background: "linear-gradient(135deg, #111, #1a1a1a)" };
       topStyle = { background: "linear-gradient(135deg, #1f1f1f, #111)" };
       labelColor = "#E2E8F0";
-      shieldOpacity = 0.15;
-      shieldFilter = "grayscale(1) brightness(1.5)";
       topBorder = "3px solid #E2E8F0";
       extraShadow = "0 0 20px rgba(226,232,240,0.08)";
       break;
@@ -123,13 +115,13 @@ function MembershipCard({ tier }: { tier: Tier }) {
         ...cardStyle,
         borderTop: topBorder,
         boxShadow: extraShadow || undefined,
-        minHeight: 280,
+        minHeight: 200,
       }}
     >
       {/* Top visual area */}
       <div
         className="relative flex items-center justify-center"
-        style={{ ...topStyle, height: 160 }}
+        style={{ ...topStyle, height: 110 }}
       >
         {/* Shimmer overlay for platino */}
         {tier.id === "platino" && (
@@ -158,21 +150,6 @@ function MembershipCard({ tier }: { tier: Tier }) {
             MÁS POPULAR
           </div>
         )}
-
-        {/* Shield watermark */}
-        <img
-          src={lcuCrest}
-          alt=""
-          aria-hidden="true"
-          className="absolute"
-          style={{
-            width: 140,
-            height: 140,
-            opacity: shieldOpacity,
-            filter: shieldFilter || undefined,
-            objectFit: "contain",
-          }}
-        />
 
         {/* Label stack */}
         <div className="relative z-10 flex flex-col items-center text-center px-3">
@@ -209,10 +186,10 @@ function MembershipCard({ tier }: { tier: Tier }) {
       </div>
 
       {/* Bottom section */}
-      <div className="p-6 flex-1 flex items-center">
+      <div className="px-6 py-4 flex-1 flex items-center">
         <p
           className="text-white/75 leading-snug"
-          style={{ fontSize: 14 }}
+          style={{ fontSize: 13 }}
         >
           {tier.tagline}
         </p>
