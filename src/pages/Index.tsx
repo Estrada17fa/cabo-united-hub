@@ -15,6 +15,7 @@ import {
   Ticket,
   Trophy,
   Users,
+  Radio,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -22,6 +23,10 @@ import { useShopifyProducts } from "@/hooks/useShopify";
 import { MatchHeroCard } from "@/components/match-zone/MatchHeroCard";
 import { LiveMatchPlayer } from "@/components/match-zone/LiveMatchPlayer";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
+import { ResponsiveMatchTimeline } from "@/components/match-zone/ResponsiveMatchTimeline";
+import { TeamCrest } from "@/components/match-zone/TeamCrest";
+import { useTeamLogos } from "@/hooks/useTeamLogos";
+import type { Tables } from "@/integrations/supabase/types";
 import { EditorialProductCard } from "@/components/tienda/EditorialProductCard";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -121,7 +126,7 @@ function HomeHero() {
             className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3"
           >
             <Link
-              to="/zona-partido"
+              to="/accesos"
               className="inline-flex items-center justify-center gap-2 font-bold rounded-full transition-opacity hover:opacity-90"
               style={{
                 background: ACCENT,
@@ -132,24 +137,9 @@ function HomeHero() {
                 letterSpacing: "0.02em",
               }}
             >
-              Ir al Match Zone
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              to="/accesos"
-              className="inline-flex items-center justify-center gap-2 font-bold rounded-full transition-colors backdrop-blur-md"
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.18)",
-                color: "#fff",
-                height: 48,
-                padding: "0 22px",
-                fontSize: 14,
-                letterSpacing: "0.02em",
-              }}
-            >
-              <Crown className="w-4 h-4" style={{ color: ACCENT }} />
+              <Crown className="w-4 h-4" />
               Únete a la afición
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </motion.div>
         </div>
