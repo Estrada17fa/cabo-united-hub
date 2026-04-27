@@ -959,7 +959,7 @@ function TuClubSection() {
 /* ---------- Tu Club: Plantel ---------- */
 function TuClubPlantelCard() {
   const [activePos, setActivePos] = useState<ClubPosition>("Delanteros");
-  const [selectedPlayer, setSelectedPlayer] = useState<ClubPlayer | null>(null);
+  const [openPlayer, setOpenPlayer] = useState<string | null>(null);
   const positions: ClubPosition[] = [
     "Porteros",
     "Defensas",
@@ -968,6 +968,11 @@ function TuClubPlantelCard() {
     "Cuerpo Técnico",
   ];
   const players = CLUB_ROSTER[activePos];
+
+  // Reset opened player when changing position
+  useEffect(() => {
+    setOpenPlayer(null);
+  }, [activePos]);
 
   return (
     <>
@@ -1040,42 +1045,128 @@ function TuClubPlantelCard() {
               transition={{ duration: 0.25 }}
               className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-2 pb-1"
             >
-              {players.map((player) => (
-                <button
-                  key={player.name}
-                  onClick={() => setSelectedPlayer(player)}
-                  className="snap-start shrink-0 w-[120px] sm:w-[130px] rounded-xl border bg-black/30 p-2.5 text-left transition-all hover:border-[#00abc4]/60 hover:-translate-y-0.5"
-                  style={{ borderColor: "rgba(255,255,255,0.07)" }}
-                >
-                  <div className="aspect-square rounded-lg bg-white/5 flex items-center justify-center mb-1.5 relative overflow-hidden">
-                    <span className="text-2xl font-extrabold text-white/55">
-                      {player.number}
-                    </span>
-                    <span className="absolute top-1 right-1 text-sm">
-                      {player.flag}
-                    </span>
-                    {player.timesAmo > 0 && (
-                      <span
-                        className="absolute bottom-1 left-1 inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[8px] font-bold"
-                        style={{
-                          background: "hsl(336 80% 77% / 0.18)",
-                          color: "hsl(336 80% 77%)",
-                          border: "1px solid hsl(336 80% 77% / 0.4)",
-                        }}
-                      >
-                        <Star className="w-2 h-2 fill-current" />
-                        {player.timesAmo}
+              {players.map((player) => {
+                const isOpen = openPlayer === player.name;
+                return (
+                  <motion.div
+                    key={player.name}
+                    whileHover={{ y: -3 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                    onClick={() =>
+                      setOpenPlayer((cur) => (cur === player.name ? null : player.name))
+                    }
+                    className="group snap-start shrink-0 w-[150px] sm:w-[160px] relative rounded-xl border bg-black/30 p-2.5 text-left cursor-pointer transition-all hover:border-[#00abc4]/60"
+                    style={{ borderColor: "rgba(255,255,255,0.07)" }}
+                  >
+                    <div className="aspect-square rounded-lg bg-white/5 flex items-center justify-center mb-1.5 relative overflow-hidden">
+                      <span className="text-2xl font-extrabold text-white/55">
+                        {player.number}
                       </span>
-                    )}
-                  </div>
-                  <div className="text-[11px] font-semibold text-white truncate">
-                    {player.name}
-                  </div>
-                  <div className="text-[10px] text-white/50 truncate">
-                    {player.role ? player.role : `#${player.number}`}
-                  </div>
-                </button>
-              ))}
+                      <span className="absolute top-1 right-1 text-sm">
+                        {player.flag}
+                      </span>
+                      {player.timesAmo > 0 && (
+                        <span
+                          className="absolute bottom-1 left-1 inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[8px] font-bold"
+                          style={{
+                            background: "hsl(336 80% 77% / 0.18)",
+                            color: "hsl(336 80% 77%)",
+                            border: "1px solid hsl(336 80% 77% / 0.4)",
+                          }}
+                        >
+                          <Star className="w-2 h-2 fill-current" />
+                          {player.timesAmo}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[11px] font-semibold text-white truncate">
+                      {player.name}
+                    </div>
+                    <div className="text-[10px] text-white/50 truncate">
+                      {player.role ? player.role : `#${player.number}`}
+                    </div>
+
+                    {/* Hover/click detail overlay (mirrors Club.tsx pattern) */}
+                    <div
+                      className={`absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm transition-opacity p-2.5 flex flex-col justify-between border ${
+                        isOpen
+                          ? "opacity-100"
+                          : "opacity-0 group-hover:opacity-100 focus-within:opacity-100"
+                      }`}
+                      style={{ borderColor: "hsl(189 100% 38% / 0.5)" }}
+                    >
+                      {/* TOP: name + age + birth state + position + flag */}
+                      <div className="flex items-start gap-1.5 min-w-0">
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[12px] font-bold text-white leading-tight truncate">
+                            {player.name}
+                          </div>
+                          <div className="text-[9px] text-white/55 leading-tight truncate">
+                            {player.age} años
+                          </div>
+                          <div className="text-[9px] text-white/55 leading-tight truncate">
+                            {player.birthState}
+                          </div>
+                          <div
+                            className="text-[9px] font-semibold leading-tight truncate mt-0.5"
+                            style={{ color: ACCENT }}
+                          >
+                            {player.positionDetail}
+                          </div>
+                        </div>
+                        <span
+                          className="text-base shrink-0 leading-none"
+                          title={player.country}
+                        >
+                          {player.flag}
+                        </span>
+                      </div>
+
+                      {/* STATS ROW: Goles + Partidos jugados */}
+                      <div className="flex items-stretch justify-between gap-1 my-1">
+                        {[
+                          { value: player.goals, label: "GOLES" },
+                          { value: player.matches, label: "PJ" },
+                        ].map((s, i) => (
+                          <div key={s.label} className="flex items-center flex-1">
+                            <div className="flex flex-col items-center justify-center flex-1 min-w-0">
+                              <span className="text-[22px] font-extrabold text-white tabular-nums leading-none">
+                                {s.value}
+                              </span>
+                              <span
+                                className="text-[8px] uppercase tracking-[0.12em] mt-1 font-semibold"
+                                style={{ color: ACCENT }}
+                              >
+                                {s.label}
+                              </span>
+                            </div>
+                            {i < 1 && <div className="w-px self-stretch bg-white/10" />}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* BOTTOM BADGE */}
+                      {player.timesAmo > 0 ? (
+                        <div className="flex justify-center">
+                          <span
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold border"
+                            style={{
+                              backgroundColor: "hsl(336 80% 77% / 0.12)",
+                              color: "hsl(336 80% 77%)",
+                              borderColor: "hsl(336 80% 77% / 0.35)",
+                            }}
+                          >
+                            <Star className="w-2.5 h-2.5 fill-current" />
+                            ×{player.timesAmo} VECES AMO
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="h-[18px]" aria-hidden />
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </AnimatePresence>
           <div className="text-[10px] text-white/35 text-center mt-2">
@@ -1084,11 +1175,6 @@ function TuClubPlantelCard() {
         </div>
       </div>
     </div>
-
-    <PlayerDetailDialog
-      player={selectedPlayer}
-      onClose={() => setSelectedPlayer(null)}
-    />
     </>
   );
 }
