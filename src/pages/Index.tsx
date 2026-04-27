@@ -1399,24 +1399,36 @@ const PRIZES = [
     color: ACCENT,
     title: "Boletos para el próximo partido",
     threshold: "5,000 pts",
+    image: prizeTickets,
+    description:
+      "Asiste al próximo partido en casa con boletos cortesía de Los Cabos United.",
   },
   {
     icon: ShoppingBag,
     color: "hsl(336 80% 77%)",
     title: "Jersey oficial firmado",
     threshold: "15,000 pts",
+    image: prizeJersey,
+    description:
+      "Llévate un jersey oficial autografiado por todo el plantel.",
   },
   {
     icon: Crown,
     color: "#F59E0B",
     title: "Pase del Amo · 20% en tienda",
     threshold: "10,000 pts",
+    image: prizePass,
+    description:
+      "Acceso preferencial y 20% de descuento permanente en la tienda oficial.",
   },
   {
     icon: Gift,
     color: "#A78BFA",
     title: "Experiencia en el vestuario",
     threshold: "25,000 pts",
+    image: prizeVestuario,
+    description:
+      "Conoce el vestuario oficial y vive el día de partido como un jugador.",
   },
 ];
 
