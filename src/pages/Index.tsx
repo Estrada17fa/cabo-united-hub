@@ -105,40 +105,68 @@ function SectionHeader({
   href?: string;
   hrefLabel?: string;
 }) {
+  const words = title.split(" ");
+  const firstWord = words[0];
+  const restWords = words.slice(1).join(" ");
   return (
-    <div className="flex items-end justify-between mb-4 px-1">
-      <div>
+    <div className="flex items-end justify-between mb-5 px-1 gap-4">
+      <div className="min-w-0">
         {eyebrow && (
           <div
-            className="font-bold mb-1.5 inline-flex items-center gap-2"
-            style={{ color: ACCENT, fontSize: 11, letterSpacing: "0.2em" }}
+            className="font-bold mb-2 inline-flex items-center gap-2"
+            style={{ color: ACCENT, fontSize: 10, letterSpacing: "0.24em" }}
           >
             <span
               className="inline-block w-6 h-px"
               style={{ background: ACCENT }}
             />
             {eyebrow}
+            <span
+              className="inline-block w-1 h-1 rounded-full"
+              style={{ background: ACCENT }}
+            />
           </div>
         )}
         <h2
           className="font-extrabold text-white"
           style={{
-            fontSize: "clamp(28px, 4vw, 44px)",
-            letterSpacing: "-0.03em",
-            lineHeight: 1.05,
+            fontSize: "clamp(32px, 4.5vw, 52px)",
+            letterSpacing: "-0.035em",
+            lineHeight: 1,
           }}
         >
-          {title}
+          <span
+            style={{
+              background: `linear-gradient(180deg, ${ACCENT} 0%, #ffffff 100%)`,
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              color: "#ffffff",
+            }}
+          >
+            {firstWord}
+          </span>
+          {restWords && <span className="text-white"> {restWords}</span>}
         </h2>
+        <span
+          className="block mt-3"
+          style={{
+            width: 28,
+            height: 2,
+            background: ACCENT,
+            opacity: 0.8,
+            borderRadius: 2,
+          }}
+        />
       </div>
       {href && (
         <Link
           to={href}
-          className="inline-flex items-center gap-1 text-white/70 hover:text-white transition-colors font-semibold"
-          style={{ fontSize: 13 }}
+          className="inline-flex items-center gap-1 text-white/70 hover:text-white border border-white/15 hover:border-[var(--accent-cyan)] rounded-full px-3 py-1.5 transition-colors font-semibold whitespace-nowrap"
+          style={{ fontSize: 12, ["--accent-cyan" as any]: ACCENT }}
         >
           {hrefLabel}
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       )}
     </div>
