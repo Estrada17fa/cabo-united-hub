@@ -396,100 +396,6 @@ function LiveMatchPreview({ match }: { match: Tables<"matches"> }) {
 /*  QUICK ACCESS GRID                                            */
 /* ============================================================ */
 
-const QUICK_ACCESS = [
-  {
-    href: "/zona-partido",
-    label: "Match Zone",
-    sub: "Partidos en vivo y resultados",
-    icon: Trophy,
-    color: "#00abc4",
-  },
-  {
-    href: "/club",
-    label: "Tu Club",
-    sub: "Plantilla, escudo y ADN",
-    icon: Shield,
-    color: "#f298c0",
-  },
-  {
-    href: "/fan-zone",
-    label: "Fan Zone",
-    sub: "Minijuegos y recompensas",
-    icon: Gamepad2,
-    color: "#F59E0B",
-  },
-  {
-    href: "/accesos",
-    label: "Accesos",
-    sub: "Sé Amo del Paraíso",
-    icon: Ticket,
-    color: "#00abc4",
-  },
-  {
-    href: "/tienda",
-    label: "Tienda Oficial",
-    sub: "Jerseys y mercancía",
-    icon: ShoppingBag,
-    color: "#E2E8F0",
-  },
-  {
-    href: "/conoce-los-cabos",
-    label: "Conoce Los Cabos",
-    sub: "Mapa de la afición",
-    icon: MapPin,
-    color: "#00D4FF",
-  },
-];
-
-function QuickAccessGrid() {
-  return (
-    <section>
-      <SectionHeader eyebrow="EXPLORA" title="Toda la experiencia" />
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {QUICK_ACCESS.map((item, i) => {
-          const Icon = item.icon;
-          return (
-            <motion.div
-              key={item.href}
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-            >
-              <Link
-                to={item.href}
-                className="group block rounded-2xl border border-white/[0.07] bg-card p-4 md:p-5 h-full transition-all hover:-translate-y-0.5 hover:border-white/[0.15]"
-                style={{
-                  background: "linear-gradient(160deg, #121212 0%, #0a0a0a 100%)",
-                }}
-              >
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 transition-transform group-hover:scale-110"
-                  style={{
-                    background: `${item.color}1f`,
-                    border: `1px solid ${item.color}40`,
-                  }}
-                >
-                  <Icon className="w-5 h-5" style={{ color: item.color }} />
-                </div>
-                <div
-                  className="font-extrabold text-white"
-                  style={{ fontSize: 15, letterSpacing: "-0.01em" }}
-                >
-                  {item.label}
-                </div>
-                <div className="text-white/50 mt-1" style={{ fontSize: 12 }}>
-                  {item.sub}
-                </div>
-              </Link>
-            </motion.div>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
 /* ============================================================ */
 /*  ACCESOS / MEMBRESÍAS BANNER                                  */
 /* ============================================================ */
@@ -503,99 +409,54 @@ const TIER_CHIPS = [
 function AccesosBanner() {
   return (
     <section>
+      <SectionHeader
+        eyebrow="MEMBRESÍAS"
+        title="Sé Amo del Paraíso"
+        href="/accesos"
+        hrefLabel="Ver membresías"
+      />
       <Link
         to="/accesos"
-        className="block rounded-3xl overflow-hidden border border-white/[0.08] transition-all hover:border-[#00abc4]/40 group"
+        className="flex items-center justify-between gap-4 rounded-2xl border border-white/[0.08] px-4 py-4 md:px-5 transition-all hover:border-[#00abc4]/40 group"
         style={{
           background:
             "linear-gradient(135deg, #001a1f 0%, #0a0a0a 60%, #001218 100%)",
+          maxHeight: 160,
         }}
       >
-        <div className="relative p-6 md:p-10">
-          {/* ambient glow */}
-          <div
-            className="absolute -top-20 -right-20 w-80 h-80 rounded-full pointer-events-none opacity-30 blur-3xl"
-            style={{ background: ACCENT }}
-          />
-          {/* watermark crest */}
-          <img
-            src={lcuCrest}
-            alt=""
-            aria-hidden="true"
-            className="absolute -right-6 top-1/2 -translate-y-1/2 hidden md:block pointer-events-none"
-            style={{
-              width: 220,
-              height: 220,
-              opacity: 0.06,
-              filter: "hue-rotate(160deg) saturate(2)",
-            }}
-          />
-
-          <div className="relative max-w-2xl">
+        <div className="flex flex-wrap items-center gap-2 min-w-0">
+          {TIER_CHIPS.map((t) => (
             <div
-              className="inline-flex items-center gap-2 font-bold mb-3"
-              style={{ color: ACCENT, fontSize: 11, letterSpacing: "0.18em" }}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              MEMBRESÍAS OFICIALES
-            </div>
-            <h2
-              className="font-extrabold text-white mb-3"
+              key={t.name}
+              className="flex items-center gap-2 rounded-full px-3 py-1.5"
               style={{
-                fontSize: "clamp(24px, 4vw, 36px)",
-                letterSpacing: "-0.02em",
-                lineHeight: 1.1,
+                background: "rgba(255,255,255,0.04)",
+                border: `1px solid ${t.color}40`,
               }}
             >
-              Únete y sé <span style={{ color: ACCENT }}>Amo del Paraíso</span>
-            </h2>
-            <p className="text-white/70 mb-5" style={{ fontSize: 14 }}>
-              Acceso a partidos, kit oficial, descuentos en tienda y experiencias
-              VIP con el equipo. Elige tu nivel.
-            </p>
-
-            <div className="flex flex-wrap gap-2 mb-6">
-              {TIER_CHIPS.map((t) => (
-                <div
-                  key={t.name}
-                  className="flex items-center gap-2 rounded-full px-3 py-1.5"
-                  style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: `1px solid ${t.color}40`,
-                  }}
-                >
-                  <span
-                    className="w-2 h-2 rounded-full"
-                    style={{ background: t.color }}
-                  />
-                  <span
-                    className="font-bold text-white"
-                    style={{ fontSize: 12, letterSpacing: "0.04em" }}
-                  >
-                    {t.name}
-                  </span>
-                  <span className="text-white/60" style={{ fontSize: 12 }}>
-                    desde {t.price}
-                  </span>
-                </div>
-              ))}
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{ background: t.color }}
+              />
+              <span
+                className="font-bold text-white"
+                style={{ fontSize: 12, letterSpacing: "0.04em" }}
+              >
+                {t.name}
+              </span>
+              <span className="text-white/60" style={{ fontSize: 12 }}>
+                {t.price}
+              </span>
             </div>
-
-            <span
-              className="inline-flex items-center gap-2 font-bold rounded-full transition-transform group-hover:translate-x-1"
-              style={{
-                background: ACCENT,
-                color: "#0a0a0a",
-                height: 46,
-                padding: "0 20px",
-                fontSize: 14,
-              }}
-            >
-              Ver accesos
-              <ArrowRight className="w-4 h-4" />
-            </span>
-          </div>
+          ))}
         </div>
+        <span
+          className="hidden sm:inline-flex items-center gap-1 font-bold shrink-0 transition-transform group-hover:translate-x-1"
+          style={{ color: ACCENT, fontSize: 13 }}
+        >
+          Ver membresías
+          <ArrowRight className="w-4 h-4" />
+        </span>
       </Link>
     </section>
   );
@@ -654,122 +515,97 @@ function ShopStrip() {
 
 function FanZoneTeaser({ onLoginClick }: { onLoginClick: () => void }) {
   const { user, profile } = useAuth();
-  const featuredGames = GAMES.slice(0, 3);
   const displayName =
     profile?.display_name ?? user?.email?.split("@")[0] ?? "Invitado";
+
+  // Mock stats — same source as FanStatsHero. Wire to real data later.
+  const stats = { rank: 42, points: 12450, level: 3, levelName: "Amo" };
 
   return (
     <section>
       <SectionHeader
         eyebrow="FAN ZONE"
-        title="Juega y gana puntos"
+        title="Liga de Amos"
         href="/fan-zone"
         hrefLabel="Ir a Fan Zone"
       />
 
-      {/* Status / login card */}
       <div
-        className="rounded-2xl p-4 md:p-5 mb-4 border border-white/[0.07] flex items-center gap-4"
+        className="rounded-2xl p-4 md:p-5 border border-white/[0.07] flex flex-col sm:flex-row sm:items-center gap-4"
         style={{
           background: "linear-gradient(135deg, #0d0d12 0%, #0a0a0a 100%)",
         }}
       >
-        <div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-          style={{
-            background: `${ACCENT}1f`,
-            border: `1px solid ${ACCENT}40`,
-          }}
-        >
-          <Crown className="w-6 h-6" style={{ color: ACCENT }} />
-        </div>
-        <div className="flex-1 min-w-0">
-          {user ? (
-            <>
-              <div className="font-bold text-white truncate" style={{ fontSize: 15 }}>
-                Hola, {displayName}
-              </div>
-              <div className="text-white/60" style={{ fontSize: 12 }}>
-                Sigue jugando para subir de nivel y ganar recompensas.
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="font-bold text-white" style={{ fontSize: 15 }}>
-                Crea tu cuenta gratis
-              </div>
-              <div className="text-white/60" style={{ fontSize: 12 }}>
-                Acumula puntos, sube de nivel y desbloquea premios.
-              </div>
-            </>
-          )}
-        </div>
-        {!user && (
-          <button
-            onClick={onLoginClick}
-            className="shrink-0 inline-flex items-center gap-2 font-bold rounded-full transition-opacity hover:opacity-90"
+        {/* Left — concept + copy */}
+        <div className="flex items-start gap-3 flex-1 min-w-0">
+          <div
+            className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
             style={{
-              background: ACCENT,
-              color: "#0a0a0a",
-              height: 38,
-              padding: "0 14px",
-              fontSize: 13,
+              background: `${ACCENT}1f`,
+              border: `1px solid ${ACCENT}40`,
             }}
           >
-            Únete
-          </button>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {featuredGames.map((game, i) => {
-          const Icon = game.icon;
-          return (
-            <motion.div
-              key={game.id}
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
+            <Gamepad2 className="w-6 h-6" style={{ color: ACCENT }} />
+          </div>
+          <div className="min-w-0">
+            <div
+              className="font-bold mb-1"
+              style={{ color: ACCENT, fontSize: 11, letterSpacing: "0.14em" }}
             >
-              <Link
-                to="/fan-zone"
-                className="group block rounded-2xl border border-white/[0.07] p-4 h-full transition-all hover:-translate-y-0.5"
-                style={{
-                  background: `linear-gradient(135deg, ${game.color.replace("hsl", "hsla").replace(")", " / 0.12)")} 0%, #0a0a0a 80%)`,
-                  borderColor: `${game.color.replace(")", " / 0.25)").replace("hsl", "hsla")}`,
-                }}
+              FAN ZONE · LIGA DE AMOS
+            </div>
+            <div
+              className="font-extrabold text-white leading-tight"
+              style={{ fontSize: 15 }}
+            >
+              Juega, suma puntos y gana premios cada semana
+            </div>
+            <div className="text-white/55 mt-1" style={{ fontSize: 13 }}>
+              {user
+                ? `Hola, ${displayName}. Sigue subiendo en la tabla.`
+                : "Crea tu cuenta y empieza a competir."}
+            </div>
+          </div>
+        </div>
+
+        {/* Right — rank or CTA */}
+        <div className="flex items-center justify-between sm:justify-end gap-3 sm:shrink-0">
+          {user ? (
+            <div className="text-right">
+              <div
+                className="font-extrabold text-white tabular-nums"
+                style={{ fontSize: 16 }}
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{
-                      background: game.color.replace("hsl", "hsla").replace(")", " / 0.18)"),
-                    }}
-                  >
-                    <Icon className="w-5 h-5" style={{ color: game.color }} />
-                  </div>
-                  <span
-                    className="text-[10px] font-bold px-2 py-1 rounded-full"
-                    style={{
-                      background: "rgba(255,255,255,0.06)",
-                      color: game.color,
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    {game.reward}
-                  </span>
-                </div>
-                <div className="font-bold text-white" style={{ fontSize: 14 }}>
-                  {game.name}
-                </div>
-                <div className="text-white/55 mt-0.5" style={{ fontSize: 12 }}>
-                  {game.subtitle}
-                </div>
-              </Link>
-            </motion.div>
-          );
-        })}
+                #{stats.rank} · {stats.points.toLocaleString()} pts
+              </div>
+              <div className="text-white/55" style={{ fontSize: 12 }}>
+                Nivel {stats.level} {stats.levelName}
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={onLoginClick}
+              className="shrink-0 inline-flex items-center gap-2 font-bold rounded-full transition-opacity hover:opacity-90"
+              style={{
+                background: ACCENT,
+                color: "#000",
+                height: 38,
+                padding: "0 14px",
+                fontSize: 13,
+              }}
+            >
+              Inicia sesión
+            </button>
+          )}
+          <Link
+            to="/fan-zone"
+            className="hidden sm:inline-flex items-center gap-1 font-bold"
+            style={{ color: ACCENT, fontSize: 13 }}
+          >
+            Ir a Fan Zone
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );
