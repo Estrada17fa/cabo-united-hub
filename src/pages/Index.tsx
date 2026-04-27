@@ -378,9 +378,9 @@ function LiveMatchPreview({ match }: { match: Tables<"matches"> }) {
             whileTap={{ scale: 0.98 }}
             className="w-full h-12 flex items-center justify-center gap-2 rounded-xl font-bold text-[13px] sm:text-[15px]"
             style={{
-              backgroundColor: "hsl(142 76% 50%)",
-              color: "hsl(0 0% 6%)",
-              boxShadow: "0 8px 24px -6px hsl(142 76% 50% / 0.55)",
+              backgroundColor: ACCENT,
+              color: "#000",
+              boxShadow: "0 8px 24px -6px rgba(0,171,196,0.55)",
             }}
           >
             <Radio className="w-5 h-5" />
