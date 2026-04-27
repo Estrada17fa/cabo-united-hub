@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon, Facebook, Instagram, User, LogOut, ChevronRight } from "lucide-react";
+import lcuCrest from "@/assets/lcu-crest.png";
 import { soccerBall } from "@lucide/lab";
 import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
 import {
@@ -175,9 +176,13 @@ export function Header() {
             </div>
           </button>
 
-          <Link to="/" className="flex items-center justify-center">
-            <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center">
-              <Shield className="w-6 h-6 text-primary" />
+          <Link to="/" className="flex items-center justify-center" aria-label="Inicio">
+            <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center overflow-hidden">
+              <img
+                src={lcuCrest}
+                alt="Los Cabos United"
+                className="h-8 w-auto object-contain"
+              />
             </div>
           </Link>
 
@@ -231,9 +236,13 @@ export function Header() {
           )}
         </button>
 
-        <Link to="/" className="flex-shrink-0">
-          <div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center">
-            <Shield className="w-7 h-7 text-primary" />
+        <Link to="/" className="flex-shrink-0" aria-label="Inicio">
+          <div className="w-12 h-12 rounded-xl bg-card border border-border flex items-center justify-center overflow-hidden">
+            <img
+              src={lcuCrest}
+              alt="Los Cabos United"
+              className="h-10 w-auto object-contain"
+            />
           </div>
         </Link>
 

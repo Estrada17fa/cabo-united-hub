@@ -279,7 +279,7 @@ function HomeHero() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-5 drop-shadow-[0_0_40px_rgba(0,171,196,0.5)]"
+            className="h-24 md:h-28 w-auto mx-auto mb-5 object-contain drop-shadow-[0_0_40px_rgba(0,171,196,0.5)]"
           />
           <motion.div
             initial={{ opacity: 0, y: 8 }}
