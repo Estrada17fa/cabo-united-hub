@@ -23,6 +23,7 @@ type Tier = {
   cta: string;
   accent: string;
   textOnAccent: string;
+  tagline: string;
 };
 
 const tiers: Tier[] = [
@@ -35,6 +36,7 @@ const tiers: Tier[] = [
     cta: "Únete gratis",
     accent: "#FFFFFF",
     textOnAccent: "#0a0a0a",
+    tagline: "Acceso digital y comunidad oficial",
   },
   {
     id: "gold",
@@ -45,6 +47,7 @@ const tiers: Tier[] = [
     cta: "Quiero mi Gold",
     accent: "#F59E0B",
     textOnAccent: "#0a0a0a",
+    tagline: "Entrada a partidos + kit oficial básico",
   },
   {
     id: "premium",
@@ -55,6 +58,7 @@ const tiers: Tier[] = [
     cta: "Quiero mi Premium",
     accent: "#00abc4",
     textOnAccent: "#0a0a0a",
+    tagline: "Acceso VIP + foto con jugadores",
   },
   {
     id: "platino",
@@ -66,6 +70,7 @@ const tiers: Tier[] = [
     cta: "Quiero mi Platino",
     accent: "#E2E8F0",
     textOnAccent: "#0a0a0a",
+    tagline: "Experiencia completa + jersey personalizado",
   },
 ];
 
@@ -89,7 +94,7 @@ function MembershipCard({ tier }: { tier: Tier }) {
       labelColor = "#F59E0B";
       shieldOpacity = 0.15;
       shieldFilter = "sepia(1) saturate(5) hue-rotate(-15deg) brightness(1.1)";
-      topBorder = "2px solid #F59E0B";
+      topBorder = "3px solid #F59E0B";
       break;
     case "premium":
       cardStyle = { background: "linear-gradient(135deg, #001a1f, #0a1a1f)" };
@@ -97,8 +102,8 @@ function MembershipCard({ tier }: { tier: Tier }) {
       labelColor = "#00abc4";
       shieldOpacity = 0.2;
       shieldFilter = "hue-rotate(160deg) saturate(2)";
-      topBorder = "2px solid #00abc4";
-      extraShadow = "0 0 30px rgba(0,171,196,0.12)";
+      topBorder = "3px solid #00abc4";
+      extraShadow = "0 0 40px rgba(0,171,196,0.2)";
       break;
     case "platino":
       cardStyle = { background: "linear-gradient(135deg, #111, #1a1a1a)" };
@@ -106,7 +111,7 @@ function MembershipCard({ tier }: { tier: Tier }) {
       labelColor = "#E2E8F0";
       shieldOpacity = 0.15;
       shieldFilter = "grayscale(1) brightness(1.5)";
-      topBorder = "2px solid #E2E8F0";
+      topBorder = "3px solid #E2E8F0";
       extraShadow = "0 0 20px rgba(226,232,240,0.08)";
       break;
   }
@@ -118,13 +123,13 @@ function MembershipCard({ tier }: { tier: Tier }) {
         ...cardStyle,
         borderTop: topBorder,
         boxShadow: extraShadow || undefined,
-        minHeight: 200,
+        minHeight: 280,
       }}
     >
       {/* Top visual area */}
       <div
         className="relative flex items-center justify-center"
-        style={{ ...topStyle, height: 100 }}
+        style={{ ...topStyle, height: 160 }}
       >
         {/* Shimmer overlay for platino */}
         {tier.id === "platino" && (
@@ -142,12 +147,12 @@ function MembershipCard({ tier }: { tier: Tier }) {
         {/* "MÁS POPULAR" pill for premium */}
         {tier.id === "premium" && (
           <div
-            className="absolute top-2 right-2 px-2 py-0.5 rounded-full font-bold"
+            className="absolute -top-px left-1/2 -translate-x-1/2 px-3 py-1 rounded-b-lg font-bold shadow-lg"
             style={{
               background: "#00abc4",
               color: "#0a0a0a",
-              fontSize: 10,
-              letterSpacing: "0.05em",
+              fontSize: 11,
+              letterSpacing: "0.08em",
             }}
           >
             MÁS POPULAR
@@ -161,44 +166,56 @@ function MembershipCard({ tier }: { tier: Tier }) {
           aria-hidden="true"
           className="absolute"
           style={{
-            width: 80,
-            height: 80,
+            width: 140,
+            height: 140,
             opacity: shieldOpacity,
             filter: shieldFilter || undefined,
             objectFit: "contain",
           }}
         />
 
-        {/* Label */}
-        <span
-          className="relative z-10 font-bold text-center px-2"
-          style={{
-            fontSize: 11,
-            color: labelColor,
-            letterSpacing: "0.1em",
-          }}
-        >
-          {tier.label}
-        </span>
+        {/* Label stack */}
+        <div className="relative z-10 flex flex-col items-center text-center px-3">
+          <span
+            className="font-medium text-white/60"
+            style={{
+              fontSize: 11,
+              letterSpacing: "0.15em",
+            }}
+          >
+            AMO DEL PARAÍSO
+          </span>
+          <span
+            className="font-extrabold mt-1"
+            style={{
+              fontSize: 26,
+              color: labelColor,
+              letterSpacing: "0.05em",
+              lineHeight: 1,
+            }}
+          >
+            {tier.badge}
+          </span>
+          <span
+            className="block mt-2 rounded-full"
+            style={{
+              width: 32,
+              height: 2,
+              background: labelColor,
+              opacity: 0.6,
+            }}
+          />
+        </div>
       </div>
 
       {/* Bottom section */}
-      <div className="p-5 flex-1 flex items-start">
-        <span
-          className="px-3 py-1 rounded-full text-xs font-bold"
-          style={{
-            background:
-              tier.id === "free"
-                ? "rgba(255,255,255,0.1)"
-                : tier.id === "platino"
-                ? "linear-gradient(135deg, #94a3b8, #e2e8f0)"
-                : tier.accent,
-            color: tier.id === "free" ? "#fff" : tier.textOnAccent,
-            letterSpacing: "0.08em",
-          }}
+      <div className="p-6 flex-1 flex items-center">
+        <p
+          className="text-white/75 leading-snug"
+          style={{ fontSize: 14 }}
         >
-          {tier.badge}
-        </span>
+          {tier.tagline}
+        </p>
       </div>
     </div>
   );
@@ -222,10 +239,10 @@ function PriceAndCta({ tier }: { tier: Tier }) {
   return (
     <div className="flex flex-col gap-3 mt-4">
       <div>
-        <div className="text-2xl font-bold text-white">{tier.price}</div>
-        <div className="text-xs text-white/50">por temporada</div>
+        <div className="text-3xl md:text-4xl font-bold text-white tracking-tight">{tier.price}</div>
+        <div className="text-[13px] text-white/60 mt-1">por temporada</div>
         {tier.priceMonthly && (
-          <div className="text-xs text-white/50 mt-0.5">{tier.priceMonthly}</div>
+          <div className="text-[13px] text-white/70 mt-0.5">{tier.priceMonthly}</div>
         )}
       </div>
       <a
@@ -234,9 +251,9 @@ function PriceAndCta({ tier }: { tier: Tier }) {
         rel="noopener noreferrer"
         className="w-full inline-flex items-center justify-center gap-2 font-bold transition-opacity hover:opacity-90 relative overflow-hidden"
         style={{
-          height: 48,
+          height: 52,
           borderRadius: 10,
-          fontSize: 14,
+          fontSize: 15,
           ...buttonStyle,
         }}
       >
@@ -506,7 +523,7 @@ const Tickets = () => {
             {/* Cards row, overlapping bottom of hero */}
             <div
               className="absolute left-0 right-0 z-20 px-4"
-              style={{ top: "55%" }}
+              style={{ top: "50%" }}
             >
               <div className="max-w-[1100px] mx-auto">
                 <div
@@ -523,7 +540,7 @@ const Tickets = () => {
         </div>
 
         {/* Mobile cards (horizontal scroll) */}
-        <div className="md:hidden -mx-3 mt-[-180px] relative z-20 mb-6">
+        <div className="md:hidden -mx-3 mt-[-220px] relative z-20 mb-6">
           <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-3 pb-2">
             {tiers.map((t) => (
               <div
