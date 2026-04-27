@@ -332,7 +332,7 @@ function MatchZoneSection() {
     <section>
       <SectionHeader
         eyebrow="MATCH ZONE"
-        title={isLive ? "Estamos jugando ahora" : "Próximo partido"}
+        title={isLive ? "Estamos jugando ahora" : "Prepárate para el próximo partido"}
         href="/zona-partido"
         hrefLabel="Ir a Match Zone"
       />
@@ -691,7 +691,7 @@ function TuClubSection() {
     <section>
       <SectionHeader
         eyebrow="TU CLUB"
-        title="Conoce al equipo"
+        title="Conoce a tu equipo"
         href="/club"
         hrefLabel="Ir al Club"
       />
@@ -902,7 +902,7 @@ function FanZoneSection({ onLoginClick }: { onLoginClick: () => void }) {
     <section>
       <SectionHeader
         eyebrow="FAN ZONE"
-        title="Liga de Amos"
+        title="Juega y Gana Premios"
         href="/fan-zone"
         hrefLabel="Ir a Fan Zone"
       />
@@ -1216,7 +1216,7 @@ function LosCabosStrip() {
     <section>
       <SectionHeader
         eyebrow="VISITA LOS CABOS"
-        title="La afición en el mapa"
+        title="El Paraíso te espera"
         href="/conoce-los-cabos"
         hrefLabel="Explorar mapa"
       />
