@@ -21,7 +21,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useShopifyProducts } from "@/hooks/useShopify";
 import { MatchHeroCard } from "@/components/match-zone/MatchHeroCard";
-import { LiveMatchPlayer } from "@/components/match-zone/LiveMatchPlayer";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
 import { ResponsiveMatchTimeline } from "@/components/match-zone/ResponsiveMatchTimeline";
 import { TeamCrest } from "@/components/match-zone/TeamCrest";
