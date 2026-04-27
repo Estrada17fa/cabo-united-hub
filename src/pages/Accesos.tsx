@@ -213,7 +213,7 @@ function PriceAndCta({ tier }: { tier: Tier }) {
       : { background: tier.accent, color: tier.textOnAccent };
 
   return (
-    <div className="flex flex-col gap-3 mt-4">
+    <div className="flex flex-col gap-2 mt-1">
       <div>
         <div className="text-3xl md:text-4xl font-bold text-white tracking-tight">{tier.price}</div>
         <div className="text-[13px] text-white/60 mt-1">por temporada</div>
@@ -427,7 +427,7 @@ const POS = [
   },
 ];
 
-const Tickets = () => {
+const Accesos = () => {
   return (
     <TooltipProvider delayDuration={150}>
       <style>{`
@@ -482,7 +482,7 @@ const Tickets = () => {
                   lineHeight: 1.05,
                 }}
               >
-                Sé Amo del Paraíso
+                Únete y sé Amo del Paraíso
               </h1>
               <p
                 className="mx-auto text-white/70"
@@ -516,7 +516,7 @@ const Tickets = () => {
         </div>
 
         {/* Mobile cards (horizontal scroll) */}
-        <div className="md:hidden -mx-3 mt-[-220px] relative z-20 mb-6">
+        <div className="md:hidden -mx-3 mt-[-340px] relative z-20 mb-6">
           <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-3 pb-2">
             {tiers.map((t) => (
               <div
@@ -532,7 +532,7 @@ const Tickets = () => {
         </div>
 
         {/* Desktop pricing/CTA aligned to columns */}
-        <div className="hidden md:block max-w-[1100px] mx-auto px-4 mt-6">
+        <div className="hidden md:block max-w-[1100px] mx-auto px-4 mt-2">
           <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
             {tiers.map((t) => (
               <PriceAndCta key={t.id} tier={t} />
@@ -748,4 +748,4 @@ const Tickets = () => {
   );
 };
 
-export default Tickets;
+export default Accesos;
