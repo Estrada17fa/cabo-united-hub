@@ -256,7 +256,9 @@ export function Header() {
                 }`}
               >
                 <NavIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
-                <span className="hidden lg:inline uppercase">{link.name}</span>
+                {isActive(link.path) && (
+                  <span className="uppercase">{link.name}</span>
+                )}
               </Link>
             );
           })}
