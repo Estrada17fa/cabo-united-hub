@@ -1535,63 +1535,7 @@ function FanZoneSection({ onLoginClick }: { onLoginClick: () => void }) {
         </div>
 
         {/* Premios — 40% */}
-        <div
-          className="lg:col-span-2 rounded-2xl border overflow-hidden flex flex-col"
-          style={{
-            background: "#0f0f0f",
-            borderColor: "rgba(255,255,255,0.07)",
-          }}
-        >
-          <div className="px-5 pt-5 pb-3 flex items-center gap-2">
-            <Gift className="w-4 h-4" style={{ color: ACCENT }} />
-            <h3
-              className="font-extrabold text-white uppercase"
-              style={{ fontSize: 12, letterSpacing: "0.16em" }}
-            >
-              Premios por puntos
-            </h3>
-          </div>
-          <div className="flex-1 px-3 pb-3 grid grid-cols-1 gap-2">
-            {PRIZES.map((p) => {
-              const Icon = p.icon;
-              return (
-                <div
-                  key={p.title}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
-                  style={{ background: "rgba(255,255,255,0.03)" }}
-                >
-                  <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                    style={{
-                      background: `${p.color}1f`,
-                      border: `1px solid ${p.color}40`,
-                    }}
-                  >
-                    <Icon className="w-4 h-4" style={{ color: p.color }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[12.5px] font-bold text-white leading-tight">
-                      {p.title}
-                    </div>
-                    <div
-                      className="text-[10px] uppercase tracking-wider mt-0.5 font-bold"
-                      style={{ color: p.color }}
-                    >
-                      A partir de {p.threshold}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <Link
-            to="/fan-zone"
-            className="mx-3 mb-3 inline-flex items-center justify-center gap-1 rounded-lg py-2 text-[12px] font-bold transition-colors hover:bg-white/5"
-            style={{ color: ACCENT }}
-          >
-            Ver todos los premios <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
+        <PrizesCarouselCard />
       </div>
     </section>
   );
