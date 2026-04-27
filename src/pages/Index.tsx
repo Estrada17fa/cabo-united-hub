@@ -16,6 +16,12 @@ import {
   Gift,
   Medal,
   ShoppingBag,
+  Sparkles,
+  Goal,
+  Sun,
+  Tent,
+  Shield,
+  Star,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
