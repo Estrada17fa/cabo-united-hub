@@ -4,17 +4,11 @@ import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
-  Calendar,
   ChevronRight,
   Crown,
   Gamepad2,
   MapPin,
-  ShoppingBag,
-  Shield,
   Sparkles,
-  Ticket,
-  Trophy,
-  Users,
   Radio,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,8 +29,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { GAMES } from "@/components/fan-zone/games";
-import { PLACES, FEATURED_PLACE_IDS, CATEGORY_META } from "@/lib/visita-los-cabos-data";
+import { PLACES, FEATURED_PLACE_IDS } from "@/lib/visita-los-cabos-data";
 import stadiumHero from "@/assets/stadium-hero.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
 
