@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Info, MapPin, Calendar, Phone, Clock, ArrowRight } from "lucide-react";
 import stadiumHero from "@/assets/accesos-page-hero.jpg";
+import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
 import {
   Tooltip,
   TooltipContent,
@@ -449,9 +450,15 @@ const Accesos = () => {
             style={{ minHeight: 580 }}
           >
             <img
+              src={mobileTeamBg}
+              alt="Plantel Los Cabos United"
+              className="md:hidden absolute inset-0 w-full h-full object-cover"
+              loading="eager"
+            />
+            <img
               src={stadiumHero}
               alt="Estadio Los Cabos United"
-              className="absolute inset-0 w-full h-full object-cover"
+              className="hidden md:block absolute inset-0 w-full h-full object-cover"
               loading="eager"
             />
             <div
