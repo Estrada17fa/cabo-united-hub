@@ -51,6 +51,82 @@ import adnCabenoImg from "@/assets/adn-cabeno.jpg";
 const ACCENT = "#00abc4";
 const LCU = "Los Cabos United";
 
+/* --- Tu Club: data mirrors src/pages/Club.tsx --- */
+type ClubPosition =
+  | "Porteros"
+  | "Defensas"
+  | "Mediocampistas"
+  | "Delanteros"
+  | "Cuerpo Técnico";
+
+const CLUB_ROSTER: Record<
+  ClubPosition,
+  { name: string; number: number | string; flag: string; role?: string }[]
+> = {
+  Porteros: [
+    { name: "Luis Robles", number: 1, flag: "🇲🇽" },
+    { name: "Andrés Castillo", number: 12, flag: "🇲🇽" },
+    { name: "Mateo Salinas", number: 25, flag: "🇦🇷" },
+    { name: "Iván Flores", number: 30, flag: "🇲🇽" },
+  ],
+  Defensas: [
+    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽" },
+    { name: "Rafael Márquez", number: 4, flag: "🇲🇽" },
+    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴" },
+    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽" },
+  ],
+  Mediocampistas: [
+    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽" },
+    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷" },
+    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽" },
+    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾" },
+  ],
+  Delanteros: [
+    { name: "Diego Hernández", number: 9, flag: "🇲🇽" },
+    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷" },
+    { name: "Adrián Solís", number: 19, flag: "🇲🇽" },
+    { name: "Tomás Rincón", number: 22, flag: "🇻🇪" },
+  ],
+  "Cuerpo Técnico": [
+    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", role: "Director Técnico" },
+    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", role: "Asistente Técnico" },
+    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", role: "Preparador Físico" },
+    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", role: "Entren. Porteros" },
+  ],
+};
+
+const CLUB_ACADEMY_CATEGORIES = [
+  { icon: Sparkles, name: "Semillero", age: "3 – 8 años" },
+  { icon: GraduationCap, name: "Academia", age: "7 – 14 años" },
+  { icon: Goal, name: "Fuerzas Básicas", age: "Sub 15 y Sub 17" },
+  { icon: Sun, name: "Curso de Verano", age: "Temporada" },
+  { icon: Tent, name: "Campamento", age: "Experiencia" },
+];
+
+const CLUB_NEWS = [
+  {
+    tag: "Noticias",
+    tagColor: "hsl(336 80% 77%)",
+    title: "Los Cabos United firma nuevo acuerdo con la afición local",
+    date: "12 Abr 2025",
+    read: "3 min",
+  },
+  {
+    tag: "Entrevista",
+    tagColor: "hsl(38 92% 60%)",
+    title: "Diego Hernández: 'Quiero romper el récord de goles de la Serie A'",
+    date: "08 Abr 2025",
+    read: "5 min",
+  },
+  {
+    tag: "Detrás de Cámaras",
+    tagColor: "hsl(199 89% 60%)",
+    title: "Un día con el plantel: la rutina antes del clásico del noroeste",
+    date: "02 Abr 2025",
+    read: "4 min",
+  },
+];
+
 const CATEGORY_THEME: Record<
   string,
   { label: string; color: string; bg: string }
