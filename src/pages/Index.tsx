@@ -325,9 +325,151 @@ function HomeHero() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mt-10"
+          >
+            <HeroAbonoCards />
+          </motion.div>
         </div>
       </div>
     </section>
+  );
+}
+
+/* ---------- Hero: Abonos compact cards ---------- */
+const HERO_ABONOS: {
+  id: "free" | "gold" | "premium" | "platino";
+  badge: string;
+  price: string;
+  tagline: string;
+  accent: string;
+  bg: string;
+  topBg: string;
+  isPopular?: boolean;
+}[] = [
+  {
+    id: "free",
+    badge: "GRATIS",
+    price: "$0",
+    tagline: "Acceso digital y comunidad oficial",
+    accent: "#FFFFFF",
+    bg: "#1a1a1a",
+    topBg: "linear-gradient(135deg, #1a1a1a, #222)",
+  },
+  {
+    id: "gold",
+    badge: "GOLD",
+    price: "$1,499",
+    tagline: "Entrada a partidos + kit oficial básico",
+    accent: "#F59E0B",
+    bg: "linear-gradient(135deg, #1a1200, #1a1a1a)",
+    topBg: "linear-gradient(135deg, #2a1f00, #1a1400)",
+  },
+  {
+    id: "premium",
+    badge: "PREMIUM",
+    price: "$2,499",
+    tagline: "Acceso VIP + foto con jugadores",
+    accent: "#00abc4",
+    bg: "linear-gradient(135deg, #001a1f, #0a1a1f)",
+    topBg: "linear-gradient(135deg, #002a35, #001a22)",
+    isPopular: true,
+  },
+  {
+    id: "platino",
+    badge: "PLATINO",
+    price: "$4,499",
+    tagline: "Experiencia completa + jersey personalizado",
+    accent: "#E2E8F0",
+    bg: "linear-gradient(135deg, #111, #1a1a1a)",
+    topBg: "linear-gradient(135deg, #1f1f1f, #111)",
+  },
+];
+
+function HeroAbonoCards() {
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
+      {HERO_ABONOS.map((a) => (
+        <Link
+          key={a.id}
+          to="/accesos"
+          className="group relative rounded-xl overflow-hidden flex flex-col transition-transform hover:-translate-y-0.5"
+          style={{
+            background: a.bg,
+            borderTop: `3px solid ${a.accent}`,
+            boxShadow:
+              a.id === "premium"
+                ? "0 0 30px rgba(0,171,196,0.25)"
+                : "0 8px 24px rgba(0,0,0,0.4)",
+            minHeight: 150,
+          }}
+        >
+          {/* Top label area */}
+          <div
+            className="relative flex items-center justify-center px-3"
+            style={{ background: a.topBg, height: 64 }}
+          >
+            {a.isPopular && (
+              <div
+                className="absolute -top-px left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-b-md font-bold shadow"
+                style={{
+                  background: a.accent,
+                  color: "#0a0a0a",
+                  fontSize: 9,
+                  letterSpacing: "0.08em",
+                }}
+              >
+                MÁS POPULAR
+              </div>
+            )}
+            <div className="flex flex-col items-center text-center">
+              <span
+                className="font-medium text-white/55"
+                style={{ fontSize: 9, letterSpacing: "0.15em" }}
+              >
+                AMO DEL PARAÍSO
+              </span>
+              <span
+                className="font-extrabold mt-0.5"
+                style={{
+                  fontSize: 18,
+                  color: a.accent,
+                  letterSpacing: "0.05em",
+                  lineHeight: 1,
+                }}
+              >
+                {a.badge}
+              </span>
+            </div>
+          </div>
+
+          {/* Bottom info */}
+          <div className="px-3 py-3 flex-1 flex flex-col justify-between gap-2">
+            <div>
+              <div
+                className="font-bold text-white tracking-tight leading-none"
+                style={{ fontSize: 20 }}
+              >
+                {a.price}
+              </div>
+              <div className="text-[10px] text-white/55 mt-0.5">
+                por temporada
+              </div>
+            </div>
+            <p
+              className="text-white/70 leading-snug line-clamp-2"
+              style={{ fontSize: 11 }}
+            >
+              {a.tagline}
+            </p>
+          </div>
+        </Link>
+      ))}
+    </div>
   );
 }
 
