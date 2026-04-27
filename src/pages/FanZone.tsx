@@ -7,9 +7,13 @@ import { FanStatsHero } from "@/components/fan-zone/FanStatsHero";
 import { MiniGameCard } from "@/components/fan-zone/MiniGameCard";
 import { GAMES, type MiniGame } from "@/components/fan-zone/games";
 import { AuthModal } from "@/components/auth/AuthModal";
+import { RankingCard } from "@/components/fan-zone/RankingCard";
+import { PrizesCarouselCard } from "@/components/fan-zone/PrizesCarouselCard";
+import { useAuth } from "@/hooks/useAuth";
 
 const FanZone = () => {
   const [authOpen, setAuthOpen] = useState(false);
+  const { user } = useAuth();
 
   const handleGameClick = (game: MiniGame) => {
     if (game.status === "soon") {
@@ -31,6 +35,18 @@ const FanZone = () => {
       className="space-y-5 pb-8 pt-2"
     >
       <FanStatsHero onLoginClick={() => setAuthOpen(true)} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <RankingCard
+          className="lg:col-span-3"
+          user={user}
+          onLoginClick={() => setAuthOpen(true)}
+        />
+        <PrizesCarouselCard
+          className="lg:col-span-2"
+          showFooterLink={false}
+        />
+      </div>
 
       <div className="flex items-center gap-2 px-1">
         <Gamepad2 className="w-4 h-4 text-primary" />

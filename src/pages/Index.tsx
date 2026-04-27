@@ -47,6 +47,8 @@ import stadiumHero from "@/assets/stadium-hero.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
 import tiendaHero from "@/assets/tienda-hero-1.jpg";
 import adnCabenoImg from "@/assets/adn-cabeno.jpg";
+import { RankingCard } from "@/components/fan-zone/RankingCard";
+import { PrizesCarouselCard } from "@/components/fan-zone/PrizesCarouselCard";
 
 const ACCENT = "#00abc4";
 const LCU = "Los Cabos United";
@@ -59,39 +61,53 @@ type ClubPosition =
   | "Delanteros"
   | "Cuerpo Técnico";
 
-const CLUB_ROSTER: Record<
-  ClubPosition,
-  { name: string; number: number | string; flag: string; role?: string }[]
-> = {
+type ClubPlayer = {
+  name: string;
+  number: number | string;
+  flag: string;
+  country: string;
+  birthState: string;
+  age: number;
+  matches: number;
+  goals: number;
+  assists: number;
+  timesAmo: number;
+  positionDetail: string;
+  role?: string;
+};
+
+const CLUB_ROSTER: Record<ClubPosition, ClubPlayer[]> = {
   Porteros: [
-    { name: "Luis Robles", number: 1, flag: "🇲🇽" },
-    { name: "Andrés Castillo", number: 12, flag: "🇲🇽" },
-    { name: "Mateo Salinas", number: 25, flag: "🇦🇷" },
-    { name: "Iván Flores", number: 30, flag: "🇲🇽" },
+    { name: "Luis Robles", number: 1, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 28, matches: 16, goals: 0, assists: 1, timesAmo: 3, positionDetail: "Portero Titular" },
+    { name: "Andrés Castillo", number: 12, flag: "🇲🇽", country: "México", birthState: "Sinaloa", age: 22, matches: 4, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Suplente" },
+    { name: "Mateo Salinas", number: 25, flag: "🇦🇷", country: "Argentina", birthState: "Buenos Aires", age: 31, matches: 0, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Tercer Portero" },
+    { name: "Iván Flores", number: 30, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 19, matches: 1, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Cantera" },
   ],
   Defensas: [
-    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽" },
-    { name: "Rafael Márquez", number: 4, flag: "🇲🇽" },
-    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴" },
-    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽" },
+    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 26, matches: 18, goals: 1, assists: 3, timesAmo: 2, positionDetail: "Lateral Derecho" },
+    { name: "Rafael Márquez", number: 4, flag: "🇲🇽", country: "México", birthState: "Michoacán", age: 30, matches: 17, goals: 2, assists: 1, timesAmo: 5, positionDetail: "Defensa Central" },
+    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴", country: "Colombia", birthState: "Antioquia", age: 24, matches: 15, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Defensa Central" },
+    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽", country: "México", birthState: "Sonora", age: 22, matches: 12, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Lateral Izquierdo" },
+    { name: "Joaquín Rivas", number: 13, flag: "🇨🇱", country: "Chile", birthState: "Santiago", age: 27, matches: 9, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Defensa Suplente" },
   ],
   Mediocampistas: [
-    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽" },
-    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷" },
-    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽" },
-    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾" },
+    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 25, matches: 18, goals: 2, assists: 4, timesAmo: 3, positionDetail: "Mediocampista Defensivo" },
+    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷", country: "Argentina", birthState: "Córdoba", age: 28, matches: 16, goals: 3, assists: 5, timesAmo: 4, positionDetail: "Mediocampista Central" },
+    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽", country: "México", birthState: "Jalisco", age: 24, matches: 17, goals: 5, assists: 7, timesAmo: 6, positionDetail: "Mediocampista Ofensivo" },
+    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾", country: "Uruguay", birthState: "Montevideo", age: 23, matches: 11, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Volante por Banda" },
+    { name: "Marco Téllez", number: 17, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 21, matches: 8, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Mediocampista Suplente" },
   ],
   Delanteros: [
-    { name: "Diego Hernández", number: 9, flag: "🇲🇽" },
-    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷" },
-    { name: "Adrián Solís", number: 19, flag: "🇲🇽" },
-    { name: "Tomás Rincón", number: 22, flag: "🇻🇪" },
+    { name: "Diego Hernández", number: 9, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 26, matches: 17, goals: 12, assists: 4, timesAmo: 4, positionDetail: "Delantero Centro" },
+    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷", country: "Brasil", birthState: "São Paulo", age: 25, matches: 16, goals: 8, assists: 6, timesAmo: 3, positionDetail: "Extremo Izquierdo" },
+    { name: "Adrián Solís", number: 19, flag: "🇲🇽", country: "México", birthState: "Nuevo León", age: 22, matches: 13, goals: 5, assists: 3, timesAmo: 2, positionDetail: "Extremo Derecho" },
+    { name: "Tomás Rincón", number: 22, flag: "🇻🇪", country: "Venezuela", birthState: "Caracas", age: 27, matches: 7, goals: 2, assists: 1, timesAmo: 0, positionDetail: "Delantero Suplente" },
   ],
   "Cuerpo Técnico": [
-    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", role: "Director Técnico" },
-    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", role: "Asistente Técnico" },
-    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", role: "Preparador Físico" },
-    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", role: "Entren. Porteros" },
+    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", country: "México", birthState: "Ciudad de México", age: 52, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Director Técnico", role: "Director Técnico" },
+    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 45, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Asistente Técnico", role: "Asistente Técnico" },
+    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", country: "México", birthState: "Jalisco", age: 41, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Preparador Físico", role: "Preparador Físico" },
+    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", country: "España", birthState: "Madrid", age: 38, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Entren. Porteros", role: "Entren. Porteros" },
   ],
 };
 
@@ -933,6 +949,7 @@ function TuClubSection() {
 /* ---------- Tu Club: Plantel ---------- */
 function TuClubPlantelCard() {
   const [activePos, setActivePos] = useState<ClubPosition>("Delanteros");
+  const [selectedPlayer, setSelectedPlayer] = useState<ClubPlayer | null>(null);
   const positions: ClubPosition[] = [
     "Porteros",
     "Defensas",
@@ -940,9 +957,10 @@ function TuClubPlantelCard() {
     "Delanteros",
     "Cuerpo Técnico",
   ];
-  const players = CLUB_ROSTER[activePos].slice(0, 4);
+  const players = CLUB_ROSTER[activePos];
 
   return (
+    <>
     <div
       className="lg:col-span-2 rounded-2xl border overflow-hidden flex flex-col"
       style={{
@@ -1001,39 +1019,175 @@ function TuClubPlantelCard() {
           })}
         </div>
 
-        {/* Players grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 flex-1 content-start">
-          <AnimatePresence mode="popLayout">
-            {players.map((player) => (
-              <motion.div
-                key={`${activePos}-${player.name}`}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.25 }}
-                className="rounded-xl border bg-black/30 p-2.5 transition-colors hover:border-[#00abc4]/50"
-                style={{ borderColor: "rgba(255,255,255,0.07)" }}
-              >
-                <div className="aspect-square rounded-lg bg-white/5 flex items-center justify-center mb-1.5 relative overflow-hidden">
-                  <span className="text-2xl font-extrabold text-white/55">
-                    {player.number}
-                  </span>
-                  <span className="absolute top-1 right-1 text-sm">
-                    {player.flag}
-                  </span>
-                </div>
-                <div className="text-[11px] font-semibold text-white truncate">
-                  {player.name}
-                </div>
-                <div className="text-[10px] text-white/50 truncate">
-                  {player.role ? player.role : `#${player.number}`}
-                </div>
-              </motion.div>
-            ))}
+        {/* Players carousel — horizontal scroll, all players in active position */}
+        <div className="flex-1 -mx-2">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activePos}
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -12 }}
+              transition={{ duration: 0.25 }}
+              className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-2 pb-1"
+            >
+              {players.map((player) => (
+                <button
+                  key={player.name}
+                  onClick={() => setSelectedPlayer(player)}
+                  className="snap-start shrink-0 w-[120px] sm:w-[130px] rounded-xl border bg-black/30 p-2.5 text-left transition-all hover:border-[#00abc4]/60 hover:-translate-y-0.5"
+                  style={{ borderColor: "rgba(255,255,255,0.07)" }}
+                >
+                  <div className="aspect-square rounded-lg bg-white/5 flex items-center justify-center mb-1.5 relative overflow-hidden">
+                    <span className="text-2xl font-extrabold text-white/55">
+                      {player.number}
+                    </span>
+                    <span className="absolute top-1 right-1 text-sm">
+                      {player.flag}
+                    </span>
+                    {player.timesAmo > 0 && (
+                      <span
+                        className="absolute bottom-1 left-1 inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[8px] font-bold"
+                        style={{
+                          background: "hsl(336 80% 77% / 0.18)",
+                          color: "hsl(336 80% 77%)",
+                          border: "1px solid hsl(336 80% 77% / 0.4)",
+                        }}
+                      >
+                        <Star className="w-2 h-2 fill-current" />
+                        {player.timesAmo}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[11px] font-semibold text-white truncate">
+                    {player.name}
+                  </div>
+                  <div className="text-[10px] text-white/50 truncate">
+                    {player.role ? player.role : `#${player.number}`}
+                  </div>
+                </button>
+              ))}
+            </motion.div>
           </AnimatePresence>
+          <div className="text-[10px] text-white/35 text-center mt-2">
+            ← Desliza para ver más jugadores →
+          </div>
         </div>
       </div>
     </div>
+
+    <PlayerDetailDialog
+      player={selectedPlayer}
+      onClose={() => setSelectedPlayer(null)}
+    />
+    </>
+  );
+}
+
+/* ---------- Player Detail Dialog ---------- */
+function PlayerDetailDialog({
+  player,
+  onClose,
+}: {
+  player: ClubPlayer | null;
+  onClose: () => void;
+}) {
+  return (
+    <Dialog open={!!player} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="bg-card border-border max-w-md p-0 overflow-hidden">
+        {player && (
+          <>
+            {/* Header banner */}
+            <div
+              className="relative h-32 flex items-end justify-between px-5 pb-3"
+              style={{
+                background: `linear-gradient(135deg, ${ACCENT}33 0%, #0a0a0a 100%)`,
+              }}
+            >
+              <div
+                className="absolute top-3 right-3 w-12 h-12 rounded-full flex items-center justify-center text-2xl font-extrabold tabular-nums"
+                style={{
+                  background: "rgba(0,0,0,0.55)",
+                  color: ACCENT,
+                  border: `2px solid ${ACCENT}`,
+                }}
+              >
+                {player.number}
+              </div>
+              <div className="relative z-10">
+                <span className="text-3xl">{player.flag}</span>
+              </div>
+            </div>
+
+            <div className="px-5 pt-3 pb-5">
+              <DialogHeader className="text-left">
+                <DialogTitle className="text-xl font-extrabold text-white leading-tight">
+                  {player.name}
+                </DialogTitle>
+              </DialogHeader>
+              <div
+                className="text-[12px] font-bold uppercase tracking-wider mt-1"
+                style={{ color: ACCENT }}
+              >
+                {player.positionDetail}
+              </div>
+              <div className="text-[12px] text-white/55 mt-1">
+                {player.country} · {player.birthState} · {player.age} años
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-2 mt-4">
+                {[
+                  { value: player.matches, label: "PJ" },
+                  { value: player.goals, label: "GOLES" },
+                  { value: player.assists, label: "ASIST." },
+                ].map((s) => (
+                  <div
+                    key={s.label}
+                    className="rounded-xl border bg-black/40 px-2 py-3 text-center"
+                    style={{ borderColor: "rgba(255,255,255,0.07)" }}
+                  >
+                    <div className="text-2xl font-extrabold text-white tabular-nums leading-none">
+                      {s.value}
+                    </div>
+                    <div
+                      className="text-[10px] font-bold uppercase tracking-wider mt-1.5"
+                      style={{ color: ACCENT }}
+                    >
+                      {s.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {player.timesAmo > 0 && (
+                <div className="mt-3 flex justify-center">
+                  <span
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border"
+                    style={{
+                      background: "hsl(336 80% 77% / 0.12)",
+                      color: "hsl(336 80% 77%)",
+                      borderColor: "hsl(336 80% 77% / 0.4)",
+                    }}
+                  >
+                    <Star className="w-3 h-3 fill-current" />
+                    ×{player.timesAmo} VECES AMO DEL PARTIDO
+                  </span>
+                </div>
+              )}
+
+              <Link
+                to="/club"
+                className="mt-5 w-full inline-flex items-center justify-center gap-2 h-11 rounded-xl font-bold text-[13px] transition-opacity hover:opacity-90"
+                style={{ background: ACCENT, color: "#000" }}
+              >
+                Ver perfil completo
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -1062,10 +1216,10 @@ function TuClubAcademiaCard() {
           </div>
           <Link
             to="/club"
-            className="inline-flex items-center gap-1 text-[12px] font-bold transition-colors hover:text-white"
+            className="inline-flex items-center gap-1 text-[12px] font-bold transition-colors hover:text-white whitespace-nowrap"
             style={{ color: ACCENT }}
           >
-            Ver
+            Inscribe a tu hijo
             <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -1229,41 +1383,6 @@ function TuClubNoticiasCard() {
 /*  FAN ZONE SECTION — Ranking + Premios                         */
 /* ============================================================ */
 
-const RANKING = [
-  { name: "Mariana López", points: 18920, badge: "Amo Élite" },
-  { name: "Rafa SJC", points: 17450, badge: "Amo Élite" },
-  { name: "Cabeño 4ever", points: 15280, badge: "Amo" },
-  { name: "Ana P.", points: 14110, badge: "Amo" },
-  { name: "Baja Pride", points: 13560, badge: "Amo" },
-];
-
-const PRIZES = [
-  {
-    icon: Ticket,
-    color: ACCENT,
-    title: "Boletos para el próximo partido",
-    threshold: "5,000 pts",
-  },
-  {
-    icon: ShoppingBag,
-    color: "hsl(336 80% 77%)",
-    title: "Jersey oficial firmado",
-    threshold: "15,000 pts",
-  },
-  {
-    icon: Crown,
-    color: "#F59E0B",
-    title: "Pase del Amo · 20% en tienda",
-    threshold: "10,000 pts",
-  },
-  {
-    icon: Gift,
-    color: "#A78BFA",
-    title: "Experiencia en el vestuario",
-    threshold: "25,000 pts",
-  },
-];
-
 function FanZoneSection({ onLoginClick }: { onLoginClick: () => void }) {
   const { user } = useAuth();
 
@@ -1277,153 +1396,12 @@ function FanZoneSection({ onLoginClick }: { onLoginClick: () => void }) {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        {/* Ranking — 60% */}
-        <div
-          className="lg:col-span-3 rounded-2xl border overflow-hidden flex flex-col"
-          style={{
-            background:
-              "linear-gradient(135deg, #0d0d12 0%, #0a0a0a 100%)",
-            borderColor: "rgba(255,255,255,0.07)",
-          }}
-        >
-          <div className="px-5 pt-5 pb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Trophy className="w-4 h-4" style={{ color: ACCENT }} />
-              <h3
-                className="font-extrabold text-white uppercase"
-                style={{ fontSize: 12, letterSpacing: "0.16em" }}
-              >
-                Ranking general
-              </h3>
-            </div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">
-              Top 5 de la semana
-            </span>
-          </div>
-
-          <div className="flex-1 px-3 pb-4 flex flex-col gap-1">
-            {RANKING.map((r, i) => {
-              const medalColor =
-                i === 0
-                  ? "#F59E0B"
-                  : i === 1
-                  ? "#CBD5E1"
-                  : i === 2
-                  ? "#D97706"
-                  : "rgba(255,255,255,0.4)";
-              return (
-                <div
-                  key={r.name}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
-                  style={{
-                    background:
-                      i < 3 ? "rgba(255,255,255,0.03)" : "transparent",
-                  }}
-                >
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-[12px] tabular-nums shrink-0"
-                    style={{
-                      background:
-                        i < 3 ? `${medalColor}22` : "rgba(255,255,255,0.06)",
-                      color: i < 3 ? medalColor : "rgba(255,255,255,0.65)",
-                      border: `1px solid ${i < 3 ? medalColor + "55" : "rgba(255,255,255,0.08)"}`,
-                    }}
-                  >
-                    {i + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[13px] font-bold text-white truncate">
-                      {r.name}
-                    </div>
-                    <div className="text-[11px] text-white/50">{r.badge}</div>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <div
-                      className="text-[14px] font-extrabold tabular-nums"
-                      style={{ color: ACCENT }}
-                    >
-                      {r.points.toLocaleString()}
-                    </div>
-                    <div className="text-[10px] text-white/40 uppercase tracking-wider">
-                      pts
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {!user && (
-            <div className="px-5 pb-5">
-              <button
-                onClick={onLoginClick}
-                className="w-full inline-flex items-center justify-center gap-2 font-bold rounded-full transition-opacity hover:opacity-90 h-10"
-                style={{ background: ACCENT, color: "#000", fontSize: 13 }}
-              >
-                Inicia sesión para competir
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Premios — 40% */}
-        <div
-          className="lg:col-span-2 rounded-2xl border overflow-hidden flex flex-col"
-          style={{
-            background: "#0f0f0f",
-            borderColor: "rgba(255,255,255,0.07)",
-          }}
-        >
-          <div className="px-5 pt-5 pb-3 flex items-center gap-2">
-            <Gift className="w-4 h-4" style={{ color: ACCENT }} />
-            <h3
-              className="font-extrabold text-white uppercase"
-              style={{ fontSize: 12, letterSpacing: "0.16em" }}
-            >
-              Premios por puntos
-            </h3>
-          </div>
-          <div className="flex-1 px-3 pb-3 grid grid-cols-1 gap-2">
-            {PRIZES.map((p) => {
-              const Icon = p.icon;
-              return (
-                <div
-                  key={p.title}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
-                  style={{ background: "rgba(255,255,255,0.03)" }}
-                >
-                  <div
-                    className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                    style={{
-                      background: `${p.color}1f`,
-                      border: `1px solid ${p.color}40`,
-                    }}
-                  >
-                    <Icon className="w-4 h-4" style={{ color: p.color }} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[12.5px] font-bold text-white leading-tight">
-                      {p.title}
-                    </div>
-                    <div
-                      className="text-[10px] uppercase tracking-wider mt-0.5 font-bold"
-                      style={{ color: p.color }}
-                    >
-                      A partir de {p.threshold}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <Link
-            to="/fan-zone"
-            className="mx-3 mb-3 inline-flex items-center justify-center gap-1 rounded-lg py-2 text-[12px] font-bold transition-colors hover:bg-white/5"
-            style={{ color: ACCENT }}
-          >
-            Ver todos los premios <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
+        <RankingCard
+          className="lg:col-span-3"
+          user={user}
+          onLoginClick={onLoginClick}
+        />
+        <PrizesCarouselCard className="lg:col-span-2" />
       </div>
     </section>
   );
@@ -1601,7 +1579,7 @@ function LosCabosStrip() {
             return (
               <Link
                 key={place.id}
-                to="/conoce-los-cabos"
+                to={`/conoce-los-cabos?place=${place.id}`}
                 className="snap-start shrink-0 w-[240px] h-[150px] relative rounded-2xl overflow-hidden border border-white/[0.07] hover:border-white/[0.18] transition-all group"
                 style={{ background: meta.bg }}
               >

@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -14,10 +15,21 @@ import { FeaturedStrip } from "@/components/visita-los-cabos/FeaturedStrip";
 
 const ConoceLosCabos = () => {
   const isMobile = useIsMobile();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [filter, setFilter] = useState<FilterValue>("todos");
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  // Open the place detail when arriving via ?place=<id>
+  useEffect(() => {
+    const placeId = searchParams.get("place");
+    if (placeId && PLACES.some((p) => p.id === placeId)) {
+      setSelectedId(placeId);
+      if (isMobile) setSheetOpen(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, isMobile]);
 
   const filteredPlaces = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -47,6 +59,10 @@ const ConoceLosCabos = () => {
   function handleBack() {
     setSelectedId(null);
     setSheetOpen(false);
+    if (searchParams.get("place")) {
+      searchParams.delete("place");
+      setSearchParams(searchParams, { replace: true });
+    }
   }
 
   return (
