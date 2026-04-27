@@ -631,25 +631,31 @@ function LosCabosStrip() {
       <div className="-mx-3 md:mx-0">
         <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-3 md:px-0 pb-2">
           {featured.map((place) => {
-            const meta = CATEGORY_META[place.category];
+            const meta =
+              CATEGORY_THEME[place.category] ?? {
+                label: place.category,
+                color: "#ffffff",
+                bg: "linear-gradient(135deg, #111 0%, #0a0a0a 100%)",
+              };
             return (
               <Link
                 key={place.id}
                 to="/conoce-los-cabos"
-                className="snap-start shrink-0 w-[240px] h-[160px] relative rounded-2xl overflow-hidden border border-white/[0.07] hover:border-white/[0.18] transition-all group"
-                style={{ background: place.photoGradient }}
+                className="snap-start shrink-0 w-[240px] h-[150px] relative rounded-2xl overflow-hidden border border-white/[0.07] hover:border-white/[0.18] transition-all group"
+                style={{ background: meta.bg }}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                 <div className="absolute inset-0 p-3 flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
+                  <div className="flex justify-start items-start">
                     <span
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-md"
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-md"
                       style={{
-                        backgroundColor: "hsl(0 0% 0% / 0.55)",
+                        backgroundColor: `${meta.color}1a`,
                         color: meta.color,
+                        border: `1px solid ${meta.color}33`,
+                        letterSpacing: "0.04em",
                       }}
                     >
-                      {meta.emoji} {meta.label}
+                      {meta.label}
                     </span>
                   </div>
                   <div>
@@ -660,7 +666,7 @@ function LosCabosStrip() {
                       {place.name}
                     </div>
                     <div
-                      className="flex items-center gap-1 text-white/75 mt-1"
+                      className="flex items-center gap-1 text-white/55 mt-1"
                       style={{ fontSize: 11 }}
                     >
                       <MapPin className="w-3 h-3" />
@@ -678,45 +684,6 @@ function LosCabosStrip() {
 }
 
 /* ============================================================ */
-/*  SPONSORS MICRO CTA                                           */
-/* ============================================================ */
-
-function SponsorsMicroCta() {
-  return (
-    <section>
-      <Link
-        to="/patrocinios"
-        className="flex items-center justify-between gap-3 rounded-2xl border border-white/[0.07] bg-card px-4 py-4 hover:border-white/[0.15] transition-colors group"
-      >
-        <div className="flex items-center gap-3 min-w-0">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-            style={{
-              background: `${ACCENT}1f`,
-              border: `1px solid ${ACCENT}40`,
-            }}
-          >
-            <Users className="w-5 h-5" style={{ color: ACCENT }} />
-          </div>
-          <div className="min-w-0">
-            <div
-              className="font-bold text-white truncate"
-              style={{ fontSize: 14 }}
-            >
-              Hecho posible por nuestros patrocinadores
-            </div>
-            <div className="text-white/55" style={{ fontSize: 12 }}>
-              Conoce a las marcas que impulsan el club.
-            </div>
-          </div>
-        </div>
-        <ChevronRight className="w-5 h-5 text-white/40 group-hover:text-white/80 transition-colors shrink-0" />
-      </Link>
-    </section>
-  );
-}
-
-/* ============================================================ */
 /*  PAGE                                                         */
 /* ============================================================ */
 
@@ -729,16 +696,15 @@ const Index = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4 }}
-        className="space-y-10 md:space-y-14 pb-10"
+        className="pb-10"
+        style={{ display: "flex", flexDirection: "column", gap: 48 }}
       >
         <HomeHero />
         <NextMatchSection />
-        <QuickAccessGrid />
+        <FanZoneTeaser onLoginClick={() => setAuthOpen(true)} />
         <AccesosBanner />
         <ShopStrip />
-        <FanZoneTeaser onLoginClick={() => setAuthOpen(true)} />
         <LosCabosStrip />
-        <SponsorsMicroCta />
       </motion.div>
 
       <Dialog open={authOpen} onOpenChange={setAuthOpen}>
