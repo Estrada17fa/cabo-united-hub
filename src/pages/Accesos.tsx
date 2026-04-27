@@ -213,7 +213,7 @@ function PriceAndCta({ tier }: { tier: Tier }) {
       : { background: tier.accent, color: tier.textOnAccent };
 
   return (
-    <div className="flex flex-col gap-3 mt-4">
+    <div className="flex flex-col gap-2 mt-1">
       <div>
         <div className="text-3xl md:text-4xl font-bold text-white tracking-tight">{tier.price}</div>
         <div className="text-[13px] text-white/60 mt-1">por temporada</div>
@@ -482,7 +482,7 @@ const Accesos = () => {
                   lineHeight: 1.05,
                 }}
               >
-                Sé Amo del Paraíso
+                Únete y sé Amo del Paraíso
               </h1>
               <p
                 className="mx-auto text-white/70"
