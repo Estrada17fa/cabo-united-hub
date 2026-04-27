@@ -238,7 +238,7 @@ function NextMatchSection() {
   return (
     <section>
       <SectionHeader
-        eyebrow={isLive ? "EN VIVO" : "PRÓXIMO PARTIDO"}
+        eyebrow={isLive ? "PARTIDO EN CURSO" : "PRÓXIMO PARTIDO"}
         title={isLive ? "Estamos jugando ahora" : "No te lo pierdas"}
         href="/zona-partido"
         hrefLabel="Ver todos"
@@ -246,11 +246,101 @@ function NextMatchSection() {
       {isLoading ? (
         <Skeleton className="h-[260px] rounded-2xl" />
       ) : isLive && featuredMatch ? (
-        <LiveMatchPlayer match={featuredMatch} />
+        <LiveMatchPreview match={featuredMatch} />
       ) : (
         <MatchHeroCard match={featuredMatch} />
       )}
     </section>
+  );
+}
+
+/* ============================================================ */
+/*  LIVE MATCH PREVIEW (timeline + Ver en vivo CTA)             */
+/* ============================================================ */
+
+function LiveMatchPreview({ match }: { match: Tables<"matches"> }) {
+  const { events } = useLiveMatch(match);
+  const logos = useTeamLogos();
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45 }}
+      className="rounded-2xl border overflow-hidden"
+      style={{
+        backgroundColor: "#121212",
+        borderColor: "hsl(142 76% 45% / 0.45)",
+        boxShadow: "0 0 30px -12px hsl(142 76% 45% / 0.45)",
+      }}
+    >
+      <div className="px-4 py-4 sm:px-5 sm:py-5 flex flex-col gap-4">
+        {/* Teams + score */}
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+          <div className="flex items-center gap-2 min-w-0 justify-end sm:justify-center">
+            <span className="text-xs sm:text-sm font-bold text-foreground truncate text-right sm:text-center order-1 sm:order-2">
+              {match.home_team}
+            </span>
+            <TeamCrest
+              teamName={match.home_team}
+              logoUrl={logos[match.home_team]}
+              size={28}
+              className="order-2 sm:order-1"
+            />
+          </div>
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <span
+              className="text-3xl sm:text-4xl font-extrabold tabular-nums leading-none text-white"
+              style={{ textShadow: "0 0 18px hsl(142 76% 45% / 0.5)" }}
+            >
+              {match.home_score ?? 0}
+            </span>
+            <span className="text-sm font-extrabold text-muted-foreground tracking-wider">
+              VS
+            </span>
+            <span
+              className="text-3xl sm:text-4xl font-extrabold tabular-nums leading-none text-white"
+              style={{ textShadow: "0 0 18px hsl(142 76% 45% / 0.5)" }}
+            >
+              {match.away_score ?? 0}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 min-w-0 justify-start sm:justify-center">
+            <TeamCrest
+              teamName={match.away_team}
+              logoUrl={logos[match.away_team]}
+              size={28}
+            />
+            <span className="text-xs sm:text-sm font-bold text-foreground truncate">
+              {match.away_team}
+            </span>
+          </div>
+        </div>
+
+        {/* Live timeline */}
+        <div className="w-full pt-3 border-t border-border/50">
+          <ResponsiveMatchTimeline events={events} homeTeam={match.home_team} />
+        </div>
+
+        {/* Ver en vivo CTA */}
+        <Link to="/zona-partido" className="w-full">
+          <motion.button
+            animate={{ scale: [1, 1.02, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full h-12 flex items-center justify-center gap-2 rounded-xl font-bold text-[13px] sm:text-[15px]"
+            style={{
+              backgroundColor: "hsl(142 76% 50%)",
+              color: "hsl(0 0% 6%)",
+              boxShadow: "0 8px 24px -6px hsl(142 76% 50% / 0.55)",
+            }}
+          >
+            <Radio className="w-5 h-5" />
+            Ver en vivo
+          </motion.button>
+        </Link>
+      </div>
+    </motion.div>
   );
 }
 
