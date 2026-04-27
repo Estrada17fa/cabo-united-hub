@@ -41,7 +41,6 @@ import stadiumHero from "@/assets/stadium-hero.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
 import tiendaHero from "@/assets/tienda-hero-1.jpg";
 import adnCabenoImg from "@/assets/adn-cabeno.jpg";
-import donKollImg from "@/assets/don-koll.jpg";
 
 const ACCENT = "#00abc4";
 const LCU = "Los Cabos United";
