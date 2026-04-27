@@ -171,6 +171,25 @@ function HomeHero() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           </motion.div>
+
+          {/* Stat pills */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.55 }}
+            className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-white/55"
+            style={{ fontSize: 11, letterSpacing: "0.02em" }}
+          >
+            {HERO_STATS.map((s, i) => (
+              <span key={s.label} className="inline-flex items-center gap-1.5">
+                <span>{s.icon}</span>
+                <span>{s.label}</span>
+                {i < HERO_STATS.length - 1 && (
+                  <span className="text-white/30 ml-2">·</span>
+                )}
+              </span>
+            ))}
+          </motion.div>
         </div>
       </div>
     </section>
