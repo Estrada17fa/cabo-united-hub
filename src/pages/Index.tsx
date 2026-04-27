@@ -137,8 +137,7 @@ function SectionHeader({
           className="self-start sm:self-auto inline-flex items-center gap-1 text-white/70 hover:text-white transition-colors font-semibold whitespace-nowrap shrink-0"
           style={{ fontSize: 13 }}
         >
-          <span className="sm:hidden">Ver todo</span>
-          <span className="hidden sm:inline">{hrefLabel}</span>
+          {hrefLabel}
           <ChevronRight className="w-4 h-4" />
         </Link>
       )}
