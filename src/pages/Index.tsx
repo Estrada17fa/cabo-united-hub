@@ -951,6 +951,7 @@ function TuClubSection() {
 /* ---------- Tu Club: Plantel ---------- */
 function TuClubPlantelCard() {
   const [activePos, setActivePos] = useState<ClubPosition>("Delanteros");
+  const [selectedPlayer, setSelectedPlayer] = useState<ClubPlayer | null>(null);
   const positions: ClubPosition[] = [
     "Porteros",
     "Defensas",
@@ -958,9 +959,10 @@ function TuClubPlantelCard() {
     "Delanteros",
     "Cuerpo Técnico",
   ];
-  const players = CLUB_ROSTER[activePos].slice(0, 4);
+  const players = CLUB_ROSTER[activePos];
 
   return (
+    <>
     <div
       className="lg:col-span-2 rounded-2xl border overflow-hidden flex flex-col"
       style={{
@@ -1019,39 +1021,175 @@ function TuClubPlantelCard() {
           })}
         </div>
 
-        {/* Players grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 flex-1 content-start">
-          <AnimatePresence mode="popLayout">
-            {players.map((player) => (
-              <motion.div
-                key={`${activePos}-${player.name}`}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.25 }}
-                className="rounded-xl border bg-black/30 p-2.5 transition-colors hover:border-[#00abc4]/50"
-                style={{ borderColor: "rgba(255,255,255,0.07)" }}
-              >
-                <div className="aspect-square rounded-lg bg-white/5 flex items-center justify-center mb-1.5 relative overflow-hidden">
-                  <span className="text-2xl font-extrabold text-white/55">
-                    {player.number}
-                  </span>
-                  <span className="absolute top-1 right-1 text-sm">
-                    {player.flag}
-                  </span>
-                </div>
-                <div className="text-[11px] font-semibold text-white truncate">
-                  {player.name}
-                </div>
-                <div className="text-[10px] text-white/50 truncate">
-                  {player.role ? player.role : `#${player.number}`}
-                </div>
-              </motion.div>
-            ))}
+        {/* Players carousel — horizontal scroll, all players in active position */}
+        <div className="flex-1 -mx-2">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activePos}
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -12 }}
+              transition={{ duration: 0.25 }}
+              className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-2 pb-1"
+            >
+              {players.map((player) => (
+                <button
+                  key={player.name}
+                  onClick={() => setSelectedPlayer(player)}
+                  className="snap-start shrink-0 w-[120px] sm:w-[130px] rounded-xl border bg-black/30 p-2.5 text-left transition-all hover:border-[#00abc4]/60 hover:-translate-y-0.5"
+                  style={{ borderColor: "rgba(255,255,255,0.07)" }}
+                >
+                  <div className="aspect-square rounded-lg bg-white/5 flex items-center justify-center mb-1.5 relative overflow-hidden">
+                    <span className="text-2xl font-extrabold text-white/55">
+                      {player.number}
+                    </span>
+                    <span className="absolute top-1 right-1 text-sm">
+                      {player.flag}
+                    </span>
+                    {player.timesAmo > 0 && (
+                      <span
+                        className="absolute bottom-1 left-1 inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[8px] font-bold"
+                        style={{
+                          background: "hsl(336 80% 77% / 0.18)",
+                          color: "hsl(336 80% 77%)",
+                          border: "1px solid hsl(336 80% 77% / 0.4)",
+                        }}
+                      >
+                        <Star className="w-2 h-2 fill-current" />
+                        {player.timesAmo}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[11px] font-semibold text-white truncate">
+                    {player.name}
+                  </div>
+                  <div className="text-[10px] text-white/50 truncate">
+                    {player.role ? player.role : `#${player.number}`}
+                  </div>
+                </button>
+              ))}
+            </motion.div>
           </AnimatePresence>
+          <div className="text-[10px] text-white/35 text-center mt-2">
+            ← Desliza para ver más jugadores →
+          </div>
         </div>
       </div>
     </div>
+
+    <PlayerDetailDialog
+      player={selectedPlayer}
+      onClose={() => setSelectedPlayer(null)}
+    />
+    </>
+  );
+}
+
+/* ---------- Player Detail Dialog ---------- */
+function PlayerDetailDialog({
+  player,
+  onClose,
+}: {
+  player: ClubPlayer | null;
+  onClose: () => void;
+}) {
+  return (
+    <Dialog open={!!player} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="bg-card border-border max-w-md p-0 overflow-hidden">
+        {player && (
+          <>
+            {/* Header banner */}
+            <div
+              className="relative h-32 flex items-end justify-between px-5 pb-3"
+              style={{
+                background: `linear-gradient(135deg, ${ACCENT}33 0%, #0a0a0a 100%)`,
+              }}
+            >
+              <div
+                className="absolute top-3 right-3 w-12 h-12 rounded-full flex items-center justify-center text-2xl font-extrabold tabular-nums"
+                style={{
+                  background: "rgba(0,0,0,0.55)",
+                  color: ACCENT,
+                  border: `2px solid ${ACCENT}`,
+                }}
+              >
+                {player.number}
+              </div>
+              <div className="relative z-10">
+                <span className="text-3xl">{player.flag}</span>
+              </div>
+            </div>
+
+            <div className="px-5 pt-3 pb-5">
+              <DialogHeader className="text-left">
+                <DialogTitle className="text-xl font-extrabold text-white leading-tight">
+                  {player.name}
+                </DialogTitle>
+              </DialogHeader>
+              <div
+                className="text-[12px] font-bold uppercase tracking-wider mt-1"
+                style={{ color: ACCENT }}
+              >
+                {player.positionDetail}
+              </div>
+              <div className="text-[12px] text-white/55 mt-1">
+                {player.country} · {player.birthState} · {player.age} años
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-2 mt-4">
+                {[
+                  { value: player.matches, label: "PJ" },
+                  { value: player.goals, label: "GOLES" },
+                  { value: player.assists, label: "ASIST." },
+                ].map((s) => (
+                  <div
+                    key={s.label}
+                    className="rounded-xl border bg-black/40 px-2 py-3 text-center"
+                    style={{ borderColor: "rgba(255,255,255,0.07)" }}
+                  >
+                    <div className="text-2xl font-extrabold text-white tabular-nums leading-none">
+                      {s.value}
+                    </div>
+                    <div
+                      className="text-[10px] font-bold uppercase tracking-wider mt-1.5"
+                      style={{ color: ACCENT }}
+                    >
+                      {s.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {player.timesAmo > 0 && (
+                <div className="mt-3 flex justify-center">
+                  <span
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border"
+                    style={{
+                      background: "hsl(336 80% 77% / 0.12)",
+                      color: "hsl(336 80% 77%)",
+                      borderColor: "hsl(336 80% 77% / 0.4)",
+                    }}
+                  >
+                    <Star className="w-3 h-3 fill-current" />
+                    ×{player.timesAmo} VECES AMO DEL PARTIDO
+                  </span>
+                </div>
+              )}
+
+              <Link
+                to="/club"
+                className="mt-5 w-full inline-flex items-center justify-center gap-2 h-11 rounded-xl font-bold text-[13px] transition-opacity hover:opacity-90"
+                style={{ background: ACCENT, color: "#000" }}
+              >
+                Ver perfil completo
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }
 
