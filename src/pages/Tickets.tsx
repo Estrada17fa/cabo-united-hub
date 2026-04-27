@@ -523,7 +523,7 @@ const Tickets = () => {
             {/* Cards row, overlapping bottom of hero */}
             <div
               className="absolute left-0 right-0 z-20 px-4"
-              style={{ top: "55%" }}
+              style={{ top: "50%" }}
             >
               <div className="max-w-[1100px] mx-auto">
                 <div
@@ -540,7 +540,7 @@ const Tickets = () => {
         </div>
 
         {/* Mobile cards (horizontal scroll) */}
-        <div className="md:hidden -mx-3 mt-[-180px] relative z-20 mb-6">
+        <div className="md:hidden -mx-3 mt-[-220px] relative z-20 mb-6">
           <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-3 pb-2">
             {tiers.map((t) => (
               <div
