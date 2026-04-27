@@ -153,8 +153,8 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 safe-top">
-      {/* Mobile layout */}
-      <div className="md:hidden">
+      {/* Mobile + Tablet layout */}
+      <div className="lg:hidden">
         {/* Top row: hamburger left, shield center, social right */}
         <div className="relative flex items-center justify-center h-14 px-2">
           <button
@@ -216,7 +216,7 @@ export function Header() {
       </div>
 
       {/* Desktop layout */}
-      <div className="hidden md:flex items-center h-20 px-4 gap-1.5 border-b border-border">
+      <div className="hidden lg:flex items-center h-20 px-4 gap-1.5 border-b border-border">
         <button
           onClick={() => setIsMenuOpen(true)}
           className="relative flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted active:bg-muted transition-colors"
@@ -249,7 +249,7 @@ export function Header() {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-full text-xs lg:text-sm font-bold transition-all duration-300 ${
+                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-full text-xs lg:text-sm font-semibold transition-all duration-300 ${
                   isActive(link.path)
                     ? "bg-primary text-secondary-foreground shadow-lg shadow-primary/25"
                     : "text-foreground/50 hover:text-foreground/80 hover:bg-muted/40"
