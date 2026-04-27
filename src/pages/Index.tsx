@@ -8,7 +8,6 @@ import {
   Crown,
   Gamepad2,
   MapPin,
-  Sparkles,
   Radio,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
