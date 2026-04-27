@@ -106,11 +106,11 @@ function SectionHeader({
   hrefLabel?: string;
 }) {
   return (
-    <div className="flex items-end justify-between mb-4 px-1">
-      <div>
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-4 mb-4 px-1">
+      <div className="min-w-0">
         {eyebrow && (
           <div
-            className="font-bold mb-1.5 inline-flex items-center gap-2"
+            className="font-bold mb-1.5 inline-flex items-center gap-2 flex-wrap"
             style={{ color: ACCENT, fontSize: 11, letterSpacing: "0.2em" }}
           >
             <span
@@ -123,7 +123,7 @@ function SectionHeader({
         <h2
           className="font-extrabold text-white"
           style={{
-            fontSize: "clamp(28px, 4vw, 44px)",
+            fontSize: "clamp(22px, 6vw, 44px)",
             letterSpacing: "-0.03em",
             lineHeight: 1.05,
           }}
@@ -134,10 +134,11 @@ function SectionHeader({
       {href && (
         <Link
           to={href}
-          className="inline-flex items-center gap-1 text-white/70 hover:text-white transition-colors font-semibold"
+          className="self-start sm:self-auto inline-flex items-center gap-1 text-white/70 hover:text-white transition-colors font-semibold whitespace-nowrap shrink-0"
           style={{ fontSize: 13 }}
         >
-          {hrefLabel}
+          <span className="sm:hidden">Ver todo</span>
+          <span className="hidden sm:inline">{hrefLabel}</span>
           <ChevronRight className="w-4 h-4" />
         </Link>
       )}
