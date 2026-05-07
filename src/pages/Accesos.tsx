@@ -522,20 +522,12 @@ const Accesos = () => {
                   <TabsTrigger
                     key={t.id}
                     value={t.id}
-                    className="relative rounded-full px-5 py-2.5 text-sm font-bold border data-[state=active]:shadow-lg transition-all"
+                    className="relative rounded-full px-5 py-2.5 text-sm font-bold border border-white/10 bg-[#111] text-white/60 data-[state=active]:bg-white data-[state=active]:text-[#0a0a0a] data-[state=active]:border-transparent data-[state=active]:shadow-lg transition-all"
                     style={{
-                      borderColor: "rgba(255,255,255,0.1)",
-                      background: "#111",
-                      color: "rgba(255,255,255,0.6)",
-                      // active styles via CSS-in-JS not available; use data attrs through className override
+                      ['--accent' as any]: t.accent,
                     } as React.CSSProperties}
                   >
-                    <span
-                      className="relative z-10"
-                      style={{ color: undefined }}
-                    >
-                      {t.badge}
-                    </span>
+                    <span className="relative z-10">{t.badge}</span>
                     {t.id === "premium" && (
                       <span
                         className="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full font-bold"
