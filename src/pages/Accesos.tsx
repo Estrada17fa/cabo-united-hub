@@ -253,181 +253,85 @@ function PriceAndCta({ tier }: { tier: Tier }) {
   );
 }
 
-const KIT_TOOLTIPS: Record<string, string> = {
-  "Kit Digital": "Pase digital · Stickers WA · Wallpapers",
-  "Kit Básico": "Tarjeta personalizada · Gorra · Pin Metálico · Stickers",
-  "Kit Medio": "Kit Digital + Jersey Oficial · Playera Merch · Parche · Bandera",
-  "Kit Platino": "Kit Medio + Jersey Personalizado · Mochila Oficial",
+const tierBenefits: Record<Tier["id"], { kitName: string; kitImage: string; highlight: string; benefits: string[] }> = {
+  free: {
+    kitName: "Kit Digital",
+    kitImage: kitFan,
+    highlight: "Para empezar a sentir los colores sin costo.",
+    benefits: [
+      "Pase digital oficial",
+      "Stickers de WhatsApp exclusivos",
+      "Wallpapers para tu celular",
+      "5% de descuento en tienda oficial",
+      "Acceso a la comunidad rojinegra",
+    ],
+  },
+  gold: {
+    kitName: "Kit Básico",
+    kitImage: kitGold,
+    highlight: "Tu primer abono: entras al estadio con los colores puestos.",
+    benefits: [
+      "Entrada general a todos los partidos en casa",
+      "Tarjeta personalizada + Gorra oficial",
+      "Pin metálico + paquete de stickers",
+      "Tu nombre en el muro digital del estadio",
+      "10% de descuento en tienda oficial",
+    ],
+  },
+  premium: {
+    kitName: "Kit Medio",
+    kitImage: kitPremium,
+    highlight: "El favorito: vives el partido desde el área VIP con jersey puesto.",
+    benefits: [
+      "Todo lo del nivel Gold",
+      "Jersey oficial + playera merch + parche + bandera",
+      "Acceso VIP / área preferencial",
+      "Foto con jugadores (1x por temporada)",
+      "Puntos dobles en Fan Zone",
+      "25% de descuento en tienda oficial",
+    ],
+  },
+  platino: {
+    kitName: "Kit Platino",
+    kitImage: kitPlatino,
+    highlight: "La experiencia completa: tu nombre en el jersey, en el muro y con el equipo.",
+    benefits: [
+      "Todo lo del nivel Premium",
+      "Jersey personalizado con tu nombre",
+      "Mochila oficial",
+      "Meet & greet con jugadores",
+      "40% de descuento en tienda oficial",
+      "Atención prioritaria por WhatsApp",
+    ],
+  },
 };
-
-type Cell =
-  | { type: "text"; value: string }
-  | { type: "check"; color: string }
-  | { type: "x" }
-  | { type: "kit"; value: string }
-  | { type: "discount"; value: string; color: string };
-
-const benefitRows: { label: string; cells: Cell[] }[] = [
-  {
-    label: "Precio",
-    cells: [
-      { type: "text", value: "$0" },
-      { type: "text", value: "$1,499" },
-      { type: "text", value: "$2,499" },
-      { type: "text", value: "$4,499" },
-    ],
-  },
-  {
-    label: "Entrada general a todos los partidos en casa",
-    cells: [
-      { type: "x" },
-      { type: "check", color: "#F59E0B" },
-      { type: "check", color: "#00abc4" },
-      { type: "check", color: "#E2E8F0" },
-    ],
-  },
-  {
-    label: "Nombre en el muro digital del estadio",
-    cells: [
-      { type: "x" },
-      { type: "check", color: "#F59E0B" },
-      { type: "check", color: "#00abc4" },
-      { type: "check", color: "#E2E8F0" },
-    ],
-  },
-  {
-    label: "Kit Oficial",
-    cells: [
-      { type: "kit", value: "Kit Digital" },
-      { type: "kit", value: "Kit Básico" },
-      { type: "kit", value: "Kit Medio" },
-      { type: "kit", value: "Kit Platino" },
-    ],
-  },
-  {
-    label: "Descuento en tienda oficial",
-    cells: [
-      { type: "discount", value: "5%", color: "#FFFFFF" },
-      { type: "discount", value: "10%", color: "#F59E0B" },
-      { type: "discount", value: "25%", color: "#00abc4" },
-      { type: "discount", value: "40%", color: "#E2E8F0" },
-    ],
-  },
-  {
-    label: "Puntos dobles en Fan Zone",
-    cells: [
-      { type: "x" },
-      { type: "x" },
-      { type: "check", color: "#00abc4" },
-      { type: "check", color: "#E2E8F0" },
-    ],
-  },
-  {
-    label: "Acceso VIP / área preferencial",
-    cells: [
-      { type: "x" },
-      { type: "x" },
-      { type: "check", color: "#00abc4" },
-      { type: "check", color: "#E2E8F0" },
-    ],
-  },
-  {
-    label: "Foto con jugadores (1x temporada)",
-    cells: [
-      { type: "x" },
-      { type: "x" },
-      { type: "check", color: "#00abc4" },
-      { type: "check", color: "#E2E8F0" },
-    ],
-  },
-  {
-    label: "Jersey personalizado con tu nombre",
-    cells: [
-      { type: "x" },
-      { type: "x" },
-      { type: "x" },
-      { type: "check", color: "#E2E8F0" },
-    ],
-  },
-  {
-    label: "Meet & greet con jugadores",
-    cells: [
-      { type: "x" },
-      { type: "x" },
-      { type: "x" },
-      { type: "check", color: "#E2E8F0" },
-    ],
-  },
-];
-
-function CellRenderer({ cell }: { cell: Cell }) {
-  if (cell.type === "text") {
-    return <span className="font-bold text-white">{cell.value}</span>;
-  }
-  if (cell.type === "check") {
-    return (
-      <span
-        className="inline-flex items-center justify-center w-6 h-6 rounded-full"
-        style={{ background: cell.color }}
-      >
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
-      </span>
-    );
-  }
-  if (cell.type === "x") {
-    return (
-      <span className="text-lg" style={{ color: "rgba(255,255,255,0.2)" }}>
-        ✕
-      </span>
-    );
-  }
-  if (cell.type === "kit") {
-    return (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span className="inline-flex items-center gap-1 text-white text-sm cursor-help">
-            {cell.value}
-            <Info className="w-3.5 h-3.5 text-white/40" />
-          </span>
-        </TooltipTrigger>
-        <TooltipContent side="top" className="max-w-[260px]">
-          <p className="text-xs">{KIT_TOOLTIPS[cell.value]}</p>
-        </TooltipContent>
-      </Tooltip>
-    );
-  }
-  if (cell.type === "discount") {
-    return (
-      <span className="font-bold" style={{ color: cell.color }}>
-        {cell.value}
-      </span>
-    );
-  }
-  return null;
-}
 
 const POS = [
   {
-    name: "OXXO Plaza Cabo San Lucas",
+    name: "Tienda Express Cabo San Lucas",
     address: "Blvd. Marina 100, Centro, Cabo San Lucas",
     hours: "Lun-Dom 24h",
     phone: "+52 624 143 0000",
+    logo: posOxxo,
   },
   {
     name: "Tienda LC United Centro",
     address: "Av. Lázaro Cárdenas 200, San José del Cabo",
     hours: "Lun-Sáb 10:00–20:00",
     phone: "+52 624 142 1111",
+    logo: posTienda,
   },
   {
     name: "Estadio Don Koll - Taquilla",
     address: "Carretera Transpeninsular Km 4.5, San José del Cabo",
     hours: "Día de partido desde 14:00",
     phone: "+52 624 144 2222",
+    logo: posEstadio,
   },
 ];
+
+const mapsUrl = (address: string) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
 const Accesos = () => {
   return (
