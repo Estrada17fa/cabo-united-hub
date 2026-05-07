@@ -335,7 +335,7 @@ const mapsUrl = (address: string) =>
 
 const Accesos = () => {
   return (
-    <TooltipProvider delayDuration={150}>
+    <>
       <style>{`
         @keyframes boletos-shimmer {
           0% { background-position: -200% center; }
