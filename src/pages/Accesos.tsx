@@ -454,98 +454,179 @@ const Accesos = () => {
 
         {/* Tablet 2x2 fallback handled by breakpoints — keep simple: md uses 4-col, sm uses scroll */}
 
-        {/* BENEFITS COMPARISON */}
-        <section className="max-w-6xl mx-auto mt-12 md:mt-16">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-white">¿Qué incluye cada nivel?</h2>
-            <p className="text-sm text-white/60 mt-2">Elige el que más se adapta a ti</p>
+        {/* STORYTELLING — por qué ser socio */}
+        <section className="max-w-4xl mx-auto mt-16 md:mt-24 px-2 text-center">
+          <div
+            className="font-bold mb-4"
+            style={{ color: "#00abc4", fontSize: 11, letterSpacing: "0.18em" }}
+          >
+            POR QUÉ SER AMO DEL PARAÍSO
+          </div>
+          <h2
+            className="font-extrabold text-white"
+            style={{
+              fontSize: "clamp(28px, 5vw, 44px)",
+              lineHeight: 1.05,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            No compras un boleto.
+            <br />
+            <span className="gradient-text">Te vuelves parte del paraíso.</span>
+          </h2>
+          <p className="mt-5 mx-auto text-white/70 text-base md:text-lg" style={{ maxWidth: 580 }}>
+            Cada gol, cada grito, cada victoria — los vives desde adentro.
+            Esto no es ver al equipo: es ser el equipo.
+          </p>
+
+          <div className="grid sm:grid-cols-3 gap-6 mt-10 text-left">
+            {[
+              { icon: Heart, title: "Tu lugar en la grada", desc: "Desde el primer minuto, tu asiento te espera cada partido en casa." },
+              { icon: Shirt, title: "Los colores puestos", desc: "Kit oficial que te identifica como parte de la familia rojinegra." },
+              { icon: Users, title: "Una familia rojinegra", desc: "Eventos, sorteos y experiencias exclusivas solo para socios." },
+            ].map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex gap-3 items-start">
+                <div
+                  className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{ background: "rgba(0,171,196,0.12)", border: "1px solid rgba(0,171,196,0.3)" }}
+                >
+                  <Icon className="w-5 h-5" style={{ color: "#00abc4" }} />
+                </div>
+                <div>
+                  <div className="font-bold text-white text-sm">{title}</div>
+                  <div className="text-xs text-white/60 mt-1 leading-relaxed">{desc}</div>
+                </div>
+              </div>
+            ))}
           </div>
 
-          <div
-            className="rounded-2xl overflow-hidden border border-border"
-            style={{ background: "#0f0f0f" }}
+          <a
+            href="#niveles"
+            className="inline-flex items-center gap-2 mt-10 text-sm font-semibold text-white/70 hover:text-white transition-colors"
           >
-            {/* Scrollable wrapper for mobile */}
-            <div className="overflow-x-auto">
-              <table className="w-full" style={{ minWidth: 700, borderCollapse: "collapse" }}>
-                <thead>
-                  <tr style={{ background: "#1a1a1a" }}>
-                    <th
-                      className="text-left p-4 text-xs font-semibold text-white/70 uppercase sticky left-0 z-10"
-                      style={{ background: "#1a1a1a", minWidth: 220 }}
+            Elige tu nivel ↓
+          </a>
+        </section>
+
+        {/* TABS POR NIVEL CON KIT MOCKUP */}
+        <section id="niveles" className="max-w-6xl mx-auto mt-12 md:mt-16">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-white">¿Qué incluye cada nivel?</h2>
+            <p className="text-sm text-white/60 mt-2">Mira el kit y los beneficios de tu abono</p>
+          </div>
+
+          <Tabs defaultValue="premium" className="w-full">
+            <div className="overflow-x-auto scrollbar-hide -mx-3 px-3">
+              <TabsList className="bg-transparent p-0 h-auto gap-2 flex w-max mx-auto">
+                {tiers.map((t) => (
+                  <TabsTrigger
+                    key={t.id}
+                    value={t.id}
+                    className="relative rounded-full px-5 py-2.5 text-sm font-bold border data-[state=active]:shadow-lg transition-all"
+                    style={{
+                      borderColor: "rgba(255,255,255,0.1)",
+                      background: "#111",
+                      color: "rgba(255,255,255,0.6)",
+                      // active styles via CSS-in-JS not available; use data attrs through className override
+                    } as React.CSSProperties}
+                  >
+                    <span
+                      className="relative z-10"
+                      style={{ color: undefined }}
                     >
-                      Beneficio
-                    </th>
-                    {tiers.map((t) => (
-                      <th
-                        key={t.id}
-                        className="p-4 text-xs font-bold uppercase text-center"
-                        style={{ color: t.accent, minWidth: 110 }}
+                      {t.badge}
+                    </span>
+                    {t.id === "premium" && (
+                      <span
+                        className="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full font-bold"
+                        style={{ background: "#00abc4", color: "#0a0a0a", fontSize: 9, letterSpacing: "0.05em" }}
                       >
-                        {t.badge}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {benefitRows.map((row, idx) => (
-                    <tr
-                      key={row.label}
-                      style={{ background: idx % 2 === 0 ? "#111" : "#0f0f0f" }}
-                    >
-                      <td
-                        className="p-4 text-sm text-white/80 sticky left-0 z-10"
-                        style={{ background: idx % 2 === 0 ? "#111" : "#0f0f0f" }}
+                        POPULAR
+                      </span>
+                    )}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
+
+            {tiers.map((t) => {
+              const data = tierBenefits[t.id];
+              return (
+                <TabsContent key={t.id} value={t.id} className="mt-8">
+                  <div
+                    className="rounded-2xl overflow-hidden border"
+                    style={{
+                      background: "linear-gradient(135deg, #0f0f0f, #141414)",
+                      borderColor: `${t.accent}40`,
+                      boxShadow: `0 0 60px -20px ${t.accent}30`,
+                    }}
+                  >
+                    <div className="grid md:grid-cols-2 gap-0">
+                      {/* Imagen del kit */}
+                      <div
+                        className="relative aspect-square md:aspect-auto md:min-h-[420px] flex items-center justify-center"
+                        style={{ background: "#0a0a0a" }}
                       >
-                        {row.label}
-                      </td>
-                      {row.cells.map((cell, i) => (
-                        <td key={i} className="p-4 text-center">
-                          <CellRenderer cell={cell} />
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                  {/* CTA row */}
-                  <tr style={{ background: "#1a1a1a" }}>
-                    <td className="p-4 text-xs uppercase text-white/50 sticky left-0 z-10" style={{ background: "#1a1a1a" }}>
-                      Únete ahora
-                    </td>
-                    {tiers.map((t) => (
-                      <td key={t.id} className="p-4 align-middle">
-                        <a
-                          href={WHATSAPP_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center gap-1.5 font-bold w-full transition-opacity hover:opacity-90"
+                        <img
+                          src={data.kitImage}
+                          alt={`${data.kitName} - ${t.name}`}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          width={1024}
+                          height={1024}
+                        />
+                        <div
+                          className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-md"
+                          style={{ background: "rgba(0,0,0,0.6)", border: `1px solid ${t.accent}50`, color: t.accent }}
+                        >
+                          {data.kitName}
+                        </div>
+                      </div>
+
+                      {/* Beneficios */}
+                      <div className="p-6 md:p-8 flex flex-col">
+                        <div className="text-xs font-bold uppercase tracking-widest" style={{ color: t.accent }}>
+                          {t.badge}
+                        </div>
+                        <h3 className="text-2xl md:text-3xl font-extrabold text-white mt-1">{t.name}</h3>
+
+                        <div
+                          className="mt-4 px-4 py-3 rounded-xl text-sm italic"
                           style={{
-                            height: 40,
-                            borderRadius: 8,
-                            fontSize: 12,
-                            background:
-                              t.id === "free"
-                                ? "transparent"
-                                : t.id === "platino"
-                                ? "#FFFFFF"
-                                : t.accent,
-                            color:
-                              t.id === "free" ? "#fff" : t.textOnAccent,
-                            border:
-                              t.id === "free"
-                                ? "1px solid rgba(255,255,255,0.3)"
-                                : "none",
-                            padding: "0 10px",
+                            background: `${t.accent}10`,
+                            borderLeft: `3px solid ${t.accent}`,
+                            color: "rgba(255,255,255,0.85)",
                           }}
                         >
-                          {t.cta}
-                        </a>
-                      </td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+                          "{data.highlight}"
+                        </div>
+
+                        <ul className="mt-5 space-y-2.5 flex-1">
+                          {data.benefits.map((b) => (
+                            <li key={b} className="flex items-start gap-2.5 text-sm text-white/85">
+                              <span
+                                className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full mt-0.5"
+                                style={{ background: t.accent }}
+                              >
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                              </span>
+                              {b}
+                            </li>
+                          ))}
+                        </ul>
+
+                        <div className="mt-6 pt-5 border-t border-white/10">
+                          <PriceAndCta tier={t} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+              );
+            })}
+          </Tabs>
         </section>
 
         {/* BOLETOMOVIL SECTION */}
@@ -624,39 +705,60 @@ const Accesos = () => {
         <section className="max-w-6xl mx-auto mt-8 mb-4">
           <h3 className="text-lg font-bold text-white">Puntos de venta físicos</h3>
           <p className="text-[13px] text-white/60 mb-4">
-            Paga en efectivo en estos establecimientos
+            Paga en efectivo en estos establecimientos · Toca para ver en Google Maps
           </p>
 
           <div className="grid md:grid-cols-3 gap-3">
             {POS.map((p) => (
-              <div
+              <a
                 key={p.name}
-                className="rounded-xl p-4 border border-border"
+                href={mapsUrl(p.address)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative rounded-xl p-4 border border-border block transition-all hover:border-[#00abc4]/50 hover:-translate-y-0.5"
                 style={{ background: "#111" }}
               >
-                <div className="flex items-start gap-2">
-                  <MapPin className="w-4 h-4 mt-0.5" style={{ color: "#00abc4" }} />
+                <ExternalLink className="absolute top-3 right-3 w-3.5 h-3.5 text-white/30 group-hover:text-[#00abc4] transition-colors" />
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 w-14 h-14 rounded-lg bg-white flex items-center justify-center overflow-hidden">
+                    <img
+                      src={p.logo}
+                      alt={`Logo ${p.name}`}
+                      className="w-full h-full object-contain p-1.5"
+                      loading="lazy"
+                      width={56}
+                      height={56}
+                    />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-bold text-white">{p.name}</div>
-                    <div className="text-xs text-white/60 mt-1">{p.address}</div>
+                    <div className="text-xs text-white/60 mt-1 flex items-start gap-1">
+                      <MapPin className="w-3 h-3 mt-0.5 shrink-0" style={{ color: "#00abc4" }} />
+                      <span>{p.address}</span>
+                    </div>
                     <div className="text-xs text-white/60 mt-1 flex items-center gap-1">
                       <Clock className="w-3 h-3" /> {p.hours}
                     </div>
-                    <a
-                      href={`tel:${p.phone.replace(/\s/g, "")}`}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.location.href = `tel:${p.phone.replace(/\s/g, "")}`;
+                      }}
                       className="text-xs mt-1 flex items-center gap-1 hover:underline"
                       style={{ color: "#00abc4" }}
                     >
                       <Phone className="w-3 h-3" /> {p.phone}
-                    </a>
+                    </button>
                   </div>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </section>
       </motion.div>
-    </TooltipProvider>
+    </>
   );
 };
 
