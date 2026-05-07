@@ -1,14 +1,15 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { Info, MapPin, Calendar, Phone, Clock, ArrowRight } from "lucide-react";
+import { MapPin, Calendar, Phone, Clock, ArrowRight, ExternalLink, Heart, Shirt, Users } from "lucide-react";
 import stadiumHero from "@/assets/accesos-page-hero.jpg";
 import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider,
-} from "@/components/ui/tooltip";
+import kitFan from "@/assets/kit-fan.jpg";
+import kitGold from "@/assets/kit-gold.jpg";
+import kitPremium from "@/assets/kit-premium.jpg";
+import kitPlatino from "@/assets/kit-platino.jpg";
+import posOxxo from "@/assets/pos-oxxo.png";
+import posTienda from "@/assets/pos-tienda.png";
+import posEstadio from "@/assets/pos-estadio.png";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const WHATSAPP_URL = "https://wa.me/525500000000";
 const BOLETOMOVIL_URL = "https://www.boletomovil.com";
@@ -29,11 +30,11 @@ type Tier = {
 const tiers: Tier[] = [
   {
     id: "free",
-    name: "Amo del Paraíso",
+    name: "Amo del Paraíso Fan",
     label: "AMO DEL PARAÍSO",
     price: "$0",
-    badge: "GRATIS",
-    cta: "Únete gratis",
+    badge: "FAN",
+    cta: "Únete como Fan",
     accent: "#FFFFFF",
     textOnAccent: "#0a0a0a",
     tagline: "Acceso digital y comunidad oficial",
