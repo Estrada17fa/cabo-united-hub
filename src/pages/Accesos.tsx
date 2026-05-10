@@ -216,13 +216,13 @@ function BenefitGroup({
   );
 }
 
-function TierBigCard({ tier, index }: { tier: Tier; index: number }) {
+function TierBigCard({ tier }: { tier: Tier }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className="relative rounded-3xl overflow-hidden flex flex-col"
       style={{
         background: "#0f0f0f",
