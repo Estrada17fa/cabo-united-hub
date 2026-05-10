@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
-import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import stadiumHero from "@/assets/accesos-page-hero.jpg";
 import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
 import kitFan from "@/assets/accesos-kit-fan.jpg";
@@ -215,13 +216,13 @@ function BenefitGroup({
   );
 }
 
-function TierBigCard({ tier, index }: { tier: Tier; index: number }) {
+function TierBigCard({ tier }: { tier: Tier }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       className="relative rounded-3xl overflow-hidden flex flex-col"
       style={{
         background: "#0f0f0f",
@@ -330,6 +331,97 @@ function TierBigCard({ tier, index }: { tier: Tier; index: number }) {
         </a>
       </div>
     </motion.article>
+  );
+}
+
+function TierCarousel() {
+  const [index, setIndex] = useState(2); // start on Premium (popular)
+  const tier = tiers[index];
+  const go = (dir: 1 | -1) =>
+    setIndex((i) => (i + dir + tiers.length) % tiers.length);
+
+  return (
+    <div>
+      {/* Tier tabs */}
+      <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-6 px-2 flex-wrap">
+        {tiers.map((t, i) => {
+          const active = i === index;
+          return (
+            <button
+              key={t.id}
+              onClick={() => setIndex(i)}
+              className="relative px-4 md:px-5 py-2 rounded-full text-[12px] md:text-[13px] font-bold uppercase tracking-[0.08em] transition-all"
+              style={{
+                background: active ? t.accent : "rgba(255,255,255,0.05)",
+                color: active ? "#0a0a0a" : "rgba(255,255,255,0.6)",
+                border: active ? "none" : "1px solid rgba(255,255,255,0.08)",
+                boxShadow: active ? `0 6px 20px ${t.accent}33` : undefined,
+              }}
+            >
+              {t.badge}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Carousel viewport */}
+      <div className="relative">
+        <div className="overflow-hidden">
+          <AnimatePresence mode="wait" initial={false}>
+            <TierBigCard key={tier.id} tier={tier} />
+          </AnimatePresence>
+        </div>
+
+        {/* Arrows */}
+        <button
+          onClick={() => go(-1)}
+          aria-label="Nivel anterior"
+          className="hidden md:flex absolute top-1/2 -translate-y-1/2 -left-5 lg:-left-14 items-center justify-center w-11 h-11 rounded-full bg-card/90 backdrop-blur border border-border text-white hover:bg-card transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => go(1)}
+          aria-label="Siguiente nivel"
+          className="hidden md:flex absolute top-1/2 -translate-y-1/2 -right-5 lg:-right-14 items-center justify-center w-11 h-11 rounded-full bg-card/90 backdrop-blur border border-border text-white hover:bg-card transition-colors"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Mobile arrows + dots */}
+      <div className="flex items-center justify-center gap-4 mt-6">
+        <button
+          onClick={() => go(-1)}
+          aria-label="Nivel anterior"
+          className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-card border border-border text-white"
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+        <div className="flex items-center gap-2">
+          {tiers.map((t, i) => (
+            <button
+              key={t.id}
+              onClick={() => setIndex(i)}
+              aria-label={`Ir a ${t.badge}`}
+              className="rounded-full transition-all"
+              style={{
+                width: i === index ? 22 : 8,
+                height: 8,
+                background: i === index ? t.accent : "rgba(255,255,255,0.2)",
+              }}
+            />
+          ))}
+        </div>
+        <button
+          onClick={() => go(1)}
+          aria-label="Siguiente nivel"
+          className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-card border border-border text-white"
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -487,11 +579,7 @@ const Accesos = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:gap-8">
-          {tiers.map((t, i) => (
-            <TierBigCard key={t.id} tier={t} index={i} />
-          ))}
-        </div>
+        <TierCarousel />
       </section>
 
       {/* BOLETOMOVIL SECTION */}
