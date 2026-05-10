@@ -488,11 +488,7 @@ const Accesos = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:gap-8">
-          {tiers.map((t, i) => (
-            <TierBigCard key={t.id} tier={t} index={i} />
-          ))}
-        </div>
+        <TierCarousel />
       </section>
 
       {/* BOLETOMOVIL SECTION */}
