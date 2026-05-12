@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown } from "lucide-react";
 import stadiumHero from "@/assets/accesos-page-hero.jpg";
 import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
