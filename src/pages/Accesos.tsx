@@ -260,7 +260,7 @@ function BenefitGroup({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl p-4 md:p-5" style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.07)" }}>
+    <div className="rounded-2xl p-4 md:p-5 h-full flex flex-col" style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.07)" }}>
       <div className="flex items-center gap-2 mb-3">
         <span
           className="inline-flex items-center justify-center w-8 h-8 rounded-xl"
@@ -272,7 +272,7 @@ function BenefitGroup({
           {title}
         </h4>
       </div>
-      <div className="text-[13px] text-white/85 leading-relaxed">{children}</div>
+      <div className="text-[13px] text-white/85 leading-relaxed flex-1">{children}</div>
     </div>
   );
 }
@@ -401,13 +401,13 @@ function TierBigCard({ tier }: { tier: Tier }) {
         </div>
 
         {/* Desktop: 2x2 grid */}
-        <div className="hidden sm:grid grid-cols-2 gap-3">
+        <div className="hidden sm:grid grid-cols-2 gap-3 auto-rows-fr">
           {groups.map((g, i) => {
             const isContinuos = g.key === "continuos";
             return (
               <div
                 key={g.key}
-                className={continuosSpansFull && isContinuos ? "col-span-2" : ""}
+                className={(continuosSpansFull && isContinuos ? "col-span-2 " : "") + "h-full"}
               >
                 <BenefitGroup icon={g.icon} title={g.label} accent={tier.accent}>
                   {g.content}
