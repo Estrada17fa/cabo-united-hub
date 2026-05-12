@@ -14,65 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      fan_passes: {
-        Row: {
-          birth_date: string
-          created_at: string
-          expires_at: string | null
-          favorite_player_id: string | null
-          full_name: string
-          id: string
-          issued_at: string
-          pass_code: string
-          payment_status: Database["public"]["Enums"]["payment_status"]
-          phone: string
-          status: string
-          tier: Database["public"]["Enums"]["pass_tier"]
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          birth_date: string
-          created_at?: string
-          expires_at?: string | null
-          favorite_player_id?: string | null
-          full_name: string
-          id?: string
-          issued_at?: string
-          pass_code: string
-          payment_status?: Database["public"]["Enums"]["payment_status"]
-          phone: string
-          status?: string
-          tier?: Database["public"]["Enums"]["pass_tier"]
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          birth_date?: string
-          created_at?: string
-          expires_at?: string | null
-          favorite_player_id?: string | null
-          full_name?: string
-          id?: string
-          issued_at?: string
-          pass_code?: string
-          payment_status?: Database["public"]["Enums"]["payment_status"]
-          phone?: string
-          status?: string
-          tier?: Database["public"]["Enums"]["pass_tier"]
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fan_passes_favorite_player_id_fkey"
-            columns: ["favorite_player_id"]
-            isOneToOne: false
-            referencedRelation: "players"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       league_standings: {
         Row: {
           dg: number
@@ -225,87 +166,6 @@ export type Database = {
         }
         Relationships: []
       }
-      pass_redemptions: {
-        Row: {
-          created_at: string
-          id: string
-          kind: Database["public"]["Enums"]["qr_kind"]
-          label: string | null
-          pass_id: string
-          qr_token_id: string | null
-          ref_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          kind: Database["public"]["Enums"]["qr_kind"]
-          label?: string | null
-          pass_id: string
-          qr_token_id?: string | null
-          ref_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          kind?: Database["public"]["Enums"]["qr_kind"]
-          label?: string | null
-          pass_id?: string
-          qr_token_id?: string | null
-          ref_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "pass_redemptions_pass_id_fkey"
-            columns: ["pass_id"]
-            isOneToOne: false
-            referencedRelation: "fan_passes"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "pass_redemptions_qr_token_id_fkey"
-            columns: ["qr_token_id"]
-            isOneToOne: false
-            referencedRelation: "qr_tokens"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      players: {
-        Row: {
-          active: boolean
-          created_at: string
-          id: string
-          jersey_number: number | null
-          name: string
-          photo_url: string | null
-          position: string | null
-          short_bio: string | null
-          updated_at: string
-        }
-        Insert: {
-          active?: boolean
-          created_at?: string
-          id?: string
-          jersey_number?: number | null
-          name: string
-          photo_url?: string | null
-          position?: string | null
-          short_bio?: string | null
-          updated_at?: string
-        }
-        Update: {
-          active?: boolean
-          created_at?: string
-          id?: string
-          jersey_number?: number | null
-          name?: string
-          photo_url?: string | null
-          position?: string | null
-          short_bio?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -332,50 +192,6 @@ export type Database = {
           username?: string | null
         }
         Relationships: []
-      }
-      qr_tokens: {
-        Row: {
-          created_at: string
-          expires_at: string | null
-          id: string
-          kind: Database["public"]["Enums"]["qr_kind"]
-          pass_id: string
-          redeemed_at: string | null
-          redeemed_by_staff: string | null
-          ref_id: string | null
-          token_hash: string
-        }
-        Insert: {
-          created_at?: string
-          expires_at?: string | null
-          id?: string
-          kind: Database["public"]["Enums"]["qr_kind"]
-          pass_id: string
-          redeemed_at?: string | null
-          redeemed_by_staff?: string | null
-          ref_id?: string | null
-          token_hash: string
-        }
-        Update: {
-          created_at?: string
-          expires_at?: string | null
-          id?: string
-          kind?: Database["public"]["Enums"]["qr_kind"]
-          pass_id?: string
-          redeemed_at?: string | null
-          redeemed_by_staff?: string | null
-          ref_id?: string | null
-          token_hash?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "qr_tokens_pass_id_fkey"
-            columns: ["pass_id"]
-            isOneToOne: false
-            referencedRelation: "fan_passes"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       teams: {
         Row: {
@@ -425,42 +241,14 @@ export type Database = {
         }
         Relationships: []
       }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "fan" | "staff" | "admin"
       match_event_type:
         | "goal"
         | "yellow_card"
@@ -470,9 +258,6 @@ export type Database = {
         | "own_goal"
       match_source: "manual" | "scraped"
       match_status: "scheduled" | "live" | "finished"
-      pass_tier: "fan" | "gold" | "premium" | "platino"
-      payment_status: "free" | "pending" | "mock_paid" | "paid" | "failed"
-      qr_kind: "master" | "match" | "benefit" | "experience"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -600,7 +385,6 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["fan", "staff", "admin"],
       match_event_type: [
         "goal",
         "yellow_card",
@@ -611,9 +395,6 @@ export const Constants = {
       ],
       match_source: ["manual", "scraped"],
       match_status: ["scheduled", "live", "finished"],
-      pass_tier: ["fan", "gold", "premium", "platino"],
-      payment_status: ["free", "pending", "mock_paid", "paid", "failed"],
-      qr_kind: ["master", "match", "benefit", "experience"],
     },
   },
 } as const
