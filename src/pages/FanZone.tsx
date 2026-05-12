@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Gamepad2 } from "lucide-react";
+import { Gamepad2, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { FanStatsHero } from "@/components/fan-zone/FanStatsHero";
+import { FanCard } from "@/components/fan-zone/FanCard";
 import { MiniGameCard } from "@/components/fan-zone/MiniGameCard";
 import { GAMES, type MiniGame } from "@/components/fan-zone/games";
 import { AuthModal } from "@/components/auth/AuthModal";
@@ -28,42 +28,84 @@ const FanZone = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-5 pb-8 pt-2"
-    >
-      <FanStatsHero onLoginClick={() => setAuthOpen(true)} />
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="space-y-8 md:space-y-12 pb-32 md:pb-8 pt-2"
+      >
+        {/* 1. FanCard unificado */}
+        <FanCard />
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <RankingCard
-          className="lg:col-span-3"
-          user={user}
-          onLoginClick={() => setAuthOpen(true)}
-        />
-        <PrizesCarouselCard
-          className="lg:col-span-2"
-          showFooterLink={false}
-        />
-      </div>
+        {/* 2. CTA principal — desktop only (mobile uses sticky bottom) */}
+        {!user && (
+          <button
+            onClick={() => setAuthOpen(true)}
+            className="hidden md:inline-flex w-full items-center justify-center gap-2 font-bold rounded-full transition-opacity hover:opacity-90 h-12"
+            style={{
+              background: "hsl(var(--brand-primary))",
+              color: "hsl(0 0% 8%)",
+              boxShadow: "0 6px 20px -4px hsl(var(--brand-primary) / 0.55)",
+              fontSize: 14,
+            }}
+          >
+            <LogIn className="w-4 h-4" />
+            Inicia sesión para competir
+          </button>
+        )}
 
-      <div className="flex items-center gap-2 px-1">
-        <Gamepad2 className="w-4 h-4 text-primary" />
-        <h2 className="text-sm font-extrabold uppercase tracking-wider text-foreground">
-          Minijuegos
-        </h2>
-        <div className="flex-1 h-px bg-border" />
-        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-          {GAMES.length} juegos
-        </span>
-      </div>
+        {/* 3. MINIJUEGOS — producto principal, arriba del fold */}
+        <section>
+          <div className="flex items-center gap-2 px-1 mb-4">
+            <Gamepad2 className="w-4 h-4 text-brand-primary" />
+            <h2 className="text-sm font-extrabold uppercase tracking-wider text-foreground">
+              Minijuegos
+            </h2>
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              {GAMES.length} juegos
+            </span>
+          </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-        {GAMES.map((game, i) => (
-          <MiniGameCard key={game.id} game={game} index={i} onClick={handleGameClick} />
-        ))}
-      </div>
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            {GAMES.map((game, i) => (
+              <MiniGameCard key={game.id} game={game} index={i} onClick={handleGameClick} />
+            ))}
+          </div>
+        </section>
+
+        {/* 4. Ranking + Premios */}
+        <section className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+          <RankingCard className="lg:col-span-3" />
+          <PrizesCarouselCard className="lg:col-span-2" showFooterLink={false} />
+        </section>
+      </motion.div>
+
+      {/* Mobile sticky CTA */}
+      {!user && (
+        <div
+          className="md:hidden fixed left-0 right-0 z-30 px-4 pb-3"
+          style={{
+            bottom: "calc(env(safe-area-inset-bottom, 0px) + 70px)",
+          }}
+        >
+          <button
+            onClick={() => setAuthOpen(true)}
+            className="w-full inline-flex items-center justify-center gap-2 font-extrabold rounded-full h-12 backdrop-blur-xl"
+            style={{
+              background: "hsl(var(--brand-primary))",
+              color: "hsl(0 0% 8%)",
+              boxShadow:
+                "0 10px 30px -6px hsl(var(--brand-primary) / 0.55), 0 0 0 1px hsl(0 0% 100% / 0.05)",
+              fontSize: 14,
+            }}
+          >
+            <LogIn className="w-4 h-4" />
+            Inicia sesión para competir
+          </button>
+        </div>
+      )}
 
       <Dialog open={authOpen} onOpenChange={setAuthOpen}>
         <DialogContent className="bg-card border-border max-w-sm">
@@ -73,7 +115,7 @@ const FanZone = () => {
           <AuthModal onSuccess={() => setAuthOpen(false)} />
         </DialogContent>
       </Dialog>
-    </motion.div>
+    </>
   );
 };
 
