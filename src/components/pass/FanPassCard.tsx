@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
-import { RotateCw, Loader2, Calendar, MapPin, Sparkles, ShieldCheck } from "lucide-react";
+import { Loader2, Calendar, MapPin, Sparkles, ShieldCheck, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import lcuCrest from "@/assets/lcu-crest.png";
 
@@ -37,7 +37,19 @@ const TIER_STYLE: Record<FanPass["tier"], { accent: string; label: string; bg: s
   platino: { accent: "#E2E8F0", label: "PLATINO", bg: "linear-gradient(135deg, #1f2330, #0a0a0a)" },
 };
 
-export function FanPassCard({ pass, favoritePlayerName }: { pass: FanPass; favoritePlayerName?: string | null }) {
+function getInitials(name: string) {
+  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]?.toUpperCase() ?? "").join("");
+}
+
+export function FanPassCard({
+  pass,
+  favoritePlayerName,
+  avatarUrl,
+}: {
+  pass: FanPass;
+  favoritePlayerName?: string | null;
+  avatarUrl?: string | null;
+}) {
   const [flipped, setFlipped] = useState(false);
   const [qr, setQr] = useState<QrPayload | null>(null);
   const [loadingQr, setLoadingQr] = useState(false);
@@ -45,9 +57,7 @@ export function FanPassCard({ pass, favoritePlayerName }: { pass: FanPass; favor
 
   const tier = TIER_STYLE[pass.tier];
   const issuedDate = new Date(pass.issued_at).toLocaleDateString("es-MX", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
+    day: "2-digit", month: "short", year: "numeric",
   });
 
   const fetchQr = async () => {
@@ -72,16 +82,18 @@ export function FanPassCard({ pass, favoritePlayerName }: { pass: FanPass; favor
   }, [flipped]);
 
   return (
-    <div className="w-full max-w-md mx-auto" style={{ perspective: 1400 }}>
+    <div className="w-full max-w-[340px] mx-auto select-none" style={{ perspective: 1600 }}>
       <motion.div
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full"
-        style={{ transformStyle: "preserve-3d", aspectRatio: "1.6 / 1" }}
+        onClick={() => setFlipped((f) => !f)}
+        whileTap={{ scale: 0.98 }}
+        className="relative w-full cursor-pointer"
+        style={{ transformStyle: "preserve-3d", aspectRatio: "0.63 / 1" }}
       >
         {/* FRONT */}
         <div
-          className="absolute inset-0 rounded-2xl p-5 flex flex-col justify-between"
+          className="absolute inset-0 rounded-3xl p-6 flex flex-col justify-between"
           style={{
             backfaceVisibility: "hidden",
             background: tier.bg,
@@ -91,26 +103,42 @@ export function FanPassCard({ pass, favoritePlayerName }: { pass: FanPass; favor
         >
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-2">
-              <img src={lcuCrest} alt="LCU" className="w-10 h-10 object-contain" />
+              <img src={lcuCrest} alt="LCU" className="w-9 h-9 object-contain" />
               <div>
                 <div className="text-[9px] tracking-[0.18em] text-white/60 font-bold">LOS CABOS UNITED</div>
-                <div className="text-[10px] text-white/50">Pase digital · Temporada 25–26</div>
+                <div className="text-[9px] text-white/45">Temporada 25–26</div>
               </div>
             </div>
             <span
-              className="text-[10px] font-bold uppercase tracking-[0.14em] px-2 py-1 rounded-full"
+              className="text-[10px] font-bold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full"
               style={{ background: tier.accent, color: "#0a0a0a" }}
             >
               {tier.label}
             </span>
           </div>
 
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.14em] text-white/50 mb-1">Titular</div>
-            <div className="text-xl md:text-2xl font-bold text-white leading-tight">{pass.full_name}</div>
+          <div className="flex flex-col items-center text-center">
+            <div
+              className="w-28 h-28 rounded-full flex items-center justify-center overflow-hidden"
+              style={{
+                background: `${tier.accent}18`,
+                border: `2px solid ${tier.accent}`,
+                boxShadow: `0 8px 30px -8px ${tier.accent}80`,
+              }}
+            >
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={pass.full_name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-3xl font-bold text-white tracking-wide">
+                  {getInitials(pass.full_name) || "LCU"}
+                </span>
+              )}
+            </div>
+            <div className="text-[9px] uppercase tracking-[0.14em] text-white/50 mt-3">Titular</div>
+            <div className="text-lg font-bold text-white leading-tight mt-0.5 px-2">{pass.full_name}</div>
             {favoritePlayerName && (
-              <div className="text-[11px] text-white/60 mt-1 inline-flex items-center gap-1">
-                <Sparkles className="w-3 h-3" style={{ color: tier.accent }} /> Jugador favorito: {favoritePlayerName}
+              <div className="text-[10px] text-white/60 mt-1 inline-flex items-center gap-1">
+                <Sparkles className="w-3 h-3" style={{ color: tier.accent }} /> Fav: {favoritePlayerName}
               </div>
             )}
           </div>
@@ -118,7 +146,7 @@ export function FanPassCard({ pass, favoritePlayerName }: { pass: FanPass; favor
           <div className="flex items-end justify-between">
             <div>
               <div className="text-[9px] uppercase tracking-[0.14em] text-white/45">N° de pase</div>
-              <div className="text-sm font-mono font-bold text-white tracking-widest">{pass.pass_code}</div>
+              <div className="text-[13px] font-mono font-bold text-white tracking-widest">{pass.pass_code}</div>
             </div>
             <div className="text-right">
               <div className="text-[9px] uppercase tracking-[0.14em] text-white/45">Emitido</div>
@@ -129,7 +157,7 @@ export function FanPassCard({ pass, favoritePlayerName }: { pass: FanPass; favor
 
         {/* BACK */}
         <div
-          className="absolute inset-0 rounded-2xl p-5 flex flex-col"
+          className="absolute inset-0 rounded-3xl p-6 flex flex-col"
           style={{
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)",
@@ -146,7 +174,7 @@ export function FanPassCard({ pass, favoritePlayerName }: { pass: FanPass; favor
             <ShieldCheck className="w-5 h-5" style={{ color: tier.accent }} />
           </div>
 
-          <div className="flex-1 flex items-center justify-center my-2">
+          <div className="flex-1 flex items-center justify-center my-3">
             {loadingQr ? (
               <div className="flex flex-col items-center gap-2 text-black/60">
                 <Loader2 className="w-6 h-6 animate-spin" />
@@ -155,16 +183,19 @@ export function FanPassCard({ pass, favoritePlayerName }: { pass: FanPass; favor
             ) : qrError ? (
               <div className="text-center">
                 <div className="text-xs text-red-600 mb-2">{qrError}</div>
-                <button onClick={fetchQr} className="text-xs underline text-black/70">
+                <button
+                  onClick={(e) => { e.stopPropagation(); fetchQr(); }}
+                  className="text-xs underline text-black/70"
+                >
                   Reintentar
                 </button>
               </div>
             ) : qr ? (
               <div className="bg-white p-2 rounded-md">
-                <QRCodeSVG value={qr.token} size={140} level="M" includeMargin={false} />
+                <QRCodeSVG value={qr.token} size={190} level="M" includeMargin={false} />
               </div>
             ) : (
-              <div className="text-xs text-black/50">Toca el botón para generar</div>
+              <div className="text-xs text-black/50">Toca para generar</div>
             )}
           </div>
 
@@ -191,21 +222,15 @@ export function FanPassCard({ pass, favoritePlayerName }: { pass: FanPass; favor
         </div>
       </motion.div>
 
-      <div className="flex items-center justify-center gap-2 mt-4">
-        <button
-          onClick={() => setFlipped((f) => !f)}
-          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] px-4 py-2 rounded-full bg-card border border-border text-foreground hover:border-primary/40 transition-colors"
-        >
-          <RotateCw className="w-3.5 h-3.5" />
-          {flipped ? "Ver frente" : "Ver QR del partido"}
-        </button>
+      <div className="flex items-center justify-center gap-3 mt-4 text-[11px] text-muted-foreground">
+        <span className="uppercase tracking-[0.16em]">Toca el pase para girarlo</span>
         {flipped && (
           <button
             onClick={fetchQr}
             disabled={loadingQr}
-            className="text-xs text-muted-foreground underline disabled:opacity-50"
+            className="inline-flex items-center gap-1 text-foreground/80 hover:text-foreground underline disabled:opacity-50"
           >
-            Regenerar
+            <RefreshCw className="w-3 h-3" /> Regenerar
           </button>
         )}
       </div>
