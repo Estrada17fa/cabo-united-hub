@@ -932,6 +932,7 @@ const Accesos = () => {
       </div>
 
       {/* Storytelling moments */}
+      {!user && (
       <section className="max-w-6xl mx-auto px-1 mt-5 md:mt-8">
         <div className="grid md:grid-cols-3 gap-3 md:gap-4">
           {storyMoments.map((m, i) => (
@@ -961,6 +962,56 @@ const Accesos = () => {
           ))}
         </div>
       </section>
+      )}
+
+      {/* Logged-in: user pass section */}
+      {user && (
+        <section className="max-w-5xl mx-auto mt-8 md:mt-12">
+          <div className="text-[11px] font-bold tracking-[0.18em] mb-3" style={{ color: "#00abc4" }}>
+            TU PASE
+          </div>
+          <FanPassPreview userId={user.id} onTierLoad={setUserTier} />
+
+          {userTier === "fan" && (
+            <div
+              className="mt-5 rounded-2xl p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4"
+              style={{
+                background: "linear-gradient(135deg, #06222a, #0a0a0a)",
+                border: "1px solid rgba(0,171,196,0.25)",
+              }}
+            >
+              <div
+                className="inline-flex items-center justify-center w-12 h-12 rounded-xl flex-shrink-0"
+                style={{ background: "rgba(0,171,196,0.12)", color: "#00abc4" }}
+              >
+                <TrendingUp className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-base md:text-lg font-bold text-white">Sube de nivel</div>
+                <p className="text-[13px] text-white/65 mt-1 leading-snug">
+                  Estás como Fan. Desbloquea entrada al estadio, kit oficial,
+                  experiencias y beneficios continuos.
+                </p>
+              </div>
+              <a
+                href="#niveles"
+                className="inline-flex items-center justify-center gap-2 font-bold flex-shrink-0"
+                style={{
+                  height: 46,
+                  padding: "0 18px",
+                  borderRadius: 10,
+                  fontSize: 13,
+                  background: "#00abc4",
+                  color: "#0a0a0a",
+                }}
+              >
+                Ver niveles disponibles
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* TIER BIG CARDS */}
       <section id="niveles" className="max-w-5xl mx-auto mt-12 md:mt-16 scroll-mt-24">
