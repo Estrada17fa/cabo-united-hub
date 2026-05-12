@@ -1126,19 +1126,7 @@ const Accesos = () => {
       </section>
 
       {/* PUNTOS DE VENTA FÍSICOS */}
-      <PointsOfSale />
-
-      {/* Floating sign-in button */}
-      {!user && (
-        <div className="fixed bottom-4 right-4 z-40">
-          <button
-            onClick={() => setAuthOpen(true)}
-            className="px-4 py-2.5 rounded-full bg-card/90 backdrop-blur border border-border text-xs font-bold uppercase tracking-[0.1em] text-white hover:border-[#00abc4]/50 transition-colors"
-          >
-            Ya tengo cuenta
-          </button>
-        </div>
-      )}
+      <PointsOfSale loggedIn={!!user} />
 
       <SignupWizard
         open={wizardOpen}
