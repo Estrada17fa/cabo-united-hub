@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown } from "lucide-react";
+import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown, TrendingUp } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { SignupWizard } from "@/components/accesos/SignupWizard";
 import { AuthModal } from "@/components/auth/AuthModal";
@@ -13,6 +13,7 @@ import kitGold from "@/assets/accesos-kit-gold.jpg";
 import kitPremium from "@/assets/accesos-kit-premium.jpg";
 import kitPlatino from "@/assets/accesos-kit-platino.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
+import { FanPassPreview } from "@/components/pass/FanPassPreview";
 
 const BOLETOMOVIL_URL = "https://www.boletomovil.com";
 
