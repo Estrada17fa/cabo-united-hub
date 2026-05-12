@@ -197,6 +197,9 @@ const POS = [
     hours: "Lun-Dom 24h",
     phone: "+52 624 143 0000",
     logo: null as string | null,
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent("OXXO Blvd. Marina 100, Centro, Cabo San Lucas"),
   },
   {
     name: "Tienda LC United Centro",
@@ -204,6 +207,9 @@ const POS = [
     hours: "Lun-Sáb 10:00–20:00",
     phone: "+52 624 142 1111",
     logo: lcuCrest,
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent("Av. Lázaro Cárdenas 200, San José del Cabo"),
   },
   {
     name: "Estadio Don Koll - Taquilla",
@@ -211,6 +217,9 @@ const POS = [
     hours: "Día de partido desde 14:00",
     phone: "+52 624 144 2222",
     logo: lcuCrest,
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent("Estadio Don Koll, Carretera Transpeninsular Km 4.5, San José del Cabo"),
   },
 ];
 
