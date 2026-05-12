@@ -392,13 +392,13 @@ function TierBigCard({ tier }: { tier: Tier }) {
 
       {/* Body */}
       <div className="p-5 md:p-7 flex-1 flex flex-col gap-5">
-        <div className="flex items-end justify-between gap-4 flex-wrap">
-          <p className="text-white/80 text-[15px] leading-snug max-w-md">{tier.tagline}</p>
-          <div className="text-right">
-            <div className="text-3xl md:text-4xl font-bold text-white tracking-tight leading-none">
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-white/80 text-[13.5px] md:text-[15px] leading-snug flex-1 min-w-0">{tier.tagline}</p>
+          <div className="text-right flex-shrink-0">
+            <div className="text-2xl md:text-4xl font-bold text-white tracking-tight leading-none whitespace-nowrap">
               {tier.price}
             </div>
-            <div className="text-[12px] text-white/55 mt-1">{tier.priceNote}</div>
+            <div className="text-[11px] md:text-[12px] text-white/55 mt-1 whitespace-nowrap">{tier.priceNote}</div>
           </div>
         </div>
 
@@ -421,7 +421,7 @@ function TierBigCard({ tier }: { tier: Tier }) {
 
         {/* Mobile: tabs (one section visible at a time) */}
         <div className="sm:hidden">
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2 -mx-1 px-1">
+          <div className="flex flex-wrap items-center gap-1.5 pb-2">
             {groups.map((g) => {
               const active = g.key === activeTab;
               const Icon = g.icon;
@@ -429,7 +429,7 @@ function TierBigCard({ tier }: { tier: Tier }) {
                 <button
                   key={g.key}
                   onClick={() => setActiveTab(g.key)}
-                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.06em] whitespace-nowrap transition-colors"
+                  className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.05em] whitespace-nowrap transition-colors"
                   style={{
                     background: active ? `${tier.accent}` : "rgba(255,255,255,0.05)",
                     color: active ? "#0a0a0a" : "rgba(255,255,255,0.7)",
