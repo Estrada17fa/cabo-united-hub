@@ -16,6 +16,14 @@ import { AuthModal } from "@/components/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cartStore";
 import { FanPassMini } from "@/components/pass/FanPassMini";
+import { SignupWizard, type WizardTier } from "@/components/accesos/SignupWizard";
+
+const WIZARD_TIERS: WizardTier[] = [
+  { id: "fan", badge: "FAN", price: "$0", priceNote: "Gratis para siempre", tagline: "Empieza a vivir el paraíso, sin costo.", accent: "#FFFFFF" },
+  { id: "gold", badge: "GOLD", price: "$1,499", priceNote: "por temporada", tagline: "Tu lugar en la grada y el kit que te identifica.", accent: "#F59E0B" },
+  { id: "premium", badge: "PREMIUM", price: "$2,499", priceNote: "por temporada", tagline: "Vive el partido desde adentro, con foto incluida.", accent: "#00abc4" },
+  { id: "platino", badge: "PLATINO", price: "$4,999", priceNote: "por temporada · edición Socio Fundador", tagline: "Tu nombre, tu asiento, tu temporada inolvidable.", accent: "#E2E8F0" },
+];
 
 const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
   <Icon iconNode={soccerBall} {...props} />
@@ -141,6 +149,7 @@ function MobileNav() {
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [showSignupWizard, setShowSignupWizard] = useState(false);
   const location = useLocation();
   const { user, profile, signOut } = useAuth();
   const isActive = (path: string) => location.pathname === path;
@@ -334,14 +343,39 @@ export function Header() {
             ) : (
               <div>
                 {showAuth ? (
-                  <AuthModal onSuccess={() => { setShowAuth(false); setIsMenuOpen(false); }} />
+                  <AuthModal
+                    loginOnly
+                    onSuccess={() => { setShowAuth(false); setIsMenuOpen(false); }}
+                  />
                 ) : (
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => setShowAuth(true)}
+                      className="flex items-center gap-3 w-full px-3.5 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium"
+                    >
+                      <User className="w-4 h-4" />
+                      Iniciar sesión
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setTimeout(() => setShowSignupWizard(true), 200);
+                      }}
+                      className="flex items-center justify-center gap-2 w-full px-3.5 py-3 rounded-xl border border-border bg-card text-foreground text-sm font-medium hover:bg-muted transition-colors"
+                    >
+                      Crear cuenta
+                    </button>
+                  </div>
+                )}
+                {showAuth && (
                   <button
-                    onClick={() => setShowAuth(true)}
-                    className="flex items-center gap-3 w-full px-3.5 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setTimeout(() => setShowSignupWizard(true), 200);
+                    }}
+                    className="mt-3 w-full text-xs text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    <User className="w-4 h-4" />
-                    Iniciar sesión / Crear cuenta
+                    ¿No tienes cuenta? <span className="text-primary font-semibold">Crea tu pase</span>
                   </button>
                 )}
               </div>
@@ -396,6 +430,13 @@ export function Header() {
           </div>
         </SheetContent>
       </Sheet>
+
+      <SignupWizard
+        open={showSignupWizard}
+        onClose={() => setShowSignupWizard(false)}
+        tiers={WIZARD_TIERS}
+        initialTierId="fan"
+      />
     </motion.header>
   );
 }
