@@ -1040,7 +1040,7 @@ const Accesos = () => {
           </p>
         </div>
 
-        <TierCarousel onSelectTier={handleSelectTier} />
+        <TierCarousel onSelectTier={handleSelectTier} excludeFan={!!user} />
       </section>
       )}
 
