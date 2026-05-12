@@ -831,12 +831,18 @@ const Accesos = () => {
 
         <div className="grid md:grid-cols-3 gap-3">
           {POS.map((p) => (
-            <a
+            <div
               key={p.name}
-              href={p.mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-xl p-4 border border-border flex items-start gap-3 transition-colors hover:border-[#00abc4]/40 hover:bg-white/[0.02]"
+              role="link"
+              tabIndex={0}
+              onClick={() => window.open(p.mapsUrl, "_blank", "noopener,noreferrer")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  window.open(p.mapsUrl, "_blank", "noopener,noreferrer");
+                }
+              }}
+              className="cursor-pointer rounded-xl p-4 border border-border flex items-start gap-3 transition-colors hover:border-[#00abc4]/40 hover:bg-white/[0.02]"
               style={{ background: "#111" }}
             >
               <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
@@ -864,7 +870,7 @@ const Accesos = () => {
                   <Phone className="w-3 h-3" /> {p.phone}
                 </a>
               </div>
-            </a>
+            </div>
           ))}
         </div>
       </section>
