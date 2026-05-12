@@ -429,6 +429,21 @@ export function Header() {
                 </Link>
               );
             })}
+            <div className="flex gap-1.5 pt-2">
+              {(["es", "en"] as const).map((lng) => (
+                <button
+                  key={lng}
+                  onClick={() => i18n.changeLanguage(lng)}
+                  className={`flex-1 px-2 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors ${
+                    i18n.resolvedLanguage === lng
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card border border-border text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {lng === "es" ? "Español" : "English"}
+                </button>
+              ))}
+            </div>
           </div>
         </SheetContent>
       </Sheet>
