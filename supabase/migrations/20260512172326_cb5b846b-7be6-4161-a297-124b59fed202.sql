@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.generate_pass_code(pass_tier, text) FROM PUBLIC, anon, authenticated;
