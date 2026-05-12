@@ -730,6 +730,21 @@ function PointsOfSale() {
 }
 
 const Accesos = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const [wizardTier, setWizardTier] = useState<TierId>("fan");
+  const [authOpen, setAuthOpen] = useState(false);
+
+  const handleSelectTier = (id: TierId) => {
+    if (user) {
+      navigate("/mi-perfil");
+      return;
+    }
+    setWizardTier(id);
+    setWizardOpen(true);
+  };
+
   useEffect(() => {
     [kitFan, kitGold, kitPremium, kitPlatino, stadiumHero, mobileTeamBg].forEach((src) => {
       const img = new Image();
