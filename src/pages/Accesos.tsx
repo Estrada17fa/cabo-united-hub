@@ -306,7 +306,7 @@ function BenefitChips({ items, accent }: { items: string[]; accent: string }) {
   );
 }
 
-function TierBigCard({ tier }: { tier: Tier }) {
+function TierBigCard({ tier, onSelectTier }: { tier: Tier; onSelectTier: (id: TierId) => void }) {
   const groups = [
     {
       key: "estadio",
@@ -461,10 +461,9 @@ function TierBigCard({ tier }: { tier: Tier }) {
           </AnimatePresence>
         </div>
 
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => onSelectTier(tier.id)}
           className="w-full inline-flex items-center justify-center gap-2 font-bold transition-opacity hover:opacity-90"
           style={{
             height: 54,
@@ -477,7 +476,7 @@ function TierBigCard({ tier }: { tier: Tier }) {
         >
           {tier.cta}
           {tier.id !== "fan" && <ArrowRight className="w-4 h-4" />}
-        </a>
+        </button>
       </div>
     </motion.article>
   );
