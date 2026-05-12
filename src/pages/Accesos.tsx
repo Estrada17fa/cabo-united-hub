@@ -26,6 +26,7 @@ type Tier = {
   popular?: boolean;
   benefits: {
     estadio: string[];
+    kitName: string;
     kitTitle: string;
     kitItems: string[];
     experiencias: string[] | null;
