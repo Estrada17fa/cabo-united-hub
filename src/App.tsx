@@ -11,6 +11,9 @@ import Club from "./pages/Club";
 import ZonaPartido from "./pages/ZonaPartido";
 import FanZone from "./pages/FanZone";
 import Accesos from "./pages/Accesos";
+import AccesoRegistro from "./pages/AccesoRegistro";
+import MiPase from "./pages/MiPase";
+import StaffScan from "./pages/StaffScan";
 import Tienda from "./pages/Tienda";
 import TiendaProducto from "./pages/TiendaProducto";
 import TiendaBuscar from "./pages/TiendaBuscar";
@@ -35,6 +38,9 @@ const AppShell = () => {
         <Route path="/club" element={<Club />} />
         <Route path="/fan-zone" element={<FanZone />} />
         <Route path="/accesos" element={<Accesos />} />
+        <Route path="/accesos/registro" element={<AccesoRegistro />} />
+        <Route path="/accesos/mi-pase" element={<MiPase />} />
+        <Route path="/staff/scan" element={<StaffScan />} />
         <Route path="/tienda" element={<Tienda />} />
         <Route path="/tienda/producto/:handle" element={<TiendaProducto />} />
         <Route path="/tienda/buscar" element={<TiendaBuscar />} />
