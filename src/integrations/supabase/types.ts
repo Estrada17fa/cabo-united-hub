@@ -468,7 +468,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      generate_pass_code: { Args: never; Returns: string }
+      generate_pass_code:
+        | { Args: never; Returns: string }
+        | {
+            Args: {
+              _full_name: string
+              _tier: Database["public"]["Enums"]["pass_tier"]
+            }
+            Returns: string
+          }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -476,6 +484,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
       app_role: "fan" | "staff" | "admin"
