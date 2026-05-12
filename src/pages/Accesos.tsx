@@ -780,9 +780,9 @@ const Accesos = () => {
               transition={{ delay: 0.18, duration: 0.7 }}
               className="font-bold text-white mb-5"
               style={{
-                fontSize: "clamp(34px, 6vw, 58px)",
+                fontSize: "clamp(26px, 5.2vw, 58px)",
                 letterSpacing: "-0.03em",
-                lineHeight: 1.02,
+                lineHeight: 1.05,
               }}
             >
               No vienes a ver un partido.
@@ -794,8 +794,8 @@ const Accesos = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.28, duration: 0.7 }}
-              className="mx-auto text-white/80"
-              style={{ fontSize: 18, maxWidth: 1100, lineHeight: 1.55 }}
+              className="mx-auto text-white/80 text-[14.5px] md:text-[18px] leading-snug md:leading-relaxed"
+              style={{ maxWidth: 1100 }}
             >
               En cada cántico late un nombre, en cada bandera vive una promesa.
               Aquí el mar se queda en la orilla y la grada se vuelve casa: somos
@@ -808,10 +808,9 @@ const Accesos = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.38, duration: 0.7 }}
-              className="mt-10 mx-auto rounded-2xl overflow-hidden relative"
+              className="mt-10 mx-auto rounded-2xl overflow-hidden relative aspect-[16/10] md:aspect-[3/1]"
               style={{
                 maxWidth: 1500,
-                aspectRatio: "1500 / 500",
                 border: "1px solid rgba(255,255,255,0.08)",
                 boxShadow: "0 30px 80px -30px rgba(0,171,196,0.35)",
               }}
