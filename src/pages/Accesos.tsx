@@ -1,12 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown } from "lucide-react";
 import stadiumHero from "@/assets/accesos-page-hero.jpg";
 import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
 import kitFan from "@/assets/accesos-kit-fan.jpg";
 import kitGold from "@/assets/accesos-kit-gold.jpg";
 import kitPremium from "@/assets/accesos-kit-premium.jpg";
 import kitPlatino from "@/assets/accesos-kit-platino.jpg";
+import lcuCrest from "@/assets/lcu-crest.png";
 
 const WHATSAPP_URL = "https://wa.me/525500000000";
 const BOLETOMOVIL_URL = "https://www.boletomovil.com";
@@ -172,18 +173,21 @@ const POS = [
     address: "Blvd. Marina 100, Centro, Cabo San Lucas",
     hours: "Lun-Dom 24h",
     phone: "+52 624 143 0000",
+    logo: null as string | null,
   },
   {
     name: "Tienda LC United Centro",
     address: "Av. Lázaro Cárdenas 200, San José del Cabo",
     hours: "Lun-Sáb 10:00–20:00",
     phone: "+52 624 142 1111",
+    logo: lcuCrest,
   },
   {
     name: "Estadio Don Koll - Taquilla",
     address: "Carretera Transpeninsular Km 4.5, San José del Cabo",
     hours: "Día de partido desde 14:00",
     phone: "+52 624 144 2222",
+    logo: lcuCrest,
   },
 ];
 
@@ -199,20 +203,40 @@ function BenefitGroup({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+    <div className="rounded-2xl p-4 md:p-5" style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.07)" }}>
       <div className="flex items-center gap-2 mb-3">
         <span
-          className="inline-flex items-center justify-center w-7 h-7 rounded-lg"
-          style={{ background: `${accent}1a`, color: accent }}
+          className="inline-flex items-center justify-center w-8 h-8 rounded-xl"
+          style={{ background: `${accent}1f`, color: accent, boxShadow: `inset 0 0 0 1px ${accent}33` }}
         >
-          <Icon className="w-3.5 h-3.5" strokeWidth={2.5} />
+          <Icon className="w-4 h-4" strokeWidth={2.5} />
         </span>
         <h4 className="text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: accent }}>
           {title}
         </h4>
       </div>
-      <div className="text-[13px] text-white/80 leading-relaxed">{children}</div>
+      <div className="text-[13px] text-white/85 leading-relaxed">{children}</div>
     </div>
+  );
+}
+
+function BenefitChips({ items, accent }: { items: string[]; accent: string }) {
+  return (
+    <ul className="flex flex-wrap gap-1.5">
+      {items.map((item) => (
+        <li
+          key={item}
+          className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] text-white/85"
+          style={{
+            background: `${accent}10`,
+            border: `1px solid ${accent}30`,
+          }}
+        >
+          <Check className="w-3 h-3" style={{ color: accent }} strokeWidth={3} />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -285,15 +309,8 @@ function TierBigCard({ tier }: { tier: Tier }) {
           </BenefitGroup>
 
           <BenefitGroup icon={Gift} title="Kit de Bienvenida" accent={tier.accent}>
-            <div className="font-semibold text-white mb-1.5">{tier.benefits.kitTitle}</div>
-            <ul className="space-y-1">
-              {tier.benefits.kitItems.map((item) => (
-                <li key={item} className="flex gap-2">
-                  <span className="text-white/40">·</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="font-semibold text-white mb-2">{tier.benefits.kitTitle}</div>
+            <BenefitChips items={tier.benefits.kitItems} accent={tier.accent} />
           </BenefitGroup>
 
           <BenefitGroup icon={Sparkles} title="Experiencias exclusivas" accent={tier.accent}>
@@ -301,14 +318,7 @@ function TierBigCard({ tier }: { tier: Tier }) {
           </BenefitGroup>
 
           <BenefitGroup icon={Repeat} title="Beneficios continuos" accent={tier.accent}>
-            <ul className="space-y-1">
-              {tier.benefits.continuos.map((item) => (
-                <li key={item} className="flex gap-2">
-                  <span className="text-white/40">·</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <BenefitChips items={tier.benefits.continuos} accent={tier.accent} />
           </BenefitGroup>
         </div>
 
@@ -455,7 +465,7 @@ const Accesos = () => {
             }}
           />
 
-          <div className="relative z-10 px-4 pt-16 md:pt-24 pb-16 md:pb-24 max-w-4xl mx-auto text-center">
+          <div className="relative z-10 px-4 pt-16 md:pt-24 pb-16 md:pb-24 max-w-6xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -486,31 +496,66 @@ const Accesos = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.28, duration: 0.7 }}
-              className="mx-auto text-white/75"
-              style={{ fontSize: 17, maxWidth: 620, lineHeight: 1.55 }}
+              className="mx-auto text-white/80"
+              style={{ fontSize: 18, maxWidth: 1100, lineHeight: 1.55 }}
             >
               90 minutos donde el mar se queda afuera y la grada se vuelve familia.
               Donde cada gol se siente en la garganta y cada nombre en el muro
               cuenta una historia. Aquí no se compra una entrada — se elige un bando.
             </motion.p>
 
+            {/* Loop video — full width of content, shorter height */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.38, duration: 0.7 }}
+              className="mt-10 mx-auto rounded-2xl overflow-hidden relative"
+              style={{
+                maxWidth: 1500,
+                aspectRatio: "1500 / 500",
+                border: "1px solid rgba(255,255,255,0.08)",
+                boxShadow: "0 30px 80px -30px rgba(0,171,196,0.35)",
+              }}
+            >
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                poster={stadiumHero}
+                className="absolute inset-0 w-full h-full object-cover"
+                aria-label="Afición y partidos Los Cabos United"
+              >
+                {/* TODO: reemplazar con video oficial de la afición */}
+              </video>
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.0) 50%, rgba(0,0,0,0.45) 100%)",
+                }}
+              />
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
               className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3"
             >
               <a
                 href="#niveles"
-                className="inline-flex items-center justify-center gap-2 font-bold transition-opacity hover:opacity-90"
+                className="inline-flex items-center justify-center gap-2 font-bold transition-all hover:opacity-90 hover:-translate-y-0.5"
                 style={{
                   height: 54,
-                  padding: "0 24px",
+                  padding: "0 26px",
                   borderRadius: 12,
                   fontSize: 15,
                   background: "#00abc4",
                   color: "#0a0a0a",
                   minWidth: 220,
+                  boxShadow: "0 12px 30px -10px rgba(0,171,196,0.6)",
                 }}
               >
                 Quiero ser parte
@@ -518,9 +563,20 @@ const Accesos = () => {
               </a>
               <a
                 href="#niveles"
-                className="text-[13px] text-white/60 hover:text-white transition-colors"
+                className="group inline-flex items-center justify-center gap-2 font-semibold transition-all hover:-translate-y-0.5"
+                style={{
+                  height: 54,
+                  padding: "0 22px",
+                  borderRadius: 12,
+                  fontSize: 14,
+                  color: "#fff",
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(0,171,196,0.45)",
+                  backdropFilter: "blur(6px)",
+                }}
               >
-                Conoce los 4 niveles ↓
+                Conoce los 4 niveles
+                <ChevronDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" style={{ color: "#00abc4" }} />
               </a>
             </motion.div>
           </div>
@@ -607,12 +663,30 @@ const Accesos = () => {
 
               <div className="flex items-start gap-3 mb-2">
                 <Calendar className="w-4 h-4 text-white/60 mt-1" />
-                <div>
-                  <div className="text-xs text-white/60">Próximo partido en casa:</div>
-                  <div className="text-base font-bold text-white">
-                    Los Cabos United vs Rival FC
+                <div className="flex-1">
+                  <div className="text-xs text-white/60 mb-2">Próximo partido en casa:</div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center"
+                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+                      >
+                        <img src={lcuCrest} alt="Los Cabos United" className="w-7 h-7 object-contain" />
+                      </div>
+                      <span className="text-sm font-bold text-white">LCU</span>
+                    </div>
+                    <span className="text-white/40 text-xs font-bold">VS</span>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white/80"
+                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+                      >
+                        RFC
+                      </div>
+                      <span className="text-sm font-bold text-white">Rival FC</span>
+                    </div>
                   </div>
-                  <div className="text-xs text-white/60 mt-0.5">
+                  <div className="text-xs text-white/60 mt-2">
                     Dom 27 Abr · Estadio Don Koll
                   </div>
                 </div>
@@ -659,25 +733,38 @@ const Accesos = () => {
           {POS.map((p) => (
             <div
               key={p.name}
-              className="rounded-xl p-4 border border-border"
+              className="rounded-xl p-4 border border-border flex items-start gap-3"
               style={{ background: "#111" }}
             >
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5" style={{ color: "#00abc4" }} />
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-bold text-white">{p.name}</div>
-                  <div className="text-xs text-white/60 mt-1">{p.address}</div>
-                  <div className="text-xs text-white/60 mt-1 flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> {p.hours}
-                  </div>
-                  <a
-                    href={`tel:${p.phone.replace(/\s/g, "")}`}
-                    className="text-xs mt-1 flex items-center gap-1 hover:underline"
-                    style={{ color: "#00abc4" }}
-                  >
-                    <Phone className="w-3 h-3" /> {p.phone}
-                  </a>
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                {p.logo ? (
+                  <img src={p.logo} alt={p.name} className="w-9 h-9 object-contain" />
+                ) : (
+                  <Store className="w-5 h-5" style={{ color: "#00abc4" }} />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-bold text-white">{p.name}</div>
+                <div className="text-xs text-white/60 mt-1 flex items-start gap-1">
+                  <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                  <span>{p.address}</span>
                 </div>
+                <div className="text-xs text-white/60 mt-1 flex items-center gap-1">
+                  <Clock className="w-3 h-3" /> {p.hours}
+                </div>
+                <a
+                  href={`tel:${p.phone.replace(/\s/g, "")}`}
+                  className="text-xs mt-1 flex items-center gap-1 hover:underline"
+                  style={{ color: "#00abc4" }}
+                >
+                  <Phone className="w-3 h-3" /> {p.phone}
+                </a>
               </div>
             </div>
           ))}
