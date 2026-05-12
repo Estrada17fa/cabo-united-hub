@@ -185,8 +185,8 @@ const storyMoments = [
     label: "LA AFICIÓN",
   },
   {
-    quote: "No todos pueden estar dentro. Por eso ser parte significa tanto.",
-    label: "LA EXCLUSIVIDAD",
+    quote: "Aquí no hay gradas vacías ni aficiones de paso: queremos que todos seamos parte del paraíso.",
+    label: "TODOS AL PARAÍSO",
   },
 ];
 
@@ -573,7 +573,7 @@ const Accesos = () => {
             }}
           />
 
-          <div className="relative z-10 px-4 pt-16 md:pt-24 pb-16 md:pb-24 max-w-6xl mx-auto text-center">
+          <div className="relative z-10 px-4 pt-16 md:pt-24 pb-10 md:pb-14 max-w-6xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -692,7 +692,7 @@ const Accesos = () => {
       </div>
 
       {/* Storytelling moments */}
-      <section className="max-w-6xl mx-auto px-1 mt-12 md:mt-20">
+      <section className="max-w-6xl mx-auto px-1 mt-5 md:mt-8">
         <div className="grid md:grid-cols-3 gap-3 md:gap-4">
           {storyMoments.map((m, i) => (
             <motion.div
@@ -723,8 +723,8 @@ const Accesos = () => {
       </section>
 
       {/* TIER BIG CARDS */}
-      <section id="niveles" className="max-w-5xl mx-auto mt-16 md:mt-24 scroll-mt-24">
-        <div className="text-center mb-10 md:mb-14 px-2">
+      <section id="niveles" className="max-w-5xl mx-auto mt-12 md:mt-16 scroll-mt-24">
+        <div className="text-center mb-5 md:mb-6 px-2">
           <div
             className="font-bold mb-3"
             style={{ color: "#00abc4", fontSize: 11, letterSpacing: "0.18em" }}
