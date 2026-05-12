@@ -25,10 +25,10 @@ type Tier = {
   image: string;
   popular?: boolean;
   benefits: {
-    estadio: string;
+    estadio: string[];
     kitTitle: string;
     kitItems: string[];
-    experiencias: string;
+    experiencias: string[] | null;
     continuos: string[];
   };
 };
@@ -44,13 +44,15 @@ const tiers: Tier[] = [
     accent: "#FFFFFF",
     image: kitFan,
     benefits: {
-      estadio: "No incluye entrada, pero recibe 10% de descuento en la compra de boletos.",
+      estadio: ["10% de descuento en boletos", "Pase digital de aficionado"],
       kitTitle: "Kit Digital",
       kitItems: ["Pase digital", "Stickers de WhatsApp", "Wallpapers oficiales"],
-      experiencias: "No incluye experiencias exclusivas.",
+      experiencias: null,
       continuos: [
         "5% de descuento en tienda oficial en primera compra",
         "Acceso exclusivo a Ediciones Limitadas en tienda",
+        "Sorteos mensuales para la comunidad Fan",
+        "Newsletter exclusivo con contenido del club",
       ],
     },
   },
@@ -64,7 +66,10 @@ const tiers: Tier[] = [
     accent: "#F59E0B",
     image: kitGold,
     benefits: {
-      estadio: "Entrada a todos los partidos en casa y nombre en el muro digital del estadio.",
+      estadio: [
+        "Entrada a todos los partidos en casa",
+        "Nombre en el muro digital del estadio",
+      ],
       kitTitle: "Kit Básico — entregado en bolsa oficial",
       kitItems: [
         "Kit Digital",
@@ -75,11 +80,13 @@ const tiers: Tier[] = [
         "Bufanda oficial",
         "Playera de merch",
       ],
-      experiencias: "No incluye experiencias exclusivas.",
+      experiencias: null,
       continuos: [
         "10% de descuento en tienda oficial en primera compra",
         "Acceso exclusivo a Ediciones Limitadas",
         "Acceso exclusivo a Ediciones Especiales en tienda",
+        "Preventa anticipada de boletos especiales",
+        "Invitaciones a sorteos exclusivos Gold",
       ],
     },
   },
@@ -94,7 +101,11 @@ const tiers: Tier[] = [
     image: kitPremium,
     popular: true,
     benefits: {
-      estadio: "Entrada a todos los partidos en casa, nombre en el muro digital del estadio y acceso VIP a área preferencial.",
+      estadio: [
+        "Entrada a todos los partidos en casa",
+        "Nombre en el muro digital",
+        "Acceso VIP a área preferencial",
+      ],
       kitTitle: "Kit Medio — entregado en caja clásica",
       kitItems: [
         "Kit Digital",
@@ -107,7 +118,7 @@ const tiers: Tier[] = [
         "Playera de merch",
         "Parche del equipo",
       ],
-      experiencias: "Foto con jugadores una vez por temporada.",
+      experiencias: ["Foto con jugadores 1× por temporada"],
       continuos: [
         "20% de descuento en tienda oficial en primera compra",
         "Puntos dobles en Fan Zone",
@@ -126,7 +137,12 @@ const tiers: Tier[] = [
     accent: "#E2E8F0",
     image: kitPlatino,
     benefits: {
-      estadio: "Entrada a todos los partidos en casa con asiento personalizado (placa), nombre en el muro digital del estadio y acceso VIP a área preferencial.",
+      estadio: [
+        "Entrada a todos los partidos en casa",
+        "Asiento personalizado con placa",
+        "Nombre en el muro digital",
+        "Acceso VIP a área preferencial",
+      ],
       kitTitle: "Kit Premium — entregado en caja premium",
       kitItems: [
         "Kit Digital",
@@ -141,7 +157,14 @@ const tiers: Tier[] = [
         "Parche del equipo",
         "Certificado de Socio Fundador numerado",
       ],
-      experiencias: "Foto con jugadores 1×, tour del estadio y cancha 1×, acceso a entrenamiento abierto, anuncio de cumpleaños en estadio, meet & greet con jugadores y evento anual con la directiva.",
+      experiencias: [
+        "Foto con jugadores 1× por temporada",
+        "Tour del estadio y cancha 1×",
+        "Acceso a entrenamiento abierto",
+        "Anuncio de cumpleaños en estadio",
+        "Meet & greet con jugadores",
+        "Evento anual con la directiva",
+      ],
       continuos: [
         "30% de descuento en tienda oficial en primera compra",
         "Puntos dobles en Fan Zone",
@@ -174,6 +197,9 @@ const POS = [
     hours: "Lun-Dom 24h",
     phone: "+52 624 143 0000",
     logo: null as string | null,
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent("OXXO Blvd. Marina 100, Centro, Cabo San Lucas"),
   },
   {
     name: "Tienda LC United Centro",
@@ -181,6 +207,9 @@ const POS = [
     hours: "Lun-Sáb 10:00–20:00",
     phone: "+52 624 142 1111",
     logo: lcuCrest,
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent("Av. Lázaro Cárdenas 200, San José del Cabo"),
   },
   {
     name: "Estadio Don Koll - Taquilla",
@@ -188,6 +217,9 @@ const POS = [
     hours: "Día de partido desde 14:00",
     phone: "+52 624 144 2222",
     logo: lcuCrest,
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent("Estadio Don Koll, Carretera Transpeninsular Km 4.5, San José del Cabo"),
   },
 ];
 
@@ -241,6 +273,46 @@ function BenefitChips({ items, accent }: { items: string[]; accent: string }) {
 }
 
 function TierBigCard({ tier }: { tier: Tier }) {
+  const groups = [
+    {
+      key: "estadio",
+      icon: Ticket,
+      label: "Acceso al estadio",
+      content: <BenefitChips items={tier.benefits.estadio} accent={tier.accent} />,
+    },
+    {
+      key: "kit",
+      icon: Gift,
+      label: "Kit de Bienvenida",
+      content: (
+        <>
+          <div className="font-semibold text-white mb-2 text-[12.5px]">{tier.benefits.kitTitle}</div>
+          <BenefitChips items={tier.benefits.kitItems} accent={tier.accent} />
+        </>
+      ),
+    },
+    ...(tier.benefits.experiencias
+      ? [
+          {
+            key: "experiencias",
+            icon: Sparkles,
+            label: "Experiencias exclusivas",
+            content: <BenefitChips items={tier.benefits.experiencias} accent={tier.accent} />,
+          },
+        ]
+      : []),
+    {
+      key: "continuos",
+      icon: Repeat,
+      label: "Beneficios continuos",
+      content: <BenefitChips items={tier.benefits.continuos} accent={tier.accent} />,
+    },
+  ];
+
+  const [activeTab, setActiveTab] = useState(groups[0].key);
+  const activeGroup = groups.find((g) => g.key === activeTab) ?? groups[0];
+  const continuosSpansFull = !tier.benefits.experiencias;
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -303,23 +375,59 @@ function TierBigCard({ tier }: { tier: Tier }) {
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-3">
-          <BenefitGroup icon={Ticket} title="Acceso al estadio" accent={tier.accent}>
-            {tier.benefits.estadio}
-          </BenefitGroup>
+        {/* Desktop: 2x2 grid */}
+        <div className="hidden sm:grid grid-cols-2 gap-3">
+          {groups.map((g, i) => {
+            const isContinuos = g.key === "continuos";
+            return (
+              <div
+                key={g.key}
+                className={continuosSpansFull && isContinuos ? "col-span-2" : ""}
+              >
+                <BenefitGroup icon={g.icon} title={g.label} accent={tier.accent}>
+                  {g.content}
+                </BenefitGroup>
+              </div>
+            );
+          })}
+        </div>
 
-          <BenefitGroup icon={Gift} title="Kit de Bienvenida" accent={tier.accent}>
-            <div className="font-semibold text-white mb-2">{tier.benefits.kitTitle}</div>
-            <BenefitChips items={tier.benefits.kitItems} accent={tier.accent} />
-          </BenefitGroup>
-
-          <BenefitGroup icon={Sparkles} title="Experiencias exclusivas" accent={tier.accent}>
-            {tier.benefits.experiencias}
-          </BenefitGroup>
-
-          <BenefitGroup icon={Repeat} title="Beneficios continuos" accent={tier.accent}>
-            <BenefitChips items={tier.benefits.continuos} accent={tier.accent} />
-          </BenefitGroup>
+        {/* Mobile: tabs (one section visible at a time) */}
+        <div className="sm:hidden">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2 -mx-1 px-1">
+            {groups.map((g) => {
+              const active = g.key === activeTab;
+              const Icon = g.icon;
+              return (
+                <button
+                  key={g.key}
+                  onClick={() => setActiveTab(g.key)}
+                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.06em] whitespace-nowrap transition-colors"
+                  style={{
+                    background: active ? `${tier.accent}` : "rgba(255,255,255,0.05)",
+                    color: active ? "#0a0a0a" : "rgba(255,255,255,0.7)",
+                    border: active ? "none" : "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <Icon className="w-3 h-3" strokeWidth={2.5} />
+                  {g.label.split(" ")[0]}
+                </button>
+              );
+            })}
+          </div>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={activeGroup.key}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2 }}
+            >
+              <BenefitGroup icon={activeGroup.icon} title={activeGroup.label} accent={tier.accent}>
+                {activeGroup.content}
+              </BenefitGroup>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         <a
@@ -667,20 +775,12 @@ const Accesos = () => {
                   <div className="text-xs text-white/60 mb-2">Próximo partido en casa:</div>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center"
-                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
-                      >
-                        <img src={lcuCrest} alt="Los Cabos United" className="w-7 h-7 object-contain" />
-                      </div>
+                      <img src={lcuCrest} alt="Los Cabos United" className="w-9 h-9 object-contain" />
                       <span className="text-sm font-bold text-white">LCU</span>
                     </div>
                     <span className="text-white/40 text-xs font-bold">VS</span>
                     <div className="flex items-center gap-2">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white/80"
-                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
-                      >
+                      <div className="w-9 h-9 flex items-center justify-center text-[11px] font-extrabold text-white/80">
                         RFC
                       </div>
                       <span className="text-sm font-bold text-white">Rival FC</span>
@@ -733,20 +833,23 @@ const Accesos = () => {
           {POS.map((p) => (
             <div
               key={p.name}
-              className="rounded-xl p-4 border border-border flex items-start gap-3"
+              role="link"
+              tabIndex={0}
+              onClick={() => window.open(p.mapsUrl, "_blank", "noopener,noreferrer")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  window.open(p.mapsUrl, "_blank", "noopener,noreferrer");
+                }
+              }}
+              className="cursor-pointer rounded-xl p-4 border border-border flex items-start gap-3 transition-colors hover:border-[#00abc4]/40 hover:bg-white/[0.02]"
               style={{ background: "#111" }}
             >
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                }}
-              >
+              <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
                 {p.logo ? (
-                  <img src={p.logo} alt={p.name} className="w-9 h-9 object-contain" />
+                  <img src={p.logo} alt={p.name} className="w-11 h-11 object-contain" />
                 ) : (
-                  <Store className="w-5 h-5" style={{ color: "#00abc4" }} />
+                  <Store className="w-7 h-7" style={{ color: "#00abc4" }} />
                 )}
               </div>
               <div className="flex-1 min-w-0">
@@ -760,6 +863,7 @@ const Accesos = () => {
                 </div>
                 <a
                   href={`tel:${p.phone.replace(/\s/g, "")}`}
+                  onClick={(e) => e.stopPropagation()}
                   className="text-xs mt-1 flex items-center gap-1 hover:underline"
                   style={{ color: "#00abc4" }}
                 >
