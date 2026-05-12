@@ -482,7 +482,7 @@ function TierBigCard({ tier, onSelectTier }: { tier: Tier; onSelectTier: (id: Ti
   );
 }
 
-function TierCarousel() {
+function TierCarousel({ onSelectTier }: { onSelectTier: (id: TierId) => void }) {
   const [index, setIndex] = useState(2); // start on Premium (popular)
   const tier = tiers[index];
   const go = (dir: 1 | -1) =>
@@ -516,7 +516,7 @@ function TierCarousel() {
       <div className="relative">
         <div className="overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>
-            <TierBigCard key={tier.id} tier={tier} />
+            <TierBigCard key={tier.id} tier={tier} onSelectTier={onSelectTier} />
           </AnimatePresence>
         </div>
 
