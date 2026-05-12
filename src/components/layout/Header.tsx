@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cartStore";
+import { FanPassMini } from "@/components/pass/FanPassMini";
 
 const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
   <Icon iconNode={soccerBall} {...props} />
@@ -318,6 +319,7 @@ export function Header() {
                     )}
                   </div>
                 </Link>
+                <FanPassMini userId={user.id} onNavigate={() => setIsMenuOpen(false)} />
                 <button
                   onClick={async () => {
                     await signOut();
