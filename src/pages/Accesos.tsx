@@ -26,6 +26,7 @@ type Tier = {
   popular?: boolean;
   benefits: {
     estadio: string[];
+    kitName: string;
     kitTitle: string;
     kitItems: string[];
     experiencias: string[] | null;
@@ -45,6 +46,7 @@ const tiers: Tier[] = [
     image: kitFan,
     benefits: {
       estadio: ["10% de descuento en boletos", "Pase digital de aficionado"],
+      kitName: "Kit Digital",
       kitTitle: "Kit Digital",
       kitItems: ["Pase digital", "Stickers de WhatsApp", "Wallpapers oficiales"],
       experiencias: null,
@@ -70,6 +72,7 @@ const tiers: Tier[] = [
         "Entrada a todos los partidos en casa",
         "Nombre en el muro digital del estadio",
       ],
+      kitName: "Kit Gold",
       kitTitle: "Kit Gold — entregado en bolsa oficial",
       kitItems: [
         "Kit Digital",
@@ -106,6 +109,7 @@ const tiers: Tier[] = [
         "Nombre en el muro digital",
         "Acceso VIP a área preferencial",
       ],
+      kitName: "Kit Premium",
       kitTitle: "Kit Premium — entregado en caja clásica",
       kitItems: [
         "Kit Digital",
@@ -143,6 +147,7 @@ const tiers: Tier[] = [
         "Nombre en el muro digital",
         "Acceso VIP a área preferencial",
       ],
+      kitName: "Kit Platino",
       kitTitle: "Kit Platino — entregado en caja premium",
       kitItems: [
         "Kit Digital",
@@ -308,13 +313,8 @@ function TierBigCard({ tier }: { tier: Tier }) {
     {
       key: "kit",
       icon: Gift,
-      label: "Kit de Bienvenida",
-      content: (
-        <>
-          <div className="font-semibold text-white mb-2 text-[12.5px]">{tier.benefits.kitTitle}</div>
-          <BenefitChips items={tier.benefits.kitItems} accent={tier.accent} />
-        </>
-      ),
+      label: tier.benefits.kitName,
+      content: <BenefitChips items={tier.benefits.kitItems} accent={tier.accent} />,
     },
     ...(tier.benefits.experiencias
       ? [
@@ -356,7 +356,9 @@ function TierBigCard({ tier }: { tier: Tier }) {
         <img
           src={tier.image}
           alt={`Kit ${tier.badge}`}
-          loading="lazy"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
           width={1280}
           height={800}
           className="absolute inset-0 w-full h-full object-cover"
@@ -725,6 +727,13 @@ function PointsOfSale() {
 }
 
 const Accesos = () => {
+  useEffect(() => {
+    [kitFan, kitGold, kitPremium, kitPlatino, stadiumHero, mobileTeamBg].forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -788,9 +797,10 @@ const Accesos = () => {
               className="mx-auto text-white/80"
               style={{ fontSize: 18, maxWidth: 1100, lineHeight: 1.55 }}
             >
-              90 minutos donde el mar se queda afuera y la grada se vuelve familia.
-              Donde cada gol se siente en la garganta y cada nombre en el muro
-              cuenta una historia. Aquí no se compra una entrada — se elige un bando.
+              En cada cántico late un nombre, en cada bandera vive una promesa.
+              Aquí el mar se queda en la orilla y la grada se vuelve casa: somos
+              los que cantan cuando duele y celebran como si fuera la primera vez.
+              Defender este escudo es defender lo nuestro.
             </motion.p>
 
             {/* Loop video — full width of content, shorter height */}
