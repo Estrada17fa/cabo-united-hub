@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
-import { Loader2, Calendar, MapPin, Sparkles, ShieldCheck, RefreshCw } from "lucide-react";
+import { Loader2, Calendar, MapPin, Sparkles, ShieldCheck, RefreshCw, Download, Share2 } from "lucide-react";
+import { toPng } from "html-to-image";
 import { supabase } from "@/integrations/supabase/client";
 import lcuCrest from "@/assets/lcu-crest.png";
 
@@ -54,6 +55,9 @@ export function FanPassCard({
   const [qr, setQr] = useState<QrPayload | null>(null);
   const [loadingQr, setLoadingQr] = useState(false);
   const [qrError, setQrError] = useState<string | null>(null);
+  const [exporting, setExporting] = useState<null | "card" | "story">(null);
+  const frontRef = useRef<HTMLDivElement>(null);
+  const storyRef = useRef<HTMLDivElement>(null);
 
   const tier = TIER_STYLE[pass.tier];
   const issuedDate = new Date(pass.issued_at).toLocaleDateString("es-MX", {
@@ -81,6 +85,49 @@ export function FanPassCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flipped]);
 
+  const downloadDataUrl = (dataUrl: string, filename: string) => {
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportCard = async () => {
+    if (!frontRef.current) return;
+    setExporting("card");
+    try {
+      const wasFlipped = flipped;
+      if (wasFlipped) setFlipped(false);
+      await new Promise((r) => setTimeout(r, 50));
+      const dataUrl = await toPng(frontRef.current, {
+        pixelRatio: 3,
+        cacheBust: true,
+        backgroundColor: "transparent",
+      });
+      downloadDataUrl(dataUrl, `LCU-Pase-${pass.pass_code}.png`);
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const exportStory = async () => {
+    if (!storyRef.current) return;
+    setExporting("story");
+    try {
+      const dataUrl = await toPng(storyRef.current, {
+        pixelRatio: 1,
+        cacheBust: true,
+        width: 1080,
+        height: 1920,
+      });
+      downloadDataUrl(dataUrl, `LCU-Story-${pass.pass_code}.png`);
+    } finally {
+      setExporting(null);
+    }
+  };
+
   return (
     <div className="w-full max-w-[340px] mx-auto select-none" style={{ perspective: 1600 }}>
       <motion.div
@@ -93,6 +140,7 @@ export function FanPassCard({
       >
         {/* FRONT */}
         <div
+          ref={frontRef}
           className="absolute inset-0 rounded-3xl p-6 flex flex-col justify-between"
           style={{
             backfaceVisibility: "hidden",
@@ -134,7 +182,12 @@ export function FanPassCard({
                 </span>
               )}
             </div>
-            <div className="text-[9px] uppercase tracking-[0.14em] text-white/50 mt-3">Titular</div>
+            <div
+              className="text-[10px] uppercase tracking-[0.18em] mt-3 font-bold"
+              style={{ color: tier.accent }}
+            >
+              Amo del Paraíso
+            </div>
             <div className="text-lg font-bold text-white leading-tight mt-0.5 px-2">{pass.full_name}</div>
             {favoritePlayerName && (
               <div className="text-[10px] text-white/60 mt-1 inline-flex items-center gap-1">
@@ -222,17 +275,241 @@ export function FanPassCard({
         </div>
       </motion.div>
 
-      <div className="flex items-center justify-center gap-3 mt-4 text-[11px] text-muted-foreground">
-        <span className="uppercase tracking-[0.16em]">Toca el pase para girarlo</span>
-        {flipped && (
+      <div className="mt-4 flex flex-col items-center gap-3">
+        <span className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+          Toca el pase para girarlo
+        </span>
+        <div className="flex items-center gap-2 flex-wrap justify-center">
           <button
-            onClick={fetchQr}
-            disabled={loadingQr}
-            className="inline-flex items-center gap-1 text-foreground/80 hover:text-foreground underline disabled:opacity-50"
+            onClick={exportCard}
+            disabled={!!exporting}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-full border border-white/15 bg-white/5 backdrop-blur hover:bg-white/10 transition disabled:opacity-50"
           >
-            <RefreshCw className="w-3 h-3" /> Regenerar
+            {exporting === "card" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+            Descargar pase
           </button>
-        )}
+          <button
+            onClick={exportStory}
+            disabled={!!exporting}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-full transition disabled:opacity-50"
+            style={{
+              background: `linear-gradient(135deg, ${tier.accent}, #f298c0)`,
+              color: "#0a0a0a",
+            }}
+          >
+            {exporting === "story" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Share2 className="w-3.5 h-3.5" />}
+            Compartir story
+          </button>
+          {flipped && (
+            <button
+              onClick={fetchQr}
+              disabled={loadingQr}
+              className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground underline disabled:opacity-50 ml-1"
+            >
+              <RefreshCw className="w-3 h-3" /> Regenerar QR
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Hidden story canvas (1080x1920) for export */}
+      <div
+        style={{
+          position: "fixed",
+          top: -10000,
+          left: -10000,
+          pointerEvents: "none",
+          opacity: 0,
+        }}
+        aria-hidden
+      >
+        <div
+          ref={storyRef}
+          style={{
+            width: 1080,
+            height: 1920,
+            position: "relative",
+            background: `radial-gradient(circle at 30% 20%, ${tier.accent}26, transparent 55%), radial-gradient(circle at 75% 85%, #f298c033, transparent 55%), #050505`,
+            fontFamily: "Poppins, system-ui, sans-serif",
+            overflow: "hidden",
+            color: "#fff",
+          }}
+        >
+          {/* Big crest watermark */}
+          <img
+            src={lcuCrest}
+            alt=""
+            style={{
+              position: "absolute",
+              right: -180,
+              top: -120,
+              width: 900,
+              opacity: 0.07,
+              transform: "rotate(-12deg)",
+            }}
+          />
+
+          {/* Header */}
+          <div style={{ position: "absolute", top: 80, left: 80, display: "flex", alignItems: "center", gap: 18 }}>
+            <img src={lcuCrest} alt="" style={{ width: 90, height: 90, objectFit: "contain" }} />
+            <div>
+              <div style={{ fontSize: 22, letterSpacing: 6, color: "#ffffffaa", fontWeight: 700 }}>
+                LOS CABOS UNITED
+              </div>
+              <div style={{ fontSize: 18, color: "#ffffff66" }}>Pase Oficial · Temporada 25–26</div>
+            </div>
+          </div>
+
+          {/* Tier ribbon */}
+          <div
+            style={{
+              position: "absolute",
+              top: 110,
+              right: 80,
+              padding: "12px 28px",
+              borderRadius: 999,
+              background: tier.accent,
+              color: "#0a0a0a",
+              fontWeight: 800,
+              fontSize: 22,
+              letterSpacing: 4,
+            }}
+          >
+            {tier.label}
+          </div>
+
+          {/* Pass card mock — recreated at story scale */}
+          <div
+            style={{
+              position: "absolute",
+              top: 320,
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 720,
+              height: 1140,
+              borderRadius: 56,
+              padding: 56,
+              background: tier.bg,
+              border: `2px solid ${tier.accent}80`,
+              boxShadow: `0 60px 120px -30px ${tier.accent}55, inset 0 2px 0 ${tier.accent}40`,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <img src={lcuCrest} alt="" style={{ width: 70, height: 70, objectFit: "contain" }} />
+                <div>
+                  <div style={{ fontSize: 16, letterSpacing: 4, color: "#ffffffaa", fontWeight: 700 }}>
+                    LCU
+                  </div>
+                  <div style={{ fontSize: 14, color: "#ffffff70" }}>Temporada 25–26</div>
+                </div>
+              </div>
+              <div
+                style={{
+                  background: tier.accent,
+                  color: "#0a0a0a",
+                  fontWeight: 800,
+                  fontSize: 18,
+                  letterSpacing: 3,
+                  padding: "8px 18px",
+                  borderRadius: 999,
+                }}
+              >
+                {tier.label}
+              </div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+              <div
+                style={{
+                  width: 280,
+                  height: 280,
+                  borderRadius: "50%",
+                  background: `${tier.accent}28`,
+                  border: `4px solid ${tier.accent}`,
+                  boxShadow: `0 20px 60px -15px ${tier.accent}90`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                }}
+              >
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <span style={{ fontSize: 96, fontWeight: 800, color: "#fff" }}>
+                    {getInitials(pass.full_name) || "LCU"}
+                  </span>
+                )}
+              </div>
+              <div
+                style={{
+                  fontSize: 22,
+                  fontWeight: 800,
+                  letterSpacing: 6,
+                  color: tier.accent,
+                  marginTop: 28,
+                  textTransform: "uppercase",
+                }}
+              >
+                Amo del Paraíso
+              </div>
+              <div style={{ fontSize: 44, fontWeight: 800, color: "#fff", marginTop: 8, lineHeight: 1.1 }}>
+                {pass.full_name}
+              </div>
+              {favoritePlayerName && (
+                <div style={{ fontSize: 20, color: "#ffffff99", marginTop: 14 }}>
+                  Fav: {favoritePlayerName}
+                </div>
+              )}
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+              <div>
+                <div style={{ fontSize: 14, letterSpacing: 3, color: "#ffffff70", fontWeight: 700 }}>
+                  N° DE PASE
+                </div>
+                <div
+                  style={{
+                    fontSize: 26,
+                    fontFamily: "monospace",
+                    fontWeight: 800,
+                    color: "#fff",
+                    letterSpacing: 4,
+                  }}
+                >
+                  {pass.pass_code}
+                </div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 14, letterSpacing: 3, color: "#ffffff70", fontWeight: 700 }}>
+                  EMITIDO
+                </div>
+                <div style={{ fontSize: 18, color: "#ffffffcc" }}>{issuedDate}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 70,
+              left: 0,
+              right: 0,
+              textAlign: "center",
+              fontSize: 22,
+              letterSpacing: 6,
+              color: "#ffffff80",
+              fontWeight: 700,
+            }}
+          >
+            #SOYLCU · loscabosunited.mx
+          </div>
+        </div>
       </div>
     </div>
   );
