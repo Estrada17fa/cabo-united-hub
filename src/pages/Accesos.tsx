@@ -797,9 +797,10 @@ const Accesos = () => {
               className="mx-auto text-white/80"
               style={{ fontSize: 18, maxWidth: 1100, lineHeight: 1.55 }}
             >
-              90 minutos donde el mar se queda afuera y la grada se vuelve familia.
-              Donde cada gol se siente en la garganta y cada nombre en el muro
-              cuenta una historia. Aquí no se compra una entrada — se elige un bando.
+              En cada cántico late un nombre, en cada bandera vive una promesa.
+              Aquí el mar se queda en la orilla y la grada se vuelve casa: somos
+              los que cantan cuando duele y celebran como si fuera la primera vez.
+              Defender este escudo es defender lo nuestro.
             </motion.p>
 
             {/* Loop video — full width of content, shorter height */}
