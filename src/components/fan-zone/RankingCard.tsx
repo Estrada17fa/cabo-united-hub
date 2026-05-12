@@ -1,6 +1,7 @@
-import { Trophy } from "lucide-react";
+import { useState } from "react";
+import { Trophy, ChevronDown } from "lucide-react";
 
-const ACCENT = "#00abc4";
+const ACCENT = "hsl(var(--brand-primary))";
 
 export const RANKING = [
   { name: "Mariana López", points: 18920, badge: "Amo Élite" },
@@ -15,14 +16,17 @@ interface RankingCardProps {
   user?: unknown;
   onLoginClick?: () => void;
   topLabel?: string;
+  /** Mobile: collapse to top 3 with "Ver todos" toggle. */
+  collapsibleOnMobile?: boolean;
 }
 
 export function RankingCard({
   className = "",
-  user,
-  onLoginClick,
   topLabel = "Top 5 de la semana",
+  collapsibleOnMobile = true,
 }: RankingCardProps) {
+  const [expanded, setExpanded] = useState(false);
+
   return (
     <div
       className={`rounded-2xl border overflow-hidden flex flex-col ${className}`}
@@ -31,7 +35,7 @@ export function RankingCard({
         borderColor: "rgba(255,255,255,0.07)",
       }}
     >
-      <div className="px-5 pt-5 pb-3 flex items-center justify-between">
+      <div className="px-5 md:px-6 pt-5 md:pt-6 pb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Trophy className="w-4 h-4" style={{ color: ACCENT }} />
           <h3
@@ -46,20 +50,24 @@ export function RankingCard({
         </span>
       </div>
 
-      <div className="flex-1 px-3 pb-4 flex flex-col gap-1">
+      <div className="flex-1 px-3 md:px-4 pb-4 flex flex-col gap-1">
         {RANKING.map((r, i) => {
+          const hideOnMobile =
+            collapsibleOnMobile && !expanded && i >= 3;
           const medalColor =
             i === 0
-              ? "#F59E0B"
+              ? "hsl(var(--brand-accent))"
               : i === 1
               ? "#CBD5E1"
               : i === 2
-              ? "#D97706"
+              ? "hsl(var(--brand-accent) / 0.7)"
               : "rgba(255,255,255,0.4)";
           return (
             <div
               key={r.name}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl ${
+                hideOnMobile ? "hidden md:flex" : ""
+              }`}
               style={{
                 background: i < 3 ? "rgba(255,255,255,0.03)" : "transparent",
               }}
@@ -97,19 +105,18 @@ export function RankingCard({
             </div>
           );
         })}
-      </div>
 
-      {!user && onLoginClick && (
-        <div className="px-5 pb-5">
+        {collapsibleOnMobile && !expanded && RANKING.length > 3 && (
           <button
-            onClick={onLoginClick}
-            className="w-full inline-flex items-center justify-center gap-2 font-bold rounded-full transition-opacity hover:opacity-90 h-10"
-            style={{ background: ACCENT, color: "#000", fontSize: 13 }}
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="md:hidden mt-1 mx-3 inline-flex items-center justify-center gap-1 rounded-lg py-2 text-[12px] font-bold transition-colors hover:bg-white/5"
+            style={{ color: ACCENT }}
           >
-            Inicia sesión para competir
+            Ver todos <ChevronDown className="w-3.5 h-3.5" />
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
