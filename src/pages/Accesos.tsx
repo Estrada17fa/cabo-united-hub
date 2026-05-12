@@ -46,6 +46,7 @@ const tiers: Tier[] = [
     image: kitFan,
     benefits: {
       estadio: ["10% de descuento en boletos", "Pase digital de aficionado"],
+      kitName: "Kit Digital",
       kitTitle: "Kit Digital",
       kitItems: ["Pase digital", "Stickers de WhatsApp", "Wallpapers oficiales"],
       experiencias: null,
@@ -71,6 +72,7 @@ const tiers: Tier[] = [
         "Entrada a todos los partidos en casa",
         "Nombre en el muro digital del estadio",
       ],
+      kitName: "Kit Gold",
       kitTitle: "Kit Gold — entregado en bolsa oficial",
       kitItems: [
         "Kit Digital",
@@ -107,6 +109,7 @@ const tiers: Tier[] = [
         "Nombre en el muro digital",
         "Acceso VIP a área preferencial",
       ],
+      kitName: "Kit Premium",
       kitTitle: "Kit Premium — entregado en caja clásica",
       kitItems: [
         "Kit Digital",
@@ -144,6 +147,7 @@ const tiers: Tier[] = [
         "Nombre en el muro digital",
         "Acceso VIP a área preferencial",
       ],
+      kitName: "Kit Platino",
       kitTitle: "Kit Platino — entregado en caja premium",
       kitItems: [
         "Kit Digital",
