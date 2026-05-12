@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, Loader2, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +26,15 @@ interface Props {
   initialTierId?: WizardTier["id"];
 }
 
+const passwordSchema = z
+  .string()
+  .min(8, "Mínimo 8 caracteres")
+  .max(72)
+  .regex(/[A-Z]/, "Debe incluir una mayúscula")
+  .regex(/[a-z]/, "Debe incluir una minúscula")
+  .regex(/[0-9]/, "Debe incluir un número")
+  .regex(/[^A-Za-z0-9]/, "Debe incluir un símbolo");
+
 const formSchema = z.object({
   fullName: z.string().trim().min(3, "Mínimo 3 caracteres").max(100),
   username: z
@@ -35,7 +44,7 @@ const formSchema = z.object({
     .max(30)
     .regex(/^[a-zA-Z0-9_.]+$/, "Solo letras, números, _ y ."),
   email: z.string().trim().email("Email inválido").max(255),
-  password: z.string().min(8, "Mínimo 8 caracteres").max(72),
+  password: passwordSchema,
   birthDate: z.string().min(1, "Requerida"),
   phone: z.string().trim().min(7, "Teléfono inválido").max(20),
   favoritePlayerId: z.string().nullable().optional(),
@@ -48,7 +57,9 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
   const [showPwd, setShowPwd] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [tierId, setTierId] = useState<WizardTier["id"]>(initialTierId);
-  const [players, setPlayers] = useState<Array<{ id: string; name: string; jersey_number: number | null }>>([]);
+  const [players, setPlayers] = useState<
+    Array<{ id: string; name: string; jersey_number: number | null; photo_url: string | null; position: string | null }>
+  >([]);
   const [form, setForm] = useState<FormState>({
     fullName: "",
     username: "",
@@ -75,11 +86,23 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
     if (!open) return;
     supabase
       .from("players")
-      .select("id, name, jersey_number")
+      .select("id, name, jersey_number, photo_url, position")
       .eq("active", true)
       .order("jersey_number", { ascending: true, nullsFirst: false })
       .then(({ data }) => setPlayers(data ?? []));
   }, [open]);
+  const pwdChecks = useMemo(() => {
+    const p = form.password;
+    return [
+      { label: "8+ caracteres", ok: p.length >= 8 },
+      { label: "Una mayúscula", ok: /[A-Z]/.test(p) },
+      { label: "Una minúscula", ok: /[a-z]/.test(p) },
+      { label: "Un número", ok: /[0-9]/.test(p) },
+      { label: "Un símbolo", ok: /[^A-Za-z0-9]/.test(p) },
+    ];
+  }, [form.password]);
+  const pwdValid = pwdChecks.every((c) => c.ok);
+
 
   const update = <K extends keyof FormState>(k: K, v: FormState[K]) => {
     setForm((f) => ({ ...f, [k]: v }));
@@ -203,7 +226,7 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
                       type={showPwd ? "text" : "password"}
                       value={form.password}
                       onChange={(e) => update("password", e.target.value)}
-                      placeholder="Mínimo 8 caracteres"
+                      placeholder="Mín. 8 — Aa, 0-9, símbolo"
                       maxLength={72}
                     />
                     <button
@@ -214,21 +237,66 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
                       {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-1 mt-2">
+                    {pwdChecks.map((c) => (
+                      <div
+                        key={c.label}
+                        className={`flex items-center gap-1 text-[10.5px] ${c.ok ? "text-emerald-400" : "text-muted-foreground"}`}
+                      >
+                        {c.ok ? <Check className="w-3 h-3" /> : <X className="w-3 h-3 opacity-50" />}
+                        {c.label}
+                      </div>
+                    ))}
+                  </div>
                 </Field>
                 <Field label="Jugador favorito (opcional)">
-                  <select
-                    value={form.favoritePlayerId ?? ""}
-                    onChange={(e) => update("favoritePlayerId", e.target.value || null)}
-                    className="w-full h-10 rounded-md bg-card border border-border px-3 text-sm text-foreground"
-                  >
-                    <option value="">Selecciona un jugador</option>
-                    {players.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.jersey_number ? `#${p.jersey_number} · ` : ""}
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
+                  {players.length === 0 ? (
+                    <div className="text-[11px] text-muted-foreground">Cargando plantilla…</div>
+                  ) : (
+                    <div className="grid grid-cols-3 gap-2 max-h-56 overflow-y-auto pr-1">
+                      {players.map((p) => {
+                        const active = form.favoritePlayerId === p.id;
+                        const initials = p.name.split(/\s+/).slice(0, 2).map((s) => s[0]).join("").toUpperCase();
+                        return (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => update("favoritePlayerId", active ? null : p.id)}
+                            className="relative flex flex-col items-center text-center rounded-xl p-2 transition-all"
+                            style={{
+                              background: active ? `${tier.accent}1a` : "rgba(255,255,255,0.03)",
+                              border: active ? `1.5px solid ${tier.accent}` : "1px solid rgba(255,255,255,0.08)",
+                            }}
+                          >
+                            <div
+                              className="relative w-14 h-14 rounded-full overflow-hidden flex items-center justify-center"
+                              style={{ background: "rgba(255,255,255,0.06)" }}
+                            >
+                              {p.photo_url ? (
+                                <img src={p.photo_url} alt={p.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <span className="text-sm font-bold text-foreground/80">{initials}</span>
+                              )}
+                              {p.jersey_number != null && (
+                                <span
+                                  className="absolute -bottom-1 -right-1 min-w-[20px] h-[20px] px-1 rounded-full text-[10px] font-bold flex items-center justify-center"
+                                  style={{ background: tier.accent, color: "#0a0a0a" }}
+                                >
+                                  {p.jersey_number}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[10.5px] font-semibold text-foreground mt-1.5 leading-tight line-clamp-2">
+                              {p.name}
+                            </div>
+                            {p.position && (
+                              <div className="text-[9px] text-muted-foreground uppercase tracking-wider">{p.position}</div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                 </Field>
               </motion.div>
             )}
@@ -330,6 +398,7 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
                 if (step === 1 && !validateStep1()) return;
                 setStep((s) => (s + 1) as 1 | 2 | 3);
               }}
+              disabled={step === 1 && !pwdValid && form.password.length > 0}
               style={{ background: tier.accent, color: "#0a0a0a" }}
             >
               Continuar <ArrowRight className="w-4 h-4 ml-1" />
