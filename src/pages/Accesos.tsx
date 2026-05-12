@@ -14,7 +14,6 @@ import kitPremium from "@/assets/accesos-kit-premium.jpg";
 import kitPlatino from "@/assets/accesos-kit-platino.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
 
-const WHATSAPP_URL = "https://wa.me/525500000000";
 const BOLETOMOVIL_URL = "https://www.boletomovil.com";
 
 type TierId = "fan" | "gold" | "premium" | "platino";
