@@ -775,20 +775,12 @@ const Accesos = () => {
                   <div className="text-xs text-white/60 mb-2">Próximo partido en casa:</div>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center"
-                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
-                      >
-                        <img src={lcuCrest} alt="Los Cabos United" className="w-7 h-7 object-contain" />
-                      </div>
+                      <img src={lcuCrest} alt="Los Cabos United" className="w-9 h-9 object-contain" />
                       <span className="text-sm font-bold text-white">LCU</span>
                     </div>
                     <span className="text-white/40 text-xs font-bold">VS</span>
                     <div className="flex items-center gap-2">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white/80"
-                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
-                      >
+                      <div className="w-9 h-9 flex items-center justify-center text-[11px] font-extrabold text-white/80">
                         RFC
                       </div>
                       <span className="text-sm font-bold text-white">Rival FC</span>
@@ -839,22 +831,19 @@ const Accesos = () => {
 
         <div className="grid md:grid-cols-3 gap-3">
           {POS.map((p) => (
-            <div
+            <a
               key={p.name}
-              className="rounded-xl p-4 border border-border flex items-start gap-3"
+              href={p.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-xl p-4 border border-border flex items-start gap-3 transition-colors hover:border-[#00abc4]/40 hover:bg-white/[0.02]"
               style={{ background: "#111" }}
             >
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                }}
-              >
+              <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
                 {p.logo ? (
-                  <img src={p.logo} alt={p.name} className="w-9 h-9 object-contain" />
+                  <img src={p.logo} alt={p.name} className="w-11 h-11 object-contain" />
                 ) : (
-                  <Store className="w-5 h-5" style={{ color: "#00abc4" }} />
+                  <Store className="w-7 h-7" style={{ color: "#00abc4" }} />
                 )}
               </div>
               <div className="flex-1 min-w-0">
@@ -868,13 +857,14 @@ const Accesos = () => {
                 </div>
                 <a
                   href={`tel:${p.phone.replace(/\s/g, "")}`}
+                  onClick={(e) => e.stopPropagation()}
                   className="text-xs mt-1 flex items-center gap-1 hover:underline"
                   style={{ color: "#00abc4" }}
                 >
                   <Phone className="w-3 h-3" /> {p.phone}
                 </a>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </section>
