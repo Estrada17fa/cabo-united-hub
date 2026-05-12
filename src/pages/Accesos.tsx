@@ -398,7 +398,7 @@ function TierBigCard({ tier }: { tier: Tier }) {
             <div className="text-2xl md:text-4xl font-bold text-white tracking-tight leading-none whitespace-nowrap">
               {tier.price}
             </div>
-            <div className="text-[11px] md:text-[12px] text-white/55 mt-1 whitespace-nowrap">{tier.priceNote}</div>
+            <div className="text-[11px] md:text-[12px] text-white/55 mt-1 max-w-[140px] ml-auto leading-tight">{tier.priceNote}</div>
           </div>
         </div>
 
