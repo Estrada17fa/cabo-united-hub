@@ -576,8 +576,8 @@ const Accesos = () => {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* HERO — storytelling */}
-      <div className="relative -mx-3 sm:-mx-4 lg:-mx-[calc((100vw-100%)/2)]">
-        <div className="relative w-full overflow-hidden" style={{ minHeight: 620 }}>
+      <div className="relative -mx-3 sm:-mx-4 lg:-mx-[calc((100vw-100%)/2)] -mt-4 md:-mt-6">
+        <div className="relative w-full overflow-hidden" style={{ minHeight: 560 }}>
           <img
             src={mobileTeamBg}
             alt="Afición Los Cabos United"
@@ -598,7 +598,7 @@ const Accesos = () => {
             }}
           />
 
-          <div className="relative z-10 px-4 pt-16 md:pt-24 pb-10 md:pb-14 max-w-6xl mx-auto text-center">
+          <div className="relative z-10 px-4 pt-6 md:pt-10 pb-10 md:pb-14 max-w-6xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
