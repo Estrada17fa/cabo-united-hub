@@ -70,7 +70,7 @@ const tiers: Tier[] = [
         "Entrada a todos los partidos en casa",
         "Nombre en el muro digital del estadio",
       ],
-      kitTitle: "Kit Básico — entregado en bolsa oficial",
+      kitTitle: "Kit Gold — entregado en bolsa oficial",
       kitItems: [
         "Kit Digital",
         "Tarjeta personalizada",
@@ -106,7 +106,7 @@ const tiers: Tier[] = [
         "Nombre en el muro digital",
         "Acceso VIP a área preferencial",
       ],
-      kitTitle: "Kit Medio — entregado en caja clásica",
+      kitTitle: "Kit Premium — entregado en caja clásica",
       kitItems: [
         "Kit Digital",
         "Tarjeta personalizada",
@@ -143,7 +143,7 @@ const tiers: Tier[] = [
         "Nombre en el muro digital",
         "Acceso VIP a área preferencial",
       ],
-      kitTitle: "Kit Premium — entregado en caja premium",
+      kitTitle: "Kit Platino — entregado en caja premium",
       kitItems: [
         "Kit Digital",
         "Tarjeta personalizada",
