@@ -478,10 +478,6 @@ function TierBigCard({ tier }: { tier: Tier }) {
 }
 
 function TierCarousel() {
-  return _TierCarouselImpl();
-}
-
-function _TierCarouselImpl() {
   const [index, setIndex] = useState(2); // start on Premium (popular)
   const tier = tiers[index];
   const go = (dir: 1 | -1) =>
