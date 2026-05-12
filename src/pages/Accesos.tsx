@@ -848,57 +848,7 @@ const Accesos = () => {
       </section>
 
       {/* PUNTOS DE VENTA FÍSICOS */}
-      <section className="max-w-6xl mx-auto mt-8 mb-4">
-        <h3 className="text-lg font-bold text-white">Puntos de venta físicos</h3>
-        <p className="text-[13px] text-white/60 mb-4">
-          Paga en efectivo en estos establecimientos
-        </p>
-
-        <div className="grid md:grid-cols-3 gap-3">
-          {POS.map((p) => (
-            <div
-              key={p.name}
-              role="link"
-              tabIndex={0}
-              onClick={() => window.open(p.mapsUrl, "_blank", "noopener,noreferrer")}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  window.open(p.mapsUrl, "_blank", "noopener,noreferrer");
-                }
-              }}
-              className="cursor-pointer rounded-xl p-4 border border-border flex items-start gap-3 transition-colors hover:border-[#00abc4]/40 hover:bg-white/[0.02]"
-              style={{ background: "#111" }}
-            >
-              <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
-                {p.logo ? (
-                  <img src={p.logo} alt={p.name} className="w-11 h-11 object-contain" />
-                ) : (
-                  <Store className="w-7 h-7" style={{ color: "#00abc4" }} />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-bold text-white">{p.name}</div>
-                <div className="text-xs text-white/60 mt-1 flex items-start gap-1">
-                  <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                  <span>{p.address}</span>
-                </div>
-                <div className="text-xs text-white/60 mt-1 flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> {p.hours}
-                </div>
-                <a
-                  href={`tel:${p.phone.replace(/\s/g, "")}`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-xs mt-1 flex items-center gap-1 hover:underline"
-                  style={{ color: "#00abc4" }}
-                >
-                  <Phone className="w-3 h-3" /> {p.phone}
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <PointsOfSale />
     </motion.div>
   );
 };
