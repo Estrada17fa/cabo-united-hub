@@ -7,12 +7,10 @@ export interface MiniGame {
   name: string;
   subtitle: string;
   icon: LucideIcon;
-  /** HSL color string for accents */
-  color: string;
-  /** HSL secondary color for gradient */
-  colorAlt: string;
   status: GameStatus;
   reward: string;
+  /** "premium" reserves the amber accent (only +200 pts rewards). */
+  tier: "standard" | "premium";
 }
 
 export const GAMES: MiniGame[] = [
@@ -21,59 +19,53 @@ export const GAMES: MiniGame[] = [
     name: "Quiniela del Paraíso",
     subtitle: "Predice la jornada completa",
     icon: Ticket,
-    color: "hsl(189 100% 45%)",
-    colorAlt: "hsl(189 100% 60%)",
     status: "play",
-    reward: "+150 pts",
+    reward: "+150 PTS",
+    tier: "standard",
   },
   {
     id: "arma-tu-11",
     name: "Arma tu 11",
     subtitle: "Tu alineación ideal",
     icon: Users,
-    color: "hsl(336 80% 70%)",
-    colorAlt: "hsl(336 90% 80%)",
     status: "available",
-    reward: "+100 pts",
+    reward: "+100 PTS",
+    tier: "standard",
   },
   {
     id: "marcador-exacto",
     name: "Marcador Exacto",
     subtitle: "Acierta el resultado",
     icon: Target,
-    color: "hsl(38 95% 55%)",
-    colorAlt: "hsl(45 100% 65%)",
     status: "play",
-    reward: "+200 pts",
+    reward: "+200 PTS",
+    tier: "premium",
   },
   {
     id: "visitas-paraiso",
     name: "Visitas al Paraíso",
     subtitle: "Check-in en el estadio",
     icon: MapPin,
-    color: "hsl(142 76% 45%)",
-    colorAlt: "hsl(160 80% 55%)",
     status: "available",
-    reward: "+50 pts",
+    reward: "+50 PTS",
+    tier: "standard",
   },
   {
     id: "trivia",
     name: "Trivia",
     subtitle: "Pon a prueba tu fanatismo",
     icon: Brain,
-    color: "hsl(270 80% 65%)",
-    colorAlt: "hsl(290 85% 75%)",
     status: "soon",
     reward: "Próximamente",
+    tier: "standard",
   },
   {
     id: "amo-del-partido",
     name: "Amo del Partido",
     subtitle: "Vota al MVP del juego",
     icon: Crown,
-    color: "hsl(45 100% 55%)",
-    colorAlt: "hsl(38 100% 65%)",
     status: "soon",
     reward: "Próximamente",
+    tier: "standard",
   },
 ];
