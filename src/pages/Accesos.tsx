@@ -632,7 +632,7 @@ function PointsOfSale() {
       <div className="overflow-hidden -mx-1">
         <motion.div
           className="flex"
-          animate={{ x: `calc(${-active * 100}% / 1)` }}
+          animate={{ x: `${(-active * 100) / sorted.length}%` }}
           transition={{ type: "spring", stiffness: 220, damping: 28 }}
           style={{ width: `${sorted.length * 100}%` }}
         >
