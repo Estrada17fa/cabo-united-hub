@@ -1,52 +1,108 @@
-## Mejoras al Pase Digital LCU
+## Objetivo
 
-### 1. Nuevo formato de código de pase
-Cambiar la función `generate_pass_code()` en la base de datos para que reciba `tier` y `full_name` y produzca:
+Hacer la página `/accesos` consciente del estado de sesión. El hero y secciones de boletos/puntos de venta se mantienen, pero la experiencia del medio cambia según si el usuario tiene pase o no.
+
+---
+
+## 1. Logged-out: CTA "Ya soy parte"
+
+En el hero, debajo de los botones **"Quiero ser parte"** y **"Conoce los 4 niveles"**, añadir un enlace sutil (no botón pesado, para no competir con el CTA principal):
 
 ```
-LCU-<TIER><INICIALES><N>
+¿Ya tienes pase? · Iniciar sesión →
 ```
 
-- `<TIER>`: 1 letra → F (fan), G (gold), P (premium), X (platino, para no chocar con premium)
-- `<INICIALES>`: 1ª letra del nombre + 1ª letra de cada apellido (ej. "Eduardo Espinoza Fernández" → EEF). Si solo hay 2 palabras, repito la última (Juan Pérez → JPP). Se limpian acentos y se forzan mayúsculas.
-- `<N>`: número aleatorio 1–10. Si el código ya existe, se reintenta el aleatorio; si tras varios intentos sigue colisionando, se amplía el rango automáticamente a 1–99 y luego 1–999 como red de seguridad (sin cambiar el formato visible para el caso normal).
+- Estilo: link de texto centrado, color `text-white/60` con la palabra "Iniciar sesión" en `#00abc4` y subrayado al hover.
+- Acción: abre el `Dialog` de `AuthModal` ya existente (`setAuthOpen(true)`).
+- Quitar el botón flotante "Ya tengo cuenta" de abajo-derecha — queda redundante y se siente como banner de cookies.
 
-Se actualiza también el trigger `handle_new_user` para llamar a la nueva firma `generate_pass_code(v_tier, v_full_name)`. El código se guarda en `fan_passes.pass_code` (ya existe esa columna), por lo que se reutiliza.
+---
 
-### 2. Cambio de etiqueta en el pase
-En `FanPassCard.tsx`, reemplazar el texto **"Titular"** por **"Amo del Paraíso"** sobre el nombre del aficionado. Se respeta el mismo tracking/uppercase y color del tier.
+## 2. Logged-in: hero recortado + pase + secciones recontextualizadas
 
-### 3. Pase "instagrameable" (descarga + story)
-Se añade en la parte inferior del `FanPassCard` una fila con dos botones glass-pill:
+### 2.1 Hero
+Mantener fondo, kicker, h1 y video. **Ocultar** los botones "Quiero ser parte" y "Conoce los 4 niveles" cuando hay sesión (no tienen sentido si ya está dentro). Reemplazar el párrafo de bienvenida por una variante más corta y personal: "Bienvenido de regreso, {display_name}. Tu paraíso te esperaba."
 
-- **Descargar pase** → exporta el frente del pase como PNG vertical (1080×1714, ratio 0.63:1) listo para WhatsApp/feed.
-- **Compartir story** → exporta una imagen 1080×1920 (9:16) con el pase centrado sobre un fondo decorado: gradiente del color del tier, crest LCU grande con baja opacidad, glow neón cyan/pink (paleta del proyecto) y un footer pequeño "lcu.com.mx · #SoyLCU".
+### 2.2 Sección "Tu pase" (reemplaza `TierCarousel` y storyMoments)
 
-Implementación:
-- Se usa `html-to-image` (ligero, ya compatible con SVG/QR) para capturar el nodo del frente del pase a PNG con `pixelRatio` alto para una imagen nítida.
-- Para el modo story se renderiza un componente oculto `PassStoryCanvas` (1080×1920) que envuelve una copia del frente del pase con el fondo decorado, se exporta y se descarga.
-- En navegadores móviles que soportan `navigator.share` con `files`, los botones intentan compartir directamente; si no, hacen descarga clásica.
-- Importante: durante la captura se desactiva la animación de flip para garantizar que se exporta el frente.
+Decisión recomendada: **mostrar un preview compacto del pase + botón "Ver mi pase"** que lleva a `/mi-perfil`. Razones:
+- Evita duplicar el `FanPassCard` completo (que tiene flip, QR, exportación) y el costo de mantenerlo en dos páginas.
+- El preview ya existe (`FanPassMini`), solo lo agrandamos para esta página.
+- El perfil sigue siendo el "home" del pase (donde están las acciones, redenciones, etc.).
 
-### 4. Detalles técnicos
+Estructura de la sección:
 
-```text
-generate_pass_code(tier pass_tier, full_name text) → text
-  tier_letter := CASE tier WHEN 'fan' THEN 'F' WHEN 'gold' THEN 'G'
-                           WHEN 'premium' THEN 'P' WHEN 'platino' THEN 'X' END
-  initials    := primera letra de cada palabra de unaccent(upper(full_name)),
-                 limitada a 3; si solo hay 2 palabras, repetir la 2ª.
-  loop 20 veces con N en 1..10  → si libre, devolver
-  loop 20 veces con N en 1..99  → si libre, devolver
-  loop hasta 50 veces con N en 1..999 → último recurso
+```
+┌────────────────────────────────────────────────┐
+│  TU PASE                                       │
+│  ┌──────────────────────────────────────────┐  │
+│  │ [Crest]  AMO DEL PARAÍSO · GOLD          │  │
+│  │          LCU-GEEF7                        │  │
+│  │          Activo · Temporada 2025-26      │  │
+│  │                                  [Ver →] │  │
+│  └──────────────────────────────────────────┘  │
+│                                                │
+│  [Si tier === 'fan']                           │
+│  ┌──────────────────────────────────────────┐  │
+│  │ ⚡ Sube de nivel                          │  │
+│  │ Estás como Fan. Desbloquea entrada al    │  │
+│  │ estadio, kit oficial y experiencias.     │  │
+│  │ [Ver niveles disponibles →]              │  │
+│  └──────────────────────────────────────────┘  │
+└────────────────────────────────────────────────┘
 ```
 
-Frontend:
-- Nueva carpeta `src/components/pass/share/` con `PassStoryCanvas.tsx` y helper `exportPass.ts` (envuelve `html-to-image` + descarga / share API).
-- Dependencia nueva: `html-to-image`.
-- `FanPassCard.tsx` añade `ref` al frente, props para mostrar/ocultar botones, y la barra de acciones.
+- Nuevo componente ligero `FanPassPreview` (o ampliar `FanPassMini` con prop `size="lg"`): mismo diseño del mini pero con padding mayor, crest 56px, código en `text-2xl`, badge tier más grande, y botón "Ver mi pase" explícito que navega a `/mi-perfil#pase`.
+- El bloque de upgrade solo se muestra si `pass.tier === 'fan'`. Al click, hace scroll a un acordeón / modal con los tiers Gold/Premium/Platino reutilizando el `TierCarousel` (filtrando 'fan'), o más simple: navega a `/accesos?upgrade=1` y al detectar el query muestra el carousel debajo. Implementación elegida: **mostrar el `TierCarousel` (sin la card Fan) embebido directamente debajo, con título "Sube de nivel"**. Sin navegación extra.
 
-### 5. Fuera de alcance
-- No se toca el flujo de pago, el QR del partido ni el wizard de registro.
-- No se cambian los colores de tier ni el layout vertical existente.
-- No se exportan los códigos antiguos (los pases ya creados conservan su `LCU-XXXXXX`); solo aplica al alta de nuevos usuarios.
+### 2.3 Sección Boletomovil — copy alterno cuando hay pase
+
+Mismo layout, copy nuevo:
+
+- Kicker: `BOLETOS EXTRA · INVITA A LOS TUYOS`
+- H3: `¿Vienes acompañado?`
+- Párrafo: "Tu pase ya te garantiza tu lugar. Si quieres traer a tu pareja, tu familia o un amigo que aún no es parte, compra sus boletos para el próximo partido en Boletomóvil."
+- Botón: "Comprar boletos extra"
+
+### 2.4 Sección Puntos de venta — copy alterno cuando hay pase
+
+- H3: `Puntos de venta físicos`
+- Subtítulo: "Si prefieres efectivo o quieres ayudar a un amigo a entrar al paraíso, en estos puntos pueden comprar boletos sueltos."
+
+---
+
+## 3. Detalles técnicos
+
+### Archivos a editar
+- `src/pages/Accesos.tsx`
+  - Importar `FanPassPreview` (nuevo) y `useAuth` ya está.
+  - Bifurcar render principal según `user`:
+    - Hero: ocultar bloque de botones cuando `user`; cambiar párrafo.
+    - Insertar `<UserPassSection />` antes de Boletomovil cuando `user`; ocultar `storyMoments` y `TierCarousel` (excepto cuando `tier === 'fan'`, donde se renderiza filtrado debajo).
+    - Pasar prop `loggedIn` a un nuevo sub-componente `<TicketsBlock loggedIn />` y `<PointsOfSale loggedIn />` para copy alterno (o simplemente leer `user` desde `useAuth` dentro).
+  - Quitar floating button "Ya tengo cuenta".
+  - Añadir link "¿Ya tienes pase?" en el hero (solo cuando `!user`).
+
+- `src/components/pass/FanPassPreview.tsx` (nuevo)
+  - Variante grande de `FanPassMini`. Mismo fetch de `fan_passes`. Props: `userId`, opcional `onNavigate`.
+  - Muestra: crest, badge tier, "Amo del Paraíso", `pass_code`, estado, botón "Ver mi pase" → `/mi-perfil`.
+  - Usa los mismos `TIER_ACCENT` que `FanPassMini`.
+
+- `src/components/accesos/UpgradePrompt.tsx` (nuevo, opcional — puede vivir inline en Accesos)
+  - Card de upgrade visible cuando `tier === 'fan'`, con CTA que hace `scrollIntoView` al carrusel filtrado.
+
+### Sin cambios de backend
+- No tocar tablas, RLS, edge functions, ni `FanPassCard`/`MiPerfil`.
+- Reusar `TierCarousel` filtrando `tiers.filter(t => t.id !== 'fan')` para el modo upgrade.
+
+### Estados a manejar
+- `user` cargando: mientras `loading`, renderizar la versión logged-out (evita flash de upgrade).
+- Si `user` existe pero `fan_passes` no devuelve pase (caso raro tras signup sin teléfono/fecha): mostrar fallback "Completa tu registro" → link a `/mi-perfil`.
+
+---
+
+## 4. Fuera de alcance
+
+- Flujo de pago/upgrade real (Stripe) — el botón solo lleva al `SignupWizard` con tier preseleccionado, igual que hoy hace `handleSelectTier`.
+- Cambios al `FanPassCard` o `MiPerfil`.
+- Cambios al wizard de registro.

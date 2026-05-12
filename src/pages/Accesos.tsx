@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown } from "lucide-react";
+import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown, TrendingUp } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { SignupWizard } from "@/components/accesos/SignupWizard";
 import { AuthModal } from "@/components/auth/AuthModal";
@@ -13,6 +13,7 @@ import kitGold from "@/assets/accesos-kit-gold.jpg";
 import kitPremium from "@/assets/accesos-kit-premium.jpg";
 import kitPlatino from "@/assets/accesos-kit-platino.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
+import { FanPassPreview } from "@/components/pass/FanPassPreview";
 
 const BOLETOMOVIL_URL = "https://www.boletomovil.com";
 
@@ -482,17 +483,19 @@ function TierBigCard({ tier, onSelectTier }: { tier: Tier; onSelectTier: (id: Ti
   );
 }
 
-function TierCarousel({ onSelectTier }: { onSelectTier: (id: TierId) => void }) {
-  const [index, setIndex] = useState(2); // start on Premium (popular)
-  const tier = tiers[index];
+function TierCarousel({ onSelectTier, excludeFan = false }: { onSelectTier: (id: TierId) => void; excludeFan?: boolean }) {
+  const visibleTiers = excludeFan ? tiers.filter((t) => t.id !== "fan") : tiers;
+  const initial = excludeFan ? 1 : 2; // Premium
+  const [index, setIndex] = useState(initial);
+  const tier = visibleTiers[index];
   const go = (dir: 1 | -1) =>
-    setIndex((i) => (i + dir + tiers.length) % tiers.length);
+    setIndex((i) => (i + dir + visibleTiers.length) % visibleTiers.length);
 
   return (
     <div>
       {/* Tier tabs */}
       <div className="flex items-center justify-center gap-1 md:gap-2 mb-6 px-1 flex-nowrap">
-        {tiers.map((t, i) => {
+        {visibleTiers.map((t, i) => {
           const active = i === index;
           return (
             <button
@@ -547,7 +550,7 @@ function TierCarousel({ onSelectTier }: { onSelectTier: (id: TierId) => void }) 
           <ChevronLeft className="w-4 h-4" />
         </button>
         <div className="flex items-center gap-2">
-          {tiers.map((t, i) => (
+          {visibleTiers.map((t, i) => (
             <button
               key={t.id}
               onClick={() => setIndex(i)}
@@ -573,7 +576,7 @@ function TierCarousel({ onSelectTier }: { onSelectTier: (id: TierId) => void }) 
   );
 }
 
-function PointsOfSale() {
+function PointsOfSale({ loggedIn = false }: { loggedIn?: boolean }) {
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [active, setActive] = useState(0);
 
@@ -612,7 +615,9 @@ function PointsOfSale() {
         <div>
           <h3 className="text-lg font-bold text-white">Puntos de venta físicos</h3>
           <p className="text-[13px] text-white/60">
-            Paga en efectivo en estos establecimientos
+            {loggedIn
+              ? "Si prefieres efectivo o quieres ayudar a un amigo a entrar al paraíso, en estos puntos pueden comprar boletos sueltos"
+              : "Paga en efectivo en estos establecimientos"}
             {userCoords && " · ordenados por cercanía"}
           </p>
         </div>
@@ -730,11 +735,12 @@ function PointsOfSale() {
 }
 
 const Accesos = () => {
-  const { user } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardTier, setWizardTier] = useState<TierId>("fan");
   const [authOpen, setAuthOpen] = useState(false);
+  const [userTier, setUserTier] = useState<string | null>(null);
 
   const handleSelectTier = (id: TierId) => {
     if (user) {
@@ -815,10 +821,19 @@ const Accesos = () => {
               className="mx-auto text-white/80 text-[14.5px] md:text-[18px] leading-snug md:leading-relaxed"
               style={{ maxWidth: 1100 }}
             >
-              En cada cántico late un nombre, en cada bandera vive una promesa.
-              Aquí el mar se queda en la orilla y la grada se vuelve casa: somos
-              los que cantan cuando duele y celebran como si fuera la primera vez.
-              Defender este escudo es defender lo nuestro.
+              {user && profile ? (
+                <>
+                  Bienvenido de regreso, <span className="text-white font-semibold">{profile.display_name ?? "fan"}</span>.
+                  Tu paraíso te esperaba.
+                </>
+              ) : (
+                <>
+                  En cada cántico late un nombre, en cada bandera vive una promesa.
+                  Aquí el mar se queda en la orilla y la grada se vuelve casa: somos
+                  los que cantan cuando duele y celebran como si fuera la primera vez.
+                  Defender este escudo es defender lo nuestro.
+                </>
+              )}
             </motion.p>
 
             {/* Loop video — full width of content, shorter height */}
@@ -854,6 +869,7 @@ const Accesos = () => {
               />
             </motion.div>
 
+            {!user && (
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -896,11 +912,31 @@ const Accesos = () => {
                 <ChevronDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" style={{ color: "#00abc4" }} />
               </a>
             </motion.div>
+            )}
+            {!user && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.65, duration: 0.5 }}
+                className="mt-5 text-center text-[13px] text-white/55"
+              >
+                ¿Ya tienes pase? ·{" "}
+                <button
+                  type="button"
+                  onClick={() => setAuthOpen(true)}
+                  className="font-semibold hover:underline"
+                  style={{ color: "#00abc4" }}
+                >
+                  Iniciar sesión →
+                </button>
+              </motion.div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Storytelling moments */}
+      {!user && (
       <section className="max-w-6xl mx-auto px-1 mt-5 md:mt-8">
         <div className="grid md:grid-cols-3 gap-3 md:gap-4">
           {storyMoments.map((m, i) => (
@@ -930,30 +966,85 @@ const Accesos = () => {
           ))}
         </div>
       </section>
+      )}
+
+      {/* Logged-in: user pass section */}
+      {user && (
+        <section className="max-w-5xl mx-auto mt-8 md:mt-12">
+          <div className="text-[11px] font-bold tracking-[0.18em] mb-3" style={{ color: "#00abc4" }}>
+            TU PASE
+          </div>
+          <FanPassPreview userId={user.id} onTierLoad={setUserTier} />
+
+          {userTier === "fan" && (
+            <div
+              className="mt-5 rounded-2xl p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4"
+              style={{
+                background: "linear-gradient(135deg, #06222a, #0a0a0a)",
+                border: "1px solid rgba(0,171,196,0.25)",
+              }}
+            >
+              <div
+                className="inline-flex items-center justify-center w-12 h-12 rounded-xl flex-shrink-0"
+                style={{ background: "rgba(0,171,196,0.12)", color: "#00abc4" }}
+              >
+                <TrendingUp className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-base md:text-lg font-bold text-white">Sube de nivel</div>
+                <p className="text-[13px] text-white/65 mt-1 leading-snug">
+                  Estás como Fan. Desbloquea entrada al estadio, kit oficial,
+                  experiencias y beneficios continuos.
+                </p>
+              </div>
+              <a
+                href="#niveles"
+                className="inline-flex items-center justify-center gap-2 font-bold flex-shrink-0"
+                style={{
+                  height: 46,
+                  padding: "0 18px",
+                  borderRadius: 10,
+                  fontSize: 13,
+                  background: "#00abc4",
+                  color: "#0a0a0a",
+                }}
+              >
+                Ver niveles disponibles
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* TIER BIG CARDS */}
+      {(!user || userTier === "fan") && (
       <section id="niveles" className="max-w-5xl mx-auto mt-12 md:mt-16 scroll-mt-24">
         <div className="text-center mb-5 md:mb-6 px-2">
           <div
             className="font-bold mb-3"
             style={{ color: "#00abc4", fontSize: 11, letterSpacing: "0.18em" }}
           >
-            ELIGE TU NIVEL
+            {user ? "MEJORA TU EXPERIENCIA" : "ELIGE TU NIVEL"}
           </div>
           <h2
             className="font-bold text-white"
             style={{ fontSize: "clamp(28px, 4vw, 40px)", letterSpacing: "-0.02em", lineHeight: 1.1 }}
           >
-            Cuatro formas de ser <span style={{ color: "#00abc4" }}>Amo del Paraíso</span>
+            {user
+              ? <>Sube de nivel y vive el <span style={{ color: "#00abc4" }}>paraíso desde adentro</span></>
+              : <>Cuatro formas de ser <span style={{ color: "#00abc4" }}>Amo del Paraíso</span></>}
           </h2>
           <p className="text-sm text-white/60 mt-3 max-w-xl mx-auto">
-            Desde el pase digital gratuito hasta el Socio Fundador con asiento personalizado.
-            Todos pertenecen. Algunos lo viven más cerca.
+            {user
+              ? "Tu pase Fan ya te da comunidad. Da el siguiente paso y desbloquea estadio, kit oficial y experiencias exclusivas."
+              : "Desde el pase digital gratuito hasta el Socio Fundador con asiento personalizado. Todos pertenecen. Algunos lo viven más cerca."}
           </p>
         </div>
 
-        <TierCarousel onSelectTier={handleSelectTier} />
+        <TierCarousel onSelectTier={handleSelectTier} excludeFan={!!user} />
       </section>
+      )}
 
       {/* BOLETOMOVIL SECTION */}
       <section className="max-w-6xl mx-auto mt-16">
@@ -970,12 +1061,15 @@ const Accesos = () => {
                 className="font-bold mb-3"
                 style={{ color: "#00abc4", fontSize: 11, letterSpacing: "0.15em" }}
               >
-                BOLETOS · PARTIDO A PARTIDO
+                {user ? "BOLETOS EXTRA · INVITA A LOS TUYOS" : "BOLETOS · PARTIDO A PARTIDO"}
               </div>
-              <h3 className="text-2xl font-bold text-white mb-3">¿No tienes abono?</h3>
+              <h3 className="text-2xl font-bold text-white mb-3">
+                {user ? "¿Vienes acompañado?" : "¿No tienes abono?"}
+              </h3>
               <p className="text-sm text-white/60 mb-6 max-w-md">
-                Compra tus boletos para el siguiente partido de manera rápida y
-                segura en Boletomovil
+                {user
+                  ? "Tu pase ya te garantiza tu lugar. Si quieres traer a tu pareja, tu familia o un amigo que aún no es parte, compra sus boletos para el próximo partido en Boletomóvil."
+                  : "Compra tus boletos para el siguiente partido de manera rápida y segura en Boletomovil"}
               </p>
 
               <div className="flex items-start gap-3 mb-2">
@@ -1020,7 +1114,7 @@ const Accesos = () => {
                   borderRadius: 12,
                 }}
               >
-                Comprar en Boletomovil
+                {user ? "Comprar boletos extra" : "Comprar en Boletomovil"}
                 <ArrowRight className="w-5 h-5" />
               </a>
               <div className="mt-3 text-xs text-white/50 text-center">
@@ -1032,19 +1126,7 @@ const Accesos = () => {
       </section>
 
       {/* PUNTOS DE VENTA FÍSICOS */}
-      <PointsOfSale />
-
-      {/* Floating sign-in button */}
-      {!user && (
-        <div className="fixed bottom-4 right-4 z-40">
-          <button
-            onClick={() => setAuthOpen(true)}
-            className="px-4 py-2.5 rounded-full bg-card/90 backdrop-blur border border-border text-xs font-bold uppercase tracking-[0.1em] text-white hover:border-[#00abc4]/50 transition-colors"
-          >
-            Ya tengo cuenta
-          </button>
-        </div>
-      )}
+      <PointsOfSale loggedIn={!!user} />
 
       <SignupWizard
         open={wizardOpen}
