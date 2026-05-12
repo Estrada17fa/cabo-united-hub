@@ -576,7 +576,7 @@ function TierCarousel({ onSelectTier, excludeFan = false }: { onSelectTier: (id:
   );
 }
 
-function PointsOfSale({ loggedIn = false }: { loggedIn?: boolean }) {
+function PointsOfSale({ loggedIn = false, isFan = false }: { loggedIn?: boolean; isFan?: boolean }) {
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [active, setActive] = useState(0);
 
@@ -616,7 +616,9 @@ function PointsOfSale({ loggedIn = false }: { loggedIn?: boolean }) {
           <h3 className="text-lg font-bold text-white">Puntos de venta físicos</h3>
           <p className="text-[13px] text-white/60">
             {loggedIn
-              ? "Si prefieres efectivo o quieres ayudar a un amigo a entrar al paraíso, en estos puntos pueden comprar boletos sueltos"
+              ? isFan
+                ? "Si prefieres pagar en efectivo tu boleto del próximo partido, encuéntralo en estos puntos cercanos a ti"
+                : "Si prefieres efectivo o quieres ayudar a un amigo a entrar al paraíso, en estos puntos pueden comprar boletos sueltos"
               : "Paga en efectivo en estos establecimientos"}
             {userCoords && " · ordenados por cercanía"}
           </p>
@@ -1140,7 +1142,7 @@ const Accesos = () => {
       </section>
 
       {/* PUNTOS DE VENTA FÍSICOS */}
-      <PointsOfSale loggedIn={!!user} />
+      <PointsOfSale loggedIn={!!user} isFan={userTier === "fan"} />
 
       <SignupWizard
         open={wizardOpen}
