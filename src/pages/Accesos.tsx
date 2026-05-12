@@ -313,13 +313,8 @@ function TierBigCard({ tier }: { tier: Tier }) {
     {
       key: "kit",
       icon: Gift,
-      label: "Kit de Bienvenida",
-      content: (
-        <>
-          <div className="font-semibold text-white mb-2 text-[12.5px]">{tier.benefits.kitTitle}</div>
-          <BenefitChips items={tier.benefits.kitItems} accent={tier.accent} />
-        </>
-      ),
+      label: tier.benefits.kitName,
+      content: <BenefitChips items={tier.benefits.kitItems} accent={tier.accent} />,
     },
     ...(tier.benefits.experiencias
       ? [
