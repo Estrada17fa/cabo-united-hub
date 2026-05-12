@@ -1014,28 +1014,33 @@ const Accesos = () => {
       )}
 
       {/* TIER BIG CARDS */}
+      {(!user || userTier === "fan") && (
       <section id="niveles" className="max-w-5xl mx-auto mt-12 md:mt-16 scroll-mt-24">
         <div className="text-center mb-5 md:mb-6 px-2">
           <div
             className="font-bold mb-3"
             style={{ color: "#00abc4", fontSize: 11, letterSpacing: "0.18em" }}
           >
-            ELIGE TU NIVEL
+            {user ? "MEJORA TU EXPERIENCIA" : "ELIGE TU NIVEL"}
           </div>
           <h2
             className="font-bold text-white"
             style={{ fontSize: "clamp(28px, 4vw, 40px)", letterSpacing: "-0.02em", lineHeight: 1.1 }}
           >
-            Cuatro formas de ser <span style={{ color: "#00abc4" }}>Amo del Paraíso</span>
+            {user
+              ? <>Sube de nivel y vive el <span style={{ color: "#00abc4" }}>paraíso desde adentro</span></>
+              : <>Cuatro formas de ser <span style={{ color: "#00abc4" }}>Amo del Paraíso</span></>}
           </h2>
           <p className="text-sm text-white/60 mt-3 max-w-xl mx-auto">
-            Desde el pase digital gratuito hasta el Socio Fundador con asiento personalizado.
-            Todos pertenecen. Algunos lo viven más cerca.
+            {user
+              ? "Tu pase Fan ya te da comunidad. Da el siguiente paso y desbloquea estadio, kit oficial y experiencias exclusivas."
+              : "Desde el pase digital gratuito hasta el Socio Fundador con asiento personalizado. Todos pertenecen. Algunos lo viven más cerca."}
           </p>
         </div>
 
         <TierCarousel onSelectTier={handleSelectTier} />
       </section>
+      )}
 
       {/* BOLETOMOVIL SECTION */}
       <section className="max-w-6xl mx-auto mt-16">
