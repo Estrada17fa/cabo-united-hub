@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown } from "lucide-react";
 import stadiumHero from "@/assets/accesos-page-hero.jpg";
 import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
@@ -70,7 +70,7 @@ const tiers: Tier[] = [
         "Entrada a todos los partidos en casa",
         "Nombre en el muro digital del estadio",
       ],
-      kitTitle: "Kit Básico — entregado en bolsa oficial",
+      kitTitle: "Kit Gold — entregado en bolsa oficial",
       kitItems: [
         "Kit Digital",
         "Tarjeta personalizada",
@@ -106,7 +106,7 @@ const tiers: Tier[] = [
         "Nombre en el muro digital",
         "Acceso VIP a área preferencial",
       ],
-      kitTitle: "Kit Medio — entregado en caja clásica",
+      kitTitle: "Kit Premium — entregado en caja clásica",
       kitItems: [
         "Kit Digital",
         "Tarjeta personalizada",
@@ -143,7 +143,7 @@ const tiers: Tier[] = [
         "Nombre en el muro digital",
         "Acceso VIP a área preferencial",
       ],
-      kitTitle: "Kit Premium — entregado en caja premium",
+      kitTitle: "Kit Platino — entregado en caja premium",
       kitItems: [
         "Kit Digital",
         "Tarjeta personalizada",
@@ -197,6 +197,7 @@ const POS = [
     hours: "Lun-Dom 24h",
     phone: "+52 624 143 0000",
     logo: null as string | null,
+    coords: { lat: 22.8905, lng: -109.9167 },
     mapsUrl:
       "https://www.google.com/maps/search/?api=1&query=" +
       encodeURIComponent("OXXO Blvd. Marina 100, Centro, Cabo San Lucas"),
@@ -207,6 +208,7 @@ const POS = [
     hours: "Lun-Sáb 10:00–20:00",
     phone: "+52 624 142 1111",
     logo: lcuCrest,
+    coords: { lat: 23.0608, lng: -109.7081 },
     mapsUrl:
       "https://www.google.com/maps/search/?api=1&query=" +
       encodeURIComponent("Av. Lázaro Cárdenas 200, San José del Cabo"),
@@ -217,9 +219,32 @@ const POS = [
     hours: "Día de partido desde 14:00",
     phone: "+52 624 144 2222",
     logo: lcuCrest,
+    coords: { lat: 23.0739, lng: -109.7237 },
     mapsUrl:
       "https://www.google.com/maps/search/?api=1&query=" +
       encodeURIComponent("Estadio Don Koll, Carretera Transpeninsular Km 4.5, San José del Cabo"),
+  },
+  {
+    name: "7-Eleven Plaza del Sol",
+    address: "Carr. Transpeninsular 3000, Cabo San Lucas",
+    hours: "Lun-Dom 24h",
+    phone: "",
+    logo: null as string | null,
+    coords: { lat: 22.9034, lng: -109.9081 },
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent("7-Eleven Plaza del Sol, Cabo San Lucas"),
+  },
+  {
+    name: "Café Paraíso – San José",
+    address: "Plaza Mijares S/N, Centro, San José del Cabo",
+    hours: "Lun-Dom 09:00–22:00",
+    phone: "",
+    logo: null as string | null,
+    coords: { lat: 23.0613, lng: -109.7036 },
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent("Plaza Mijares, Centro, San José del Cabo"),
   },
 ];
 
@@ -235,7 +260,7 @@ function BenefitGroup({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-2xl p-4 md:p-5" style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.07)" }}>
+    <div className="rounded-2xl p-4 md:p-5 h-full flex flex-col" style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.07)" }}>
       <div className="flex items-center gap-2 mb-3">
         <span
           className="inline-flex items-center justify-center w-8 h-8 rounded-xl"
@@ -247,7 +272,7 @@ function BenefitGroup({
           {title}
         </h4>
       </div>
-      <div className="text-[13px] text-white/85 leading-relaxed">{children}</div>
+      <div className="text-[13px] text-white/85 leading-relaxed flex-1">{children}</div>
     </div>
   );
 }
@@ -376,13 +401,13 @@ function TierBigCard({ tier }: { tier: Tier }) {
         </div>
 
         {/* Desktop: 2x2 grid */}
-        <div className="hidden sm:grid grid-cols-2 gap-3">
+        <div className="hidden sm:grid grid-cols-2 gap-3 auto-rows-fr">
           {groups.map((g, i) => {
             const isContinuos = g.key === "continuos";
             return (
               <div
                 key={g.key}
-                className={continuosSpansFull && isContinuos ? "col-span-2" : ""}
+                className={(continuosSpansFull && isContinuos ? "col-span-2 " : "") + "h-full"}
               >
                 <BenefitGroup icon={g.icon} title={g.label} accent={tier.accent}>
                   {g.content}
@@ -543,6 +568,162 @@ function TierCarousel() {
   );
 }
 
+function PointsOfSale() {
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (!("geolocation" in navigator)) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {},
+      { enableHighAccuracy: false, timeout: 4000, maximumAge: 600000 },
+    );
+  }, []);
+
+  const sorted = useMemo(() => {
+    if (!userCoords) return POS.map((p) => ({ ...p, distanceKm: null as number | null }));
+    const haversine = (a: { lat: number; lng: number }, b: { lat: number; lng: number }) => {
+      const R = 6371;
+      const toRad = (d: number) => (d * Math.PI) / 180;
+      const dLat = toRad(b.lat - a.lat);
+      const dLng = toRad(b.lng - a.lng);
+      const x =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(x));
+    };
+    return POS.map((p) => ({ ...p, distanceKm: haversine(userCoords, p.coords) })).sort(
+      (a, b) => (a.distanceKm ?? 0) - (b.distanceKm ?? 0),
+    );
+  }, [userCoords]);
+
+  const go = (dir: 1 | -1) =>
+    setActive((i) => (i + dir + sorted.length) % sorted.length);
+
+  return (
+    <section className="max-w-6xl mx-auto mt-8 mb-4">
+      <div className="flex items-end justify-between gap-3 mb-4 flex-wrap">
+        <div>
+          <h3 className="text-lg font-bold text-white">Puntos de venta físicos</h3>
+          <p className="text-[13px] text-white/60">
+            Paga en efectivo en estos establecimientos
+            {userCoords && " · ordenados por cercanía"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => go(-1)}
+            aria-label="Anterior"
+            className="flex items-center justify-center w-9 h-9 rounded-full bg-card border border-border text-white hover:border-[#00abc4]/50"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => go(1)}
+            aria-label="Siguiente"
+            className="flex items-center justify-center w-9 h-9 rounded-full bg-card border border-border text-white hover:border-[#00abc4]/50"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      <div className="overflow-hidden -mx-1">
+        <motion.div
+          className="flex"
+          animate={{ x: `${(-active * 100) / sorted.length}%` }}
+          transition={{ type: "spring", stiffness: 220, damping: 28 }}
+          style={{ width: `${sorted.length * 100}%` }}
+        >
+          {sorted.map((p, i) => (
+            <div
+              key={p.name}
+              className="px-1"
+              style={{ width: `${100 / sorted.length}%` }}
+            >
+              <div
+                role="link"
+                tabIndex={0}
+                onClick={() => window.open(p.mapsUrl, "_blank", "noopener,noreferrer")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    window.open(p.mapsUrl, "_blank", "noopener,noreferrer");
+                  }
+                }}
+                className="cursor-pointer rounded-2xl p-5 border border-border flex items-start gap-4 transition-colors hover:border-[#00abc4]/40 hover:bg-white/[0.02]"
+                style={{ background: "#111" }}
+              >
+                <div className="w-14 h-14 flex items-center justify-center flex-shrink-0">
+                  {p.logo ? (
+                    <img src={p.logo} alt={p.name} className="w-12 h-12 object-contain" />
+                  ) : (
+                    <Store className="w-8 h-8" style={{ color: "#00abc4" }} />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="text-base font-bold text-white">{p.name}</div>
+                    {i === 0 && userCoords && (
+                      <span
+                        className="text-[10px] font-bold uppercase tracking-[0.1em] px-2 py-0.5 rounded-full"
+                        style={{ background: "#00abc4", color: "#0a0a0a" }}
+                      >
+                        Más cercano
+                      </span>
+                    )}
+                    {p.distanceKm != null && (
+                      <span className="text-[11px] text-white/50">
+                        a {p.distanceKm < 1 ? `${Math.round(p.distanceKm * 1000)} m` : `${p.distanceKm.toFixed(1)} km`}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-white/60 mt-1.5 flex items-start gap-1">
+                    <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                    <span>{p.address}</span>
+                  </div>
+                  <div className="text-xs text-white/60 mt-1 flex items-center gap-1">
+                    <Clock className="w-3 h-3" /> {p.hours}
+                  </div>
+                  {p.phone ? (
+                    <a
+                      href={`tel:${p.phone.replace(/\s/g, "")}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs mt-1.5 inline-flex items-center gap-1 hover:underline"
+                      style={{ color: "#00abc4" }}
+                    >
+                      <Phone className="w-3 h-3" /> {p.phone}
+                    </a>
+                  ) : (
+                    <div className="text-[11px] text-white/40 mt-1.5">Sin teléfono · Toca para ver en mapa</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+      </div>
+
+      <div className="flex items-center justify-center gap-2 mt-4">
+        {sorted.map((p, i) => (
+          <button
+            key={p.name}
+            onClick={() => setActive(i)}
+            aria-label={`Ir a ${p.name}`}
+            className="rounded-full transition-all"
+            style={{
+              width: i === active ? 22 : 8,
+              height: 8,
+              background: i === active ? "#00abc4" : "rgba(255,255,255,0.2)",
+            }}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 const Accesos = () => {
   return (
     <motion.div
@@ -551,8 +732,8 @@ const Accesos = () => {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* HERO — storytelling */}
-      <div className="relative -mx-3 sm:-mx-4 lg:-mx-[calc((100vw-100%)/2)]">
-        <div className="relative w-full overflow-hidden" style={{ minHeight: 620 }}>
+      <div className="relative -mx-3 sm:-mx-4 lg:-mx-[calc((100vw-100%)/2)] -mt-4 md:-mt-6">
+        <div className="relative w-full overflow-hidden" style={{ minHeight: 560 }}>
           <img
             src={mobileTeamBg}
             alt="Afición Los Cabos United"
@@ -573,7 +754,7 @@ const Accesos = () => {
             }}
           />
 
-          <div className="relative z-10 px-4 pt-16 md:pt-24 pb-10 md:pb-14 max-w-6xl mx-auto text-center">
+          <div className="relative z-10 px-4 pt-6 md:pt-10 pb-10 md:pb-14 max-w-6xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -823,57 +1004,7 @@ const Accesos = () => {
       </section>
 
       {/* PUNTOS DE VENTA FÍSICOS */}
-      <section className="max-w-6xl mx-auto mt-8 mb-4">
-        <h3 className="text-lg font-bold text-white">Puntos de venta físicos</h3>
-        <p className="text-[13px] text-white/60 mb-4">
-          Paga en efectivo en estos establecimientos
-        </p>
-
-        <div className="grid md:grid-cols-3 gap-3">
-          {POS.map((p) => (
-            <div
-              key={p.name}
-              role="link"
-              tabIndex={0}
-              onClick={() => window.open(p.mapsUrl, "_blank", "noopener,noreferrer")}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  window.open(p.mapsUrl, "_blank", "noopener,noreferrer");
-                }
-              }}
-              className="cursor-pointer rounded-xl p-4 border border-border flex items-start gap-3 transition-colors hover:border-[#00abc4]/40 hover:bg-white/[0.02]"
-              style={{ background: "#111" }}
-            >
-              <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
-                {p.logo ? (
-                  <img src={p.logo} alt={p.name} className="w-11 h-11 object-contain" />
-                ) : (
-                  <Store className="w-7 h-7" style={{ color: "#00abc4" }} />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-bold text-white">{p.name}</div>
-                <div className="text-xs text-white/60 mt-1 flex items-start gap-1">
-                  <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                  <span>{p.address}</span>
-                </div>
-                <div className="text-xs text-white/60 mt-1 flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> {p.hours}
-                </div>
-                <a
-                  href={`tel:${p.phone.replace(/\s/g, "")}`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-xs mt-1 flex items-center gap-1 hover:underline"
-                  style={{ color: "#00abc4" }}
-                >
-                  <Phone className="w-3 h-3" /> {p.phone}
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <PointsOfSale />
     </motion.div>
   );
 };
