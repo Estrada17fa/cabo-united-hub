@@ -25,10 +25,10 @@ type Tier = {
   image: string;
   popular?: boolean;
   benefits: {
-    estadio: string;
+    estadio: string[];
     kitTitle: string;
     kitItems: string[];
-    experiencias: string;
+    experiencias: string[] | null;
     continuos: string[];
   };
 };
@@ -44,13 +44,15 @@ const tiers: Tier[] = [
     accent: "#FFFFFF",
     image: kitFan,
     benefits: {
-      estadio: "No incluye entrada, pero recibe 10% de descuento en la compra de boletos.",
+      estadio: ["10% de descuento en boletos", "Pase digital de aficionado"],
       kitTitle: "Kit Digital",
       kitItems: ["Pase digital", "Stickers de WhatsApp", "Wallpapers oficiales"],
-      experiencias: "No incluye experiencias exclusivas.",
+      experiencias: null,
       continuos: [
         "5% de descuento en tienda oficial en primera compra",
         "Acceso exclusivo a Ediciones Limitadas en tienda",
+        "Sorteos mensuales para la comunidad Fan",
+        "Newsletter exclusivo con contenido del club",
       ],
     },
   },
@@ -64,7 +66,10 @@ const tiers: Tier[] = [
     accent: "#F59E0B",
     image: kitGold,
     benefits: {
-      estadio: "Entrada a todos los partidos en casa y nombre en el muro digital del estadio.",
+      estadio: [
+        "Entrada a todos los partidos en casa",
+        "Nombre en el muro digital del estadio",
+      ],
       kitTitle: "Kit Básico — entregado en bolsa oficial",
       kitItems: [
         "Kit Digital",
@@ -75,11 +80,13 @@ const tiers: Tier[] = [
         "Bufanda oficial",
         "Playera de merch",
       ],
-      experiencias: "No incluye experiencias exclusivas.",
+      experiencias: null,
       continuos: [
         "10% de descuento en tienda oficial en primera compra",
         "Acceso exclusivo a Ediciones Limitadas",
         "Acceso exclusivo a Ediciones Especiales en tienda",
+        "Preventa anticipada de boletos especiales",
+        "Invitaciones a sorteos exclusivos Gold",
       ],
     },
   },
@@ -94,7 +101,11 @@ const tiers: Tier[] = [
     image: kitPremium,
     popular: true,
     benefits: {
-      estadio: "Entrada a todos los partidos en casa, nombre en el muro digital del estadio y acceso VIP a área preferencial.",
+      estadio: [
+        "Entrada a todos los partidos en casa",
+        "Nombre en el muro digital",
+        "Acceso VIP a área preferencial",
+      ],
       kitTitle: "Kit Medio — entregado en caja clásica",
       kitItems: [
         "Kit Digital",
@@ -107,7 +118,7 @@ const tiers: Tier[] = [
         "Playera de merch",
         "Parche del equipo",
       ],
-      experiencias: "Foto con jugadores una vez por temporada.",
+      experiencias: ["Foto con jugadores 1× por temporada"],
       continuos: [
         "20% de descuento en tienda oficial en primera compra",
         "Puntos dobles en Fan Zone",
@@ -126,7 +137,12 @@ const tiers: Tier[] = [
     accent: "#E2E8F0",
     image: kitPlatino,
     benefits: {
-      estadio: "Entrada a todos los partidos en casa con asiento personalizado (placa), nombre en el muro digital del estadio y acceso VIP a área preferencial.",
+      estadio: [
+        "Entrada a todos los partidos en casa",
+        "Asiento personalizado con placa",
+        "Nombre en el muro digital",
+        "Acceso VIP a área preferencial",
+      ],
       kitTitle: "Kit Premium — entregado en caja premium",
       kitItems: [
         "Kit Digital",
@@ -141,7 +157,14 @@ const tiers: Tier[] = [
         "Parche del equipo",
         "Certificado de Socio Fundador numerado",
       ],
-      experiencias: "Foto con jugadores 1×, tour del estadio y cancha 1×, acceso a entrenamiento abierto, anuncio de cumpleaños en estadio, meet & greet con jugadores y evento anual con la directiva.",
+      experiencias: [
+        "Foto con jugadores 1× por temporada",
+        "Tour del estadio y cancha 1×",
+        "Acceso a entrenamiento abierto",
+        "Anuncio de cumpleaños en estadio",
+        "Meet & greet con jugadores",
+        "Evento anual con la directiva",
+      ],
       continuos: [
         "30% de descuento en tienda oficial en primera compra",
         "Puntos dobles en Fan Zone",
