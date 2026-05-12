@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown } from "lucide-react";
 import stadiumHero from "@/assets/accesos-page-hero.jpg";
 import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
@@ -197,6 +197,7 @@ const POS = [
     hours: "Lun-Dom 24h",
     phone: "+52 624 143 0000",
     logo: null as string | null,
+    coords: { lat: 22.8905, lng: -109.9167 },
     mapsUrl:
       "https://www.google.com/maps/search/?api=1&query=" +
       encodeURIComponent("OXXO Blvd. Marina 100, Centro, Cabo San Lucas"),
@@ -207,6 +208,7 @@ const POS = [
     hours: "Lun-Sáb 10:00–20:00",
     phone: "+52 624 142 1111",
     logo: lcuCrest,
+    coords: { lat: 23.0608, lng: -109.7081 },
     mapsUrl:
       "https://www.google.com/maps/search/?api=1&query=" +
       encodeURIComponent("Av. Lázaro Cárdenas 200, San José del Cabo"),
@@ -217,9 +219,32 @@ const POS = [
     hours: "Día de partido desde 14:00",
     phone: "+52 624 144 2222",
     logo: lcuCrest,
+    coords: { lat: 23.0739, lng: -109.7237 },
     mapsUrl:
       "https://www.google.com/maps/search/?api=1&query=" +
       encodeURIComponent("Estadio Don Koll, Carretera Transpeninsular Km 4.5, San José del Cabo"),
+  },
+  {
+    name: "7-Eleven Plaza del Sol",
+    address: "Carr. Transpeninsular 3000, Cabo San Lucas",
+    hours: "Lun-Dom 24h",
+    phone: "",
+    logo: null as string | null,
+    coords: { lat: 22.9034, lng: -109.9081 },
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent("7-Eleven Plaza del Sol, Cabo San Lucas"),
+  },
+  {
+    name: "Café Paraíso – San José",
+    address: "Plaza Mijares S/N, Centro, San José del Cabo",
+    hours: "Lun-Dom 09:00–22:00",
+    phone: "",
+    logo: null as string | null,
+    coords: { lat: 23.0613, lng: -109.7036 },
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent("Plaza Mijares, Centro, San José del Cabo"),
   },
 ];
 
