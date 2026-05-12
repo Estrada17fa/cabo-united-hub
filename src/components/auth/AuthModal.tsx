@@ -8,9 +8,11 @@ import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 
 interface AuthModalProps {
   onSuccess?: () => void;
+  loginOnly?: boolean;
+  onSignupClick?: () => void;
 }
 
-export function AuthModal({ onSuccess }: AuthModalProps) {
+export function AuthModal({ onSuccess, loginOnly, onSignupClick }: AuthModalProps) {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,6 +54,7 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
 
   return (
     <div className="space-y-4">
+      {!loginOnly && (
       <div className="flex rounded-xl bg-muted p-1 gap-1">
         <button
           type="button"
@@ -66,7 +69,7 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
         </button>
         <button
           type="button"
-          onClick={() => setMode("signup")}
+          onClick={() => onSignupClick ? onSignupClick() : setMode("signup")}
           className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
             mode === "signup"
               ? "bg-primary text-primary-foreground shadow"
@@ -76,9 +79,10 @@ export function AuthModal({ onSuccess }: AuthModalProps) {
           Crear cuenta
         </button>
       </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-3">
-        {mode === "signup" && (
+        {mode === "signup" && !loginOnly && (
           <div className="space-y-1.5">
             <Label htmlFor="displayName" className="text-xs text-muted-foreground">Nombre</Label>
             <div className="relative">
