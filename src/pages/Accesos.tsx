@@ -731,11 +731,12 @@ function PointsOfSale() {
 }
 
 const Accesos = () => {
-  const { user } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardTier, setWizardTier] = useState<TierId>("fan");
   const [authOpen, setAuthOpen] = useState(false);
+  const [userTier, setUserTier] = useState<string | null>(null);
 
   const handleSelectTier = (id: TierId) => {
     if (user) {
