@@ -12,6 +12,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cartStore";
@@ -152,6 +153,7 @@ export function Header() {
   const [showSignupWizard, setShowSignupWizard] = useState(false);
   const location = useLocation();
   const { user, profile, signOut } = useAuth();
+  const { i18n } = useTranslation();
   const isActive = (path: string) => location.pathname === path;
   const totalCartItems = useCartStore((s) =>
     s.items.reduce((sum, item) => sum + item.quantity, 0),
