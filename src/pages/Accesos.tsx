@@ -483,17 +483,19 @@ function TierBigCard({ tier, onSelectTier }: { tier: Tier; onSelectTier: (id: Ti
   );
 }
 
-function TierCarousel({ onSelectTier }: { onSelectTier: (id: TierId) => void }) {
-  const [index, setIndex] = useState(2); // start on Premium (popular)
-  const tier = tiers[index];
+function TierCarousel({ onSelectTier, excludeFan = false }: { onSelectTier: (id: TierId) => void; excludeFan?: boolean }) {
+  const visibleTiers = excludeFan ? tiers.filter((t) => t.id !== "fan") : tiers;
+  const initial = excludeFan ? 1 : 2; // Premium
+  const [index, setIndex] = useState(initial);
+  const tier = visibleTiers[index];
   const go = (dir: 1 | -1) =>
-    setIndex((i) => (i + dir + tiers.length) % tiers.length);
+    setIndex((i) => (i + dir + visibleTiers.length) % visibleTiers.length);
 
   return (
     <div>
       {/* Tier tabs */}
       <div className="flex items-center justify-center gap-1 md:gap-2 mb-6 px-1 flex-nowrap">
-        {tiers.map((t, i) => {
+        {visibleTiers.map((t, i) => {
           const active = i === index;
           return (
             <button
@@ -548,7 +550,7 @@ function TierCarousel({ onSelectTier }: { onSelectTier: (id: TierId) => void }) 
           <ChevronLeft className="w-4 h-4" />
         </button>
         <div className="flex items-center gap-2">
-          {tiers.map((t, i) => (
+          {visibleTiers.map((t, i) => (
             <button
               key={t.id}
               onClick={() => setIndex(i)}
