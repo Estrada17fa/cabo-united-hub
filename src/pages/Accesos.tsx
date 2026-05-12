@@ -273,6 +273,46 @@ function BenefitChips({ items, accent }: { items: string[]; accent: string }) {
 }
 
 function TierBigCard({ tier }: { tier: Tier }) {
+  const groups = [
+    {
+      key: "estadio",
+      icon: Ticket,
+      label: "Acceso al estadio",
+      content: <BenefitChips items={tier.benefits.estadio} accent={tier.accent} />,
+    },
+    {
+      key: "kit",
+      icon: Gift,
+      label: "Kit de Bienvenida",
+      content: (
+        <>
+          <div className="font-semibold text-white mb-2 text-[12.5px]">{tier.benefits.kitTitle}</div>
+          <BenefitChips items={tier.benefits.kitItems} accent={tier.accent} />
+        </>
+      ),
+    },
+    ...(tier.benefits.experiencias
+      ? [
+          {
+            key: "experiencias",
+            icon: Sparkles,
+            label: "Experiencias exclusivas",
+            content: <BenefitChips items={tier.benefits.experiencias} accent={tier.accent} />,
+          },
+        ]
+      : []),
+    {
+      key: "continuos",
+      icon: Repeat,
+      label: "Beneficios continuos",
+      content: <BenefitChips items={tier.benefits.continuos} accent={tier.accent} />,
+    },
+  ];
+
+  const [activeTab, setActiveTab] = useState(groups[0].key);
+  const activeGroup = groups.find((g) => g.key === activeTab) ?? groups[0];
+  const continuosSpansFull = !tier.benefits.experiencias;
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -335,23 +375,59 @@ function TierBigCard({ tier }: { tier: Tier }) {
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-3">
-          <BenefitGroup icon={Ticket} title="Acceso al estadio" accent={tier.accent}>
-            {tier.benefits.estadio}
-          </BenefitGroup>
+        {/* Desktop: 2x2 grid */}
+        <div className="hidden sm:grid grid-cols-2 gap-3">
+          {groups.map((g, i) => {
+            const isContinuos = g.key === "continuos";
+            return (
+              <div
+                key={g.key}
+                className={continuosSpansFull && isContinuos ? "col-span-2" : ""}
+              >
+                <BenefitGroup icon={g.icon} title={g.label} accent={tier.accent}>
+                  {g.content}
+                </BenefitGroup>
+              </div>
+            );
+          })}
+        </div>
 
-          <BenefitGroup icon={Gift} title="Kit de Bienvenida" accent={tier.accent}>
-            <div className="font-semibold text-white mb-2">{tier.benefits.kitTitle}</div>
-            <BenefitChips items={tier.benefits.kitItems} accent={tier.accent} />
-          </BenefitGroup>
-
-          <BenefitGroup icon={Sparkles} title="Experiencias exclusivas" accent={tier.accent}>
-            {tier.benefits.experiencias}
-          </BenefitGroup>
-
-          <BenefitGroup icon={Repeat} title="Beneficios continuos" accent={tier.accent}>
-            <BenefitChips items={tier.benefits.continuos} accent={tier.accent} />
-          </BenefitGroup>
+        {/* Mobile: tabs (one section visible at a time) */}
+        <div className="sm:hidden">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2 -mx-1 px-1">
+            {groups.map((g) => {
+              const active = g.key === activeTab;
+              const Icon = g.icon;
+              return (
+                <button
+                  key={g.key}
+                  onClick={() => setActiveTab(g.key)}
+                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.06em] whitespace-nowrap transition-colors"
+                  style={{
+                    background: active ? `${tier.accent}` : "rgba(255,255,255,0.05)",
+                    color: active ? "#0a0a0a" : "rgba(255,255,255,0.7)",
+                    border: active ? "none" : "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <Icon className="w-3 h-3" strokeWidth={2.5} />
+                  {g.label.split(" ")[0]}
+                </button>
+              );
+            })}
+          </div>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={activeGroup.key}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2 }}
+            >
+              <BenefitGroup icon={activeGroup.icon} title={activeGroup.label} accent={tier.accent}>
+                {activeGroup.content}
+              </BenefitGroup>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         <a
