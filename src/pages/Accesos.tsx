@@ -817,10 +817,19 @@ const Accesos = () => {
               className="mx-auto text-white/80 text-[14.5px] md:text-[18px] leading-snug md:leading-relaxed"
               style={{ maxWidth: 1100 }}
             >
-              En cada cántico late un nombre, en cada bandera vive una promesa.
-              Aquí el mar se queda en la orilla y la grada se vuelve casa: somos
-              los que cantan cuando duele y celebran como si fuera la primera vez.
-              Defender este escudo es defender lo nuestro.
+              {user && profile ? (
+                <>
+                  Bienvenido de regreso, <span className="text-white font-semibold">{profile.display_name ?? "fan"}</span>.
+                  Tu paraíso te esperaba.
+                </>
+              ) : (
+                <>
+                  En cada cántico late un nombre, en cada bandera vive una promesa.
+                  Aquí el mar se queda en la orilla y la grada se vuelve casa: somos
+                  los que cantan cuando duele y celebran como si fuera la primera vez.
+                  Defender este escudo es defender lo nuestro.
+                </>
+              )}
             </motion.p>
 
             {/* Loop video — full width of content, shorter height */}
@@ -856,6 +865,7 @@ const Accesos = () => {
               />
             </motion.div>
 
+            {!user && (
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -898,6 +908,25 @@ const Accesos = () => {
                 <ChevronDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" style={{ color: "#00abc4" }} />
               </a>
             </motion.div>
+            )}
+            {!user && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.65, duration: 0.5 }}
+                className="mt-5 text-center text-[13px] text-white/55"
+              >
+                ¿Ya tienes pase? ·{" "}
+                <button
+                  type="button"
+                  onClick={() => setAuthOpen(true)}
+                  className="font-semibold hover:underline"
+                  style={{ color: "#00abc4" }}
+                >
+                  Iniciar sesión →
+                </button>
+              </motion.div>
+            )}
           </div>
         </div>
       </div>
