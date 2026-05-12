@@ -1061,14 +1061,24 @@ const Accesos = () => {
                 className="font-bold mb-3"
                 style={{ color: "#00abc4", fontSize: 11, letterSpacing: "0.15em" }}
               >
-                {user ? "BOLETOS EXTRA · INVITA A LOS TUYOS" : "BOLETOS · PARTIDO A PARTIDO"}
+                {user
+                  ? userTier === "fan"
+                    ? "BOLETOS · TU LUGAR EN EL PARAÍSO"
+                    : "BOLETOS EXTRA · INVITA A LOS TUYOS"
+                  : "BOLETOS · PARTIDO A PARTIDO"}
               </div>
               <h3 className="text-2xl font-bold text-white mb-3">
-                {user ? "¿Vienes acompañado?" : "¿No tienes abono?"}
+                {user
+                  ? userTier === "fan"
+                    ? "Vive el partido desde la tribuna"
+                    : "¿Vienes acompañado?"
+                  : "¿No tienes abono?"}
               </h3>
               <p className="text-sm text-white/60 mb-6 max-w-md">
                 {user
-                  ? "Tu pase ya te garantiza tu lugar. Si quieres traer a tu pareja, tu familia o un amigo que aún no es parte, compra sus boletos para el próximo partido en Boletomóvil."
+                  ? userTier === "fan"
+                    ? "Tu pase Fan te hace parte de la afición. Para sentir el rugido del estadio, el pasto bajo las luces y el latido colectivo de la tribuna, asegura tu boleto del próximo partido en Boletomóvil."
+                    : "Tu pase ya te garantiza tu lugar. Si quieres traer a tu pareja, tu familia o un amigo que aún no es parte, compra sus boletos para el próximo partido en Boletomóvil."
                   : "Compra tus boletos para el siguiente partido de manera rápida y segura en Boletomovil"}
               </p>
 
@@ -1114,7 +1124,11 @@ const Accesos = () => {
                   borderRadius: 12,
                 }}
               >
-                {user ? "Comprar boletos extra" : "Comprar en Boletomovil"}
+                {user
+                  ? userTier === "fan"
+                    ? "Comprar mi boleto"
+                    : "Comprar boletos extra"
+                  : "Comprar en Boletomovil"}
                 <ArrowRight className="w-5 h-5" />
               </a>
               <div className="mt-3 text-xs text-white/50 text-center">
