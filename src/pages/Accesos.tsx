@@ -727,6 +727,13 @@ function PointsOfSale() {
 }
 
 const Accesos = () => {
+  useEffect(() => {
+    [kitFan, kitGold, kitPremium, kitPlatino, stadiumHero, mobileTeamBg].forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
