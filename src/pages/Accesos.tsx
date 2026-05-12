@@ -576,7 +576,7 @@ function TierCarousel({ onSelectTier, excludeFan = false }: { onSelectTier: (id:
   );
 }
 
-function PointsOfSale() {
+function PointsOfSale({ loggedIn = false }: { loggedIn?: boolean }) {
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [active, setActive] = useState(0);
 
@@ -615,7 +615,9 @@ function PointsOfSale() {
         <div>
           <h3 className="text-lg font-bold text-white">Puntos de venta físicos</h3>
           <p className="text-[13px] text-white/60">
-            Paga en efectivo en estos establecimientos
+            {loggedIn
+              ? "Si prefieres efectivo o quieres ayudar a un amigo a entrar al paraíso, en estos puntos pueden comprar boletos sueltos"
+              : "Paga en efectivo en estos establecimientos"}
             {userCoords && " · ordenados por cercanía"}
           </p>
         </div>
