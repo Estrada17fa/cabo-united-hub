@@ -860,8 +860,9 @@ const Accesos = () => {
               transition={{ delay: 0.5, duration: 0.6 }}
               className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3"
             >
-              <a
-                href="#niveles"
+              <button
+                type="button"
+                onClick={() => handleSelectTier("fan")}
                 className="inline-flex items-center justify-center gap-2 font-bold transition-all hover:opacity-90 hover:-translate-y-0.5"
                 style={{
                   height: 54,
@@ -876,7 +877,7 @@ const Accesos = () => {
               >
                 Quiero ser parte
                 <ArrowRight className="w-4 h-4" />
-              </a>
+              </button>
               <a
                 href="#niveles"
                 className="group inline-flex items-center justify-center gap-2 font-semibold transition-all hover:-translate-y-0.5"
