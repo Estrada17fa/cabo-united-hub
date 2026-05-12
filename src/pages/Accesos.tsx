@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown } from "lucide-react";
 import stadiumHero from "@/assets/accesos-page-hero.jpg";
 import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
@@ -457,10 +458,8 @@ function TierBigCard({ tier }: { tier: Tier }) {
           </AnimatePresence>
         </div>
 
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to={`/accesos/registro?tier=${tier.id}`}
           className="w-full inline-flex items-center justify-center gap-2 font-bold transition-opacity hover:opacity-90"
           style={{
             height: 54,
@@ -473,7 +472,7 @@ function TierBigCard({ tier }: { tier: Tier }) {
         >
           {tier.cta}
           {tier.id !== "fan" && <ArrowRight className="w-4 h-4" />}
-        </a>
+        </Link>
       </div>
     </motion.article>
   );
