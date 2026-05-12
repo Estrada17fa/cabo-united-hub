@@ -356,7 +356,9 @@ function TierBigCard({ tier }: { tier: Tier }) {
         <img
           src={tier.image}
           alt={`Kit ${tier.badge}`}
-          loading="lazy"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
           width={1280}
           height={800}
           className="absolute inset-0 w-full h-full object-cover"
