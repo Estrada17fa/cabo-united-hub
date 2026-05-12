@@ -12,6 +12,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cartStore";
@@ -152,6 +153,7 @@ export function Header() {
   const [showSignupWizard, setShowSignupWizard] = useState(false);
   const location = useLocation();
   const { user, profile, signOut } = useAuth();
+  const { i18n } = useTranslation();
   const isActive = (path: string) => location.pathname === path;
   const totalCartItems = useCartStore((s) =>
     s.items.reduce((sum, item) => sum + item.quantity, 0),
@@ -427,6 +429,21 @@ export function Header() {
                 </Link>
               );
             })}
+            <div className="flex gap-1.5 pt-2">
+              {(["es", "en"] as const).map((lng) => (
+                <button
+                  key={lng}
+                  onClick={() => i18n.changeLanguage(lng)}
+                  className={`flex-1 px-2 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors ${
+                    i18n.resolvedLanguage === lng
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card border border-border text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {lng === "es" ? "Español" : "English"}
+                </button>
+              ))}
+            </div>
           </div>
         </SheetContent>
       </Sheet>

@@ -8,37 +8,20 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
-
-interface FanStats {
-  rank: number;
-  totalFans: number;
-  points: number;
-  level: number;
-  pointsToNext: number;
-  levelTotal: number;
-  levelName: string;
-  nextLevelName: string;
-}
-
-const MOCK_STATS: FanStats = {
-  rank: 42,
-  totalFans: 1250,
-  points: 12450,
-  level: 3,
-  pointsToNext: 1550,
-  levelTotal: 2000,
-  levelName: "Amo",
-  nextLevelName: "Amo Élite",
-};
+import { useFanProfile } from "@/hooks/useFanProfile";
+import { progressToNext } from "@/lib/levels";
 
 const LEVELS_TOOLTIP = (
   <div className="space-y-1.5 text-[11px] leading-snug">
     <p className="font-bold text-foreground uppercase tracking-wider text-[10px]">
       Niveles del Paraíso
     </p>
-    <p><span className="text-foreground font-semibold">Amo</span> — 0 a 5,000 pts</p>
-    <p><span className="text-foreground font-semibold">Amo Élite</span> — 5,000 a 15,000 pts</p>
-    <p><span className="text-foreground font-semibold">Amo Leyenda</span> — 15,000+ pts</p>
+    <p><span className="text-foreground font-semibold">Visitante</span> — 0 XP</p>
+    <p><span className="text-foreground font-semibold">Local</span> — 500 XP</p>
+    <p><span className="text-foreground font-semibold">Cabeño</span> — 2,000 XP</p>
+    <p><span className="text-foreground font-semibold">Amo</span> — 5,000 XP</p>
+    <p><span className="text-foreground font-semibold">Amo del Paraíso</span> — 12,000 XP</p>
+    <p><span className="text-foreground font-semibold">Leyenda</span> — 25,000 XP</p>
     <p className="text-muted-foreground pt-1">
       Sube de nivel jugando minijuegos y asistiendo al estadio.
     </p>
@@ -47,9 +30,10 @@ const LEVELS_TOOLTIP = (
 
 export function FanCard() {
   const { user, profile } = useAuth();
-  const stats = MOCK_STATS;
-  const earned = stats.levelTotal - stats.pointsToNext;
-  const progressPct = Math.max(0, Math.min(100, (earned / stats.levelTotal) * 100));
+  useFanProfile();
+  const xp = profile?.xp ?? 0;
+  const cc = profile?.cc ?? 0;
+  const { current, next, earned, span, pct } = progressToNext(xp);
 
   const displayName = profile?.display_name ?? user?.email?.split("@")[0] ?? "Invitado";
   const initials = user
@@ -80,10 +64,10 @@ export function FanCard() {
             <div className="flex items-center gap-1.5 mt-1">
               <Crown className="w-3.5 h-3.5 shrink-0 text-brand-accent" />
               <span className="text-[13px] font-extrabold leading-none text-brand-accent">
-                {stats.levelName}
+                {current.name}
               </span>
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold ml-1">
-                Nivel {stats.level}
+                Nivel {current.level}
               </span>
               <TooltipProvider delayDuration={150}>
                 <Tooltip>
@@ -111,15 +95,12 @@ export function FanCard() {
         {/* Ranking (center) */}
         <div className="flex md:flex-col md:items-center justify-between md:justify-center gap-2 md:min-w-[120px]">
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
-            Ranking
+            Cabo Coins
           </span>
           <div className="flex items-baseline gap-1.5">
-            <Trophy className="w-3.5 h-3.5 text-brand-primary self-center" />
-            <span className="text-xl md:text-2xl font-extrabold tabular-nums tracking-tight text-foreground">
-              #{stats.rank}
-            </span>
-            <span className="text-[10px] text-muted-foreground tabular-nums">
-              / {stats.totalFans.toLocaleString()}
+            <Trophy className="w-3.5 h-3.5 text-brand-accent self-center" />
+            <span className="text-xl md:text-2xl font-extrabold tabular-nums tracking-tight text-brand-accent">
+              {cc.toLocaleString()}
             </span>
           </div>
         </div>
@@ -130,14 +111,14 @@ export function FanCard() {
         {/* Points (right) */}
         <div className="flex md:flex-col md:items-end justify-between md:justify-center gap-2 md:min-w-[140px]">
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
-            Puntos
+            XP
           </span>
           <div className="flex items-baseline gap-1.5">
             <span className="text-xl md:text-2xl font-extrabold tabular-nums tracking-tight text-brand-primary">
-              {stats.points.toLocaleString()}
+              {xp.toLocaleString()}
             </span>
             <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
-              pts
+              xp
             </span>
           </div>
         </div>
@@ -147,13 +128,19 @@ export function FanCard() {
       <div className="mt-5 md:mt-6">
         <div className="flex items-center justify-between gap-2 mb-2">
           <span className="text-[11px] font-semibold text-muted-foreground">
-            Nivel {stats.level} · {stats.levelName}
-            <span className="mx-1.5 text-muted-foreground/50">→</span>
-            Nivel {stats.level + 1} · {stats.nextLevelName}
+            Nivel {current.level} · {current.name}
+            {next && (
+              <>
+                <span className="mx-1.5 text-muted-foreground/50">→</span>
+                Nivel {next.level} · {next.name}
+              </>
+            )}
           </span>
-          <span className="text-[11px] tabular-nums text-muted-foreground shrink-0">
-            {earned.toLocaleString()} / {stats.levelTotal.toLocaleString()}
-          </span>
+          {next && (
+            <span className="text-[11px] tabular-nums text-muted-foreground shrink-0">
+              {earned.toLocaleString()} / {span.toLocaleString()}
+            </span>
+          )}
         </div>
         <div
           className="relative h-2 w-full overflow-hidden rounded-full"
@@ -162,7 +149,7 @@ export function FanCard() {
           <div
             className="h-full transition-all"
             style={{
-              width: `${progressPct}%`,
+              width: `${pct}%`,
               borderRadius: "9999px",
               background: "hsl(var(--brand-primary))",
               boxShadow: "0 0 10px hsl(var(--brand-primary) / 0.45)",

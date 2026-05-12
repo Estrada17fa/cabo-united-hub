@@ -1,108 +1,115 @@
-## Objetivo
+## Fan Zone — Base System
 
-Hacer la página `/accesos` consciente del estado de sesión. El hero y secciones de boletos/puntos de venta se mantienen, pero la experiencia del medio cambia según si el usuario tiene pase o no.
-
----
-
-## 1. Logged-out: CTA "Ya soy parte"
-
-En el hero, debajo de los botones **"Quiero ser parte"** y **"Conoce los 4 niveles"**, añadir un enlace sutil (no botón pesado, para no competir con el CTA principal):
-
-```
-¿Ya tienes pase? · Iniciar sesión →
-```
-
-- Estilo: link de texto centrado, color `text-white/60` con la palabra "Iniciar sesión" en `#00abc4` y subrayado al hover.
-- Acción: abre el `Dialog` de `AuthModal` ya existente (`setAuthOpen(true)`).
-- Quitar el botón flotante "Ya tengo cuenta" de abajo-derecha — queda redundante y se siente como banner de cookies.
+Construir la base de Fan Zone (sin minijuegos), reutilizando la auth existente de Accesos y agregando perfil extendido, niveles, ledger de transacciones, onboarding e i18n.
 
 ---
 
-## 2. Logged-in: hero recortado + pase + secciones recontextualizadas
+### 1. Auth unificada (con Accesos)
 
-### 2.1 Hero
-Mantener fondo, kicker, h1 y video. **Ocultar** los botones "Quiero ser parte" y "Conoce los 4 niveles" cuando hay sesión (no tienen sentido si ya está dentro). Reemplazar el párrafo de bienvenida por una variante más corta y personal: "Bienvenido de regreso, {display_name}. Tu paraíso te esperaba."
+Hoy ya existe `useAuth` + `AuthModal` + `SignupWizard` en `/accesos`. Toda la app debe leer de la **misma fuente**.
 
-### 2.2 Sección "Tu pase" (reemplaza `TierCarousel` y storyMoments)
+- **Reutilizar** `useAuth` (no crear nuevo contexto). Extender el `Profile` para incluir: `phone`, `birth_date`, `city`, `email_verified`, `phone_verified`, `level`, `xp`, `cc`.
+- **Registro**: email + password + teléfono (ya existe en `SignupWizard`). Añadir verificación SMS OTP vía Supabase (`signInWithOtp` por phone) tras crear la cuenta.
+- **Verificación email**: ya enviada por Supabase. Añadir UI "Reenviar verificación" en perfil.
+- **Login social**: botones Google y Apple en `AuthModal` usando `lovable.auth.signInWithOAuth`.
+- **Recuperar contraseña**: link "¿Olvidaste tu contraseña?" en `AuthModal` → flow `resetPasswordForEmail` + nueva ruta `/reset-password`.
+- **Auto-confirm email**: NO activar (que verifiquen).
 
-Decisión recomendada: **mostrar un preview compacto del pase + botón "Ver mi pase"** que lleva a `/mi-perfil`. Razones:
-- Evita duplicar el `FanPassCard` completo (que tiene flip, QR, exportación) y el costo de mantenerlo en dos páginas.
-- El preview ya existe (`FanPassMini`), solo lo agrandamos para esta página.
-- El perfil sigue siendo el "home" del pase (donde están las acciones, redenciones, etc.).
+### 2. Perfil extendido
 
-Estructura de la sección:
+Página `/mi-perfil` muestra:
+- Avatar (upload a bucket `avatars` o monograma "LCU" por defecto).
+- Nombre, fecha nacimiento, ciudad (editables).
+- Badges: email ✓ / teléfono ✓ / identidad ✓.
+- Nivel actual + barra de progreso al siguiente.
+- XP y CC totales (tabular).
+- Badge "2× activo" si su `fan_passes.tier ∈ {premium, platino}`.
+- Lista últimas 20 filas de `transactions`.
+
+### 3. Sistema de niveles
 
 ```
-┌────────────────────────────────────────────────┐
-│  TU PASE                                       │
-│  ┌──────────────────────────────────────────┐  │
-│  │ [Crest]  AMO DEL PARAÍSO · GOLD          │  │
-│  │          LCU-GEEF7                        │  │
-│  │          Activo · Temporada 2025-26      │  │
-│  │                                  [Ver →] │  │
-│  └──────────────────────────────────────────┘  │
-│                                                │
-│  [Si tier === 'fan']                           │
-│  ┌──────────────────────────────────────────┐  │
-│  │ ⚡ Sube de nivel                          │  │
-│  │ Estás como Fan. Desbloquea entrada al    │  │
-│  │ estadio, kit oficial y experiencias.     │  │
-│  │ [Ver niveles disponibles →]              │  │
-│  └──────────────────────────────────────────┘  │
-└────────────────────────────────────────────────┘
+Visitante         0 XP
+Local           500 XP
+Cabeño         2000 XP
+Amo            5000 XP
+Amo del Paraíso 12000 XP
+Leyenda        25000 XP
 ```
 
-- Nuevo componente ligero `FanPassPreview` (o ampliar `FanPassMini` con prop `size="lg"`): mismo diseño del mini pero con padding mayor, crest 56px, código en `text-2xl`, badge tier más grande, y botón "Ver mi pase" explícito que navega a `/mi-perfil#pase`.
-- El bloque de upgrade solo se muestra si `pass.tier === 'fan'`. Al click, hace scroll a un acordeón / modal con los tiers Gold/Premium/Platino reutilizando el `TierCarousel` (filtrando 'fan'), o más simple: navega a `/accesos?upgrade=1` y al detectar el query muestra el carousel debajo. Implementación elegida: **mostrar el `TierCarousel` (sin la card Fan) embebido directamente debajo, con título "Sube de nivel"**. Sin navegación extra.
+- Columna `profiles.xp` y `profiles.level`.
+- Trigger BEFORE UPDATE en `profiles`: si cruza threshold, actualiza `level` y enqueue notificación (fila en `notifications`).
+- UI: componente `LevelProgress` reutilizable (FanCard ya tiene la barra; se conecta a datos reales).
 
-### 2.3 Sección Boletomovil — copy alterno cuando hay pase
+### 4. Ledger de transacciones
 
-Mismo layout, copy nuevo:
+Tabla `transactions` (append-only, sin DELETE/UPDATE policies):
+- `user_id`, `type` (enum: bonus, mission, checkin, game, redeem, purchase, adjust), `xp_delta`, `cc_delta`, `source` (text), `description` (text), `created_at`.
+- Función `public.award_points(_user_id uuid, _xp int, _cc int, _type tx_type, _source text, _description text)`:
+  - Lee multiplicador desde `fan_passes.tier` del usuario (premium/platino = 2×, otros = 1×).
+  - Inserta fila en `transactions` con deltas finales.
+  - Actualiza `profiles.xp += xp_delta`, `profiles.cc += cc_delta`.
+  - Trigger de niveles se dispara solo.
+- RLS: usuario lee sólo sus transacciones.
 
-- Kicker: `BOLETOS EXTRA · INVITA A LOS TUYOS`
-- H3: `¿Vienes acompañado?`
-- Párrafo: "Tu pase ya te garantiza tu lugar. Si quieres traer a tu pareja, tu familia o un amigo que aún no es parte, compra sus boletos para el próximo partido en Boletomóvil."
-- Botón: "Comprar boletos extra"
+### 5. Onboarding + misiones iniciales
 
-### 2.4 Sección Puntos de venta — copy alterno cuando hay pase
+- Componente `OnboardingFlow` (5 slides en `Dialog` full-screen): qué es XP, qué es CC, niveles, canjes, "empieza".
+- Tabla `user_onboarding (user_id, completed_at)` para no repetir.
+- Trigger `handle_new_user` extendido: `award_points(user, 50, 10, 'bonus', 'welcome', 'Bienvenido al Paraíso')`.
+- Tabla `missions` (seed con 4 misiones iniciales) + `user_missions (user_id, mission_id, completed_at)`.
+- Funciones que llaman `award_points` cuando: email verificado, phone verificado, perfil completo, primer check-in.
 
-- H3: `Puntos de venta físicos`
-- Subtítulo: "Si prefieres efectivo o quieres ayudar a un amigo a entrar al paraíso, en estos puntos pueden comprar boletos sueltos."
+### 6. UI base
+
+- Mantener tokens y FanCard ya consolidados.
+- Cuando NO logueado: en FanZone, juegos primero, luego CTA sticky "Inicia sesión", luego ranking/premios. (Ya está así — sólo confirmar.)
+- Cuando logueado: FanCard arriba con datos reales.
+
+### 7. i18n
+
+- `react-i18next` + `i18next` + `i18next-browser-languagedetector`.
+- `src/i18n/index.ts`, `src/i18n/locales/es.json` (default), `src/i18n/locales/en.json`.
+- Migrar los strings de FanZone, AuthModal, MiPerfil, Accesos hero. (No migrar TODA la app en este pase — sentar base + páginas tocadas.)
+- Selector de idioma en Header (menú hamburguesa).
 
 ---
 
-## 3. Detalles técnicos
+### Detalles técnicos
 
-### Archivos a editar
-- `src/pages/Accesos.tsx`
-  - Importar `FanPassPreview` (nuevo) y `useAuth` ya está.
-  - Bifurcar render principal según `user`:
-    - Hero: ocultar bloque de botones cuando `user`; cambiar párrafo.
-    - Insertar `<UserPassSection />` antes de Boletomovil cuando `user`; ocultar `storyMoments` y `TierCarousel` (excepto cuando `tier === 'fan'`, donde se renderiza filtrado debajo).
-    - Pasar prop `loggedIn` a un nuevo sub-componente `<TicketsBlock loggedIn />` y `<PointsOfSale loggedIn />` para copy alterno (o simplemente leer `user` desde `useAuth` dentro).
-  - Quitar floating button "Ya tengo cuenta".
-  - Añadir link "¿Ya tienes pase?" en el hero (solo cuando `!user`).
+**Migraciones SQL (un solo migration):**
+1. `ALTER TABLE profiles ADD COLUMN city text, xp int default 0, cc int default 0, level smallint default 0, email_verified bool default false, phone_verified bool default false, identity_verified bool default false;`
+2. `CREATE TYPE tx_type AS ENUM (...);`
+3. `CREATE TABLE transactions (...)` + RLS (SELECT propio, sin INSERT/UPDATE/DELETE — sólo `award_points` SECURITY DEFINER inserta).
+4. `CREATE TABLE notifications (id, user_id, kind, title, body, read_at, created_at)` + RLS.
+5. `CREATE TABLE missions (...)` + seed + `user_missions` + RLS.
+6. `CREATE FUNCTION award_points(...) SECURITY DEFINER`.
+7. `CREATE FUNCTION update_level_on_xp() SECURITY DEFINER` + trigger BEFORE UPDATE en profiles.
+8. `CREATE BUCKET avatars` (público) + policies (usuario sube/edita su carpeta).
+9. Extender `handle_new_user` para llamar `award_points` welcome.
 
-- `src/components/pass/FanPassPreview.tsx` (nuevo)
-  - Variante grande de `FanPassMini`. Mismo fetch de `fan_passes`. Props: `userId`, opcional `onNavigate`.
-  - Muestra: crest, badge tier, "Amo del Paraíso", `pass_code`, estado, botón "Ver mi pase" → `/mi-perfil`.
-  - Usa los mismos `TIER_ACCENT` que `FanPassMini`.
+**Archivos nuevos / editados:**
+- `src/i18n/{index.ts, locales/es.json, locales/en.json}`
+- `src/hooks/useAuth.tsx` — extender Profile, añadir signInWithOAuth helpers, resetPassword.
+- `src/hooks/useFanProfile.tsx` — nuevo: trae profile + xp/cc/level + transactions + realtime.
+- `src/components/auth/AuthModal.tsx` — botones Google/Apple, link forgot password.
+- `src/components/auth/ForgotPasswordForm.tsx`, `src/pages/ResetPassword.tsx`
+- `src/components/onboarding/OnboardingFlow.tsx`
+- `src/components/profile/AvatarUploader.tsx`, `LevelProgress.tsx`, `TransactionsList.tsx`, `VerificationBadges.tsx`
+- `src/pages/MiPerfil.tsx` — refactor con todo lo anterior.
+- `src/components/fan-zone/FanCard.tsx` — conectar a datos reales (`useFanProfile`).
+- `src/lib/levels.ts` — definición de niveles + helpers.
+- `src/App.tsx` — ruta `/reset-password`, montar i18n.
+- `src/components/layout/Header.tsx` — language switcher.
 
-- `src/components/accesos/UpgradePrompt.tsx` (nuevo, opcional — puede vivir inline en Accesos)
-  - Card de upgrade visible cuando `tier === 'fan'`, con CTA que hace `scrollIntoView` al carrusel filtrado.
-
-### Sin cambios de backend
-- No tocar tablas, RLS, edge functions, ni `FanPassCard`/`MiPerfil`.
-- Reusar `TierCarousel` filtrando `tiers.filter(t => t.id !== 'fan')` para el modo upgrade.
-
-### Estados a manejar
-- `user` cargando: mientras `loading`, renderizar la versión logged-out (evita flash de upgrade).
-- Si `user` existe pero `fan_passes` no devuelve pase (caso raro tras signup sin teléfono/fecha): mostrar fallback "Completa tu registro" → link a `/mi-perfil`.
+**Lo que NO se hace en esta entrega:**
+- Minijuegos (sólo estructura).
+- Verificación de identidad (KYC) — sólo el badge/columna.
+- Catálogo de canjes (redenciones).
+- Notificaciones push reales (sólo persistencia + UI).
 
 ---
 
-## 4. Fuera de alcance
+### Resultado
 
-- Flujo de pago/upgrade real (Stripe) — el botón solo lleva al `SignupWizard` con tier preseleccionado, igual que hoy hace `handleSelectTier`.
-- Cambios al `FanPassCard` o `MiPerfil`.
-- Cambios al wizard de registro.
+Al final el usuario podrá: registrarse con email+teléfono+OAuth, recuperar contraseña, completar onboarding, ver su perfil con avatar/nivel/XP/CC/transacciones, recibir bonus de bienvenida y misiones iniciales, y la app cambiará a inglés desde el header.

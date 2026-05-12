@@ -225,6 +225,72 @@ export type Database = {
         }
         Relationships: []
       }
+      missions: {
+        Row: {
+          active: boolean
+          cc_reward: number
+          created_at: string
+          description: string | null
+          id: string
+          is_starter: boolean
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          active?: boolean
+          cc_reward?: number
+          created_at?: string
+          description?: string | null
+          id: string
+          is_starter?: boolean
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          active?: boolean
+          cc_reward?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_starter?: boolean
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          kind: string
+          metadata: Json | null
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          metadata?: Json | null
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          metadata?: Json | null
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pass_redemptions: {
         Row: {
           created_at: string
@@ -310,35 +376,56 @@ export type Database = {
         Row: {
           avatar_url: string | null
           birth_date: string | null
+          cc: number
+          city: string | null
           created_at: string
           display_name: string | null
+          email_verified: boolean
           favorite_player_id: string | null
           id: string
+          identity_verified: boolean
+          level: number
           phone: string | null
+          phone_verified: boolean
           updated_at: string
           username: string | null
+          xp: number
         }
         Insert: {
           avatar_url?: string | null
           birth_date?: string | null
+          cc?: number
+          city?: string | null
           created_at?: string
           display_name?: string | null
+          email_verified?: boolean
           favorite_player_id?: string | null
           id: string
+          identity_verified?: boolean
+          level?: number
           phone?: string | null
+          phone_verified?: boolean
           updated_at?: string
           username?: string | null
+          xp?: number
         }
         Update: {
           avatar_url?: string | null
           birth_date?: string | null
+          cc?: number
+          city?: string | null
           created_at?: string
           display_name?: string | null
+          email_verified?: boolean
           favorite_player_id?: string | null
           id?: string
+          identity_verified?: boolean
+          level?: number
           phone?: string | null
+          phone_verified?: boolean
           updated_at?: string
           username?: string | null
+          xp?: number
         }
         Relationships: [
           {
@@ -442,6 +529,86 @@ export type Database = {
         }
         Relationships: []
       }
+      transactions: {
+        Row: {
+          cc_delta: number
+          created_at: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          source: string | null
+          type: Database["public"]["Enums"]["tx_type"]
+          user_id: string
+          xp_delta: number
+        }
+        Insert: {
+          cc_delta?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          source?: string | null
+          type: Database["public"]["Enums"]["tx_type"]
+          user_id: string
+          xp_delta?: number
+        }
+        Update: {
+          cc_delta?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          source?: string | null
+          type?: Database["public"]["Enums"]["tx_type"]
+          user_id?: string
+          xp_delta?: number
+        }
+        Relationships: []
+      }
+      user_missions: {
+        Row: {
+          completed_at: string
+          mission_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          mission_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          mission_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_missions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_onboarding: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -468,6 +635,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_points: {
+        Args: {
+          _cc: number
+          _description: string
+          _source: string
+          _type: Database["public"]["Enums"]["tx_type"]
+          _user_id: string
+          _xp: number
+        }
+        Returns: string
+      }
+      complete_mission: {
+        Args: { _mission_id: string; _user_id: string }
+        Returns: boolean
+      }
+      compute_level: { Args: { _xp: number }; Returns: number }
       generate_pass_code:
         | { Args: never; Returns: string }
         | {
@@ -500,6 +683,14 @@ export type Database = {
       pass_tier: "fan" | "gold" | "premium" | "platino"
       payment_status: "free" | "pending" | "mock_paid" | "paid" | "failed"
       qr_kind: "master" | "match" | "benefit" | "experience"
+      tx_type:
+        | "bonus"
+        | "mission"
+        | "checkin"
+        | "game"
+        | "redeem"
+        | "purchase"
+        | "adjust"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -641,6 +832,15 @@ export const Constants = {
       pass_tier: ["fan", "gold", "premium", "platino"],
       payment_status: ["free", "pending", "mock_paid", "paid", "failed"],
       qr_kind: ["master", "match", "benefit", "experience"],
+      tx_type: [
+        "bonus",
+        "mission",
+        "checkin",
+        "game",
+        "redeem",
+        "purchase",
+        "adjust",
+      ],
     },
   },
 } as const
