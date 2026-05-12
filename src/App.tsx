@@ -18,6 +18,7 @@ import ConoceLosCabos from "./pages/ConoceLosCabos";
 import Patrocinios from "./pages/Patrocinios";
 import Contacto from "./pages/Contacto";
 import MiPerfil from "./pages/MiPerfil";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import { CartDrawer } from "@/components/tienda/CartDrawer";
 import { useCartSync } from "@/hooks/useCartSync";
@@ -42,6 +43,7 @@ const AppShell = () => {
         <Route path="/patrocinios" element={<Patrocinios />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/mi-perfil" element={<MiPerfil />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <CartDrawer />
