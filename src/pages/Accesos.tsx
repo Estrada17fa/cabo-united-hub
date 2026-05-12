@@ -951,7 +951,7 @@ const Accesos = () => {
           </p>
         </div>
 
-        <TierCarousel />
+        <TierCarousel onSelectTier={handleSelectTier} />
       </section>
 
       {/* BOLETOMOVIL SECTION */}
@@ -1032,6 +1032,46 @@ const Accesos = () => {
 
       {/* PUNTOS DE VENTA FÍSICOS */}
       <PointsOfSale />
+
+      {/* Floating sign-in button */}
+      {!user && (
+        <div className="fixed bottom-4 right-4 z-40">
+          <button
+            onClick={() => setAuthOpen(true)}
+            className="px-4 py-2.5 rounded-full bg-card/90 backdrop-blur border border-border text-xs font-bold uppercase tracking-[0.1em] text-white hover:border-[#00abc4]/50 transition-colors"
+          >
+            Ya tengo cuenta
+          </button>
+        </div>
+      )}
+
+      <SignupWizard
+        open={wizardOpen}
+        onClose={() => setWizardOpen(false)}
+        initialTierId={wizardTier}
+        tiers={tiers.map((t) => ({
+          id: t.id,
+          badge: t.badge,
+          price: t.price,
+          priceNote: t.priceNote,
+          tagline: t.tagline,
+          accent: t.accent,
+        }))}
+      />
+
+      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
+        <DialogContent className="bg-card border-border max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Acceso de aficionados</DialogTitle>
+          </DialogHeader>
+          <AuthModal
+            onSuccess={() => {
+              setAuthOpen(false);
+              navigate("/mi-perfil");
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };
