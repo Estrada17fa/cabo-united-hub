@@ -21,7 +21,7 @@ interface FanPass {
 }
 
 export default function MiPerfil() {
-  const { user, signOut, loading } = useAuth();
+  const { user, profile, signOut, loading } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
   const [pass, setPass] = useState<FanPass | null>(null);
   const [favPlayer, setFavPlayer] = useState<string | null>(null);
@@ -109,7 +109,7 @@ export default function MiPerfil() {
         </div>
       ) : pass ? (
         <>
-          <FanPassCard pass={pass} favoritePlayerName={favPlayer} />
+          <FanPassCard pass={pass} favoritePlayerName={favPlayer} avatarUrl={profile?.avatar_url} />
           {pass.status !== "active" && (
             <div className="rounded-xl bg-card border border-amber-500/30 p-4 text-sm text-foreground/85">
               Tu pase está en estado <span className="font-bold">{pass.status}</span>. Completa tu pago para activarlo y
