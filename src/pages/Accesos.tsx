@@ -1,12 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown } from "lucide-react";
 import stadiumHero from "@/assets/accesos-page-hero.jpg";
 import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
 import kitFan from "@/assets/accesos-kit-fan.jpg";
 import kitGold from "@/assets/accesos-kit-gold.jpg";
 import kitPremium from "@/assets/accesos-kit-premium.jpg";
 import kitPlatino from "@/assets/accesos-kit-platino.jpg";
+import lcuCrest from "@/assets/lcu-crest.png";
 
 const WHATSAPP_URL = "https://wa.me/525500000000";
 const BOLETOMOVIL_URL = "https://www.boletomovil.com";
@@ -172,18 +173,21 @@ const POS = [
     address: "Blvd. Marina 100, Centro, Cabo San Lucas",
     hours: "Lun-Dom 24h",
     phone: "+52 624 143 0000",
+    logo: null as string | null,
   },
   {
     name: "Tienda LC United Centro",
     address: "Av. Lázaro Cárdenas 200, San José del Cabo",
     hours: "Lun-Sáb 10:00–20:00",
     phone: "+52 624 142 1111",
+    logo: lcuCrest,
   },
   {
     name: "Estadio Don Koll - Taquilla",
     address: "Carretera Transpeninsular Km 4.5, San José del Cabo",
     hours: "Día de partido desde 14:00",
     phone: "+52 624 144 2222",
+    logo: lcuCrest,
   },
 ];
 
