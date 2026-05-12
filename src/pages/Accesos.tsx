@@ -1,6 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { SignupWizard } from "@/components/accesos/SignupWizard";
+import { AuthModal } from "@/components/auth/AuthModal";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import stadiumHero from "@/assets/accesos-page-hero.jpg";
 import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
 import kitFan from "@/assets/accesos-kit-fan.jpg";
@@ -9,7 +14,6 @@ import kitPremium from "@/assets/accesos-kit-premium.jpg";
 import kitPlatino from "@/assets/accesos-kit-platino.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
 
-const WHATSAPP_URL = "https://wa.me/525500000000";
 const BOLETOMOVIL_URL = "https://www.boletomovil.com";
 
 type TierId = "fan" | "gold" | "premium" | "platino";
@@ -302,7 +306,7 @@ function BenefitChips({ items, accent }: { items: string[]; accent: string }) {
   );
 }
 
-function TierBigCard({ tier }: { tier: Tier }) {
+function TierBigCard({ tier, onSelectTier }: { tier: Tier; onSelectTier: (id: TierId) => void }) {
   const groups = [
     {
       key: "estadio",
@@ -457,10 +461,9 @@ function TierBigCard({ tier }: { tier: Tier }) {
           </AnimatePresence>
         </div>
 
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => onSelectTier(tier.id)}
           className="w-full inline-flex items-center justify-center gap-2 font-bold transition-opacity hover:opacity-90"
           style={{
             height: 54,
@@ -473,13 +476,13 @@ function TierBigCard({ tier }: { tier: Tier }) {
         >
           {tier.cta}
           {tier.id !== "fan" && <ArrowRight className="w-4 h-4" />}
-        </a>
+        </button>
       </div>
     </motion.article>
   );
 }
 
-function TierCarousel() {
+function TierCarousel({ onSelectTier }: { onSelectTier: (id: TierId) => void }) {
   const [index, setIndex] = useState(2); // start on Premium (popular)
   const tier = tiers[index];
   const go = (dir: 1 | -1) =>
@@ -513,7 +516,7 @@ function TierCarousel() {
       <div className="relative">
         <div className="overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>
-            <TierBigCard key={tier.id} tier={tier} />
+            <TierBigCard key={tier.id} tier={tier} onSelectTier={onSelectTier} />
           </AnimatePresence>
         </div>
 
@@ -727,6 +730,21 @@ function PointsOfSale() {
 }
 
 const Accesos = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const [wizardTier, setWizardTier] = useState<TierId>("fan");
+  const [authOpen, setAuthOpen] = useState(false);
+
+  const handleSelectTier = (id: TierId) => {
+    if (user) {
+      navigate("/mi-perfil");
+      return;
+    }
+    setWizardTier(id);
+    setWizardOpen(true);
+  };
+
   useEffect(() => {
     [kitFan, kitGold, kitPremium, kitPlatino, stadiumHero, mobileTeamBg].forEach((src) => {
       const img = new Image();
@@ -842,8 +860,9 @@ const Accesos = () => {
               transition={{ delay: 0.5, duration: 0.6 }}
               className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3"
             >
-              <a
-                href="#niveles"
+              <button
+                type="button"
+                onClick={() => handleSelectTier("fan")}
                 className="inline-flex items-center justify-center gap-2 font-bold transition-all hover:opacity-90 hover:-translate-y-0.5"
                 style={{
                   height: 54,
@@ -858,7 +877,7 @@ const Accesos = () => {
               >
                 Quiero ser parte
                 <ArrowRight className="w-4 h-4" />
-              </a>
+              </button>
               <a
                 href="#niveles"
                 className="group inline-flex items-center justify-center gap-2 font-semibold transition-all hover:-translate-y-0.5"
@@ -933,7 +952,7 @@ const Accesos = () => {
           </p>
         </div>
 
-        <TierCarousel />
+        <TierCarousel onSelectTier={handleSelectTier} />
       </section>
 
       {/* BOLETOMOVIL SECTION */}
@@ -1014,6 +1033,46 @@ const Accesos = () => {
 
       {/* PUNTOS DE VENTA FÍSICOS */}
       <PointsOfSale />
+
+      {/* Floating sign-in button */}
+      {!user && (
+        <div className="fixed bottom-4 right-4 z-40">
+          <button
+            onClick={() => setAuthOpen(true)}
+            className="px-4 py-2.5 rounded-full bg-card/90 backdrop-blur border border-border text-xs font-bold uppercase tracking-[0.1em] text-white hover:border-[#00abc4]/50 transition-colors"
+          >
+            Ya tengo cuenta
+          </button>
+        </div>
+      )}
+
+      <SignupWizard
+        open={wizardOpen}
+        onClose={() => setWizardOpen(false)}
+        initialTierId={wizardTier}
+        tiers={tiers.map((t) => ({
+          id: t.id,
+          badge: t.badge,
+          price: t.price,
+          priceNote: t.priceNote,
+          tagline: t.tagline,
+          accent: t.accent,
+        }))}
+      />
+
+      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
+        <DialogContent className="bg-card border-border max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Acceso de aficionados</DialogTitle>
+          </DialogHeader>
+          <AuthModal
+            onSuccess={() => {
+              setAuthOpen(false);
+              navigate("/mi-perfil");
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };
