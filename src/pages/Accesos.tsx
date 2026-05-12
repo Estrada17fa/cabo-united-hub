@@ -488,14 +488,14 @@ function TierCarousel() {
   return (
     <div>
       {/* Tier tabs */}
-      <div className="flex items-center justify-center gap-1.5 md:gap-2 mb-6 px-2 flex-wrap">
+      <div className="flex items-center justify-center gap-1 md:gap-2 mb-6 px-1 flex-nowrap">
         {tiers.map((t, i) => {
           const active = i === index;
           return (
             <button
               key={t.id}
               onClick={() => setIndex(i)}
-              className="relative px-4 md:px-5 py-2 rounded-full text-[12px] md:text-[13px] font-bold uppercase tracking-[0.08em] transition-all"
+              className="relative px-2.5 md:px-5 py-1.5 md:py-2 rounded-full text-[10.5px] md:text-[13px] font-bold uppercase tracking-[0.04em] md:tracking-[0.08em] transition-all whitespace-nowrap"
               style={{
                 background: active ? t.accent : "rgba(255,255,255,0.05)",
                 color: active ? "#0a0a0a" : "rgba(255,255,255,0.6)",
