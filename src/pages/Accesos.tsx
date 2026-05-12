@@ -465,7 +465,7 @@ const Accesos = () => {
             }}
           />
 
-          <div className="relative z-10 px-4 pt-16 md:pt-24 pb-16 md:pb-24 max-w-4xl mx-auto text-center">
+          <div className="relative z-10 px-4 pt-16 md:pt-24 pb-16 md:pb-24 max-w-6xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -496,31 +496,66 @@ const Accesos = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.28, duration: 0.7 }}
-              className="mx-auto text-white/75"
-              style={{ fontSize: 17, maxWidth: 620, lineHeight: 1.55 }}
+              className="mx-auto text-white/80"
+              style={{ fontSize: 18, maxWidth: 1100, lineHeight: 1.55 }}
             >
               90 minutos donde el mar se queda afuera y la grada se vuelve familia.
               Donde cada gol se siente en la garganta y cada nombre en el muro
               cuenta una historia. Aquí no se compra una entrada — se elige un bando.
             </motion.p>
 
+            {/* Loop video — full width of content, shorter height */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.38, duration: 0.7 }}
+              className="mt-10 mx-auto rounded-2xl overflow-hidden relative"
+              style={{
+                maxWidth: 1500,
+                aspectRatio: "1500 / 500",
+                border: "1px solid rgba(255,255,255,0.08)",
+                boxShadow: "0 30px 80px -30px rgba(0,171,196,0.35)",
+              }}
+            >
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                poster={stadiumHero}
+                className="absolute inset-0 w-full h-full object-cover"
+                aria-label="Afición y partidos Los Cabos United"
+              >
+                {/* TODO: reemplazar con video oficial de la afición */}
+              </video>
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.0) 50%, rgba(0,0,0,0.45) 100%)",
+                }}
+              />
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
               className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3"
             >
               <a
                 href="#niveles"
-                className="inline-flex items-center justify-center gap-2 font-bold transition-opacity hover:opacity-90"
+                className="inline-flex items-center justify-center gap-2 font-bold transition-all hover:opacity-90 hover:-translate-y-0.5"
                 style={{
                   height: 54,
-                  padding: "0 24px",
+                  padding: "0 26px",
                   borderRadius: 12,
                   fontSize: 15,
                   background: "#00abc4",
                   color: "#0a0a0a",
                   minWidth: 220,
+                  boxShadow: "0 12px 30px -10px rgba(0,171,196,0.6)",
                 }}
               >
                 Quiero ser parte
@@ -528,9 +563,20 @@ const Accesos = () => {
               </a>
               <a
                 href="#niveles"
-                className="text-[13px] text-white/60 hover:text-white transition-colors"
+                className="group inline-flex items-center justify-center gap-2 font-semibold transition-all hover:-translate-y-0.5"
+                style={{
+                  height: 54,
+                  padding: "0 22px",
+                  borderRadius: 12,
+                  fontSize: 14,
+                  color: "#fff",
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(0,171,196,0.45)",
+                  backdropFilter: "blur(6px)",
+                }}
               >
-                Conoce los 4 niveles ↓
+                Conoce los 4 niveles
+                <ChevronDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" style={{ color: "#00abc4" }} />
               </a>
             </motion.div>
           </div>
