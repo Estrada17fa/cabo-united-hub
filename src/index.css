@@ -58,6 +58,13 @@
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 0 0% 16%;
     --sidebar-ring: 189 100% 38%;
+
+    /* Fan Zone — Unified Brand Tokens */
+    --brand-primary: 189 100% 45%;
+    --brand-accent: 42 95% 58%;
+    --state-coming-soon: 220 9% 46%;
+    --surface-card: 0 0% 7%;
+    --border-subtle: 0 0% 100% / 0.07;
   }
 
   * {
