@@ -663,12 +663,30 @@ const Accesos = () => {
 
               <div className="flex items-start gap-3 mb-2">
                 <Calendar className="w-4 h-4 text-white/60 mt-1" />
-                <div>
-                  <div className="text-xs text-white/60">Próximo partido en casa:</div>
-                  <div className="text-base font-bold text-white">
-                    Los Cabos United vs Rival FC
+                <div className="flex-1">
+                  <div className="text-xs text-white/60 mb-2">Próximo partido en casa:</div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center"
+                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+                      >
+                        <img src={lcuCrest} alt="Los Cabos United" className="w-7 h-7 object-contain" />
+                      </div>
+                      <span className="text-sm font-bold text-white">LCU</span>
+                    </div>
+                    <span className="text-white/40 text-xs font-bold">VS</span>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-[11px] font-extrabold text-white/80"
+                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+                      >
+                        RFC
+                      </div>
+                      <span className="text-sm font-bold text-white">Rival FC</span>
+                    </div>
                   </div>
-                  <div className="text-xs text-white/60 mt-0.5">
+                  <div className="text-xs text-white/60 mt-2">
                     Dom 27 Abr · Estadio Don Koll
                   </div>
                 </div>
@@ -715,25 +733,38 @@ const Accesos = () => {
           {POS.map((p) => (
             <div
               key={p.name}
-              className="rounded-xl p-4 border border-border"
+              className="rounded-xl p-4 border border-border flex items-start gap-3"
               style={{ background: "#111" }}
             >
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5" style={{ color: "#00abc4" }} />
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-bold text-white">{p.name}</div>
-                  <div className="text-xs text-white/60 mt-1">{p.address}</div>
-                  <div className="text-xs text-white/60 mt-1 flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> {p.hours}
-                  </div>
-                  <a
-                    href={`tel:${p.phone.replace(/\s/g, "")}`}
-                    className="text-xs mt-1 flex items-center gap-1 hover:underline"
-                    style={{ color: "#00abc4" }}
-                  >
-                    <Phone className="w-3 h-3" /> {p.phone}
-                  </a>
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                {p.logo ? (
+                  <img src={p.logo} alt={p.name} className="w-9 h-9 object-contain" />
+                ) : (
+                  <Store className="w-5 h-5" style={{ color: "#00abc4" }} />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-bold text-white">{p.name}</div>
+                <div className="text-xs text-white/60 mt-1 flex items-start gap-1">
+                  <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                  <span>{p.address}</span>
                 </div>
+                <div className="text-xs text-white/60 mt-1 flex items-center gap-1">
+                  <Clock className="w-3 h-3" /> {p.hours}
+                </div>
+                <a
+                  href={`tel:${p.phone.replace(/\s/g, "")}`}
+                  className="text-xs mt-1 flex items-center gap-1 hover:underline"
+                  style={{ color: "#00abc4" }}
+                >
+                  <Phone className="w-3 h-3" /> {p.phone}
+                </a>
               </div>
             </div>
           ))}
