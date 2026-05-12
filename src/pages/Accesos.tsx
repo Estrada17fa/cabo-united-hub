@@ -568,6 +568,162 @@ function TierCarousel() {
   );
 }
 
+function PointsOfSale() {
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (!("geolocation" in navigator)) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => {},
+      { enableHighAccuracy: false, timeout: 4000, maximumAge: 600000 },
+    );
+  }, []);
+
+  const sorted = useMemo(() => {
+    if (!userCoords) return POS.map((p) => ({ ...p, distanceKm: null as number | null }));
+    const haversine = (a: { lat: number; lng: number }, b: { lat: number; lng: number }) => {
+      const R = 6371;
+      const toRad = (d: number) => (d * Math.PI) / 180;
+      const dLat = toRad(b.lat - a.lat);
+      const dLng = toRad(b.lng - a.lng);
+      const x =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(x));
+    };
+    return POS.map((p) => ({ ...p, distanceKm: haversine(userCoords, p.coords) })).sort(
+      (a, b) => (a.distanceKm ?? 0) - (b.distanceKm ?? 0),
+    );
+  }, [userCoords]);
+
+  const go = (dir: 1 | -1) =>
+    setActive((i) => (i + dir + sorted.length) % sorted.length);
+
+  return (
+    <section className="max-w-6xl mx-auto mt-8 mb-4">
+      <div className="flex items-end justify-between gap-3 mb-4 flex-wrap">
+        <div>
+          <h3 className="text-lg font-bold text-white">Puntos de venta físicos</h3>
+          <p className="text-[13px] text-white/60">
+            Paga en efectivo en estos establecimientos
+            {userCoords && " · ordenados por cercanía"}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => go(-1)}
+            aria-label="Anterior"
+            className="flex items-center justify-center w-9 h-9 rounded-full bg-card border border-border text-white hover:border-[#00abc4]/50"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => go(1)}
+            aria-label="Siguiente"
+            className="flex items-center justify-center w-9 h-9 rounded-full bg-card border border-border text-white hover:border-[#00abc4]/50"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      <div className="overflow-hidden -mx-1">
+        <motion.div
+          className="flex"
+          animate={{ x: `calc(${-active * 100}% / 1)` }}
+          transition={{ type: "spring", stiffness: 220, damping: 28 }}
+          style={{ width: `${sorted.length * 100}%` }}
+        >
+          {sorted.map((p, i) => (
+            <div
+              key={p.name}
+              className="px-1"
+              style={{ width: `${100 / sorted.length}%` }}
+            >
+              <div
+                role="link"
+                tabIndex={0}
+                onClick={() => window.open(p.mapsUrl, "_blank", "noopener,noreferrer")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    window.open(p.mapsUrl, "_blank", "noopener,noreferrer");
+                  }
+                }}
+                className="cursor-pointer rounded-2xl p-5 border border-border flex items-start gap-4 transition-colors hover:border-[#00abc4]/40 hover:bg-white/[0.02]"
+                style={{ background: "#111" }}
+              >
+                <div className="w-14 h-14 flex items-center justify-center flex-shrink-0">
+                  {p.logo ? (
+                    <img src={p.logo} alt={p.name} className="w-12 h-12 object-contain" />
+                  ) : (
+                    <Store className="w-8 h-8" style={{ color: "#00abc4" }} />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="text-base font-bold text-white">{p.name}</div>
+                    {i === 0 && userCoords && (
+                      <span
+                        className="text-[10px] font-bold uppercase tracking-[0.1em] px-2 py-0.5 rounded-full"
+                        style={{ background: "#00abc4", color: "#0a0a0a" }}
+                      >
+                        Más cercano
+                      </span>
+                    )}
+                    {p.distanceKm != null && (
+                      <span className="text-[11px] text-white/50">
+                        a {p.distanceKm < 1 ? `${Math.round(p.distanceKm * 1000)} m` : `${p.distanceKm.toFixed(1)} km`}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-white/60 mt-1.5 flex items-start gap-1">
+                    <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                    <span>{p.address}</span>
+                  </div>
+                  <div className="text-xs text-white/60 mt-1 flex items-center gap-1">
+                    <Clock className="w-3 h-3" /> {p.hours}
+                  </div>
+                  {p.phone ? (
+                    <a
+                      href={`tel:${p.phone.replace(/\s/g, "")}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs mt-1.5 inline-flex items-center gap-1 hover:underline"
+                      style={{ color: "#00abc4" }}
+                    >
+                      <Phone className="w-3 h-3" /> {p.phone}
+                    </a>
+                  ) : (
+                    <div className="text-[11px] text-white/40 mt-1.5">Sin teléfono · Toca para ver en mapa</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+      </div>
+
+      <div className="flex items-center justify-center gap-2 mt-4">
+        {sorted.map((p, i) => (
+          <button
+            key={p.name}
+            onClick={() => setActive(i)}
+            aria-label={`Ir a ${p.name}`}
+            className="rounded-full transition-all"
+            style={{
+              width: i === active ? 22 : 8,
+              height: 8,
+              background: i === active ? "#00abc4" : "rgba(255,255,255,0.2)",
+            }}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 const Accesos = () => {
   return (
     <motion.div
