@@ -203,20 +203,40 @@ function BenefitGroup({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+    <div className="rounded-2xl p-4 md:p-5" style={{ background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.07)" }}>
       <div className="flex items-center gap-2 mb-3">
         <span
-          className="inline-flex items-center justify-center w-7 h-7 rounded-lg"
-          style={{ background: `${accent}1a`, color: accent }}
+          className="inline-flex items-center justify-center w-8 h-8 rounded-xl"
+          style={{ background: `${accent}1f`, color: accent, boxShadow: `inset 0 0 0 1px ${accent}33` }}
         >
-          <Icon className="w-3.5 h-3.5" strokeWidth={2.5} />
+          <Icon className="w-4 h-4" strokeWidth={2.5} />
         </span>
         <h4 className="text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: accent }}>
           {title}
         </h4>
       </div>
-      <div className="text-[13px] text-white/80 leading-relaxed">{children}</div>
+      <div className="text-[13px] text-white/85 leading-relaxed">{children}</div>
     </div>
+  );
+}
+
+function BenefitChips({ items, accent }: { items: string[]; accent: string }) {
+  return (
+    <ul className="flex flex-wrap gap-1.5">
+      {items.map((item) => (
+        <li
+          key={item}
+          className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] text-white/85"
+          style={{
+            background: `${accent}10`,
+            border: `1px solid ${accent}30`,
+          }}
+        >
+          <Check className="w-3 h-3" style={{ color: accent }} strokeWidth={3} />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -289,15 +309,8 @@ function TierBigCard({ tier }: { tier: Tier }) {
           </BenefitGroup>
 
           <BenefitGroup icon={Gift} title="Kit de Bienvenida" accent={tier.accent}>
-            <div className="font-semibold text-white mb-1.5">{tier.benefits.kitTitle}</div>
-            <ul className="space-y-1">
-              {tier.benefits.kitItems.map((item) => (
-                <li key={item} className="flex gap-2">
-                  <span className="text-white/40">·</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="font-semibold text-white mb-2">{tier.benefits.kitTitle}</div>
+            <BenefitChips items={tier.benefits.kitItems} accent={tier.accent} />
           </BenefitGroup>
 
           <BenefitGroup icon={Sparkles} title="Experiencias exclusivas" accent={tier.accent}>
@@ -305,14 +318,7 @@ function TierBigCard({ tier }: { tier: Tier }) {
           </BenefitGroup>
 
           <BenefitGroup icon={Repeat} title="Beneficios continuos" accent={tier.accent}>
-            <ul className="space-y-1">
-              {tier.benefits.continuos.map((item) => (
-                <li key={item} className="flex gap-2">
-                  <span className="text-white/40">·</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            <BenefitChips items={tier.benefits.continuos} accent={tier.accent} />
           </BenefitGroup>
         </div>
 
