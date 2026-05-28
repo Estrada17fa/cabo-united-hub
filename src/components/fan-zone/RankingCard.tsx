@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Trophy, ChevronDown } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { LEVELS } from "@/lib/levels";
 
 const ACCENT = "hsl(var(--brand-primary))";
 
-export const RANKING = [
-  { name: "Mariana López", points: 18920, badge: "Amo Élite" },
-  { name: "Rafa SJC", points: 17450, badge: "Amo Élite" },
-  { name: "Cabeño 4ever", points: 15280, badge: "Amo" },
-  { name: "Ana P.", points: 14110, badge: "Amo" },
-  { name: "Baja Pride", points: 13560, badge: "Amo" },
-];
+interface RankingRow {
+  name: string;
+  points: number;
+  badge: string;
+}
 
 interface RankingCardProps {
   className?: string;
@@ -26,6 +26,27 @@ export function RankingCard({
   collapsibleOnMobile = true,
 }: RankingCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [rows, setRows] = useState<RankingRow[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("profiles")
+      .select("display_name,username,xp,level")
+      .order("xp", { ascending: false })
+      .limit(10)
+      .then(({ data }) => {
+        if (!data) return;
+        setRows(
+          data
+            .filter((p: any) => (p.xp ?? 0) > 0)
+            .map((p: any) => ({
+              name: p.display_name || p.username || "Fan anónimo",
+              points: p.xp ?? 0,
+              badge: LEVELS[p.level ?? 0]?.name ?? "Visitante",
+            })),
+        );
+      });
+  }, []);
 
   return (
     <div
@@ -51,7 +72,12 @@ export function RankingCard({
       </div>
 
       <div className="flex-1 px-3 md:px-4 pb-4 flex flex-col gap-1">
-        {RANKING.map((r, i) => {
+        {rows.length === 0 && (
+          <div className="px-3 py-6 text-center text-[12px] text-white/40">
+            Aún no hay aficionados rankeados. ¡Sé el primero en sumar puntos!
+          </div>
+        )}
+        {rows.map((r, i) => {
           const hideOnMobile =
             collapsibleOnMobile && !expanded && i >= 3;
           const medalColor =
@@ -106,7 +132,7 @@ export function RankingCard({
           );
         })}
 
-        {collapsibleOnMobile && !expanded && RANKING.length > 3 && (
+        {collapsibleOnMobile && !expanded && rows.length > 3 && (
           <button
             type="button"
             onClick={() => setExpanded(true)}

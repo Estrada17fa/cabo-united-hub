@@ -13,6 +13,19 @@ export interface MiniGame {
   tier: "standard" | "premium";
 }
 
+export const ICON_MAP: Record<string, LucideIcon> = {
+  Ticket,
+  Users,
+  Target,
+  MapPin,
+  Brain,
+  Crown,
+};
+
+export function iconFor(name: string | null | undefined): LucideIcon {
+  return (name && ICON_MAP[name]) || Ticket;
+}
+
 export const GAMES: MiniGame[] = [
   {
     id: "quiniela",

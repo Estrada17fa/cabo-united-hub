@@ -73,6 +73,89 @@ export type Database = {
           },
         ]
       }
+      game_plays: {
+        Row: {
+          cc_awarded: number
+          created_at: string
+          game_id: string
+          id: string
+          result: Json | null
+          score: number | null
+          user_id: string
+          xp_awarded: number
+        }
+        Insert: {
+          cc_awarded?: number
+          created_at?: string
+          game_id: string
+          id?: string
+          result?: Json | null
+          score?: number | null
+          user_id: string
+          xp_awarded?: number
+        }
+        Update: {
+          cc_awarded?: number
+          created_at?: string
+          game_id?: string
+          id?: string
+          result?: Json | null
+          score?: number | null
+          user_id?: string
+          xp_awarded?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_plays_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      games: {
+        Row: {
+          active: boolean
+          cc_reward: number
+          created_at: string
+          icon: string | null
+          id: string
+          name: string
+          sort_order: number
+          status: string
+          subtitle: string | null
+          tier: string
+          xp_reward: number
+        }
+        Insert: {
+          active?: boolean
+          cc_reward?: number
+          created_at?: string
+          icon?: string | null
+          id: string
+          name: string
+          sort_order?: number
+          status?: string
+          subtitle?: string | null
+          tier?: string
+          xp_reward?: number
+        }
+        Update: {
+          active?: boolean
+          cc_reward?: number
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name?: string
+          sort_order?: number
+          status?: string
+          subtitle?: string | null
+          tier?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       league_standings: {
         Row: {
           dg: number
@@ -481,6 +564,92 @@ export type Database = {
           },
         ]
       }
+      reward_redemptions: {
+        Row: {
+          cc_spent: number
+          code: string | null
+          created_at: string
+          fulfilled_at: string | null
+          id: string
+          reward_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          cc_spent: number
+          code?: string | null
+          created_at?: string
+          fulfilled_at?: string | null
+          id?: string
+          reward_id: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          cc_spent?: number
+          code?: string | null
+          created_at?: string
+          fulfilled_at?: string | null
+          id?: string
+          reward_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_redemptions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rewards: {
+        Row: {
+          active: boolean
+          cc_cost: number
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          image_url: string | null
+          slug: string
+          sort_order: number
+          stock: number | null
+          tier: string
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          cc_cost: number
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          slug: string
+          sort_order?: number
+          stock?: number | null
+          tier?: string
+          title: string
+        }
+        Update: {
+          active?: boolean
+          cc_cost?: number
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          slug?: string
+          sort_order?: number
+          stock?: number | null
+          tier?: string
+          title?: string
+        }
+        Relationships: []
+      }
       teams: {
         Row: {
           created_at: string
@@ -667,6 +836,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      record_game_play: {
+        Args: { _game_id: string; _result?: Json; _score?: number }
+        Returns: string
+      }
+      redeem_reward: { Args: { _reward_id: string }; Returns: string }
       unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
