@@ -57,6 +57,7 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
   const [showPwd, setShowPwd] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [tierId, setTierId] = useState<WizardTier["id"]>(initialTierId);
+  const [tutorData, setTutorData] = useState({ name: "", email: "", phone: "", relationship: "" });
   const [players, setPlayers] = useState<
     Array<{ id: string; name: string; jersey_number: number | null; photo_url: string | null; position: string | null }>
   >([]);
@@ -120,10 +121,35 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
       setErrors(fieldErrs);
       return false;
     }
+    // Age gate
+    if (form.birthDate) {
+      const bd = new Date(form.birthDate);
+      const age = (Date.now() - bd.getTime()) / (365.25 * 24 * 3600 * 1000);
+      if (age < 13) {
+        setErrors({ birthDate: "El programa Fan Zone está disponible a partir de los 13 años." });
+        return false;
+      }
+    }
     return true;
   };
 
+  const isMinor = useMemo(() => {
+    if (!form.birthDate) return false;
+    const age = (Date.now() - new Date(form.birthDate).getTime()) / (365.25 * 24 * 3600 * 1000);
+    return age >= 13 && age < 18;
+  }, [form.birthDate]);
+
   const handleSubmit = async () => {
+    if (isMinor) {
+      if (
+        tutorData.name.trim().length < 3 ||
+        !/^\S+@\S+\.\S+$/.test(tutorData.email) ||
+        tutorData.relationship.trim().length < 3
+      ) {
+        toast.error("Faltan datos del tutor", { description: "Completa nombre, email y parentesco del tutor." });
+        return;
+      }
+    }
     setSubmitting(true);
     const { error } = await supabase.auth.signUp({
       email: form.email,
@@ -146,6 +172,27 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
       toast.error("No pudimos crear tu cuenta", { description: error.message });
       return;
     }
+
+    if (isMinor) {
+      try {
+        const { data: cRes } = await supabase.functions.invoke("parental-consent-request", {
+          body: {
+            tutorName: tutorData.name.trim(),
+            tutorEmail: tutorData.email.trim().toLowerCase(),
+            tutorPhone: tutorData.phone.trim() || null,
+            tutorRelationship: tutorData.relationship.trim(),
+          },
+        });
+        toast.info("Solicitud de autorización enviada a tu tutor", {
+          description: cRes?.confirmUrl
+            ? "Compárte­le este enlace si no le llega el correo."
+            : "Te avisaremos cuando confirme.",
+        });
+      } catch (_) {
+        toast.warning("Cuenta creada, pero no pudimos enviar el aviso al tutor. Inténtalo desde tu perfil.");
+      }
+    }
+
     toast.success("¡Bienvenido al paraíso!", {
       description:
         tierId === "fan"
