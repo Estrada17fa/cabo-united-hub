@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, Loader2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, Loader2, ShieldCheck, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,11 +53,14 @@ const formSchema = z.object({
 type FormState = z.infer<typeof formSchema>;
 
 export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Props) {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  type StepId = 1 | 2 | 2.5 | 3;
+  const [step, setStep] = useState<StepId>(1);
   const [showPwd, setShowPwd] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [tierId, setTierId] = useState<WizardTier["id"]>(initialTierId);
   const [tutorData, setTutorData] = useState({ name: "", email: "", phone: "", relationship: "" });
+  const [tutorAdultConfirmed, setTutorAdultConfirmed] = useState(false);
+  const [tutorTouched, setTutorTouched] = useState<Record<string, boolean>>({});
   const [players, setPlayers] = useState<
     Array<{ id: string; name: string; jersey_number: number | null; photo_url: string | null; position: string | null }>
   >([]);
@@ -139,16 +142,25 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
     return age >= 13 && age < 18;
   }, [form.birthDate]);
 
+  const tutorErrors = useMemo(() => {
+    const e: Record<string, string | undefined> = {};
+    if (tutorData.name.trim().length < 3) e.name = "Mínimo 3 caracteres";
+    if (!/^\S+@\S+\.\S+$/.test(tutorData.email.trim())) e.email = "Email inválido";
+    if (tutorData.phone.trim() && tutorData.phone.trim().length < 7) e.phone = "Teléfono inválido";
+    if (!tutorData.relationship) e.relationship = "Selecciona el parentesco";
+    if (!tutorAdultConfirmed) e.adult = "Debe confirmar mayoría de edad";
+    return e;
+  }, [tutorData, tutorAdultConfirmed]);
+  const tutorValid = Object.values(tutorErrors).every((v) => !v);
+
+  const goNextFromStep2 = () => setStep(isMinor ? 2.5 : 3);
+  const goBackFromStep3 = () => setStep(isMinor ? 2.5 : 2);
+
   const handleSubmit = async () => {
-    if (isMinor) {
-      if (
-        tutorData.name.trim().length < 3 ||
-        !/^\S+@\S+\.\S+$/.test(tutorData.email) ||
-        tutorData.relationship.trim().length < 3
-      ) {
-        toast.error("Faltan datos del tutor", { description: "Completa nombre, email y parentesco del tutor." });
-        return;
-      }
+    if (isMinor && !tutorValid) {
+      toast.error("Faltan datos del tutor", { description: "Revisa los campos marcados." });
+      setStep(2.5);
+      return;
     }
     setSubmitting(true);
     const { error } = await supabase.auth.signUp({
@@ -220,7 +232,7 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
 
         {/* Stepper */}
         <div className="flex items-center gap-2 px-5 pb-3">
-          {[1, 2, 3].map((n) => (
+          {(isMinor ? [1, 2, 2.5, 3] : [1, 2, 3]).map((n) => (
             <div
               key={n}
               className="flex-1 h-1 rounded-full transition-colors"
