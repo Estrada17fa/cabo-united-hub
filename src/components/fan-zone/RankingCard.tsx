@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Trophy, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { LEVEL_NAMES } from "@/lib/levels";
+import { LEVELS } from "@/lib/levels";
 
 const ACCENT = "hsl(var(--brand-primary))";
 
@@ -42,7 +42,7 @@ export function RankingCard({
             .map((p: any) => ({
               name: p.display_name || p.username || "Fan anónimo",
               points: p.xp ?? 0,
-              badge: LEVEL_NAMES[p.level ?? 0] ?? "Visitante",
+              badge: LEVELS[p.level ?? 0]?.name ?? "Visitante",
             })),
         );
       });
