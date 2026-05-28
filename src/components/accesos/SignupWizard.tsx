@@ -401,6 +401,87 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
               </motion.div>
             )}
 
+            {step === 2.5 && isMinor && (
+              <motion.div
+                key="s2-tutor"
+                initial={{ opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -12 }}
+                className="space-y-3"
+              >
+                <div
+                  className="rounded-xl p-3 flex gap-2 items-start"
+                  style={{ background: `${tier.accent}10`, border: `1px solid ${tier.accent}33` }}
+                >
+                  <ShieldCheck className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: tier.accent }} />
+                  <div className="text-[12.5px] text-foreground/85 leading-snug">
+                    Como tienes menos de 18 años, necesitamos el consentimiento de tu madre, padre o tutor legal.
+                    Le enviaremos un correo con un enlace seguro para que autorice tu pase. Tu cuenta queda creada al
+                    instante, pero algunas funciones (pagos, premios físicos) se activan cuando tu tutor confirme.
+                  </div>
+                </div>
+
+                <Field label="Nombre completo del tutor" error={tutorTouched.name ? tutorErrors.name : undefined}>
+                  <Input
+                    value={tutorData.name}
+                    onChange={(e) => setTutorData((d) => ({ ...d, name: e.target.value }))}
+                    onBlur={() => setTutorTouched((t) => ({ ...t, name: true }))}
+                    maxLength={100}
+                  />
+                </Field>
+                <Field label="Email del tutor" error={tutorTouched.email ? tutorErrors.email : undefined}>
+                  <Input
+                    type="email"
+                    value={tutorData.email}
+                    onChange={(e) => setTutorData((d) => ({ ...d, email: e.target.value }))}
+                    onBlur={() => setTutorTouched((t) => ({ ...t, email: true }))}
+                    maxLength={255}
+                    placeholder="tutor@correo.com"
+                  />
+                </Field>
+                <Field label="Teléfono del tutor (opcional)" error={tutorTouched.phone ? tutorErrors.phone : undefined}>
+                  <Input
+                    type="tel"
+                    value={tutorData.phone}
+                    onChange={(e) => setTutorData((d) => ({ ...d, phone: e.target.value }))}
+                    onBlur={() => setTutorTouched((t) => ({ ...t, phone: true }))}
+                    placeholder="+52 ..."
+                    maxLength={20}
+                  />
+                </Field>
+                <Field label="Parentesco" error={tutorTouched.relationship ? tutorErrors.relationship : undefined}>
+                  <select
+                    value={tutorData.relationship}
+                    onChange={(e) => setTutorData((d) => ({ ...d, relationship: e.target.value }))}
+                    onBlur={() => setTutorTouched((t) => ({ ...t, relationship: true }))}
+                    className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                  >
+                    <option value="">Selecciona…</option>
+                    <option value="madre">Madre</option>
+                    <option value="padre">Padre</option>
+                    <option value="tutor_legal">Tutor legal</option>
+                  </select>
+                </Field>
+
+                <label className="flex items-start gap-2 text-[12px] text-foreground/85 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={tutorAdultConfirmed}
+                    onChange={(e) => setTutorAdultConfirmed(e.target.checked)}
+                    className="mt-0.5 accent-current"
+                    style={{ accentColor: tier.accent }}
+                  />
+                  <span>
+                    Confirmo que mi tutor es <span className="font-semibold">mayor de 18 años</span> y que estos datos
+                    son verdaderos.
+                  </span>
+                </label>
+                {tutorErrors.adult && tutorTouched.adult && (
+                  <p className="text-[11px] text-destructive">{tutorErrors.adult}</p>
+                )}
+              </motion.div>
+            )}
+
             {step === 3 && (
               <motion.div
                 key="s3"
