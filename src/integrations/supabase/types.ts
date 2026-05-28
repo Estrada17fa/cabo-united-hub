@@ -14,6 +14,115 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          ip_address: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      business_users: {
+        Row: {
+          active: boolean
+          created_at: string
+          email: string
+          id: string
+          location_id: string
+          name: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          email: string
+          id?: string
+          location_id: string
+          name: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          email?: string
+          id?: string
+          location_id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_users_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      checkins: {
+        Row: {
+          consumption_amount: number | null
+          created_at: string
+          id: string
+          location_id: string
+          qr_code_used: string | null
+          type: Database["public"]["Enums"]["checkin_type_enum"]
+          user_id: string
+          verified: boolean
+        }
+        Insert: {
+          consumption_amount?: number | null
+          created_at?: string
+          id?: string
+          location_id: string
+          qr_code_used?: string | null
+          type: Database["public"]["Enums"]["checkin_type_enum"]
+          user_id: string
+          verified?: boolean
+        }
+        Update: {
+          consumption_amount?: number | null
+          created_at?: string
+          id?: string
+          location_id?: string
+          qr_code_used?: string | null
+          type?: Database["public"]["Enums"]["checkin_type_enum"]
+          user_id?: string
+          verified?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkins_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fan_passes: {
         Row: {
           birth_date: string
@@ -207,6 +316,48 @@ export type Database = {
         }
         Relationships: []
       }
+      locations: {
+        Row: {
+          active: boolean
+          business_name: string | null
+          consumption_cc: number
+          consumption_xp: number
+          created_at: string
+          id: string
+          name: string
+          qr_static_code: string | null
+          type: Database["public"]["Enums"]["location_type_enum"]
+          visit_cc: number
+          visit_xp: number
+        }
+        Insert: {
+          active?: boolean
+          business_name?: string | null
+          consumption_cc?: number
+          consumption_xp?: number
+          created_at?: string
+          id?: string
+          name: string
+          qr_static_code?: string | null
+          type: Database["public"]["Enums"]["location_type_enum"]
+          visit_cc?: number
+          visit_xp?: number
+        }
+        Update: {
+          active?: boolean
+          business_name?: string | null
+          consumption_cc?: number
+          consumption_xp?: number
+          created_at?: string
+          id?: string
+          name?: string
+          qr_static_code?: string | null
+          type?: Database["public"]["Enums"]["location_type_enum"]
+          visit_cc?: number
+          visit_xp?: number
+        }
+        Relationships: []
+      }
       match_events: {
         Row: {
           created_at: string
@@ -341,6 +492,70 @@ export type Database = {
         }
         Relationships: []
       }
+      monthly_player_votes: {
+        Row: {
+          created_at: string
+          id: string
+          month_year: string
+          player_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          month_year: string
+          player_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          month_year?: string
+          player_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monthly_player_votes_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monthly_player_winners: {
+        Row: {
+          announced_at: string | null
+          id: string
+          month_year: string
+          total_votes: number
+          winner_player_id: string | null
+        }
+        Insert: {
+          announced_at?: string | null
+          id?: string
+          month_year: string
+          total_votes: number
+          winner_player_id?: string | null
+        }
+        Update: {
+          announced_at?: string | null
+          id?: string
+          month_year?: string
+          total_votes?: number
+          winner_player_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monthly_player_winners_winner_player_id_fkey"
+            columns: ["winner_player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           body: string | null
@@ -460,6 +675,7 @@ export type Database = {
           avatar_url: string | null
           birth_date: string | null
           cc: number
+          cc_multiplier: number
           city: string | null
           created_at: string
           display_name: string | null
@@ -467,17 +683,29 @@ export type Database = {
           favorite_player_id: string | null
           id: string
           identity_verified: boolean
+          last_season_xp: number
           level: number
+          level_name: string | null
+          level_status: Database["public"]["Enums"]["level_status_enum"]
+          parental_consent: boolean
+          parental_consent_at: string | null
           phone: string | null
           phone_verified: boolean
+          season_xp: number
+          stripe_customer_id: string | null
+          subscription_expires_at: string | null
+          subscription_started_at: string | null
+          subscription_tier: Database["public"]["Enums"]["subscription_tier_enum"]
           updated_at: string
           username: string | null
           xp: number
+          xp_multiplier: number
         }
         Insert: {
           avatar_url?: string | null
           birth_date?: string | null
           cc?: number
+          cc_multiplier?: number
           city?: string | null
           created_at?: string
           display_name?: string | null
@@ -485,17 +713,29 @@ export type Database = {
           favorite_player_id?: string | null
           id: string
           identity_verified?: boolean
+          last_season_xp?: number
           level?: number
+          level_name?: string | null
+          level_status?: Database["public"]["Enums"]["level_status_enum"]
+          parental_consent?: boolean
+          parental_consent_at?: string | null
           phone?: string | null
           phone_verified?: boolean
+          season_xp?: number
+          stripe_customer_id?: string | null
+          subscription_expires_at?: string | null
+          subscription_started_at?: string | null
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
           updated_at?: string
           username?: string | null
           xp?: number
+          xp_multiplier?: number
         }
         Update: {
           avatar_url?: string | null
           birth_date?: string | null
           cc?: number
+          cc_multiplier?: number
           city?: string | null
           created_at?: string
           display_name?: string | null
@@ -503,12 +743,23 @@ export type Database = {
           favorite_player_id?: string | null
           id?: string
           identity_verified?: boolean
+          last_season_xp?: number
           level?: number
+          level_name?: string | null
+          level_status?: Database["public"]["Enums"]["level_status_enum"]
+          parental_consent?: boolean
+          parental_consent_at?: string | null
           phone?: string | null
           phone_verified?: boolean
+          season_xp?: number
+          stripe_customer_id?: string | null
+          subscription_expires_at?: string | null
+          subscription_started_at?: string | null
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
           updated_at?: string
           username?: string | null
           xp?: number
+          xp_multiplier?: number
         }
         Relationships: [
           {
@@ -647,6 +898,80 @@ export type Database = {
           stock?: number | null
           tier?: string
           title?: string
+        }
+        Relationships: []
+      }
+      season_achievements: {
+        Row: {
+          achievement_type: Database["public"]["Enums"]["achievement_type_enum"]
+          created_at: string
+          delivered: boolean
+          id: string
+          metric_value: number | null
+          prize_description: string | null
+          rank: number | null
+          season_id: string
+          user_id: string
+        }
+        Insert: {
+          achievement_type: Database["public"]["Enums"]["achievement_type_enum"]
+          created_at?: string
+          delivered?: boolean
+          id?: string
+          metric_value?: number | null
+          prize_description?: string | null
+          rank?: number | null
+          season_id: string
+          user_id: string
+        }
+        Update: {
+          achievement_type?: Database["public"]["Enums"]["achievement_type_enum"]
+          created_at?: string
+          delivered?: boolean
+          id?: string
+          metric_value?: number | null
+          prize_description?: string | null
+          rank?: number | null
+          season_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "season_achievements_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seasons: {
+        Row: {
+          cc_reset_date: string
+          created_at: string
+          end_date: string
+          id: string
+          name: string
+          start_date: string
+          status: Database["public"]["Enums"]["season_status_enum"]
+        }
+        Insert: {
+          cc_reset_date: string
+          created_at?: string
+          end_date: string
+          id?: string
+          name: string
+          start_date: string
+          status?: Database["public"]["Enums"]["season_status_enum"]
+        }
+        Update: {
+          cc_reset_date?: string
+          created_at?: string
+          end_date?: string
+          id?: string
+          name?: string
+          start_date?: string
+          status?: Database["public"]["Enums"]["season_status_enum"]
         }
         Relationships: []
       }
@@ -815,6 +1140,19 @@ export type Database = {
         }
         Returns: string
       }
+      award_points_v2: {
+        Args: {
+          p_apply_multiplier?: boolean
+          p_cc: number
+          p_description: string
+          p_source: string
+          p_source_type?: string
+          p_user_id: string
+          p_xp: number
+        }
+        Returns: Json
+      }
+      calculate_fan_zone_level: { Args: { total_xp: number }; Returns: number }
       complete_mission: {
         Args: { _mission_id: string; _user_id: string }
         Returns: boolean
@@ -829,6 +1167,7 @@ export type Database = {
             }
             Returns: string
           }
+      get_level_name: { Args: { level: number }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -841,10 +1180,28 @@ export type Database = {
         Returns: string
       }
       redeem_reward: { Args: { _reward_id: string }; Returns: string }
+      spend_cabo_coins: {
+        Args: {
+          p_cc: number
+          p_description: string
+          p_source: string
+          p_source_type?: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
       unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
+      achievement_type_enum: "top_ranking" | "first_leyenda" | "stadium_perfect"
       app_role: "fan" | "staff" | "admin"
+      checkin_type_enum:
+        | "visit"
+        | "consumption"
+        | "stadium_matchday"
+        | "stadium_regular"
+      level_status_enum: "permanent" | "active" | "at_risk" | "demoted"
+      location_type_enum: "stadium" | "sponsor"
       match_event_type:
         | "goal"
         | "yellow_card"
@@ -857,6 +1214,8 @@ export type Database = {
       pass_tier: "fan" | "gold" | "premium" | "platino"
       payment_status: "free" | "pending" | "mock_paid" | "paid" | "failed"
       qr_kind: "master" | "match" | "benefit" | "experience"
+      season_status_enum: "upcoming" | "active" | "reset_warning" | "closed"
+      subscription_tier_enum: "FAN" | "GOLD" | "PREMIUM" | "PLATINO"
       tx_type:
         | "bonus"
         | "mission"
@@ -865,6 +1224,12 @@ export type Database = {
         | "redeem"
         | "purchase"
         | "adjust"
+        | "earn"
+        | "spend"
+        | "refund"
+        | "adjustment"
+        | "season_reset"
+        | "signup_bonus"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -992,7 +1357,20 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      achievement_type_enum: [
+        "top_ranking",
+        "first_leyenda",
+        "stadium_perfect",
+      ],
       app_role: ["fan", "staff", "admin"],
+      checkin_type_enum: [
+        "visit",
+        "consumption",
+        "stadium_matchday",
+        "stadium_regular",
+      ],
+      level_status_enum: ["permanent", "active", "at_risk", "demoted"],
+      location_type_enum: ["stadium", "sponsor"],
       match_event_type: [
         "goal",
         "yellow_card",
@@ -1006,6 +1384,8 @@ export const Constants = {
       pass_tier: ["fan", "gold", "premium", "platino"],
       payment_status: ["free", "pending", "mock_paid", "paid", "failed"],
       qr_kind: ["master", "match", "benefit", "experience"],
+      season_status_enum: ["upcoming", "active", "reset_warning", "closed"],
+      subscription_tier_enum: ["FAN", "GOLD", "PREMIUM", "PLATINO"],
       tx_type: [
         "bonus",
         "mission",
@@ -1014,6 +1394,12 @@ export const Constants = {
         "redeem",
         "purchase",
         "adjust",
+        "earn",
+        "spend",
+        "refund",
+        "adjustment",
+        "season_reset",
+        "signup_bonus",
       ],
     },
   },
