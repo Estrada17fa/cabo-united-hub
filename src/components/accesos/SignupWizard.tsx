@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, Loader2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, Loader2, ShieldCheck, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,11 +53,14 @@ const formSchema = z.object({
 type FormState = z.infer<typeof formSchema>;
 
 export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Props) {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  type StepId = 1 | 2 | 2.5 | 3;
+  const [step, setStep] = useState<StepId>(1);
   const [showPwd, setShowPwd] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [tierId, setTierId] = useState<WizardTier["id"]>(initialTierId);
   const [tutorData, setTutorData] = useState({ name: "", email: "", phone: "", relationship: "" });
+  const [tutorAdultConfirmed, setTutorAdultConfirmed] = useState(false);
+  const [tutorTouched, setTutorTouched] = useState<Record<string, boolean>>({});
   const [players, setPlayers] = useState<
     Array<{ id: string; name: string; jersey_number: number | null; photo_url: string | null; position: string | null }>
   >([]);
@@ -139,16 +142,25 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
     return age >= 13 && age < 18;
   }, [form.birthDate]);
 
+  const tutorErrors = useMemo(() => {
+    const e: Record<string, string | undefined> = {};
+    if (tutorData.name.trim().length < 3) e.name = "Mínimo 3 caracteres";
+    if (!/^\S+@\S+\.\S+$/.test(tutorData.email.trim())) e.email = "Email inválido";
+    if (tutorData.phone.trim() && tutorData.phone.trim().length < 7) e.phone = "Teléfono inválido";
+    if (!tutorData.relationship) e.relationship = "Selecciona el parentesco";
+    if (!tutorAdultConfirmed) e.adult = "Debe confirmar mayoría de edad";
+    return e;
+  }, [tutorData, tutorAdultConfirmed]);
+  const tutorValid = Object.values(tutorErrors).every((v) => !v);
+
+  const goNextFromStep2 = () => setStep(isMinor ? 2.5 : 3);
+  const goBackFromStep3 = () => setStep(isMinor ? 2.5 : 2);
+
   const handleSubmit = async () => {
-    if (isMinor) {
-      if (
-        tutorData.name.trim().length < 3 ||
-        !/^\S+@\S+\.\S+$/.test(tutorData.email) ||
-        tutorData.relationship.trim().length < 3
-      ) {
-        toast.error("Faltan datos del tutor", { description: "Completa nombre, email y parentesco del tutor." });
-        return;
-      }
+    if (isMinor && !tutorValid) {
+      toast.error("Faltan datos del tutor", { description: "Revisa los campos marcados." });
+      setStep(2.5);
+      return;
     }
     setSubmitting(true);
     const { error } = await supabase.auth.signUp({
@@ -220,7 +232,7 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
 
         {/* Stepper */}
         <div className="flex items-center gap-2 px-5 pb-3">
-          {[1, 2, 3].map((n) => (
+          {(isMinor ? [1, 2, 2.5, 3] : [1, 2, 3]).map((n) => (
             <div
               key={n}
               className="flex-1 h-1 rounded-full transition-colors"
@@ -389,6 +401,87 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
               </motion.div>
             )}
 
+            {step === 2.5 && isMinor && (
+              <motion.div
+                key="s2-tutor"
+                initial={{ opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -12 }}
+                className="space-y-3"
+              >
+                <div
+                  className="rounded-xl p-3 flex gap-2 items-start"
+                  style={{ background: `${tier.accent}10`, border: `1px solid ${tier.accent}33` }}
+                >
+                  <ShieldCheck className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: tier.accent }} />
+                  <div className="text-[12.5px] text-foreground/85 leading-snug">
+                    Como tienes menos de 18 años, necesitamos el consentimiento de tu madre, padre o tutor legal.
+                    Le enviaremos un correo con un enlace seguro para que autorice tu pase. Tu cuenta queda creada al
+                    instante, pero algunas funciones (pagos, premios físicos) se activan cuando tu tutor confirme.
+                  </div>
+                </div>
+
+                <Field label="Nombre completo del tutor" error={tutorTouched.name ? tutorErrors.name : undefined}>
+                  <Input
+                    value={tutorData.name}
+                    onChange={(e) => setTutorData((d) => ({ ...d, name: e.target.value }))}
+                    onBlur={() => setTutorTouched((t) => ({ ...t, name: true }))}
+                    maxLength={100}
+                  />
+                </Field>
+                <Field label="Email del tutor" error={tutorTouched.email ? tutorErrors.email : undefined}>
+                  <Input
+                    type="email"
+                    value={tutorData.email}
+                    onChange={(e) => setTutorData((d) => ({ ...d, email: e.target.value }))}
+                    onBlur={() => setTutorTouched((t) => ({ ...t, email: true }))}
+                    maxLength={255}
+                    placeholder="tutor@correo.com"
+                  />
+                </Field>
+                <Field label="Teléfono del tutor (opcional)" error={tutorTouched.phone ? tutorErrors.phone : undefined}>
+                  <Input
+                    type="tel"
+                    value={tutorData.phone}
+                    onChange={(e) => setTutorData((d) => ({ ...d, phone: e.target.value }))}
+                    onBlur={() => setTutorTouched((t) => ({ ...t, phone: true }))}
+                    placeholder="+52 ..."
+                    maxLength={20}
+                  />
+                </Field>
+                <Field label="Parentesco" error={tutorTouched.relationship ? tutorErrors.relationship : undefined}>
+                  <select
+                    value={tutorData.relationship}
+                    onChange={(e) => setTutorData((d) => ({ ...d, relationship: e.target.value }))}
+                    onBlur={() => setTutorTouched((t) => ({ ...t, relationship: true }))}
+                    className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
+                  >
+                    <option value="">Selecciona…</option>
+                    <option value="madre">Madre</option>
+                    <option value="padre">Padre</option>
+                    <option value="tutor_legal">Tutor legal</option>
+                  </select>
+                </Field>
+
+                <label className="flex items-start gap-2 text-[12px] text-foreground/85 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={tutorAdultConfirmed}
+                    onChange={(e) => setTutorAdultConfirmed(e.target.checked)}
+                    className="mt-0.5 accent-current"
+                    style={{ accentColor: tier.accent }}
+                  />
+                  <span>
+                    Confirmo que mi tutor es <span className="font-semibold">mayor de 18 años</span> y que estos datos
+                    son verdaderos.
+                  </span>
+                </label>
+                {tutorErrors.adult && tutorTouched.adult && (
+                  <p className="text-[11px] text-destructive">{tutorErrors.adult}</p>
+                )}
+              </motion.div>
+            )}
+
             {step === 3 && (
               <motion.div
                 key="s3"
@@ -433,19 +526,38 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
 
         <div className="flex items-center justify-between gap-2 px-5 py-4 border-t border-border bg-background/40">
           {step > 1 ? (
-            <Button variant="ghost" onClick={() => setStep((s) => (s - 1) as 1 | 2 | 3)} disabled={submitting}>
+            <Button
+              variant="ghost"
+              disabled={submitting}
+              onClick={() => {
+                if (step === 3) setStep(isMinor ? 2.5 : 2);
+                else if (step === 2.5) setStep(2);
+                else if (step === 2) setStep(1);
+              }}
+            >
               <ArrowLeft className="w-4 h-4 mr-1" /> Atrás
             </Button>
           ) : (
             <span />
           )}
-          {step < 3 ? (
+          {step !== 3 ? (
             <Button
               onClick={() => {
-                if (step === 1 && !validateStep1()) return;
-                setStep((s) => (s + 1) as 1 | 2 | 3);
+                if (step === 1) {
+                  if (!validateStep1()) return;
+                  setStep(2);
+                } else if (step === 2) {
+                  goNextFromStep2();
+                } else if (step === 2.5) {
+                  setTutorTouched({ name: true, email: true, phone: true, relationship: true, adult: true });
+                  if (!tutorValid) return;
+                  setStep(3);
+                }
               }}
-              disabled={step === 1 && !pwdValid && form.password.length > 0}
+              disabled={
+                (step === 1 && !pwdValid && form.password.length > 0) ||
+                (step === 2.5 && !tutorValid)
+              }
               style={{ background: tier.accent, color: "#0a0a0a" }}
             >
               Continuar <ArrowRight className="w-4 h-4 ml-1" />
