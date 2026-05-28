@@ -1,30 +1,71 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Gamepad2, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FanCard } from "@/components/fan-zone/FanCard";
 import { MiniGameCard } from "@/components/fan-zone/MiniGameCard";
-import { GAMES, type MiniGame } from "@/components/fan-zone/games";
+import { iconFor, type MiniGame } from "@/components/fan-zone/games";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { RankingCard } from "@/components/fan-zone/RankingCard";
 import { PrizesCarouselCard } from "@/components/fan-zone/PrizesCarouselCard";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const FanZone = () => {
   const [authOpen, setAuthOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
+  const [games, setGames] = useState<MiniGame[]>([]);
+  const [playing, setPlaying] = useState<string | null>(null);
 
-  const handleGameClick = (game: MiniGame) => {
-    if (game.status === "soon") {
-      toast(`${game.name}`, {
-        description: "Próximamente. ¡Mantente atento!",
+  useEffect(() => {
+    supabase
+      .from("games")
+      .select("id,name,subtitle,icon,status,tier,xp_reward,cc_reward")
+      .eq("active", true)
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => {
+        if (!data) return;
+        setGames(
+          data.map((g: any) => ({
+            id: g.id,
+            name: g.name,
+            subtitle: g.subtitle ?? "",
+            icon: iconFor(g.icon),
+            status: g.status as MiniGame["status"],
+            tier: g.tier as MiniGame["tier"],
+            reward:
+              g.status === "soon"
+                ? "Próximamente"
+                : `+${g.xp_reward} XP · +${g.cc_reward} CC`,
+          })),
+        );
       });
+  }, []);
+
+  const handleGameClick = async (game: MiniGame) => {
+    if (game.status === "soon") {
+      toast(`${game.name}`, { description: "Próximamente. ¡Mantente atento!" });
       return;
     }
-    toast(`${game.name}`, {
-      description: "Próximamente disponible para jugar.",
+    if (!user) {
+      setAuthOpen(true);
+      return;
+    }
+    if (playing) return;
+    setPlaying(game.id);
+    const { data, error } = await (supabase.rpc as any)("record_game_play", {
+      _game_id: game.id,
+      _score: null,
+      _result: null,
     });
+    setPlaying(null);
+    if (error) {
+      toast.error("No se pudo registrar la partida", { description: error.message });
+      return;
+    }
+    toast.success(`¡${game.name}!`, { description: "Recompensas acreditadas a tu perfil." });
+    refreshProfile();
   };
 
   return (
@@ -64,12 +105,12 @@ const FanZone = () => {
             </h2>
             <div className="flex-1 h-px bg-border" />
             <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              {GAMES.length} juegos
+              {games.length} juegos
             </span>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-            {GAMES.map((game, i) => (
+            {games.map((game, i) => (
               <MiniGameCard key={game.id} game={game} index={i} onClick={handleGameClick} />
             ))}
           </div>
