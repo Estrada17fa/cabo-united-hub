@@ -1,48 +1,31 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Gift, Ticket, ShoppingBag, Crown, ChevronRight } from "lucide-react";
+import { Gift, Ticket, ShoppingBag, Crown, ChevronRight, Coins, type LucideIcon } from "lucide-react";
+import { toast } from "sonner";
 import prizeTickets from "@/assets/prize-tickets.jpg";
 import prizeJersey from "@/assets/prize-jersey.jpg";
 import prizePass from "@/assets/prize-pass.jpg";
 import prizeVestuario from "@/assets/prize-vestuario.jpg";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const ACCENT = "#00abc4";
 
-export const PRIZES = [
-  {
-    icon: Ticket,
-    color: ACCENT,
-    title: "Boletos para el próximo partido",
-    threshold: "5,000 pts",
-    image: prizeTickets,
-    description: "Asiste al próximo partido en casa con boletos cortesía de Los Cabos United.",
-  },
-  {
-    icon: ShoppingBag,
-    color: "hsl(336 80% 77%)",
-    title: "Jersey oficial firmado",
-    threshold: "15,000 pts",
-    image: prizeJersey,
-    description: "Llévate un jersey oficial autografiado por todo el plantel.",
-  },
-  {
-    icon: Crown,
-    color: "#F59E0B",
-    title: "Pase del Amo · 20% en tienda",
-    threshold: "10,000 pts",
-    image: prizePass,
-    description: "Acceso preferencial y 20% de descuento permanente en la tienda oficial.",
-  },
-  {
-    icon: Gift,
-    color: "#A78BFA",
-    title: "Experiencia en el vestuario",
-    threshold: "25,000 pts",
-    image: prizeVestuario,
-    description: "Conoce el vestuario oficial y vive el día de partido como un jugador.",
-  },
-];
+const ICONS: Record<string, LucideIcon> = { Ticket, ShoppingBag, Crown, Gift };
+const FALLBACK_IMAGES = [prizeTickets, prizePass, prizeJersey, prizeVestuario];
+
+interface Prize {
+  id: string;
+  slug: string;
+  icon: LucideIcon;
+  color: string;
+  title: string;
+  cc_cost: number;
+  image: string;
+  description: string;
+  tier: string;
+}
 
 interface PrizesCarouselCardProps {
   className?: string;
@@ -53,17 +36,77 @@ export function PrizesCarouselCard({
   className = "",
   showFooterLink = true,
 }: PrizesCarouselCardProps) {
+  const { user, profile, refreshProfile } = useAuth();
+  const [prizes, setPrizes] = useState<Prize[]>([]);
   const [index, setIndex] = useState(0);
+  const [redeeming, setRedeeming] = useState(false);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      setIndex((i) => (i + 1) % PRIZES.length);
-    }, 4500);
-    return () => clearInterval(id);
+    supabase
+      .from("rewards")
+      .select("id,slug,title,description,image_url,icon,cc_cost,tier,sort_order")
+      .eq("active", true)
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => {
+        if (!data) return;
+        setPrizes(
+          data.map((r: any, i: number) => ({
+            id: r.id,
+            slug: r.slug,
+            icon: ICONS[r.icon] ?? Gift,
+            color: r.tier === "premium" ? "#F59E0B" : ACCENT,
+            title: r.title,
+            cc_cost: r.cc_cost,
+            image: r.image_url || FALLBACK_IMAGES[i % FALLBACK_IMAGES.length],
+            description: r.description ?? "",
+            tier: r.tier,
+          })),
+        );
+      });
   }, []);
 
-  const current = PRIZES[index];
+  useEffect(() => {
+    if (prizes.length === 0) return;
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % prizes.length);
+    }, 4500);
+    return () => clearInterval(id);
+  }, [prizes.length]);
+
+  if (prizes.length === 0) {
+    return (
+      <div
+        className={`rounded-2xl border ${className}`}
+        style={{ background: "#0f0f0f", borderColor: "rgba(255,255,255,0.07)", minHeight: 320 }}
+      />
+    );
+  }
+
+  const current = prizes[index];
   const Icon = current.icon;
+  const canRedeem = !!user && (profile?.cc ?? 0) >= current.cc_cost;
+
+  const handleRedeem = async () => {
+    if (!user) {
+      toast.error("Inicia sesión para canjear premios");
+      return;
+    }
+    if (!canRedeem) {
+      toast.error("Te faltan Cabo Coins", {
+        description: `Necesitas ${current.cc_cost.toLocaleString()} CC y tienes ${(profile?.cc ?? 0).toLocaleString()}.`,
+      });
+      return;
+    }
+    setRedeeming(true);
+    const { error } = await (supabase.rpc as any)("redeem_reward", { _reward_id: current.id });
+    setRedeeming(false);
+    if (error) {
+      toast.error("No se pudo canjear", { description: error.message });
+      return;
+    }
+    toast.success("¡Canje exitoso!", { description: `Revisa tu perfil para ver el código.` });
+    refreshProfile();
+  };
 
   return (
     <div
@@ -84,7 +127,7 @@ export function PrizesCarouselCard({
           </h3>
         </div>
         <span className="text-[10px] font-bold uppercase tracking-wider text-white/40">
-          {index + 1} / {PRIZES.length}
+          {index + 1} / {prizes.length}
         </span>
       </div>
 
@@ -135,7 +178,8 @@ export function PrizesCarouselCard({
                     border: `1px solid ${current.color}55`,
                   }}
                 >
-                  A partir de {current.threshold}
+                  <Coins className="inline w-3 h-3 mr-1 -mt-0.5" />
+                  {current.cc_cost.toLocaleString()} CC
                 </span>
               </div>
               <div className="text-[15px] font-extrabold text-white leading-tight mb-1">
@@ -150,7 +194,7 @@ export function PrizesCarouselCard({
       </div>
 
       <div className="flex items-center justify-center gap-1.5 mt-3">
-        {PRIZES.map((_, i) => (
+        {prizes.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
@@ -164,6 +208,26 @@ export function PrizesCarouselCard({
         ))}
       </div>
 
+      <button
+        type="button"
+        onClick={handleRedeem}
+        disabled={redeeming || !canRedeem}
+        className="mx-3 mt-3 inline-flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-[12px] font-extrabold uppercase tracking-wider transition-opacity disabled:opacity-40"
+        style={{
+          background: current.color,
+          color: "#0a0a0a",
+        }}
+      >
+        <Coins className="w-3.5 h-3.5" />
+        {!user
+          ? "Inicia sesión para canjear"
+          : !canRedeem
+            ? `Te faltan ${(current.cc_cost - (profile?.cc ?? 0)).toLocaleString()} CC`
+            : redeeming
+              ? "Canjeando..."
+              : "Canjear ahora"}
+      </button>
+
       {showFooterLink && (
         <Link
           to="/fan-zone"
@@ -173,6 +237,7 @@ export function PrizesCarouselCard({
           Ver todos los premios <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       )}
+      {!showFooterLink && <div className="h-3" />}
     </div>
   );
 }
