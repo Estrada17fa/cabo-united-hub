@@ -1194,7 +1194,7 @@ export type Database = {
     }
     Enums: {
       achievement_type_enum: "top_ranking" | "first_leyenda" | "stadium_perfect"
-      app_role: "fan" | "staff" | "admin"
+      app_role: "fan" | "staff" | "admin" | "super_admin" | "business" | "user"
       checkin_type_enum:
         | "visit"
         | "consumption"
@@ -1362,7 +1362,7 @@ export const Constants = {
         "first_leyenda",
         "stadium_perfect",
       ],
-      app_role: ["fan", "staff", "admin"],
+      app_role: ["fan", "staff", "admin", "super_admin", "business", "user"],
       checkin_type_enum: [
         "visit",
         "consumption",
