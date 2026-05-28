@@ -589,6 +589,48 @@ export type Database = {
         }
         Relationships: []
       }
+      parental_consent_requests: {
+        Row: {
+          confirmed_at: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          ip_address: string | null
+          token_hash: string
+          tutor_email: string
+          tutor_name: string
+          tutor_phone: string | null
+          tutor_relationship: string
+          user_id: string
+        }
+        Insert: {
+          confirmed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          ip_address?: string | null
+          token_hash: string
+          tutor_email: string
+          tutor_name: string
+          tutor_phone?: string | null
+          tutor_relationship: string
+          user_id: string
+        }
+        Update: {
+          confirmed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          ip_address?: string | null
+          token_hash?: string
+          tutor_email?: string
+          tutor_name?: string
+          tutor_phone?: string | null
+          tutor_relationship?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pass_redemptions: {
         Row: {
           created_at: string
@@ -1153,6 +1195,7 @@ export type Database = {
         Returns: Json
       }
       calculate_fan_zone_level: { Args: { total_xp: number }; Returns: number }
+      check_level_maintenance: { Args: { p_user_id: string }; Returns: Json }
       complete_mission: {
         Args: { _mission_id: string; _user_id: string }
         Returns: boolean
@@ -1168,18 +1211,25 @@ export type Database = {
             Returns: string
           }
       get_level_name: { Args: { level: number }; Returns: string }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      has_role:
+        | {
+            Args: {
+              _role: Database["public"]["Enums"]["app_role"]
+              _user_id: string
+            }
+            Returns: boolean
+          }
+        | { Args: { _role: string; _user_id: string }; Returns: boolean }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
+      is_minor_user: { Args: { _user_id: string }; Returns: boolean }
+      is_super_admin: { Args: { _user_id: string }; Returns: boolean }
       record_game_play: {
         Args: { _game_id: string; _result?: Json; _score?: number }
         Returns: string
       }
       redeem_reward: { Args: { _reward_id: string }; Returns: string }
+      run_level_at_risk_warning: { Args: never; Returns: number }
+      run_level_demotion_check: { Args: never; Returns: number }
       spend_cabo_coins: {
         Args: {
           p_cc: number
