@@ -526,19 +526,38 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
 
         <div className="flex items-center justify-between gap-2 px-5 py-4 border-t border-border bg-background/40">
           {step > 1 ? (
-            <Button variant="ghost" onClick={() => setStep((s) => (s - 1) as 1 | 2 | 3)} disabled={submitting}>
+            <Button
+              variant="ghost"
+              disabled={submitting}
+              onClick={() => {
+                if (step === 3) setStep(isMinor ? 2.5 : 2);
+                else if (step === 2.5) setStep(2);
+                else if (step === 2) setStep(1);
+              }}
+            >
               <ArrowLeft className="w-4 h-4 mr-1" /> Atrás
             </Button>
           ) : (
             <span />
           )}
-          {step < 3 ? (
+          {step !== 3 ? (
             <Button
               onClick={() => {
-                if (step === 1 && !validateStep1()) return;
-                setStep((s) => (s + 1) as 1 | 2 | 3);
+                if (step === 1) {
+                  if (!validateStep1()) return;
+                  setStep(2);
+                } else if (step === 2) {
+                  goNextFromStep2();
+                } else if (step === 2.5) {
+                  setTutorTouched({ name: true, email: true, phone: true, relationship: true, adult: true });
+                  if (!tutorValid) return;
+                  setStep(3);
+                }
               }}
-              disabled={step === 1 && !pwdValid && form.password.length > 0}
+              disabled={
+                (step === 1 && !pwdValid && form.password.length > 0) ||
+                (step === 2.5 && !tutorValid)
+              }
               style={{ background: tier.accent, color: "#0a0a0a" }}
             >
               Continuar <ArrowRight className="w-4 h-4 ml-1" />
