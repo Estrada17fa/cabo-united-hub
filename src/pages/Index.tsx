@@ -1719,6 +1719,7 @@ const Index = () => {
         className="pb-10"
         style={{ display: "flex", flexDirection: "column", gap: 32 }}
       >
+        <HeaderCarousel />
         <HomeHero />
         <SectionDivider />
         <MatchZoneSection />
