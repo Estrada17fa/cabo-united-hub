@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const FanZone = () => {
   const [authOpen, setAuthOpen] = useState(false);
-  const { user, refreshProfile } = useAuth();
+  const { user } = useAuth();
   const [games, setGames] = useState<MiniGame[]>([]);
 
   useEffect(() => {
