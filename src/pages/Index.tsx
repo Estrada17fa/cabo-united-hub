@@ -194,6 +194,99 @@ function SectionDivider() {
   );
 }
 
+/* ============================================================ */
+/*  HEADER CARRUSEL                                              */
+/* ============================================================ */
+
+const HEADER_SLIDES: { img: string; title: string; subtitle?: string; href?: string }[] = [
+  { img: stadiumHero, title: "Bienvenido al Paraíso", subtitle: "Estadio Don Koll · Temporada 2025-26", href: "/accesos" },
+  { img: tiendaHero, title: "Nueva Jersey Oficial", subtitle: "Ya disponible en la tienda", href: "/tienda" },
+  { img: accesosHero, title: "Sé Amo del Paraíso", subtitle: "Abónate y vive cada partido", href: "/accesos" },
+];
+
+function HeaderCarousel() {
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setIdx((i) => (i + 1) % HEADER_SLIDES.length), 5000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <section className="relative -mx-3 sm:-mx-4 lg:-mx-[calc((100vw-100%)/2)] overflow-hidden">
+      <div className="relative w-full" style={{ height: "clamp(140px, 24vw, 240px)" }}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0"
+          >
+            <Link to={HEADER_SLIDES[idx].href || "#"} className="block w-full h-full">
+              <img
+                src={HEADER_SLIDES[idx].img}
+                alt={HEADER_SLIDES[idx].title}
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="eager"
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(90deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.25) 60%, rgba(0,0,0,0.55) 100%)",
+                }}
+              />
+              <div className="relative z-10 h-full flex flex-col justify-center px-5 sm:px-8 max-w-3xl">
+                <div
+                  className="font-bold mb-1"
+                  style={{ color: ACCENT, fontSize: 10, letterSpacing: "0.18em" }}
+                >
+                  LOS CABOS UNITED
+                </div>
+                <div
+                  className="font-extrabold text-white"
+                  style={{
+                    fontSize: "clamp(18px, 3.6vw, 32px)",
+                    letterSpacing: "-0.02em",
+                    lineHeight: 1.1,
+                  }}
+                >
+                  {HEADER_SLIDES[idx].title}
+                </div>
+                {HEADER_SLIDES[idx].subtitle && (
+                  <div
+                    className="text-white/80 mt-1"
+                    style={{ fontSize: "clamp(11px, 1.6vw, 14px)" }}
+                  >
+                    {HEADER_SLIDES[idx].subtitle}
+                  </div>
+                )}
+              </div>
+            </Link>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Dots */}
+        <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
+          {HEADER_SLIDES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIdx(i)}
+              aria-label={`Ir al slide ${i + 1}`}
+              className="rounded-full transition-all"
+              style={{
+                width: i === idx ? 18 : 6,
+                height: 6,
+                background: i === idx ? ACCENT : "rgba(255,255,255,0.5)",
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function SectionHeader({
   eyebrow,
   title,
