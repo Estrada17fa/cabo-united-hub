@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -60,6 +59,10 @@ export default function Abonos() {
   const [authOpen, setAuthOpen] = useState(false);
   const [checkoutTier, setCheckoutTier] = useState<Tier | null>(null);
 
+  useEffect(() => {
+    document.title = "Abonos Fan Zone | Los Cabos United";
+  }, []);
+
   const currentTier = (profile as any)?.subscription_tier ?? "FAN";
   const activeTier = TIERS.find((t) => t.key === checkoutTier);
 
@@ -74,15 +77,6 @@ export default function Abonos() {
 
   return (
     <>
-      <Helmet>
-        <title>Abonos Fan Zone | Los Cabos United</title>
-        <meta
-          name="description"
-          content="Adquiere tu abono anual GOLD, PREMIUM o PLATINO y vive Los Cabos United con beneficios exclusivos."
-        />
-        <link rel="canonical" href={`${window.location.origin}/abonos`} />
-      </Helmet>
-
       <PaymentTestModeBanner />
 
       <div className="max-w-6xl mx-auto py-8 md:py-12 space-y-10">
@@ -161,7 +155,14 @@ export default function Abonos() {
         </p>
       </div>
 
-      <AuthModal open={authOpen} onOpenChange={setAuthOpen} />
+      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Inicia sesión para continuar</DialogTitle>
+          </DialogHeader>
+          <AuthModal onSuccess={() => setAuthOpen(false)} />
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!checkoutTier} onOpenChange={(o) => !o && setCheckoutTier(null)}>
         <DialogContent className="max-w-2xl p-0 overflow-hidden">

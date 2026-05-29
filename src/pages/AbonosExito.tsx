@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ export default function AbonosExito() {
   const [tier, setTier] = useState<string | null>(null);
 
   useEffect(() => {
+    document.title = "Compra confirmada | Los Cabos United";
     if (!user) return;
     let attempts = 0;
     let cancelled = false;
@@ -61,10 +61,6 @@ export default function AbonosExito() {
 
   return (
     <>
-      <Helmet>
-        <title>Compra confirmada | Los Cabos United</title>
-        <meta name="robots" content="noindex" />
-      </Helmet>
       <div className="max-w-xl mx-auto py-16 text-center space-y-6">
         {status === "polling" && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
