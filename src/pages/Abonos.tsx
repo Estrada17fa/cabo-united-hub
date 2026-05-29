@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Check, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ export default function Abonos() {
   const { user, profile } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
   const [checkoutTier, setCheckoutTier] = useState<Tier | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     document.title = "Abonos Fan Zone | Los Cabos United";
@@ -65,6 +67,18 @@ export default function Abonos() {
 
   const currentTier = (profile as any)?.subscription_tier ?? "FAN";
   const activeTier = TIERS.find((t) => t.key === checkoutTier);
+
+  useEffect(() => {
+    const t = searchParams.get("tier");
+    if (!t || !user) return;
+    const key = t.toUpperCase() as Tier;
+    const found = TIERS.find((x) => x.key === key);
+    if (found && found.priceId && currentTier !== key) {
+      setCheckoutTier(key);
+    }
+    searchParams.delete("tier");
+    setSearchParams(searchParams, { replace: true });
+  }, [user, searchParams, setSearchParams, currentTier]);
 
   const handleSelect = (tier: typeof TIERS[number]) => {
     if (!tier.priceId) return;

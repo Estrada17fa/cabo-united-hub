@@ -14,9 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 const FanZone = () => {
   const [authOpen, setAuthOpen] = useState(false);
-  const { user, refreshProfile } = useAuth();
+  const { user } = useAuth();
   const [games, setGames] = useState<MiniGame[]>([]);
-  const [playing, setPlaying] = useState<string | null>(null);
 
   useEffect(() => {
     supabase
@@ -43,29 +42,16 @@ const FanZone = () => {
       });
   }, []);
 
-  const handleGameClick = async (game: MiniGame) => {
-    if (game.status === "soon") {
-      toast(`${game.name}`, { description: "Próximamente. ¡Mantente atento!" });
-      return;
-    }
+  const handleGameClick = (game: MiniGame) => {
     if (!user) {
       setAuthOpen(true);
       return;
     }
-    if (playing) return;
-    setPlaying(game.id);
-    const { data, error } = await (supabase.rpc as any)("record_game_play", {
-      _game_id: game.id,
-      _score: null,
-      _result: null,
+    // Los minijuegos aún no están implementados. Las recompensas se otorgarán
+    // cuando el usuario complete (y en su caso gane) la partida real.
+    toast(`${game.name}`, {
+      description: "Próximamente. Las recompensas se otorgarán al jugar.",
     });
-    setPlaying(null);
-    if (error) {
-      toast.error("No se pudo registrar la partida", { description: error.message });
-      return;
-    }
-    toast.success(`¡${game.name}!`, { description: "Recompensas acreditadas a tu perfil." });
-    refreshProfile();
   };
 
   return (

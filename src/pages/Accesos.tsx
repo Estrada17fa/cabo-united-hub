@@ -746,7 +746,11 @@ const Accesos = () => {
 
   const handleSelectTier = (id: TierId) => {
     if (user) {
-      navigate("/mi-perfil");
+      if (id === "fan") {
+        navigate("/mi-perfil");
+      } else {
+        navigate(`/abonos?tier=${id}`);
+      }
       return;
     }
     setWizardTier(id);
