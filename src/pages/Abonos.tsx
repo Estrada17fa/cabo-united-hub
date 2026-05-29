@@ -179,7 +179,7 @@ export default function Abonos() {
       </Dialog>
 
       <Dialog open={!!checkoutTier} onOpenChange={(o) => !o && setCheckoutTier(null)}>
-        <DialogContent className="max-w-2xl p-0 overflow-hidden">
+        <DialogContent className="max-w-2xl p-0 max-h-[90vh] overflow-y-auto">
           <DialogHeader className="px-6 pt-6">
             <DialogTitle>Adquirir abono {activeTier?.name}</DialogTitle>
           </DialogHeader>
