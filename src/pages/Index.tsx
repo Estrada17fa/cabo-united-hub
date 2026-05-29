@@ -211,7 +211,7 @@ function HeaderCarousel() {
     return () => clearInterval(id);
   }, []);
   return (
-    <section className="relative -mx-3 sm:-mx-4 lg:-mx-[calc((100vw-100%)/2)] overflow-hidden">
+    <section className="relative -mx-3 sm:-mx-4 lg:-mx-[calc((100vw-100%)/2)] overflow-hidden rounded-xl">
       <div className="relative w-full" style={{ height: "clamp(140px, 24vw, 240px)" }}>
         <AnimatePresence mode="wait">
           <motion.div
