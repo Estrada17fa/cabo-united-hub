@@ -26,17 +26,14 @@ const FanZone = () => {
       .then(({ data }) => {
         if (!data) return;
         setGames(
-          data.map((g: any) => ({
+        data.map((g: any) => ({
             id: g.id,
             name: g.name,
             subtitle: g.subtitle ?? "",
             icon: iconFor(g.icon),
-            status: g.status as MiniGame["status"],
+            status: "soon" as MiniGame["status"],
             tier: g.tier as MiniGame["tier"],
-            reward:
-              g.status === "soon"
-                ? "Próximamente"
-                : `+${g.xp_reward} XP · +${g.cc_reward} CC`,
+            reward: "Próximamente",
           })),
         );
       });
