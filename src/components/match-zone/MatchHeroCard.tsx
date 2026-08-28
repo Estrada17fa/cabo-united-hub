@@ -192,8 +192,9 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
         {/* CTAs */}
         {showLiveLayout ? (
           <div className="w-full flex flex-col gap-2">
-            {/* Row 1: Ver en Vivo / Resumen + Visita Los Cabos */}
-            <div className="grid grid-cols-2 gap-2">
+            {/* Row 1: Ver en Vivo / Resumen */}
+            <div className="grid grid-cols-1 gap-2">
+
               {isLive ? (
                 <a
                   href={match.live_stream_url || "#"}
