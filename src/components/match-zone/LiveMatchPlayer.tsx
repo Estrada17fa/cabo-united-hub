@@ -213,17 +213,6 @@ export function LiveMatchPlayer({ match, onRequestLogin }: LiveMatchPlayerProps)
               </motion.button>
             </Link>
 
-            <Link
-              to="/conoce-los-cabos"
-              className="h-11 flex items-center justify-center gap-2 rounded-xl text-xs sm:text-sm font-medium text-white transition-colors hover:bg-white/[0.15]"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.08)",
-                border: "1px solid rgba(255,255,255,0.30)",
-              }}
-            >
-              <MapPin className="w-4 h-4" />
-              Visita Los Cabos
-            </Link>
           </div>
         </div>
       </div>
