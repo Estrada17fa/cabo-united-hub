@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { TeamCrest } from "./TeamCrest";
+import { Crest as TeamCrest } from "@/components/ui-lcu";
 
 interface Scorer {
   player_name: string;

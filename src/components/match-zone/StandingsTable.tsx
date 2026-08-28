@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { TeamCrest } from "./TeamCrest";
+import { Crest as TeamCrest } from "@/components/ui-lcu";
 
 export interface StandingRow {
   pos: number;

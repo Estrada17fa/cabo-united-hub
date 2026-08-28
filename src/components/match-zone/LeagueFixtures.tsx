@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { MapPin, Ticket } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { TeamCrest } from "./TeamCrest";
+import { Crest as TeamCrest } from "@/components/ui-lcu";
 import { LeagueGroupSwitch } from "./LeagueGroupSwitch";
 import { isFinished, matchDateTime, type LeagueMatch } from "@/hooks/useLeague";
 
@@ -162,7 +162,7 @@ function FixtureRow({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: Math.min(index * 0.03, 0.2) }}
-      className={`rounded-2xl border p-3.5 ${isOurs ? "border-primary/50 bg-primary/[0.07]" : "border-border"}`}
+      className={`rounded-card border p-3.5 ${isOurs ? "border-primary/50 bg-primary/[0.07]" : "border-white/[0.07] bg-surface-1"}`}
       
     >
       <div className="flex items-center justify-between gap-2 mb-2">
