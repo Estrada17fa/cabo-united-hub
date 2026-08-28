@@ -17,7 +17,7 @@ import { AuthModal } from "@/components/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cartStore";
 import { FanPassMini } from "@/components/pass/FanPassMini";
-import { SignupWizard, type WizardTier } from "@/components/accesos/SignupWizard";
+import { AuthFlow } from "@/components/auth/AuthFlow";
 
 const WIZARD_TIERS: WizardTier[] = [
   { id: "fan", badge: "FAN", price: "$0", priceNote: "Gratis para siempre", tagline: "Empieza a vivir el paraíso, sin costo.", accent: "#FFFFFF" },
@@ -448,12 +448,12 @@ export function Header() {
         </SheetContent>
       </Sheet>
 
-      <SignupWizard
+      <AuthFlow
         open={showSignupWizard}
         onClose={() => setShowSignupWizard(false)}
-        tiers={WIZARD_TIERS}
         initialTierId="fan"
       />
+
     </motion.header>
   );
 }
