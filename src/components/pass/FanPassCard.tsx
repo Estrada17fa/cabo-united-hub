@@ -52,10 +52,15 @@ export function FanPassCard({
   avatarUrl?: string | null;
 }) {
   const [flipped, setFlipped] = useState(false);
+  const [mode, setMode] = useState<"stadium" | "business">("stadium");
   const [qr, setQr] = useState<QrPayload | null>(null);
   const [loadingQr, setLoadingQr] = useState(false);
   const [qrError, setQrError] = useState<string | null>(null);
   const [exporting, setExporting] = useState<null | "card" | "story">(null);
+  const [memberQr, setMemberQr] = useState<MemberQr | null>(null);
+  const [memberLoading, setMemberLoading] = useState(false);
+  const [memberError, setMemberError] = useState<string | null>(null);
+  const [now, setNow] = useState(() => Date.now());
   const frontRef = useRef<HTMLDivElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
 
@@ -63,6 +68,7 @@ export function FanPassCard({
   const issuedDate = new Date(pass.issued_at).toLocaleDateString("es-MX", {
     day: "2-digit", month: "short", year: "numeric",
   });
+  const accessZone = pass.tier === "premium" || pass.tier === "platino" ? "Zona Preferencial" : "Acceso General";
 
   const fetchQr = async () => {
     if (pass.status !== "active") {
@@ -80,10 +86,56 @@ export function FanPassCard({
     setQr(data as QrPayload);
   };
 
+  const fetchMemberQr = useCallback(async () => {
+    if (pass.status !== "active") {
+      setMemberError("Tu pase aún no está activo");
+      return;
+    }
+    setMemberLoading(true);
+    const { data, error } = await supabase.functions.invoke("issue-member-qr");
+    setMemberLoading(false);
+    if (error || !data?.token) {
+      setMemberError("No pudimos actualizar tu QR. Revisa tu conexión.");
+      return;
+    }
+    setMemberError(null);
+    setMemberQr({ token: data.token, issued_at: Date.now(), ttl: (data.ttl_seconds ?? 180) * 1000 });
+  }, [pass.status]);
+
   useEffect(() => {
-    if (flipped && !qr && pass.status === "active") fetchQr();
+    if (flipped && mode === "stadium" && !qr && pass.status === "active") fetchQr();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flipped]);
+  }, [flipped, mode]);
+
+  // QR de comercios: se genera al entrar al modo y se renueva cada 3 minutos
+  useEffect(() => {
+    if (!flipped || mode !== "business" || pass.status !== "active") return;
+    if (!memberQr) fetchMemberQr();
+    const interval = window.setInterval(fetchMemberQr, MEMBER_TTL_MS);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") fetchMemberQr();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flipped, mode, pass.status]);
+
+  // Tick para el anillo de cuenta regresiva
+  useEffect(() => {
+    if (!flipped || mode !== "business") return;
+    const t = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(t);
+  }, [flipped, mode]);
+
+  const memberElapsed = memberQr ? now - memberQr.issued_at : 0;
+  const memberSecondsLeft = memberQr ? Math.max(0, Math.ceil((memberQr.ttl - memberElapsed) / 1000)) : 0;
+  const memberProgress = memberQr ? Math.max(0, Math.min(1, 1 - memberElapsed / memberQr.ttl)) : 0;
+  const memberStale = !!memberQr && memberElapsed > memberQr.ttl;
+  const memberAgeLabel = `${Math.max(1, Math.round(memberElapsed / 60000))} min`;
+
 
   const downloadDataUrl = (dataUrl: string, filename: string) => {
     const link = document.createElement("a");
