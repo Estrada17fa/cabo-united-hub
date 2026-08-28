@@ -5,12 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { StandingsTable, type StandingRow } from "./StandingsTable";
 import { LeagueMatchesByGroup } from "./LeagueMatchesByGroup";
 import { LeagueTeamsByGroup } from "./LeagueTeamsByGroup";
+import { PartidosSection } from "./PartidosSection";
 import { TeamCrest } from "./TeamCrest";
 import { useTeamLogos } from "@/hooks/useTeamLogos";
 
 const MAIN_TABS = [
+  { id: "lcu", label: "Nuestros Partidos" },
   { id: "posiciones", label: "Posiciones" },
-  { id: "partidos", label: "Partidos" },
+  { id: "partidos", label: "Partidos de la Liga" },
   { id: "equipos", label: "Equipos" },
 ];
 
@@ -23,9 +25,10 @@ const POSICIONES_TABS = [
 ];
 
 export function LeagueTables() {
-  const [mainTab, setMainTab] = useState("posiciones");
+  const [mainTab, setMainTab] = useState("lcu");
   const [posTab, setPosTab] = useState("general");
   const logoMap = useTeamLogos();
+
 
   const { data: standings = [] } = useQuery({
     queryKey: ["league_standings"],
