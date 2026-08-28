@@ -11,6 +11,9 @@ import Club from "./pages/Club";
 import ZonaPartido from "./pages/ZonaPartido";
 import FanZone from "./pages/FanZone";
 import Accesos from "./pages/Accesos";
+import MiPase from "./pages/MiPase";
+import Comercios from "./pages/Comercios";
+
 import Tienda from "./pages/Tienda";
 import TiendaProducto from "./pages/TiendaProducto";
 import TiendaBuscar from "./pages/TiendaBuscar";
