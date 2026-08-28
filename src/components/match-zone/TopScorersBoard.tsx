@@ -71,7 +71,7 @@ export function TopScorersBoard({ scorers, logoMap = {}, ourTeam = "Los Cabos Un
       </div>
 
       {rest.length > 0 && (
-        <div className="rounded-2xl border border-border overflow-hidden">
+        <div className="rounded-card border border-white/[0.07] bg-surface-1 overflow-hidden">
           {rest.map((s, i) => {
             const isOurs = s.team === ourTeam;
             return (

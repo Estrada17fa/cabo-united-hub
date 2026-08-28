@@ -31,7 +31,7 @@ export function FinalStageBracket({ matches, logoMap = {}, ourTeam = "Los Cabos 
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl border border-border p-8 text-center"
+        className="rounded-card border border-white/[0.07] bg-surface-1 p-8 text-center"
       >
         <span className="mx-auto grid place-items-center w-12 h-12 rounded-full bg-primary/12 text-primary mb-3">
           <Trophy className="w-5 h-5" />
@@ -59,7 +59,7 @@ export function FinalStageBracket({ matches, logoMap = {}, ourTeam = "Los Cabos 
               <div
                 key={m.id}
                 className={`rounded-2xl border p-3.5 ${ours ? "border-primary/50 bg-primary/[0.07]" : "border-border"}`}
-                style={!ours ? { background: "#121212" } : undefined}
+                
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground capitalize">
