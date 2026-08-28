@@ -1312,6 +1312,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_list_fan_passes: {
+        Args: never
+        Returns: {
+          birth_date: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          marketing_consent: boolean
+          pass_code: string
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          phone: string
+          status: string
+          tier: Database["public"]["Enums"]["pass_tier"]
+          user_id: string
+        }[]
+      }
       award_points: {
         Args: {
           _cc: number
@@ -1356,6 +1373,17 @@ export type Database = {
             }
             Returns: string
           }
+      get_leaderboard: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          id: string
+          level: number
+          username: string
+          xp: number
+        }[]
+      }
       get_level_name: { Args: { level: number }; Returns: string }
       has_role:
         | {
