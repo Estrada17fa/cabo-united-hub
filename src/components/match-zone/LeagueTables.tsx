@@ -3,31 +3,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { StandingsTable, type StandingRow } from "./StandingsTable";
-import { LeagueMatchesByGroup } from "./LeagueMatchesByGroup";
-import { LeagueTeamsByGroup } from "./LeagueTeamsByGroup";
-import { PartidosSection } from "./PartidosSection";
+import { LeagueFixtures } from "./LeagueFixtures";
 import { TeamCrest } from "./TeamCrest";
 import { useTeamLogos } from "@/hooks/useTeamLogos";
 
 const MAIN_TABS = [
-  { id: "lcu", label: "Nuestros Partidos" },
+  { id: "partidos", label: "Partidos" },
   { id: "posiciones", label: "Posiciones" },
-  { id: "partidos", label: "Partidos de la Liga" },
-  { id: "equipos", label: "Equipos" },
-];
-
-const POSICIONES_TABS = [
-  { id: "general", label: "Tabla General" },
-  { id: "grupo1", label: "Grupo 1" },
-  { id: "grupo2", label: "Grupo 2" },
-  { id: "grupo3", label: "Grupo 3" },
-  { id: "goleo", label: "Tabla de Goleo" },
+  { id: "goleo", label: "Goleo" },
 ];
 
 export function LeagueTables() {
-  const [mainTab, setMainTab] = useState("lcu");
-  const [posTab, setPosTab] = useState("general");
+  const [mainTab, setMainTab] = useState("partidos");
   const logoMap = useTeamLogos();
+
 
 
   const { data: standings = [] } = useQuery({
