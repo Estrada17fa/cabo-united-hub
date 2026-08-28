@@ -55,6 +55,7 @@ export type Database = {
           id: string
           location_id: string
           name: string
+          user_id: string | null
         }
         Insert: {
           active?: boolean
@@ -63,6 +64,7 @@ export type Database = {
           id?: string
           location_id: string
           name: string
+          user_id?: string | null
         }
         Update: {
           active?: boolean
@@ -71,6 +73,7 @@ export type Database = {
           id?: string
           location_id?: string
           name?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -84,6 +87,7 @@ export type Database = {
       }
       checkins: {
         Row: {
+          checkin_day: string
           consumption_amount: number | null
           created_at: string
           id: string
@@ -94,6 +98,7 @@ export type Database = {
           verified: boolean
         }
         Insert: {
+          checkin_day?: string
           consumption_amount?: number | null
           created_at?: string
           id?: string
@@ -104,6 +109,7 @@ export type Database = {
           verified?: boolean
         }
         Update: {
+          checkin_day?: string
           consumption_amount?: number | null
           created_at?: string
           id?: string
@@ -323,6 +329,10 @@ export type Database = {
           consumption_cc: number
           consumption_xp: number
           created_at: string
+          discount_fan: number | null
+          discount_gold: number | null
+          discount_platino: number | null
+          discount_premium: number | null
           id: string
           name: string
           qr_static_code: string | null
@@ -336,6 +346,10 @@ export type Database = {
           consumption_cc?: number
           consumption_xp?: number
           created_at?: string
+          discount_fan?: number | null
+          discount_gold?: number | null
+          discount_platino?: number | null
+          discount_premium?: number | null
           id?: string
           name: string
           qr_static_code?: string | null
@@ -349,6 +363,10 @@ export type Database = {
           consumption_cc?: number
           consumption_xp?: number
           created_at?: string
+          discount_fan?: number | null
+          discount_gold?: number | null
+          discount_platino?: number | null
+          discount_premium?: number | null
           id?: string
           name?: string
           qr_static_code?: string | null
@@ -723,12 +741,17 @@ export type Database = {
           display_name: string | null
           email_verified: boolean
           favorite_player_id: string | null
+          first_name: string | null
           id: string
           identity_verified: boolean
+          last_name_m: string | null
+          last_name_p: string | null
           last_season_xp: number
           level: number
           level_name: string | null
           level_status: Database["public"]["Enums"]["level_status_enum"]
+          marketing_consent: boolean
+          marketing_consent_at: string | null
           parental_consent: boolean
           parental_consent_at: string | null
           phone: string | null
@@ -738,6 +761,7 @@ export type Database = {
           subscription_expires_at: string | null
           subscription_started_at: string | null
           subscription_tier: Database["public"]["Enums"]["subscription_tier_enum"]
+          terms_accepted_at: string | null
           updated_at: string
           username: string | null
           xp: number
@@ -753,12 +777,17 @@ export type Database = {
           display_name?: string | null
           email_verified?: boolean
           favorite_player_id?: string | null
+          first_name?: string | null
           id: string
           identity_verified?: boolean
+          last_name_m?: string | null
+          last_name_p?: string | null
           last_season_xp?: number
           level?: number
           level_name?: string | null
           level_status?: Database["public"]["Enums"]["level_status_enum"]
+          marketing_consent?: boolean
+          marketing_consent_at?: string | null
           parental_consent?: boolean
           parental_consent_at?: string | null
           phone?: string | null
@@ -768,6 +797,7 @@ export type Database = {
           subscription_expires_at?: string | null
           subscription_started_at?: string | null
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
+          terms_accepted_at?: string | null
           updated_at?: string
           username?: string | null
           xp?: number
@@ -783,12 +813,17 @@ export type Database = {
           display_name?: string | null
           email_verified?: boolean
           favorite_player_id?: string | null
+          first_name?: string | null
           id?: string
           identity_verified?: boolean
+          last_name_m?: string | null
+          last_name_p?: string | null
           last_season_xp?: number
           level?: number
           level_name?: string | null
           level_status?: Database["public"]["Enums"]["level_status_enum"]
+          marketing_consent?: boolean
+          marketing_consent_at?: string | null
           parental_consent?: boolean
           parental_consent_at?: string | null
           phone?: string | null
@@ -798,6 +833,7 @@ export type Database = {
           subscription_expires_at?: string | null
           subscription_started_at?: string | null
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
+          terms_accepted_at?: string | null
           updated_at?: string
           username?: string | null
           xp?: number
@@ -1299,8 +1335,13 @@ export type Database = {
         }
         Returns: Json
       }
+      business_location_id: { Args: { _user_id: string }; Returns: string }
       calculate_fan_zone_level: { Args: { total_xp: number }; Returns: number }
       check_level_maintenance: { Args: { p_user_id: string }; Returns: Json }
+      check_username_available: {
+        Args: { _username: string }
+        Returns: boolean
+      }
       complete_mission: {
         Args: { _mission_id: string; _user_id: string }
         Returns: boolean
