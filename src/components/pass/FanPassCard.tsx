@@ -39,9 +39,28 @@ const TIER_STYLE: Record<FanPass["tier"], { accent: string; label: string; bg: s
   platino: { accent: "#E2E8F0", label: "PLATINO", bg: "linear-gradient(135deg, #1f2330, #0a0a0a)" },
 };
 
+const TIER_DISCOUNT: Record<FanPass["tier"], number> = {
+  fan: 10, gold: 15, premium: 20, platino: 25,
+};
+
+const MEMBER_TTL_MS = 180_000;
+
+interface MemberQr {
+  token: string;
+  issued_at: number;
+  ttl: number;
+}
+
+function formatSeconds(total: number) {
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
 function getInitials(name: string) {
   return name.split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]?.toUpperCase() ?? "").join("");
 }
+
 
 export function FanPassCard({
   pass,
