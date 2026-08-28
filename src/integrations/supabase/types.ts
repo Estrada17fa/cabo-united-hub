@@ -1410,7 +1410,7 @@ export type Database = {
       match_status: "scheduled" | "live" | "finished"
       pass_tier: "fan" | "gold" | "premium" | "platino"
       payment_status: "free" | "pending" | "mock_paid" | "paid" | "failed"
-      qr_kind: "master" | "match" | "benefit" | "experience"
+      qr_kind: "master" | "match" | "benefit" | "experience" | "member"
       season_status_enum: "upcoming" | "active" | "reset_warning" | "closed"
       subscription_tier_enum: "FAN" | "GOLD" | "PREMIUM" | "PLATINO"
       tx_type:
@@ -1580,7 +1580,7 @@ export const Constants = {
       match_status: ["scheduled", "live", "finished"],
       pass_tier: ["fan", "gold", "premium", "platino"],
       payment_status: ["free", "pending", "mock_paid", "paid", "failed"],
-      qr_kind: ["master", "match", "benefit", "experience"],
+      qr_kind: ["master", "match", "benefit", "experience", "member"],
       season_status_enum: ["upcoming", "active", "reset_warning", "closed"],
       subscription_tier_enum: ["FAN", "GOLD", "PREMIUM", "PLATINO"],
       tx_type: [
