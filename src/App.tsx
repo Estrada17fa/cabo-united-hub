@@ -62,6 +62,7 @@ const AppShell = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="/admin/abonos" replace />} />
           <Route path="abonos" element={<AbonosWaitlist />} />
+          <Route path="match-zone" element={<MatchZoneAdmin />} />
         </Route>
         <Route path="/abonos/exito" element={<AbonosExito />} />
         <Route path="*" element={<NotFound />} />
