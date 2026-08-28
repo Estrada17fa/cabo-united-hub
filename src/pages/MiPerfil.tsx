@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+
 import { motion } from "framer-motion";
 import { LogOut, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
