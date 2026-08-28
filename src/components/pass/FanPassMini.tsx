@@ -34,7 +34,7 @@ export function FanPassMini({ userId, onNavigate }: Props) {
 
   return (
     <Link
-      to="/mi-perfil"
+      to="/mi-pase"
       onClick={onNavigate}
       className="relative block rounded-2xl p-3 overflow-hidden group"
       style={{
