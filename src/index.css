@@ -7,9 +7,20 @@
 
 @layer base {
   :root {
-    /* Dark Mode Only - Deep Black Theme */
-    --background: 0 0% 2%;
+    /* Dark Mode Only - Pure Black Theme */
+    --background: 0 0% 0%;
     --foreground: 0 0% 100%;
+
+    /* Layered surfaces (LCU design system) */
+    --surface-1: 240 6% 5%;
+    --surface-2: 240 7% 9%;
+    --surface-3: 240 7% 13%;
+    --text-secondary: 0 0% 78%;
+    --text-label: 0 0% 55%;
+    --pop: 336 65% 77%;
+    --pop-foreground: 0 0% 7%;
+    --radius-card: 22px;
+
 
     /* Card Surfaces */
     --card: 0 0% 7%;
