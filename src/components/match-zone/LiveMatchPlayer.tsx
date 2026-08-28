@@ -1,21 +1,27 @@
 import { motion } from "framer-motion";
-import { Trophy, MapPin, Radio, Instagram } from "lucide-react";
+import { Trophy, MapPin, Radio, Instagram, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
 import { useTeamLogos } from "@/hooks/useTeamLogos";
+import { useAuth } from "@/hooks/useAuth";
 import { TeamCrest } from "./TeamCrest";
 import { ResponsiveMatchTimeline } from "./ResponsiveMatchTimeline";
 import { getEmbedUrl } from "@/lib/streamUrl";
+import stadiumHero from "@/assets/stadium-hero.jpg";
 import type { Tables } from "@/integrations/supabase/types";
 
 interface LiveMatchPlayerProps {
   match: Tables<"matches">;
+  /** Abre el flujo de login/registro cuando el visitante no tiene sesión. */
+  onRequestLogin?: () => void;
 }
 
-export function LiveMatchPlayer({ match }: LiveMatchPlayerProps) {
-  const { currentMinute, events } = useLiveMatch(match);
+export function LiveMatchPlayer({ match, onRequestLogin }: LiveMatchPlayerProps) {
+  const { clock, events } = useLiveMatch(match);
   const logos = useTeamLogos();
+  const { user, loading: authLoading } = useAuth();
   const embed = getEmbedUrl(match.live_stream_url);
+
 
   return (
     <motion.div
