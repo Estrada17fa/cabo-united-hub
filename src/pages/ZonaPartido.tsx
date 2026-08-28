@@ -76,7 +76,7 @@ const ZonaPartido = () => {
             transition={{ duration: 0.25 }}
           >
             {isLive && nextMatch ? (
-              <LiveMatchPlayer match={nextMatch} onRequestLogin={() => setAuthOpen(true)} />
+              <LiveMatchPlayer match={nextMatch} onRequestLogin={() => setLoginOpen(true)} />
             ) : (
               <MatchHeroCard match={nextMatch} />
             )}
