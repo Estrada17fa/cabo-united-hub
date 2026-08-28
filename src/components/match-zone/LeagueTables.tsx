@@ -1,61 +1,110 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { StandingsTable, type StandingRow } from "./StandingsTable";
 import { LeagueFixtures } from "./LeagueFixtures";
+import { FinalStageBracket } from "./FinalStageBracket";
+import { TopScorersBoard } from "./TopScorersBoard";
+import { LeagueScoringInfo } from "./LeagueScoringInfo";
+import { LeagueGroupSwitch } from "./LeagueGroupSwitch";
 import { TeamCrest } from "./TeamCrest";
-import { useTeamLogos } from "@/hooks/useTeamLogos";
+import {
+  useLeagueGroups,
+  useLeagueMatches,
+  useLeagueScorers,
+  useLeagueStandings,
+  useOurTeamName,
+  useTeamLogoMap,
+  useTeamStreaks,
+} from "@/hooks/useLeague";
 
 const MAIN_TABS = [
   { id: "partidos", label: "Partidos" },
   { id: "posiciones", label: "Posiciones" },
+  { id: "final", label: "Fase final" },
   { id: "goleo", label: "Goleo" },
 ];
 
 export function LeagueTables() {
   const [mainTab, setMainTab] = useState("partidos");
-  const logoMap = useTeamLogos();
+  const [standingsGroup, setStandingsGroup] = useState("all");
 
+  const logoMap = useTeamLogoMap();
+  const ourTeam = useOurTeamName();
+  const groups = useLeagueGroups();
+  const streaks = useTeamStreaks();
+  const { data: matches = [], isLoading: matchesLoading } = useLeagueMatches();
+  const { data: standings = [] } = useLeagueStandings();
+  const { data: scorers = [] } = useLeagueScorers();
 
+  const standingRows: StandingRow[] = useMemo(
+    () =>
+      standings
+        .filter((s) =>
+          standingsGroup === "all"
+            ? !s.group_name || s.group_name === "general"
+            : s.group_name === standingsGroup,
+        )
+        .sort((a, b) => a.pos - b.pos)
+        .map((s) => ({
+          pos: s.pos,
+          team: s.team,
+          jj: s.jj,
+          jg: s.jg,
+          je: s.je,
+          jp: s.jp,
+          gf: s.gf,
+          gc: s.gc,
+          dg: s.dg,
+          pts: s.pts,
+          group_name: s.group_name,
+          manual_adjustment: s.manual_adjustment,
+        })),
+    [standings, standingsGroup],
+  );
 
-  const { data: standings = [] } = useQuery({
-    queryKey: ["league_standings"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("league_standings")
-        .select("*")
-        .order("pos", { ascending: true });
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const { data: scorers = [] } = useQuery({
-    queryKey: ["top_scorers"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("top_scorers")
-        .select("*")
-        .order("goals", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const general: StandingRow[] = standings
-    .filter((s) => !s.group_name || s.group_name === "general")
-    .map((s) => ({
-      pos: s.pos, team: s.team, jj: s.jj, jg: s.jg, je: s.je, jp: s.jp,
-      gf: s.gf, gc: s.gc, dg: s.dg, pts: s.pts,
-    }));
-
-
-
+  const ourRow = useMemo(
+    () => standings.find((s) => s.team === ourTeam && (!s.group_name || s.group_name === "general")) ?? standings.find((s) => s.team === ourTeam),
+    [standings, ourTeam],
+  );
 
   return (
     <div className="space-y-4">
-      {/* Main sub tabs */}
+      {/* Tarjeta resumen del club */}
+      {ourRow && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl border border-primary/40 p-3.5"
+          style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.16), transparent 70%), #121212" }}
+        >
+          <div className="flex items-center gap-3">
+            <TeamCrest teamName={ourTeam} logoUrl={logoMap[ourTeam]} size={38} />
+            <div className="min-w-0 flex-1">
+              <p className="text-[9px] font-extrabold uppercase tracking-[0.16em] text-primary">Nuestro equipo</p>
+              <p className="truncate text-sm font-extrabold text-foreground">{ourTeam}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-[22px] font-extrabold leading-none text-primary tabular-nums">{ourRow.pts}</p>
+              <p className="text-[9px] uppercase tracking-wider text-muted-foreground">puntos</p>
+            </div>
+          </div>
+          <div className="mt-3 grid grid-cols-4 gap-2">
+            {[
+              { k: "Pos", v: `${ourRow.pos}°` },
+              { k: "JJ", v: ourRow.jj },
+              { k: "G-E-P", v: `${ourRow.jg}-${ourRow.je}-${ourRow.jp}` },
+              { k: "Dif", v: ourRow.dg > 0 ? `+${ourRow.dg}` : ourRow.dg },
+            ].map((s) => (
+              <div key={s.k} className="rounded-xl border border-border/60 bg-background/40 px-1.5 py-1.5 text-center">
+                <p className="text-[11px] font-extrabold text-foreground tabular-nums">{s.v}</p>
+                <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Tabs */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -87,65 +136,46 @@ export function LeagueTables() {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -10 }}
           transition={{ duration: 0.2 }}
+          className="space-y-4"
         >
-          {mainTab === "partidos" && <LeagueFixtures />}
-          {mainTab === "posiciones" && <StandingsTable rows={general} logoMap={logoMap} />}
-          {mainTab === "goleo" && <TopScorersTable scorers={scorers} logoMap={logoMap} />}
+          {mainTab === "partidos" && (
+            <LeagueFixtures
+              matches={matches}
+              isLoading={matchesLoading}
+              logoMap={logoMap}
+              ourTeam={ourTeam}
+              groups={groups}
+            />
+          )}
+
+          {mainTab === "posiciones" && (
+            <div className="space-y-3">
+              <LeagueGroupSwitch
+                groups={groups}
+                value={standingsGroup}
+                onChange={setStandingsGroup}
+                allLabel="General"
+                layoutId="standings-group"
+              />
+              <StandingsTable
+                rows={standingRows}
+                logoMap={logoMap}
+                ourTeam={ourTeam}
+                streaks={streaks}
+              />
+              <LeagueScoringInfo />
+            </div>
+          )}
+
+          {mainTab === "final" && (
+            <FinalStageBracket matches={matches} logoMap={logoMap} ourTeam={ourTeam} />
+          )}
+
+          {mainTab === "goleo" && (
+            <TopScorersBoard scorers={scorers} logoMap={logoMap} ourTeam={ourTeam} />
+          )}
         </motion.div>
       </AnimatePresence>
-
     </div>
-  );
-}
-
-interface TopScorerData {
-  player_name: string;
-  team: string;
-  goals: number;
-}
-
-function TopScorersTable({ scorers, logoMap = {} }: { scorers: TopScorerData[]; logoMap?: Record<string, string> }) {
-  return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-      {scorers.length === 0 ? (
-        <div className="py-12 text-center text-muted-foreground text-sm">
-          No hay datos de goleadores disponibles
-        </div>
-      ) : (
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="text-muted-foreground">
-              <th className="text-left py-2 px-1.5 font-semibold w-6">#</th>
-              <th className="text-left py-2 px-1.5 font-semibold">Jugador</th>
-              <th className="text-left py-2 px-1.5 font-semibold">Equipo</th>
-              <th className="text-center py-2 px-1.5 font-bold">Goles</th>
-            </tr>
-          </thead>
-          <tbody>
-            {scorers.map((s, i) => {
-              const isLCU = s.team === "Los Cabos United";
-              return (
-                <tr key={`${s.player_name}-${i}`} className={`border-t border-border/50 ${isLCU ? "bg-primary/10" : ""}`}>
-                  <td className="py-2.5 px-1.5 font-semibold text-muted-foreground">{i + 1}</td>
-                  <td className="py-2.5 px-1.5">
-                    <div className="flex items-center gap-1.5">
-                      {isLCU && <div className="w-0.5 h-4 rounded-full bg-primary shrink-0" />}
-                      <span className={`font-semibold ${isLCU ? "text-primary" : "text-foreground"}`}>{s.player_name}</span>
-                    </div>
-                  </td>
-                  <td className="py-2.5 px-1.5">
-                    <div className="flex items-center gap-1.5">
-                      <TeamCrest teamName={s.team} logoUrl={logoMap[s.team]} size={14} />
-                      <span className="text-muted-foreground truncate max-w-[80px] sm:max-w-[120px] md:max-w-full">{s.team}</span>
-                    </div>
-                  </td>
-                  <td className={`text-center py-2.5 px-1.5 font-bold ${isLCU ? "text-primary" : "text-foreground"}`}>{s.goals}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
-    </motion.div>
   );
 }
