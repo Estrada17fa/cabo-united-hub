@@ -27,6 +27,7 @@ import Abonos from "./pages/Abonos";
 import AbonosExito from "./pages/AbonosExito";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AbonosWaitlist from "./pages/admin/AbonosWaitlist";
+import MatchZoneAdmin from "./pages/admin/MatchZoneAdmin";
 import NotFound from "./pages/NotFound";
 
 import { CartDrawer } from "@/components/tienda/CartDrawer";
