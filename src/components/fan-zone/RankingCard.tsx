@@ -29,24 +29,18 @@ export function RankingCard({
   const [rows, setRows] = useState<RankingRow[]>([]);
 
   useEffect(() => {
-    supabase
-      .from("profiles")
-      .select("display_name,username,xp,level")
-      .order("xp", { ascending: false })
-      .limit(10)
-      .then(({ data }) => {
-        if (!data) return;
-        setRows(
-          data
-            .filter((p: any) => (p.xp ?? 0) > 0)
-            .map((p: any) => ({
-              name: p.display_name || p.username || "Fan anónimo",
-              points: p.xp ?? 0,
-              badge: LEVELS[p.level ?? 0]?.name ?? "Visitante",
-            })),
-        );
-      });
+    supabase.rpc("get_leaderboard", { _limit: 10 }).then(({ data }) => {
+      if (!data) return;
+      setRows(
+        (data as any[]).map((p) => ({
+          name: p.display_name || p.username || "Fan anónimo",
+          points: p.xp ?? 0,
+          badge: LEVELS[p.level ?? 0]?.name ?? "Visitante",
+        })),
+      );
+    });
   }, []);
+
 
   return (
     <div
