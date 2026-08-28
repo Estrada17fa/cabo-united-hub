@@ -7,11 +7,15 @@ import { LiveMatchPlayer } from "@/components/match-zone/LiveMatchPlayer";
 import { MatchTabs } from "@/components/match-zone/MatchTabs";
 import { LeagueTables } from "@/components/match-zone/LeagueTables";
 import { AuthFlow } from "@/components/auth/AuthFlow";
+import { AuthModal } from "@/components/auth/AuthModal";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
 
 const ZonaPartido = () => {
   const [activeTab, setActiveTab] = useState("envivo");
-  const [authOpen, setAuthOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [signupOpen, setSignupOpen] = useState(false);
+
 
   const { data: featuredMatch = null } = useQuery({
     queryKey: ["matches", "featured"],
