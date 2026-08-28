@@ -81,90 +81,19 @@ export function LeagueTables() {
       </motion.div>
 
       <AnimatePresence mode="wait">
-        {mainTab === "lcu" && (
-          <motion.div
-            key="lcu"
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            <PartidosSection />
-          </motion.div>
-        )}
-
-        {mainTab === "posiciones" && (
-          <motion.div
-            key="posiciones"
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            transition={{ duration: 0.2 }}
-            className="space-y-4"
-          >
-            {/* Posiciones nested tabs */}
-            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
-              {POSICIONES_TABS.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setPosTab(tab.id)}
-                  className="relative whitespace-nowrap pb-2 text-[11px] font-medium transition-colors shrink-0"
-                  style={{ color: posTab === tab.id ? "hsl(var(--primary))" : "hsl(0 0% 40%)" }}
-                >
-                  {tab.label}
-                  {posTab === tab.id && (
-                    <motion.div
-                      layoutId="liga-postab"
-                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary/60 rounded-full"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={posTab}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15 }}
-              >
-                {posTab === "general" && <StandingsTable rows={general} logoMap={logoMap} />}
-                {posTab === "grupo1" && <StandingsTable rows={getGroup("grupo1")} title="Grupo 1" logoMap={logoMap} />}
-                {posTab === "grupo2" && <StandingsTable rows={getGroup("grupo2")} title="Grupo 2" logoMap={logoMap} />}
-                {posTab === "grupo3" && <StandingsTable rows={getGroup("grupo3")} title="Grupo 3" logoMap={logoMap} />}
-                {posTab === "goleo" && <TopScorersTable scorers={scorers} logoMap={logoMap} />}
-              </motion.div>
-            </AnimatePresence>
-          </motion.div>
-        )}
-
-        {mainTab === "partidos" && (
-          <motion.div
-            key="partidos-liga"
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            <LeagueMatchesByGroup />
-          </motion.div>
-        )}
-
-        {mainTab === "equipos" && (
-          <motion.div
-            key="equipos"
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            <LeagueTeamsByGroup standings={standings} logoMap={logoMap} />
-          </motion.div>
-        )}
+        <motion.div
+          key={mainTab}
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -10 }}
+          transition={{ duration: 0.2 }}
+        >
+          {mainTab === "partidos" && <LeagueFixtures />}
+          {mainTab === "posiciones" && <StandingsTable rows={general} logoMap={logoMap} />}
+          {mainTab === "goleo" && <TopScorersTable scorers={scorers} logoMap={logoMap} />}
+        </motion.div>
       </AnimatePresence>
+
     </div>
   );
 }
