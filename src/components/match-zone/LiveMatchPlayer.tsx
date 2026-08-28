@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trophy, MapPin, Radio, Instagram, Lock } from "lucide-react";
+import { Trophy, Radio, Instagram, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
 import { useTeamLogos } from "@/hooks/useTeamLogos";
