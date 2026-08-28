@@ -1,52 +1,56 @@
-# Unificar registro y fusionar /accesos en /abonos
+# Registro unificado + Pase con QR dual (Estadio / Comercios)
 
-Objetivo: un solo flujo de registro en todo el sitio y una sola página de niveles (`/abonos`), convertida en pre-registro de interés (lista de espera) sin cobro.
+No se toca el frente de `FanPassCard` ni la función `issue-match-qr`. Las tablas existentes (`fan_passes`, `qr_tokens`, `locations`, `checkins`, `business_users`) se extienden, no se recrean. RLS y triggers de puntos/nivel quedan intactos.
 
-## 1. Base de datos (no destructivo)
+## 1. Base de datos (aditiva)
 
-- `profiles`: agregar `marketing_consent boolean NOT NULL DEFAULT false` y `marketing_consent_at timestamptz`.
-- `fan_passes.status` es una columna de texto (hoy solo existe el valor `active`), así que no hace falta tocar ningún enum: se empieza a usar el valor `'waitlist'` y se agrega una restricción que permita `active`, `pending_payment`, `waitlist`, `expired`, `cancelled`.
-- No se borra ninguna columna, tabla ni dato. `award_points`, `award_points_v2`, `compute_level` y los triggers de nivel quedan intactos.
-- `handle_new_user()` sigue igual (crea el pase cuando el signup trae teléfono y fecha de nacimiento). Cuando el registro venga solo del Paso 1, el pase se crea/actualiza al completar el Paso 2.
+- `profiles`: `first_name`, `last_name_p`, `last_name_m`, `marketing_consent boolean default false`, `marketing_consent_at`, `terms_accepted_at`. `display_name` / `fan_passes.full_name` se siguen generando concatenando los tres nombres.
+- `fan_passes.status`: se empieza a usar el valor `waitlist` y se agrega restricción que permita `active`, `pending_payment`, `waitlist`, `expired`, `cancelled`. Estructura lista para pasar `waitlist → pending_payment → active` cuando se active el cobro, sin tocar el formulario.
+- `locations`: `discount_fan`, `discount_gold`, `discount_premium`, `discount_platino` (enteros, nullable — se llenan cuando definan los porcentajes; mientras no haya valor, el pase muestra "Beneficio del nivel" en lugar de un %).
+- `business_users`: `user_id uuid` para ligar la cuenta de acceso; RLS por `user_id = auth.uid()` y rol `business` (el enum ya lo tiene).
+- `checkins`: índice único parcial que impide más de un canje por pase, por negocio, por día.
+- Función `check_username_available(_username text)` (security definer) para la verificación en vivo sin exponer la tabla.
 
-## 2. AuthFlow: componente único de registro
+## 2. Seguridad de cuentas
 
-Nuevo `src/components/auth/AuthFlow.tsx` que reemplaza a `AuthModal` en Header, Index, FanZone, MiPerfil y Abonos. `AuthModal` se conserva internamente como vista de "Iniciar sesión" (login + Google/Apple + olvidé mi contraseña), sin duplicar lógica.
+- Correo obligatorio para el QR: si `email_verified` es falso, el reverso del pase muestra overlay "Verifica tu correo para activar tu QR" y las edge functions rechazan emitir tokens. Botón "Reenviar correo de verificación".
+- Contraseñas filtradas: se activa el rechazo de contraseñas comprometidas en la configuración de autenticación (sin código).
+- Usuario único: disponibilidad en vivo con debounce de 400 ms, usando el índice único en minúsculas ya existente.
+- Teléfono: se captura y guarda en E.164 con selector de país (default +52, buscador). `phone_verified` queda en falso — el OTP por SMS se omite por ahora, según lo acordado; el punto de integración queda aislado para activarlo después.
+- Anti-bots: el Paso 1 se construye con un punto de montaje para Cloudflare Turnstile (widget + validación en un endpoint), inactivo hasta que existan las llaves. No se pide ninguna llave hoy.
 
-Props: `open`, `onClose`, `mode` ("login" | "signup"), `context` ("header" | "home" | "fanzone" | "abonos"), `initialTier`, `onComplete`.
+## 3. Wizard único de registro (3 pasos)
 
-Paso 1 — Cuenta (mínima fricción)
-- Nombre completo, correo, contraseña con la misma validación fuerte del wizard actual (8+, mayúscula, minúscula, número, símbolo) y su checklist en vivo.
-- Botones Google / Apple tal como están hoy.
-- Al enviar se crea la cuenta de inmediato (`supabase.auth.signUp`).
+Nuevo `src/components/auth/AuthFlow.tsx`, usado desde Header, Home, Fan Zone y Abonos. `AuthModal` se conserva solo como vista de inicio de sesión (login + Google/Apple + olvidé mi contraseña). El `SignupWizard` de `/accesos` deja de usarse; su age-gate, medidor de contraseña, picker de jugador y sub-paso de tutor se reutilizan dentro de `AuthFlow` sin cambios de lógica.
 
-Paso 2 — Perfil de aficionado
-- Teléfono, fecha de nacimiento (age-gate: se rechaza menor de 13), ciudad (opcional), jugador favorito (opcional, reutilizando el grid visual con foto y dorsal del wizard actual).
-- Checkbox explícito de promociones por correo y WhatsApp: se debe elegir sí o no; si dice no, se guarda `marketing_consent = false` y el registro continúa.
-- Guarda en `profiles` y crea/actualiza el `fan_passes` correspondiente.
-- Si la edad es 13–17: se muestra el mismo sub-paso de tutor que ya existe (nombre, correo, teléfono opcional, parentesco, confirmación de mayoría de edad) y se llama a la misma edge function `parental-consent-request`. Ese bloque se extrae del wizard actual a `TutorConsentStep` sin cambiar su lógica ni su UI.
-- Visibilidad del Paso 2: obligatorio cuando el registro se inicia desde Abonos o Fan Zone; desde Header y Home aparece con botón "Completar después" y se vuelve a pedir la próxima vez que el usuario intente reclamar un abono o entrar a Fan Zone (se detecta por perfil sin teléfono o sin fecha de nacimiento).
+Barra de progreso de 3 segmentos, validación en vivo por campo.
 
-`SignupWizard` deja de usarse desde Header y Accesos; su código de picker de jugador, validación de contraseña y consentimiento de tutor se reutiliza dentro de `AuthFlow`.
+- **Paso 1 — Identidad y contacto:** Nombre, Apellido Paterno, Apellido Materno (campos separados), usuario con disponibilidad en vivo, correo, teléfono con lada por bandera, fecha de nacimiento con el age-gate actual (mínimo 13), contraseña con medidor de fuerza (8+, mayúscula, minúscula, número, símbolo).
+- **Paso 2 — Elegir abono:** mismas 4 tarjetas de nivel con sus kits y colores. Gold/Premium/Platino llevan cinta diagonal "Próximamente" sin ocultar precio ni beneficios. Al seleccionar, glow con el acento del nivel. El nivel se guarda como intención (`waitlist`; FAN se activa de inmediato).
+- **Sub-paso tutor (13–17):** el formulario existente, sin cambios, entre Paso 2 y Paso 3, con la misma edge function `parental-consent-request`.
+- **Paso 3 — Confirmación:** resumen de datos con botón "Editar" que regresa al paso correspondiente, previsualización real del pase con nombre y color del nivel (`FanPassPreview`), checkbox de términos y checkbox de marketing (obligatorio elegir sí/no, "no" no bloquea). Botón "Crear mi pase" (FAN) o "Unirme a la lista de espera de [Nivel]".
+- **Pantalla final:** el pase armado con las opciones de compartir/exportar que ya existen.
 
-## 3. Nueva `/abonos`
+La cuenta se crea al confirmar el Paso 3 (un solo `signUp` con toda la metadata), de modo que `handle_new_user` cree perfil y pase en una sola pasada.
 
-- Se elimina la página `Accesos` y su ruta se convierte en redirección permanente a `/abonos`. El enlace "Accesos" del menú apunta a `/abonos`.
-- `/abonos` toma el diseño visual de las 4 tarjetas de nivel que hoy vive en `/accesos` (Fan/Gold/Premium/Platino con kits, beneficios y colores), sin cambios de diseño.
-- Flujo al elegir un nivel:
-  1. Se abre `AuthFlow` con el nivel preseleccionado (Paso 1 + Paso 2 obligatorio). Si ya hay sesión, se salta directo a lo que falte.
-  2. Al confirmar: cuenta creada si no existía; el interés en el nivel se guarda con `status = 'waitlist'` y `payment_status = 'pending'`.
-  3. Si el nivel es FAN (gratis), el pase se activa de inmediato (`status = 'active'`, `payment_status = 'free'`), como hoy.
-  4. Pantalla de confirmación con check visual: "Ya estás en la lista para [nivel]. Te avisaremos por correo o WhatsApp en cuanto se abran los pagos." Sin mención de pagos ni checkout.
-- Se dejan de usar `PaymentTestModeBanner` y `StripeEmbeddedCheckout` en este flujo (los componentes, la edge function `create-checkout`, el webhook y `/abonos/exito` se conservan intactos para reactivarlos cuando el cobro esté listo).
-- Para usuarios con sesión se mantiene lo que ya funciona en `/accesos`: preview del pase, sección de boletos partido a partido, puntos de venta físicos y la card de upgrade cuando el nivel es Fan (ahora apuntando al flujo de lista de espera).
+## 4. Pase: reverso con dos modos
 
-## No cambia
+El frente no cambia. El reverso pasa a tener pestañas:
 
-Sistema de diseño (Dark Bento, Poppins, dock flotante), lógica de XP / Cabo Coins / niveles, lógica del consentimiento de tutor, y ninguna otra página (Club, Index, Tienda, Fan Zone más allá del punto de registro).
+- **Estadio:** exactamente lo actual (`issue-match-qr`, HMAC, un uso, expira el día del partido).
+- **Comercios (nuevo):** QR de membresía que se regenera cada 3 minutos mientras la pantalla está abierta, con anillo de progreso circular vaciándose como cuenta regresiva. Debajo, foto de perfil y nombre del titular en grande para verificación visual del empleado, más insignia de nivel y su beneficio/descuento.
+
+Backend nuevo (extiende, no reemplaza):
+
+- `issue-member-qr`: misma firma HMAC que `issue-match-qr`, `kind: 'member'`, sin partido, expira en 3 minutos, exige pase activo y correo verificado.
+- `redeem-member-qr`: valida firma y expiración, marca el token como usado, registra `checkin` (`visit` o `consumption`) con el `location_id` del negocio, aplica el límite de un canje por pase por negocio por día y otorga XP/CC con las funciones existentes.
+
+## 5. Portal de comercios `/comercios`
+
+Página protegida, minimalista y de uso rápido de pie en mostrador: login con correo y contraseña (cuenta normal + rol `business`, ligada a `business_users.user_id`), botón "Escanear pase" con cámara y opción de escribir el código a mano. Al validar: foto, nombre, nivel y beneficio del titular, con botón "Confirmar canje" y confirmación/errores claros (expirado, ya canjeado hoy, pase inactivo). No comparte el sistema visual completo del sitio de fans.
 
 ## Notas técnicas
 
-- La migración corre primero y por separado; el código que lea `marketing_consent` se escribe después de que se regeneren los tipos.
-- `AuthFlow` centraliza estado con un único `useState` de paso y reusa `ForgotPasswordForm`.
-- La redirección `/accesos` → `/abonos` se hace con `<Navigate replace />` en el router.
+- La migración corre primero y por separado; el código que lea las columnas nuevas se escribe después de regenerar los tipos.
+- Nada se elimina: `create-checkout`, `payments-webhook`, `StripeEmbeddedCheckout` y `/abonos/exito` se conservan intactos para reactivar el cobro.
+- Los porcentajes de descuento quedan como datos configurables por local; en cuanto los definan se llenan sin cambiar código.
