@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { TeamCrest } from "./TeamCrest";
+import { Crest as TeamCrest } from "@/components/ui-lcu";
 
 interface Scorer {
   player_name: string;
@@ -41,7 +41,7 @@ export function TopScorersBoard({ scorers, logoMap = {}, ourTeam = "Los Cabos Un
                 isFirst ? "border-primary/60" : "border-border"
               }`}
               style={{
-                background: isFirst ? "hsl(var(--primary) / 0.12)" : "#121212",
+                background: isFirst ? "hsl(var(--primary) / 0.12)" : "hsl(var(--surface-2))",
                 paddingTop: isFirst ? 18 : 12,
               }}
             >
@@ -71,7 +71,7 @@ export function TopScorersBoard({ scorers, logoMap = {}, ourTeam = "Los Cabos Un
       </div>
 
       {rest.length > 0 && (
-        <div className="rounded-2xl border border-border overflow-hidden" style={{ background: "#121212" }}>
+        <div className="rounded-card border border-white/[0.07] bg-surface-1 overflow-hidden">
           {rest.map((s, i) => {
             const isOurs = s.team === ourTeam;
             return (

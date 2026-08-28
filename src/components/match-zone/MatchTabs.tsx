@@ -1,9 +1,11 @@
-import { motion } from "framer-motion";
 import { Radio, Trophy } from "lucide-react";
+import { LcuTabs } from "@/components/ui-lcu";
 
 interface MatchTabsProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  /** Marca con punto rosa que hay partido en vivo */
+  liveNow?: boolean;
 }
 
 export const MATCH_ZONE_TABS = [
@@ -11,42 +13,16 @@ export const MATCH_ZONE_TABS = [
   { id: "liga", label: "Liga", icon: Trophy },
 ];
 
-export function MatchTabs({ activeTab, onTabChange }: MatchTabsProps) {
+export function MatchTabs({ activeTab, onTabChange, liveNow }: MatchTabsProps) {
   return (
-    <div className="grid grid-cols-2 gap-2">
-      {MATCH_ZONE_TABS.map((tab) => {
-        const isActive = activeTab === tab.id;
-        return (
-          <button
-            key={tab.id}
-            onClick={() => onTabChange(tab.id)}
-            className={`relative h-9 rounded-full flex items-center justify-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wide transition-colors border ${
-              isActive
-                ? "border-primary/60 text-primary-foreground"
-                : "border-border text-muted-foreground hover:text-foreground"
-            }`}
-
-            style={
-              isActive
-                ? undefined
-                : { backgroundColor: "rgba(255,255,255,0.04)" }
-            }
-          >
-            {isActive && (
-              <motion.span
-                layoutId="match-zone-chip"
-                className="absolute inset-0 rounded-full bg-primary"
-                transition={{ type: "spring", stiffness: 400, damping: 32 }}
-              />
-            )}
-            <span className="relative flex items-center gap-1.5">
-              <tab.icon className="w-3.5 h-3.5" />
-              {tab.label}
-            </span>
-
-          </button>
-        );
-      })}
-    </div>
+    <LcuTabs
+      layoutId="match-zone-chip"
+      value={activeTab}
+      onChange={onTabChange}
+      items={MATCH_ZONE_TABS.map((t) => ({
+        ...t,
+        dot: t.id === "envivo" && liveNow,
+      }))}
+    />
   );
 }

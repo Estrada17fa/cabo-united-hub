@@ -20,8 +20,20 @@ export default {
       fontFamily: {
         sans: ["Poppins", "system-ui", "sans-serif"],
         poppins: ["Poppins", "sans-serif"],
+        display: ["var(--font-display, Poppins)", "Poppins", "sans-serif"],
       },
+
       colors: {
+        surface: {
+          1: "hsl(var(--surface-1))",
+          2: "hsl(var(--surface-2))",
+          3: "hsl(var(--surface-3))",
+        },
+        pop: {
+          DEFAULT: "hsl(var(--pop))",
+          foreground: "hsl(var(--pop-foreground))",
+        },
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -78,7 +90,9 @@ export default {
         xl: "var(--radius-lg)",
         "2xl": "var(--radius-xl)",
         "3xl": "2rem",
+        card: "var(--radius-card)",
       },
+
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

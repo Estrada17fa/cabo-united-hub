@@ -6,7 +6,8 @@ import { FinalStageBracket } from "./FinalStageBracket";
 import { TopScorersBoard } from "./TopScorersBoard";
 import { LeagueScoringInfo } from "./LeagueScoringInfo";
 import { LeagueGroupSwitch } from "./LeagueGroupSwitch";
-import { TeamCrest } from "./TeamCrest";
+import { BentoTile, Crest, LcuTabs, SectionHeader } from "@/components/ui-lcu";
+
 import {
   useLeagueGroups,
   useLeagueMatches,
@@ -68,66 +69,65 @@ export function LeagueTables() {
   );
 
   return (
-    <div className="space-y-4">
-      {/* Tarjeta resumen del club */}
+    <div className="space-y-5">
+      {/* Hero del club en mosaico bento */}
       {ourRow && (
         <motion.div
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl border border-primary/40 p-3.5"
-          style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.16), transparent 70%), #121212" }}
+          className="wave-motif relative overflow-hidden rounded-card border border-primary/30 bg-surface-1 p-4 md:p-5"
         >
-          <div className="flex items-center gap-3">
-            <TeamCrest teamName={ourTeam} logoUrl={logoMap[ourTeam]} size={38} />
-            <div className="min-w-0 flex-1">
-              <p className="text-[9px] font-extrabold uppercase tracking-[0.16em] text-primary">Nuestro equipo</p>
-              <p className="truncate text-sm font-extrabold text-foreground">{ourTeam}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-[22px] font-extrabold leading-none text-primary tabular-nums">{ourRow.pts}</p>
-              <p className="text-[9px] uppercase tracking-wider text-muted-foreground">puntos</p>
-            </div>
-          </div>
-          <div className="mt-3 grid grid-cols-4 gap-2">
-            {[
-              { k: "Pos", v: `${ourRow.pos}°` },
-              { k: "JJ", v: ourRow.jj },
-              { k: "G-E-P", v: `${ourRow.jg}-${ourRow.je}-${ourRow.jp}` },
-              { k: "Dif", v: ourRow.dg > 0 ? `+${ourRow.dg}` : ourRow.dg },
-            ].map((s) => (
-              <div key={s.k} className="rounded-xl border border-border/60 bg-background/40 px-1.5 py-1.5 text-center">
-                <p className="text-[11px] font-extrabold text-foreground tabular-nums">{s.v}</p>
-                <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(120% 80% at 0% 0%, hsl(var(--primary) / 0.18), transparent 60%)",
+            }}
+          />
+          <div className="relative">
+            <div className="flex items-center gap-3">
+              <Crest teamName={ourTeam} logoUrl={logoMap[ourTeam]} size={56} highlight />
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-primary">
+                  Nuestro equipo
+                </p>
+                <h2 className="truncate text-display-md text-foreground">{ourTeam}</h2>
+                {ourRow.group_name && ourRow.group_name !== "general" && (
+                  <p className="mt-0.5 text-xs text-secondary-fg">Grupo {ourRow.group_name}</p>
+                )}
               </div>
-            ))}
+            </div>
+
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              <BentoTile value={ourRow.pts} label="Puntos" emphasis index={0} />
+              <BentoTile value={`#${ourRow.pos}`} label="Posición" index={1} />
+              <BentoTile value={ourRow.jj} label="Jugados" index={2} />
+              <BentoTile
+                value={ourRow.dg > 0 ? `+${ourRow.dg}` : ourRow.dg}
+                label="Dif. goles"
+                index={3}
+              />
+              <BentoTile
+                value={`${ourRow.jg}-${ourRow.je}-${ourRow.jp}`}
+                label="G · E · P"
+                index={4}
+              />
+              <BentoTile value={`${ourRow.gf}:${ourRow.gc}`} label="GF : GC" index={5} />
+            </div>
           </div>
         </motion.div>
       )}
 
-      {/* Tabs */}
-      <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1"
-      >
-        {MAIN_TABS.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setMainTab(tab.id)}
-            className="relative whitespace-nowrap pb-2 text-xs font-semibold transition-colors shrink-0"
-            style={{ color: mainTab === tab.id ? "hsl(0 0% 100%)" : "hsl(0 0% 45%)" }}
-          >
-            {tab.label}
-            {mainTab === tab.id && (
-              <motion.div
-                layoutId="liga-maintab"
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full"
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              />
-            )}
-          </button>
-        ))}
-      </motion.div>
+      <SectionHeader eyebrow="Liga Premier" title="La competencia" />
+
+      <LcuTabs
+        variant="underline"
+        layoutId="liga-maintab"
+        items={MAIN_TABS}
+        value={mainTab}
+        onChange={setMainTab}
+      />
+
 
       <AnimatePresence mode="wait">
         <motion.div

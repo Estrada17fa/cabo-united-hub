@@ -7,9 +7,20 @@
 
 @layer base {
   :root {
-    /* Dark Mode Only - Deep Black Theme */
-    --background: 0 0% 2%;
+    /* Dark Mode Only - Pure Black Theme */
+    --background: 0 0% 0%;
     --foreground: 0 0% 100%;
+
+    /* Layered surfaces (LCU design system) */
+    --surface-1: 240 6% 5%;
+    --surface-2: 240 7% 9%;
+    --surface-3: 240 7% 13%;
+    --text-secondary: 0 0% 78%;
+    --text-label: 0 0% 55%;
+    --pop: 336 65% 77%;
+    --pop-foreground: 0 0% 7%;
+    --radius-card: 22px;
+
 
     /* Card Surfaces */
     --card: 0 0% 7%;
@@ -181,5 +192,71 @@
     * {
       -webkit-tap-highlight-color: transparent;
     }
+  }
+}
+
+/* === LCU Design System — surfaces, display type, wave motif === */
+@layer components {
+  .lcu-surface {
+    background-color: hsl(var(--surface-1));
+    border: 1px solid hsl(0 0% 100% / 0.07);
+  }
+
+  .lcu-surface-2 {
+    background-color: hsl(var(--surface-2));
+    border: 1px solid hsl(0 0% 100% / 0.08);
+  }
+
+  .lcu-card {
+    @apply lcu-surface;
+    border-radius: var(--radius-card);
+  }
+}
+
+@layer utilities {
+  .text-display-xl {
+    @apply font-display font-black tracking-[-0.03em] leading-[0.92];
+    font-size: clamp(2.5rem, 12vw, 4.5rem);
+  }
+
+  .text-display-lg {
+    @apply font-display font-extrabold tracking-[-0.02em] leading-[0.95];
+    font-size: clamp(1.75rem, 8vw, 2.75rem);
+  }
+
+  .text-display-md {
+    @apply font-display font-extrabold tracking-[-0.01em] leading-tight text-xl md:text-2xl;
+  }
+
+  .num-hero {
+    @apply font-display font-black tabular-nums tracking-[-0.04em] leading-none;
+  }
+
+  .text-secondary-fg {
+    color: hsl(var(--text-secondary));
+  }
+
+  .text-label-fg {
+    color: hsl(var(--text-label));
+  }
+
+  /* Patrón de ola del jersey como textura sutil */
+  .wave-motif::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.14;
+    background-image: repeating-radial-gradient(
+      circle at 50% 120%,
+      transparent 0 22px,
+      hsl(var(--primary) / 0.55) 22px 23px
+    );
+    mask-image: linear-gradient(to top, black, transparent 85%);
+    -webkit-mask-image: linear-gradient(to top, black, transparent 85%);
+  }
+
+  .wave-motif-soft::after {
+    opacity: 0.07;
   }
 }
