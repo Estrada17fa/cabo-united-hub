@@ -13,18 +13,19 @@ export const MATCH_ZONE_TABS = [
 
 export function MatchTabs({ activeTab, onTabChange }: MatchTabsProps) {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 gap-2">
       {MATCH_ZONE_TABS.map((tab) => {
         const isActive = activeTab === tab.id;
         return (
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className={`relative h-14 rounded-full flex items-center justify-center gap-2 text-sm font-extrabold uppercase tracking-wide transition-colors border ${
+            className={`relative h-9 rounded-full flex items-center justify-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wide transition-colors border ${
               isActive
                 ? "border-primary/60 text-primary-foreground"
                 : "border-border text-muted-foreground hover:text-foreground"
             }`}
+
             style={
               isActive
                 ? undefined
@@ -38,10 +39,11 @@ export function MatchTabs({ activeTab, onTabChange }: MatchTabsProps) {
                 transition={{ type: "spring", stiffness: 400, damping: 32 }}
               />
             )}
-            <span className="relative flex items-center gap-2">
-              <tab.icon className="w-4 h-4" />
+            <span className="relative flex items-center gap-1.5">
+              <tab.icon className="w-3.5 h-3.5" />
               {tab.label}
             </span>
+
           </button>
         );
       })}

@@ -192,8 +192,9 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
         {/* CTAs */}
         {showLiveLayout ? (
           <div className="w-full flex flex-col gap-2">
-            {/* Row 1: Ver en Vivo / Resumen + Visita Los Cabos */}
-            <div className="grid grid-cols-2 gap-2">
+            {/* Row 1: Ver en Vivo / Resumen */}
+            <div className="grid grid-cols-1 gap-2">
+
               {isLive ? (
                 <a
                   href={match.live_stream_url || "#"}
@@ -235,18 +236,8 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                   Resumen
                 </a>
               )}
-              <Link
-                to="/conoce-los-cabos"
-                className="h-11 flex items-center justify-center gap-2 rounded-xl text-xs sm:text-sm font-medium text-white transition-colors hover:bg-white/[0.15]"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.30)",
-                }}
-              >
-                <MapPin className="w-4 h-4" />
-                Visita Los Cabos
-              </Link>
             </div>
+
 
             {/* Row 2: Vota por el Amo del Partido (primary, full width) */}
             <Link to="/fan-zone" className="w-full">
@@ -268,7 +259,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           </div>
         ) : (
           <div className="flex flex-row gap-3 items-center justify-center flex-wrap">
-            <Link to="/tickets">
+            <Link to="/abonos">
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 className="flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap"
@@ -282,20 +273,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 COMPRAR BOLETOS
               </motion.button>
             </Link>
-            <Link to="/conoce-los-cabos">
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                className="flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap"
-                style={{
-                  backgroundColor: "hsl(336 80% 77%)",
-                  color: "hsl(0 0% 10%)",
-                  boxShadow: "0 0 0 1px hsl(336 85% 85%), 0 6px 20px -4px hsl(336 80% 70% / 0.65)",
-                }}
-              >
-                <MapPin className="w-4 h-4" />
-                VISITA LOS CABOS
-              </motion.button>
-            </Link>
+
           </div>
         )}
       </div>

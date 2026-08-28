@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trophy, MapPin, Radio, Instagram, Lock } from "lucide-react";
+import { Trophy, Radio, Instagram, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
 import { useTeamLogos } from "@/hooks/useTeamLogos";
@@ -194,8 +194,9 @@ export function LiveMatchPlayer({ match, onRequestLogin }: LiveMatchPlayerProps)
           </div>
 
           {/* CTAs */}
-          <div className="grid grid-cols-[3fr_2fr] gap-2 pt-1">
+          <div className="pt-1">
             <Link to="/fan-zone" className="w-full">
+
               <motion.button
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
@@ -212,17 +213,6 @@ export function LiveMatchPlayer({ match, onRequestLogin }: LiveMatchPlayerProps)
               </motion.button>
             </Link>
 
-            <Link
-              to="/conoce-los-cabos"
-              className="h-11 flex items-center justify-center gap-2 rounded-xl text-xs sm:text-sm font-medium text-white transition-colors hover:bg-white/[0.15]"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.08)",
-                border: "1px solid rgba(255,255,255,0.30)",
-              }}
-            >
-              <MapPin className="w-4 h-4" />
-              Visita Los Cabos
-            </Link>
           </div>
         </div>
       </div>
