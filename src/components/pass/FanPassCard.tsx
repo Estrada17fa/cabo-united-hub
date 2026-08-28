@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
-import { Loader2, Calendar, MapPin, Sparkles, ShieldCheck, RefreshCw, Download, Share2 } from "lucide-react";
+import { Loader2, Calendar, MapPin, Sparkles, ShieldCheck, RefreshCw, Download, Share2, Store, Ticket } from "lucide-react";
+
 import { toPng } from "html-to-image";
 import { supabase } from "@/integrations/supabase/client";
 import lcuCrest from "@/assets/lcu-crest.png";
