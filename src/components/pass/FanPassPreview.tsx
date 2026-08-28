@@ -12,16 +12,19 @@ const TIER_ACCENT: Record<string, { color: string; label: string; bg: string }> 
 };
 
 interface Props {
-  userId: string;
+  userId?: string;
   onTierLoad?: (tier: string | null) => void;
+  /** Vista estática usada durante el registro (aún no existe pase en la base) */
+  preview?: { tier: string; name: string; status?: string };
 }
 
-export function FanPassPreview({ userId, onTierLoad }: Props) {
+export function FanPassPreview({ userId, onTierLoad, preview }: Props) {
   const navigate = useNavigate();
   const [pass, setPass] = useState<{ pass_code: string; tier: string; status: string } | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    if (!userId) return;
     supabase
       .from("fan_passes")
       .select("pass_code, tier, status")
@@ -33,6 +36,46 @@ export function FanPassPreview({ userId, onTierLoad }: Props) {
         onTierLoad?.((data as any)?.tier ?? null);
       });
   }, [userId, onTierLoad]);
+
+  if (preview) {
+    const tp = TIER_ACCENT[preview.tier] ?? TIER_ACCENT.fan;
+    const waitlist = preview.status === "waitlist";
+    return (
+      <div
+        className="relative rounded-2xl p-5 overflow-hidden"
+        style={{
+          background: tp.bg,
+          border: `1px solid ${tp.color}40`,
+          boxShadow: `0 18px 48px -22px ${tp.color}66, inset 0 1px 0 ${tp.color}22`,
+        }}
+      >
+        <div
+          className="absolute -right-16 -top-16 w-56 h-56 rounded-full opacity-25 blur-3xl pointer-events-none"
+          style={{ background: tp.color }}
+        />
+        <div className="relative flex items-center gap-4">
+          <img src={lcuCrest} alt="Escudo Los Cabos United" className="w-14 h-14 object-contain flex-shrink-0" />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span
+                className="text-[10px] font-bold uppercase tracking-[0.16em] px-2 py-0.5 rounded-full"
+                style={{ background: tp.color, color: "#0a0a0a" }}
+              >
+                {tp.label}
+              </span>
+              {waitlist && (
+                <span className="text-[10px] uppercase tracking-wider text-amber-400/90">Lista de espera</span>
+              )}
+            </div>
+            <div className="text-base font-bold text-white mt-1.5 truncate">{preview.name}</div>
+            <div className="text-[11px] text-white/55 mt-1 inline-flex items-center gap-1">
+              <IdCard className="w-3 h-3" /> Tu código LCU se genera al confirmar
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!loaded) {
     return (
