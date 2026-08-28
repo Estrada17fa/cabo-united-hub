@@ -20,7 +20,9 @@ export default {
       fontFamily: {
         sans: ["Poppins", "system-ui", "sans-serif"],
         poppins: ["Poppins", "sans-serif"],
+        display: ["var(--font-display, Poppins)", "Poppins", "sans-serif"],
       },
+
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
