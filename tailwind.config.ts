@@ -24,6 +24,16 @@ export default {
       },
 
       colors: {
+        surface: {
+          1: "hsl(var(--surface-1))",
+          2: "hsl(var(--surface-2))",
+          3: "hsl(var(--surface-3))",
+        },
+        pop: {
+          DEFAULT: "hsl(var(--pop))",
+          foreground: "hsl(var(--pop-foreground))",
+        },
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
