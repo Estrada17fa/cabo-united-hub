@@ -273,6 +273,7 @@ export type Database = {
       }
       league_standings: {
         Row: {
+          adjustment_note: string | null
           dg: number
           gc: number
           gf: number
@@ -282,6 +283,7 @@ export type Database = {
           jg: number
           jj: number
           jp: number
+          manual_adjustment: number
           pos: number
           pts: number
           season: string
@@ -289,6 +291,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          adjustment_note?: string | null
           dg?: number
           gc?: number
           gf?: number
@@ -298,6 +301,7 @@ export type Database = {
           jg?: number
           jj?: number
           jp?: number
+          manual_adjustment?: number
           pos?: number
           pts?: number
           season?: string
@@ -305,6 +309,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          adjustment_note?: string | null
           dg?: number
           gc?: number
           gf?: number
@@ -314,6 +319,7 @@ export type Database = {
           jg?: number
           jj?: number
           jp?: number
+          manual_adjustment?: number
           pos?: number
           pts?: number
           season?: string
@@ -419,10 +425,15 @@ export type Database = {
       }
       matches: {
         Row: {
+          away_pens: number | null
+          away_points: number
           away_score: number | null
           away_team: string
           created_at: string
           first_half_started_at: string | null
+          group_name: string | null
+          home_pens: number | null
+          home_points: number
           home_score: number | null
           home_team: string
           id: string
@@ -433,19 +444,26 @@ export type Database = {
           match_summary_url: string | null
           match_time: string | null
           phase: string
+          round_name: string | null
           season: string
           second_half_started_at: string | null
           source: Database["public"]["Enums"]["match_source"]
+          stage: string
           status: Database["public"]["Enums"]["match_status"]
           stoppage_minutes: number
           updated_at: string
           venue: string | null
         }
         Insert: {
+          away_pens?: number | null
+          away_points?: number
           away_score?: number | null
           away_team: string
           created_at?: string
           first_half_started_at?: string | null
+          group_name?: string | null
+          home_pens?: number | null
+          home_points?: number
           home_score?: number | null
           home_team: string
           id?: string
@@ -456,19 +474,26 @@ export type Database = {
           match_summary_url?: string | null
           match_time?: string | null
           phase?: string
+          round_name?: string | null
           season?: string
           second_half_started_at?: string | null
           source?: Database["public"]["Enums"]["match_source"]
+          stage?: string
           status?: Database["public"]["Enums"]["match_status"]
           stoppage_minutes?: number
           updated_at?: string
           venue?: string | null
         }
         Update: {
+          away_pens?: number | null
+          away_points?: number
           away_score?: number | null
           away_team?: string
           created_at?: string
           first_half_started_at?: string | null
+          group_name?: string | null
+          home_pens?: number | null
+          home_points?: number
           home_score?: number | null
           home_team?: string
           id?: string
@@ -479,9 +504,11 @@ export type Database = {
           match_summary_url?: string | null
           match_time?: string | null
           phase?: string
+          round_name?: string | null
           season?: string
           second_half_started_at?: string | null
           source?: Database["public"]["Enums"]["match_source"]
+          stage?: string
           status?: Database["public"]["Enums"]["match_status"]
           stoppage_minutes?: number
           updated_at?: string
@@ -1172,22 +1199,37 @@ export type Database = {
       }
       teams: {
         Row: {
+          active: boolean
           created_at: string
+          group_name: string | null
           id: string
+          is_ours: boolean
           logo_url: string | null
           name: string
+          season: string
+          short_name: string | null
         }
         Insert: {
+          active?: boolean
           created_at?: string
+          group_name?: string | null
           id?: string
+          is_ours?: boolean
           logo_url?: string | null
           name: string
+          season?: string
+          short_name?: string | null
         }
         Update: {
+          active?: boolean
           created_at?: string
+          group_name?: string | null
           id?: string
+          is_ours?: boolean
           logo_url?: string | null
           name?: string
+          season?: string
+          short_name?: string | null
         }
         Relationships: []
       }
@@ -1376,6 +1418,15 @@ export type Database = {
         Returns: boolean
       }
       compute_level: { Args: { _xp: number }; Returns: number }
+      compute_match_points: {
+        Args: {
+          _away_pens: number
+          _away_score: number
+          _home_pens: number
+          _home_score: number
+        }
+        Returns: number[]
+      }
       generate_pass_code:
         | { Args: never; Returns: string }
         | {
@@ -1409,6 +1460,7 @@ export type Database = {
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_minor_user: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      recalculate_standings: { Args: { _season?: string }; Returns: number }
       record_game_play: {
         Args: { _game_id: string; _result?: Json; _score?: number }
         Returns: string
@@ -1417,6 +1469,15 @@ export type Database = {
       run_level_at_risk_warning: { Args: never; Returns: number }
       run_level_demotion_check: { Args: never; Returns: number }
       run_subscription_expiry_check: { Args: never; Returns: number }
+      set_standings_adjustment: {
+        Args: {
+          _adjustment: number
+          _note: string
+          _season: string
+          _team: string
+        }
+        Returns: undefined
+      }
       spend_cabo_coins: {
         Args: {
           p_cc: number
