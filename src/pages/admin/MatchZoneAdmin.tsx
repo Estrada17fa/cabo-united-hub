@@ -1,5 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, Loader2, Plus, Radio, Save, Trash2, Trophy } from "lucide-react";
+import {
+  AlertTriangle,
+  CalendarDays,
+  ListOrdered,
+  Loader2,
+  Plus,
+  Radio,
+  RefreshCw,
+  Save,
+  Shield,
+  Target,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -16,6 +28,12 @@ import type { Tables } from "@/integrations/supabase/types";
 
 type Match = Tables<"matches">;
 type MatchEvent = Tables<"match_events">;
+type Team = Tables<"teams">;
+type Standing = Tables<"league_standings">;
+type Scorer = Tables<"top_scorers">;
+
+const DEFAULT_SEASON = "2025-2026";
+
 
 const TABS = [
   { id: "envivo", label: "En vivo", icon: Radio },
