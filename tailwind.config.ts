@@ -80,7 +80,9 @@ export default {
         xl: "var(--radius-lg)",
         "2xl": "var(--radius-xl)",
         "3xl": "2rem",
+        card: "var(--radius-card)",
       },
+
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
