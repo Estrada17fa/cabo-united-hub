@@ -3,42 +3,92 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
-const MATCH_DURATION_MS = 2 * 60 * 60 * 1000; // 2h
-const FINISHED_VISIBILITY_MS = 24 * 60 * 60 * 1000; // 24h after end
+export type MatchPhase =
+  | "scheduled"
+  | "first_half"
+  | "halftime"
+  | "second_half"
+  | "finished";
+
+export const PHASE_LABEL: Record<MatchPhase, string> = {
+  scheduled: "Por comenzar",
+  first_half: "1ª Parte",
+  halftime: "Medio Tiempo",
+  second_half: "2ª Parte",
+  finished: "Finalizado",
+};
+
+/** Umbral (min reales) para avisar en el panel que un partido quedó abierto. */
+export const STALE_PHASE_MINUTES = 150;
+
+function elapsedMinutes(from: string | null, now: number) {
+  if (!from) return 0;
+  const start = new Date(from).getTime();
+  if (Number.isNaN(start)) return 0;
+  return Math.max(0, Math.floor((now - start) / 60_000));
+}
+
+/**
+ * Formatea el minuto de juego según la fase.
+ * - first_half: 1..45, luego 45+N (topado por stoppage_minutes si existe)
+ * - halftime: sin número
+ * - second_half: 45 + minutos, luego 90+N
+ * - scheduled / finished: sin reloj
+ */
+export function formatMatchClock(
+  match: Pick<
+    Tables<"matches">,
+    "phase" | "first_half_started_at" | "second_half_started_at" | "stoppage_minutes"
+  > | null,
+  now: number = Date.now(),
+): string | null {
+  if (!match) return null;
+  const phase = (match.phase ?? "scheduled") as MatchPhase;
+  const stoppage = match.stoppage_minutes ?? 0;
+
+  if (phase === "halftime") return "Medio Tiempo";
+  if (phase === "first_half") {
+    const m = Math.max(1, elapsedMinutes(match.first_half_started_at, now));
+    if (m <= 45) return `${m}'`;
+    const extra = Math.min(m - 45, stoppage > 0 ? stoppage : m - 45);
+    return `45+${Math.max(1, extra)}'`;
+  }
+  if (phase === "second_half") {
+    const m = Math.max(1, elapsedMinutes(match.second_half_started_at, now));
+    const total = 45 + m;
+    if (total <= 90) return `${total}'`;
+    const extra = Math.min(total - 90, stoppage > 0 ? stoppage : total - 90);
+    return `90+${Math.max(1, extra)}'`;
+  }
+  return null;
+}
 
 export function useLiveMatch(match: Tables<"matches"> | null) {
   const queryClient = useQueryClient();
   const [now, setNow] = useState(() => Date.now());
 
-  // Tick every 30s to recompute live status / minute
+  // Tick cada 30s solo para refrescar el reloj mostrado
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 30_000);
     return () => clearInterval(id);
   }, []);
 
-  const matchStart = match
-    ? new Date(`${match.match_date}T${match.match_time || "19:00:00"}`).getTime()
-    : null;
-
-  const matchEnd = matchStart !== null ? matchStart + MATCH_DURATION_MS : null;
+  const phase = ((match?.phase ?? "scheduled") as MatchPhase);
 
   const isLive =
-    !!match &&
-    match.status !== "finished" &&
-    (match.status === "live" ||
-      (matchStart !== null && matchEnd !== null && now >= matchStart && now <= matchEnd));
+    !!match && (phase === "first_half" || phase === "halftime" || phase === "second_half");
+  const isFinished = !!match && phase === "finished";
 
-  const isFinished =
-    !!match &&
-    (match.status === "finished" ||
-      (matchEnd !== null && now > matchEnd && now <= matchEnd + FINISHED_VISIBILITY_MS));
+  const clock = formatMatchClock(match, now);
 
-  const currentMinute =
-    isLive && matchStart
-      ? Math.max(1, Math.min(120, Math.floor((now - matchStart) / 60_000)))
-      : 0;
+  const currentMinute = (() => {
+    if (!match) return 0;
+    if (phase === "first_half") return Math.max(1, elapsedMinutes(match.first_half_started_at, now));
+    if (phase === "second_half")
+      return 45 + Math.max(1, elapsedMinutes(match.second_half_started_at, now));
+    return 0;
+  })();
 
-  // Fetch events for this match (live or recently finished)
   const { data: events = [] } = useQuery({
     queryKey: ["match_events", match?.id],
     enabled: !!match?.id && (isLive || isFinished),
@@ -53,7 +103,7 @@ export function useLiveMatch(match: Tables<"matches"> | null) {
     },
   });
 
-  // Realtime subscriptions (only while live)
+  // Realtime mientras el partido esté en curso
   useEffect(() => {
     if (!match?.id || !isLive) return;
 
@@ -80,5 +130,5 @@ export function useLiveMatch(match: Tables<"matches"> | null) {
     };
   }, [match?.id, isLive, queryClient]);
 
-  return { isLive, isFinished, currentMinute, events };
+  return { phase, isLive, isFinished, clock, currentMinute, events };
 }

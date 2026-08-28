@@ -39,7 +39,7 @@ export function UpcomingMatches({ matches, isLoading }: UpcomingMatchesProps) {
 }
 
 function UpcomingMatchRow({ match, index }: { match: Tables<"matches">; index: number }) {
-  const { isLive, currentMinute } = useLiveMatch(match);
+  const { isLive, clock } = useLiveMatch(match);
   const matchDate = new Date(`${match.match_date}T${match.match_time || "19:00:00"}`);
 
   return (
@@ -94,7 +94,7 @@ function UpcomingMatchRow({ match, index }: { match: Tables<"matches">; index: n
               className="text-[11px] font-extrabold tabular-nums tracking-wider"
               style={{ color: "hsl(142 76% 55%)" }}
             >
-              {currentMinute}'
+              {clock ?? ""}
             </span>
           </div>
           <motion.a

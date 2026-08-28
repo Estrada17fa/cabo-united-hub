@@ -422,6 +422,7 @@ export type Database = {
           away_score: number | null
           away_team: string
           created_at: string
+          first_half_started_at: string | null
           home_score: number | null
           home_team: string
           id: string
@@ -431,9 +432,12 @@ export type Database = {
           match_date: string
           match_summary_url: string | null
           match_time: string | null
+          phase: string
           season: string
+          second_half_started_at: string | null
           source: Database["public"]["Enums"]["match_source"]
           status: Database["public"]["Enums"]["match_status"]
+          stoppage_minutes: number
           updated_at: string
           venue: string | null
         }
@@ -441,6 +445,7 @@ export type Database = {
           away_score?: number | null
           away_team: string
           created_at?: string
+          first_half_started_at?: string | null
           home_score?: number | null
           home_team: string
           id?: string
@@ -450,9 +455,12 @@ export type Database = {
           match_date: string
           match_summary_url?: string | null
           match_time?: string | null
+          phase?: string
           season?: string
+          second_half_started_at?: string | null
           source?: Database["public"]["Enums"]["match_source"]
           status?: Database["public"]["Enums"]["match_status"]
+          stoppage_minutes?: number
           updated_at?: string
           venue?: string | null
         }
@@ -460,6 +468,7 @@ export type Database = {
           away_score?: number | null
           away_team?: string
           created_at?: string
+          first_half_started_at?: string | null
           home_score?: number | null
           home_team?: string
           id?: string
@@ -469,9 +478,12 @@ export type Database = {
           match_date?: string
           match_summary_url?: string | null
           match_time?: string | null
+          phase?: string
           season?: string
+          second_half_started_at?: string | null
           source?: Database["public"]["Enums"]["match_source"]
           status?: Database["public"]["Enums"]["match_status"]
+          stoppage_minutes?: number
           updated_at?: string
           venue?: string | null
         }

@@ -5,43 +5,44 @@ import { supabase } from "@/integrations/supabase/client";
 import { MatchHeroCard } from "@/components/match-zone/MatchHeroCard";
 import { LiveMatchPlayer } from "@/components/match-zone/LiveMatchPlayer";
 import { MatchTabs } from "@/components/match-zone/MatchTabs";
-import { PartidosSection } from "@/components/match-zone/PartidosSection";
 import { LeagueTables } from "@/components/match-zone/LeagueTables";
+import { AuthFlow } from "@/components/auth/AuthFlow";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
 
 const ZonaPartido = () => {
-  const [activeTab, setActiveTab] = useState("partidos");
+  const [activeTab, setActiveTab] = useState("envivo");
+  const [authOpen, setAuthOpen] = useState(false);
 
   const { data: featuredMatch = null } = useQuery({
     queryKey: ["matches", "featured"],
     queryFn: async () => {
-      // 1) Live match takes priority
+      // 1) Partido en curso (fase activa)
       const { data: liveData, error: liveError } = await supabase
         .from("matches")
         .select("*")
-        .eq("status", "live")
+        .in("phase", ["first_half", "halftime", "second_half"])
         .order("match_date", { ascending: false })
         .limit(1);
       if (liveError) throw liveError;
       if (liveData && liveData.length > 0) return liveData[0];
 
-      // 2) Recently finished match (within last 24h)
+      // 2) Partido recién finalizado (últimas 24h)
       const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split("T")[0];
       const { data: finishedData, error: finishedError } = await supabase
         .from("matches")
         .select("*")
-        .eq("status", "finished")
+        .eq("phase", "finished")
         .gte("match_date", cutoff)
         .order("match_date", { ascending: false })
         .limit(1);
       if (finishedError) throw finishedError;
       if (finishedData && finishedData.length > 0) return finishedData[0];
 
-      // 3) Otherwise next scheduled match
+      // 3) Siguiente partido programado
       const { data, error } = await supabase
         .from("matches")
         .select("*")
-        .eq("status", "scheduled")
+        .eq("phase", "scheduled")
         .order("match_date", { ascending: true })
         .limit(1);
       if (error) throw error;
@@ -59,23 +60,22 @@ const ZonaPartido = () => {
       transition={{ duration: 0.5 }}
       className="space-y-6 pb-8"
     >
-      {isLive && nextMatch ? (
-        <LiveMatchPlayer match={nextMatch} />
-      ) : (
-        <MatchHeroCard match={nextMatch} />
-      )}
       <MatchTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
       <AnimatePresence mode="wait">
-        {activeTab === "partidos" && (
+        {activeTab === "envivo" && (
           <motion.div
-            key="partidos"
+            key="envivo"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.25 }}
           >
-            <PartidosSection />
+            {isLive && nextMatch ? (
+              <LiveMatchPlayer match={nextMatch} onRequestLogin={() => setAuthOpen(true)} />
+            ) : (
+              <MatchHeroCard match={nextMatch} />
+            )}
           </motion.div>
         )}
         {activeTab === "liga" && (
@@ -90,6 +90,8 @@ const ZonaPartido = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <AuthFlow open={authOpen} onClose={() => setAuthOpen(false)} initialTierId="fan" />
     </motion.div>
   );
 };

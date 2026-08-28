@@ -1,21 +1,27 @@
 import { motion } from "framer-motion";
-import { Trophy, MapPin, Radio, Instagram } from "lucide-react";
+import { Trophy, MapPin, Radio, Instagram, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLiveMatch } from "@/hooks/useLiveMatch";
 import { useTeamLogos } from "@/hooks/useTeamLogos";
+import { useAuth } from "@/hooks/useAuth";
 import { TeamCrest } from "./TeamCrest";
 import { ResponsiveMatchTimeline } from "./ResponsiveMatchTimeline";
 import { getEmbedUrl } from "@/lib/streamUrl";
+import stadiumHero from "@/assets/stadium-hero.jpg";
 import type { Tables } from "@/integrations/supabase/types";
 
 interface LiveMatchPlayerProps {
   match: Tables<"matches">;
+  /** Abre el flujo de login/registro cuando el visitante no tiene sesión. */
+  onRequestLogin?: () => void;
 }
 
-export function LiveMatchPlayer({ match }: LiveMatchPlayerProps) {
-  const { currentMinute, events } = useLiveMatch(match);
+export function LiveMatchPlayer({ match, onRequestLogin }: LiveMatchPlayerProps) {
+  const { clock, events } = useLiveMatch(match);
   const logos = useTeamLogos();
+  const { user, loading: authLoading } = useAuth();
   const embed = getEmbedUrl(match.live_stream_url);
+
 
   return (
     <motion.div
@@ -58,7 +64,7 @@ export function LiveMatchPlayer({ match }: LiveMatchPlayerProps) {
               className="text-[10px] font-extrabold tracking-widest"
               style={{ color: "hsl(142 76% 55%)" }}
             >
-              EN VIVO {currentMinute > 0 ? `${currentMinute}'` : ""}
+              EN VIVO {clock ?? ""}
             </span>
           </motion.span>
 
@@ -69,9 +75,39 @@ export function LiveMatchPlayer({ match }: LiveMatchPlayerProps) {
           )}
         </div>
 
-        {/* Video / fallback */}
+        {/* Video / login gate / fallback */}
         <div className="relative w-full aspect-video bg-black">
-          {embed ? (
+          {!user && !authLoading ? (
+            <>
+              <img
+                src={stadiumHero}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-40"
+              />
+              <div className="absolute inset-0 bg-black/70" />
+              <div className="relative z-10 h-full flex flex-col items-center justify-center gap-3 text-center p-6">
+                <div className="w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-primary" />
+                </div>
+                <p className="text-xs text-muted-foreground max-w-xs">
+                  La transmisión es exclusiva para la afición registrada.
+                </p>
+                <button
+                  onClick={onRequestLogin}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold"
+                  style={{
+                    backgroundColor: "hsl(142 76% 50%)",
+                    color: "hsl(0 0% 6%)",
+                    boxShadow: "0 8px 24px -6px hsl(142 76% 50% / 0.55)",
+                  }}
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  Inicia sesión para ver el partido en vivo
+                </button>
+              </div>
+            </>
+          ) : embed ? (
             <iframe
               key={embed.embedUrl}
               src={embed.embedUrl}
@@ -106,6 +142,7 @@ export function LiveMatchPlayer({ match }: LiveMatchPlayerProps) {
             </div>
           )}
         </div>
+
       </div>
 
       {/* COMPACT MATCH CARD */}

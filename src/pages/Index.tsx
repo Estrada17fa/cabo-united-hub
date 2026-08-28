@@ -616,7 +616,7 @@ function MatchZoneSection() {
 
 /* ---------- LIVE SCORE ONLY (no timeline) ---------- */
 function LiveScoreOnly({ match }: { match: Tables<"matches"> }) {
-  const { currentMinute } = useLiveMatch(match);
+  const { clock } = useLiveMatch(match);
   const logos = useTeamLogos();
 
   return (
@@ -656,7 +656,7 @@ function LiveScoreOnly({ match }: { match: Tables<"matches"> }) {
               className="text-[10px] font-extrabold tracking-widest"
               style={{ color: "hsl(142 76% 55%)" }}
             >
-              EN VIVO {currentMinute}'
+              EN VIVO {clock ?? ""}
             </span>
           </span>
           {match.jornada != null && (
