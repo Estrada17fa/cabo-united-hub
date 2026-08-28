@@ -39,6 +39,9 @@ const AppShell = () => {
         <Route path="/club" element={<Club />} />
         <Route path="/fan-zone" element={<FanZone />} />
         <Route path="/accesos" element={<Accesos />} />
+        <Route path="/mi-pase" element={<MiPase />} />
+        <Route path="/comercios" element={<Comercios />} />
+
         <Route path="/tienda" element={<Tienda />} />
         <Route path="/tienda/producto/:handle" element={<TiendaProducto />} />
         <Route path="/tienda/buscar" element={<TiendaBuscar />} />
