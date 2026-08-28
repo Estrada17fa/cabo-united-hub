@@ -19,7 +19,10 @@ type MatchEvent = Tables<"match_events">;
 
 const TABS = [
   { id: "envivo", label: "En vivo", icon: Radio },
-  { id: "liga", label: "Liga", icon: Trophy },
+  { id: "equipos", label: "Equipos", icon: Shield },
+  { id: "partidos", label: "Partidos", icon: CalendarDays },
+  { id: "posiciones", label: "Posiciones", icon: ListOrdered },
+  { id: "goleo", label: "Goleo", icon: Target },
 ];
 
 const PHASES: MatchPhase[] = ["scheduled", "first_half", "halftime", "second_half", "finished"];
@@ -38,7 +41,7 @@ export default function MatchZoneAdmin() {
 
   return (
     <div className="space-y-5">
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {TABS.map((t) => {
           const active = tab === t.id;
           return (
@@ -58,10 +61,15 @@ export default function MatchZoneAdmin() {
         })}
       </div>
 
-      {tab === "envivo" ? <LiveControls /> : <LeagueControls />}
+      {tab === "envivo" && <LiveControls />}
+      {tab === "equipos" && <TeamsControls />}
+      {tab === "partidos" && <LeagueControls />}
+      {tab === "posiciones" && <StandingsControls />}
+      {tab === "goleo" && <ScorersControls />}
     </div>
   );
 }
+
 
 /* ---------------------------------- EN VIVO --------------------------------- */
 
