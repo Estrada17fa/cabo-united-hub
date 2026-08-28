@@ -50,7 +50,7 @@ const navLinks = [
   { name: "Match Zone", path: "/zona-partido", icon: SoccerBallIcon },
   { name: "Tu Club", path: "/club", icon: Users },
   { name: "Fan Zone", path: "/fan-zone", icon: Heart },
-  { name: "Accesos", path: "/accesos", icon: Ticket },
+  { name: "Mi Pase", path: "/mi-pase", icon: Ticket },
   { name: "Tienda Oficial", path: "/tienda", icon: ShoppingBag },
   { name: "Visita Los Cabos", path: "/conoce-los-cabos", icon: MapPin },
 ];

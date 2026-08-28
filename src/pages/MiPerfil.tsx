@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+
 import { motion } from "framer-motion";
 import { LogOut, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -149,6 +151,9 @@ export default function MiPerfil() {
       ) : pass ? (
         <>
           <FanPassCard pass={pass} favoritePlayerName={favPlayer} avatarUrl={profile?.avatar_url} />
+          <Button asChild variant="outline" className="w-full">
+            <Link to="/mi-pase">Ver mi pase completo</Link>
+          </Button>
           {pass.status !== "active" && (
             <div className="rounded-xl bg-card border border-amber-500/30 p-4 text-sm text-foreground/85">
               Tu pase está en estado <span className="font-bold">{pass.status}</span>. Completa tu pago para activarlo y
@@ -156,6 +161,7 @@ export default function MiPerfil() {
             </div>
           )}
         </>
+
       ) : (
         <div className="rounded-xl bg-card border border-border p-6 text-center text-sm text-muted-foreground">
           Aún no tienes un pase digital. Ve a <span className="text-foreground font-bold">Accesos</span> para elegir tu nivel.

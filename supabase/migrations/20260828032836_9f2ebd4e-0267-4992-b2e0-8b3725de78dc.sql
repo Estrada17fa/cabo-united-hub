@@ -1,0 +1,1 @@
+ALTER TYPE public.qr_kind ADD VALUE IF NOT EXISTS 'member';
