@@ -52,7 +52,7 @@ export function StandingsTable({
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
       {title && <h3 className="text-sm font-bold text-foreground mb-3">{title}</h3>}
 
-      <div className="rounded-2xl border border-border overflow-hidden" style={{ background: "#121212" }}>
+      <div className="rounded-2xl border border-border overflow-hidden">
         <div className="grid grid-cols-[22px_1fr_repeat(4,20px)_28px_30px] gap-1 px-2.5 py-2 text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground border-b border-border/60">
           <span>#</span>
           <span>Equipo</span>

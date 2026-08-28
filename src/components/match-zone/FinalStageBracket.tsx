@@ -32,7 +32,6 @@ export function FinalStageBracket({ matches, logoMap = {}, ourTeam = "Los Cabos 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl border border-border p-8 text-center"
-        style={{ background: "#121212" }}
       >
         <span className="mx-auto grid place-items-center w-12 h-12 rounded-full bg-primary/12 text-primary mb-3">
           <Trophy className="w-5 h-5" />

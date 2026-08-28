@@ -14,7 +14,7 @@ export function LeagueScoringInfo() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="rounded-2xl border border-border overflow-hidden" style={{ background: "#121212" }}>
+    <div className="rounded-2xl border border-border overflow-hidden">
       <button
         onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center gap-2.5 px-3.5 py-3 text-left"
