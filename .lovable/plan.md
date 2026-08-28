@@ -1,115 +1,52 @@
-## Fan Zone — Base System
+# Unificar registro y fusionar /accesos en /abonos
 
-Construir la base de Fan Zone (sin minijuegos), reutilizando la auth existente de Accesos y agregando perfil extendido, niveles, ledger de transacciones, onboarding e i18n.
+Objetivo: un solo flujo de registro en todo el sitio y una sola página de niveles (`/abonos`), convertida en pre-registro de interés (lista de espera) sin cobro.
 
----
+## 1. Base de datos (no destructivo)
 
-### 1. Auth unificada (con Accesos)
+- `profiles`: agregar `marketing_consent boolean NOT NULL DEFAULT false` y `marketing_consent_at timestamptz`.
+- `fan_passes.status` es una columna de texto (hoy solo existe el valor `active`), así que no hace falta tocar ningún enum: se empieza a usar el valor `'waitlist'` y se agrega una restricción que permita `active`, `pending_payment`, `waitlist`, `expired`, `cancelled`.
+- No se borra ninguna columna, tabla ni dato. `award_points`, `award_points_v2`, `compute_level` y los triggers de nivel quedan intactos.
+- `handle_new_user()` sigue igual (crea el pase cuando el signup trae teléfono y fecha de nacimiento). Cuando el registro venga solo del Paso 1, el pase se crea/actualiza al completar el Paso 2.
 
-Hoy ya existe `useAuth` + `AuthModal` + `SignupWizard` en `/accesos`. Toda la app debe leer de la **misma fuente**.
+## 2. AuthFlow: componente único de registro
 
-- **Reutilizar** `useAuth` (no crear nuevo contexto). Extender el `Profile` para incluir: `phone`, `birth_date`, `city`, `email_verified`, `phone_verified`, `level`, `xp`, `cc`.
-- **Registro**: email + password + teléfono (ya existe en `SignupWizard`). Añadir verificación SMS OTP vía Supabase (`signInWithOtp` por phone) tras crear la cuenta.
-- **Verificación email**: ya enviada por Supabase. Añadir UI "Reenviar verificación" en perfil.
-- **Login social**: botones Google y Apple en `AuthModal` usando `lovable.auth.signInWithOAuth`.
-- **Recuperar contraseña**: link "¿Olvidaste tu contraseña?" en `AuthModal` → flow `resetPasswordForEmail` + nueva ruta `/reset-password`.
-- **Auto-confirm email**: NO activar (que verifiquen).
+Nuevo `src/components/auth/AuthFlow.tsx` que reemplaza a `AuthModal` en Header, Index, FanZone, MiPerfil y Abonos. `AuthModal` se conserva internamente como vista de "Iniciar sesión" (login + Google/Apple + olvidé mi contraseña), sin duplicar lógica.
 
-### 2. Perfil extendido
+Props: `open`, `onClose`, `mode` ("login" | "signup"), `context` ("header" | "home" | "fanzone" | "abonos"), `initialTier`, `onComplete`.
 
-Página `/mi-perfil` muestra:
-- Avatar (upload a bucket `avatars` o monograma "LCU" por defecto).
-- Nombre, fecha nacimiento, ciudad (editables).
-- Badges: email ✓ / teléfono ✓ / identidad ✓.
-- Nivel actual + barra de progreso al siguiente.
-- XP y CC totales (tabular).
-- Badge "2× activo" si su `fan_passes.tier ∈ {premium, platino}`.
-- Lista últimas 20 filas de `transactions`.
+Paso 1 — Cuenta (mínima fricción)
+- Nombre completo, correo, contraseña con la misma validación fuerte del wizard actual (8+, mayúscula, minúscula, número, símbolo) y su checklist en vivo.
+- Botones Google / Apple tal como están hoy.
+- Al enviar se crea la cuenta de inmediato (`supabase.auth.signUp`).
 
-### 3. Sistema de niveles
+Paso 2 — Perfil de aficionado
+- Teléfono, fecha de nacimiento (age-gate: se rechaza menor de 13), ciudad (opcional), jugador favorito (opcional, reutilizando el grid visual con foto y dorsal del wizard actual).
+- Checkbox explícito de promociones por correo y WhatsApp: se debe elegir sí o no; si dice no, se guarda `marketing_consent = false` y el registro continúa.
+- Guarda en `profiles` y crea/actualiza el `fan_passes` correspondiente.
+- Si la edad es 13–17: se muestra el mismo sub-paso de tutor que ya existe (nombre, correo, teléfono opcional, parentesco, confirmación de mayoría de edad) y se llama a la misma edge function `parental-consent-request`. Ese bloque se extrae del wizard actual a `TutorConsentStep` sin cambiar su lógica ni su UI.
+- Visibilidad del Paso 2: obligatorio cuando el registro se inicia desde Abonos o Fan Zone; desde Header y Home aparece con botón "Completar después" y se vuelve a pedir la próxima vez que el usuario intente reclamar un abono o entrar a Fan Zone (se detecta por perfil sin teléfono o sin fecha de nacimiento).
 
-```
-Visitante         0 XP
-Local           500 XP
-Cabeño         2000 XP
-Amo            5000 XP
-Amo del Paraíso 12000 XP
-Leyenda        25000 XP
-```
+`SignupWizard` deja de usarse desde Header y Accesos; su código de picker de jugador, validación de contraseña y consentimiento de tutor se reutiliza dentro de `AuthFlow`.
 
-- Columna `profiles.xp` y `profiles.level`.
-- Trigger BEFORE UPDATE en `profiles`: si cruza threshold, actualiza `level` y enqueue notificación (fila en `notifications`).
-- UI: componente `LevelProgress` reutilizable (FanCard ya tiene la barra; se conecta a datos reales).
+## 3. Nueva `/abonos`
 
-### 4. Ledger de transacciones
+- Se elimina la página `Accesos` y su ruta se convierte en redirección permanente a `/abonos`. El enlace "Accesos" del menú apunta a `/abonos`.
+- `/abonos` toma el diseño visual de las 4 tarjetas de nivel que hoy vive en `/accesos` (Fan/Gold/Premium/Platino con kits, beneficios y colores), sin cambios de diseño.
+- Flujo al elegir un nivel:
+  1. Se abre `AuthFlow` con el nivel preseleccionado (Paso 1 + Paso 2 obligatorio). Si ya hay sesión, se salta directo a lo que falte.
+  2. Al confirmar: cuenta creada si no existía; el interés en el nivel se guarda con `status = 'waitlist'` y `payment_status = 'pending'`.
+  3. Si el nivel es FAN (gratis), el pase se activa de inmediato (`status = 'active'`, `payment_status = 'free'`), como hoy.
+  4. Pantalla de confirmación con check visual: "Ya estás en la lista para [nivel]. Te avisaremos por correo o WhatsApp en cuanto se abran los pagos." Sin mención de pagos ni checkout.
+- Se dejan de usar `PaymentTestModeBanner` y `StripeEmbeddedCheckout` en este flujo (los componentes, la edge function `create-checkout`, el webhook y `/abonos/exito` se conservan intactos para reactivarlos cuando el cobro esté listo).
+- Para usuarios con sesión se mantiene lo que ya funciona en `/accesos`: preview del pase, sección de boletos partido a partido, puntos de venta físicos y la card de upgrade cuando el nivel es Fan (ahora apuntando al flujo de lista de espera).
 
-Tabla `transactions` (append-only, sin DELETE/UPDATE policies):
-- `user_id`, `type` (enum: bonus, mission, checkin, game, redeem, purchase, adjust), `xp_delta`, `cc_delta`, `source` (text), `description` (text), `created_at`.
-- Función `public.award_points(_user_id uuid, _xp int, _cc int, _type tx_type, _source text, _description text)`:
-  - Lee multiplicador desde `fan_passes.tier` del usuario (premium/platino = 2×, otros = 1×).
-  - Inserta fila en `transactions` con deltas finales.
-  - Actualiza `profiles.xp += xp_delta`, `profiles.cc += cc_delta`.
-  - Trigger de niveles se dispara solo.
-- RLS: usuario lee sólo sus transacciones.
+## No cambia
 
-### 5. Onboarding + misiones iniciales
+Sistema de diseño (Dark Bento, Poppins, dock flotante), lógica de XP / Cabo Coins / niveles, lógica del consentimiento de tutor, y ninguna otra página (Club, Index, Tienda, Fan Zone más allá del punto de registro).
 
-- Componente `OnboardingFlow` (5 slides en `Dialog` full-screen): qué es XP, qué es CC, niveles, canjes, "empieza".
-- Tabla `user_onboarding (user_id, completed_at)` para no repetir.
-- Trigger `handle_new_user` extendido: `award_points(user, 50, 10, 'bonus', 'welcome', 'Bienvenido al Paraíso')`.
-- Tabla `missions` (seed con 4 misiones iniciales) + `user_missions (user_id, mission_id, completed_at)`.
-- Funciones que llaman `award_points` cuando: email verificado, phone verificado, perfil completo, primer check-in.
+## Notas técnicas
 
-### 6. UI base
-
-- Mantener tokens y FanCard ya consolidados.
-- Cuando NO logueado: en FanZone, juegos primero, luego CTA sticky "Inicia sesión", luego ranking/premios. (Ya está así — sólo confirmar.)
-- Cuando logueado: FanCard arriba con datos reales.
-
-### 7. i18n
-
-- `react-i18next` + `i18next` + `i18next-browser-languagedetector`.
-- `src/i18n/index.ts`, `src/i18n/locales/es.json` (default), `src/i18n/locales/en.json`.
-- Migrar los strings de FanZone, AuthModal, MiPerfil, Accesos hero. (No migrar TODA la app en este pase — sentar base + páginas tocadas.)
-- Selector de idioma en Header (menú hamburguesa).
-
----
-
-### Detalles técnicos
-
-**Migraciones SQL (un solo migration):**
-1. `ALTER TABLE profiles ADD COLUMN city text, xp int default 0, cc int default 0, level smallint default 0, email_verified bool default false, phone_verified bool default false, identity_verified bool default false;`
-2. `CREATE TYPE tx_type AS ENUM (...);`
-3. `CREATE TABLE transactions (...)` + RLS (SELECT propio, sin INSERT/UPDATE/DELETE — sólo `award_points` SECURITY DEFINER inserta).
-4. `CREATE TABLE notifications (id, user_id, kind, title, body, read_at, created_at)` + RLS.
-5. `CREATE TABLE missions (...)` + seed + `user_missions` + RLS.
-6. `CREATE FUNCTION award_points(...) SECURITY DEFINER`.
-7. `CREATE FUNCTION update_level_on_xp() SECURITY DEFINER` + trigger BEFORE UPDATE en profiles.
-8. `CREATE BUCKET avatars` (público) + policies (usuario sube/edita su carpeta).
-9. Extender `handle_new_user` para llamar `award_points` welcome.
-
-**Archivos nuevos / editados:**
-- `src/i18n/{index.ts, locales/es.json, locales/en.json}`
-- `src/hooks/useAuth.tsx` — extender Profile, añadir signInWithOAuth helpers, resetPassword.
-- `src/hooks/useFanProfile.tsx` — nuevo: trae profile + xp/cc/level + transactions + realtime.
-- `src/components/auth/AuthModal.tsx` — botones Google/Apple, link forgot password.
-- `src/components/auth/ForgotPasswordForm.tsx`, `src/pages/ResetPassword.tsx`
-- `src/components/onboarding/OnboardingFlow.tsx`
-- `src/components/profile/AvatarUploader.tsx`, `LevelProgress.tsx`, `TransactionsList.tsx`, `VerificationBadges.tsx`
-- `src/pages/MiPerfil.tsx` — refactor con todo lo anterior.
-- `src/components/fan-zone/FanCard.tsx` — conectar a datos reales (`useFanProfile`).
-- `src/lib/levels.ts` — definición de niveles + helpers.
-- `src/App.tsx` — ruta `/reset-password`, montar i18n.
-- `src/components/layout/Header.tsx` — language switcher.
-
-**Lo que NO se hace en esta entrega:**
-- Minijuegos (sólo estructura).
-- Verificación de identidad (KYC) — sólo el badge/columna.
-- Catálogo de canjes (redenciones).
-- Notificaciones push reales (sólo persistencia + UI).
-
----
-
-### Resultado
-
-Al final el usuario podrá: registrarse con email+teléfono+OAuth, recuperar contraseña, completar onboarding, ver su perfil con avatar/nivel/XP/CC/transacciones, recibir bonus de bienvenida y misiones iniciales, y la app cambiará a inglés desde el header.
+- La migración corre primero y por separado; el código que lea `marketing_consent` se escribe después de que se regeneren los tipos.
+- `AuthFlow` centraliza estado con un único `useState` de paso y reusa `ForgotPasswordForm`.
+- La redirección `/accesos` → `/abonos` se hace con `<Navigate replace />` en el router.
