@@ -95,7 +95,23 @@ const ZonaPartido = () => {
         )}
       </AnimatePresence>
 
-      <AuthFlow open={authOpen} onClose={() => setAuthOpen(false)} initialTierId="fan" />
+      <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
+        <DialogContent className="bg-card border-border max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-base">Entra para ver el partido</DialogTitle>
+          </DialogHeader>
+          <AuthModal
+            onSuccess={() => setLoginOpen(false)}
+            onSignupClick={() => {
+              setLoginOpen(false);
+              setSignupOpen(true);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <AuthFlow open={signupOpen} onClose={() => setSignupOpen(false)} initialTierId="fan" />
+
     </motion.div>
   );
 };
