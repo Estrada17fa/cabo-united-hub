@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { MapPin, Calendar, Phone, Clock, ArrowRight, Ticket, Gift, Sparkles, Repeat, Quote, ChevronLeft, ChevronRight, Check, Store, ChevronDown, TrendingUp } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { SignupWizard } from "@/components/accesos/SignupWizard";
+import { AuthFlow } from "@/components/auth/AuthFlow";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -1148,19 +1148,12 @@ const Accesos = () => {
       {/* PUNTOS DE VENTA FÍSICOS */}
       <PointsOfSale loggedIn={!!user} isFan={userTier === "fan"} />
 
-      <SignupWizard
+      <AuthFlow
         open={wizardOpen}
         onClose={() => setWizardOpen(false)}
-        initialTierId={wizardTier}
-        tiers={tiers.map((t) => ({
-          id: t.id,
-          badge: t.badge,
-          price: t.price,
-          priceNote: t.priceNote,
-          tagline: t.tagline,
-          accent: t.accent,
-        }))}
+        initialTierId={wizardTier as any}
       />
+
 
       <Dialog open={authOpen} onOpenChange={setAuthOpen}>
         <DialogContent className="bg-card border-border max-w-sm">

@@ -17,14 +17,10 @@ import { AuthModal } from "@/components/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cartStore";
 import { FanPassMini } from "@/components/pass/FanPassMini";
-import { SignupWizard, type WizardTier } from "@/components/accesos/SignupWizard";
+import { AuthFlow } from "@/components/auth/AuthFlow";
 
-const WIZARD_TIERS: WizardTier[] = [
-  { id: "fan", badge: "FAN", price: "$0", priceNote: "Gratis para siempre", tagline: "Empieza a vivir el paraíso, sin costo.", accent: "#FFFFFF" },
-  { id: "gold", badge: "GOLD", price: "$1,499", priceNote: "por temporada", tagline: "Tu lugar en la grada y el kit que te identifica.", accent: "#F59E0B" },
-  { id: "premium", badge: "PREMIUM", price: "$2,499", priceNote: "por temporada", tagline: "Vive el partido desde adentro, con foto incluida.", accent: "#00abc4" },
-  { id: "platino", badge: "PLATINO", price: "$4,999", priceNote: "por temporada · edición Socio Fundador", tagline: "Tu nombre, tu asiento, tu temporada inolvidable.", accent: "#E2E8F0" },
-];
+
+
 
 const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
   <Icon iconNode={soccerBall} {...props} />
@@ -448,12 +444,12 @@ export function Header() {
         </SheetContent>
       </Sheet>
 
-      <SignupWizard
+      <AuthFlow
         open={showSignupWizard}
         onClose={() => setShowSignupWizard(false)}
-        tiers={WIZARD_TIERS}
         initialTierId="fan"
       />
+
     </motion.header>
   );
 }
