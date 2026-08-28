@@ -50,13 +50,8 @@ export function LeagueTables() {
       gf: s.gf, gc: s.gc, dg: s.dg, pts: s.pts,
     }));
 
-  const getGroup = (name: string): StandingRow[] =>
-    standings
-      .filter((s) => s.group_name === name)
-      .map((s) => ({
-        pos: s.pos, team: s.team, jj: s.jj, jg: s.jg, je: s.je, jp: s.jp,
-        gf: s.gf, gc: s.gc, dg: s.dg, pts: s.pts,
-      }));
+
+
 
   return (
     <div className="space-y-4">
