@@ -210,7 +210,7 @@ export function FanPassCard({
 
         {/* BACK */}
         <div
-          className="absolute inset-0 rounded-3xl p-6 flex flex-col"
+          className="absolute inset-0 rounded-3xl p-5 flex flex-col"
           style={{
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)",
@@ -219,60 +219,184 @@ export function FanPassCard({
             boxShadow: `0 30px 60px -20px ${tier.accent}30`,
           }}
         >
-          <div className="flex items-start justify-between">
-            <div>
-              <div className="text-[10px] uppercase tracking-[0.14em] text-black/55 font-bold">Acceso al estadio</div>
-              <div className="text-[11px] text-black/55">QR único por partido</div>
-            </div>
-            <ShieldCheck className="w-5 h-5" style={{ color: tier.accent }} />
+          {/* Selector de modo */}
+          <div
+            className="flex items-center gap-1 p-1 rounded-full"
+            style={{ background: "rgba(0,0,0,0.06)" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {([
+              { id: "stadium" as const, label: "Estadio", Icon: Ticket },
+              { id: "business" as const, label: "Comercios", Icon: Store },
+            ]).map(({ id, label, Icon }) => (
+              <button
+                key={id}
+                onClick={() => setMode(id)}
+                className="flex-1 inline-flex items-center justify-center gap-1 rounded-full py-1.5 text-[11px] font-bold uppercase tracking-wider transition"
+                style={
+                  mode === id
+                    ? { background: tier.accent, color: "#0a0a0a" }
+                    : { color: "rgba(0,0,0,0.55)" }
+                }
+              >
+                <Icon className="w-3.5 h-3.5" /> {label}
+              </button>
+            ))}
           </div>
 
-          <div className="flex-1 flex items-center justify-center my-3">
-            {loadingQr ? (
-              <div className="flex flex-col items-center gap-2 text-black/60">
-                <Loader2 className="w-6 h-6 animate-spin" />
-                <div className="text-xs">Generando QR…</div>
+          {mode === "stadium" ? (
+            <>
+              <div className="flex items-start justify-between mt-3">
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.14em] text-black/55 font-bold">Acceso al estadio</div>
+                  <div className="text-[11px] text-black/55">QR único por partido</div>
+                </div>
+                <ShieldCheck className="w-5 h-5" style={{ color: tier.accent }} />
               </div>
-            ) : qrError ? (
-              <div className="text-center">
-                <div className="text-xs text-red-600 mb-2">{qrError}</div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); fetchQr(); }}
-                  className="text-xs underline text-black/70"
-                >
-                  Reintentar
-                </button>
-              </div>
-            ) : qr ? (
-              <div className="bg-white p-2 rounded-md">
-                <QRCodeSVG value={qr.token} size={190} level="M" includeMargin={false} />
-              </div>
-            ) : (
-              <div className="text-xs text-black/50">Toca para generar</div>
-            )}
-          </div>
 
-          {qr?.match ? (
-            <div className="text-[11px] text-black/70 leading-snug">
-              <div className="font-bold text-black truncate">
-                {qr.match.home_team} vs {qr.match.away_team}
-              </div>
-              <div className="flex items-center gap-3 mt-0.5 flex-wrap">
-                <span className="inline-flex items-center gap-1">
-                  <Calendar className="w-3 h-3" /> {qr.match.match_date}
-                  {qr.match.match_time ? ` · ${qr.match.match_time.slice(0, 5)}` : ""}
-                </span>
-                {qr.match.venue && (
-                  <span className="inline-flex items-center gap-1">
-                    <MapPin className="w-3 h-3" /> {qr.match.venue}
-                  </span>
+              <div className="flex-1 flex items-center justify-center my-2">
+                {loadingQr ? (
+                  <div className="flex flex-col items-center gap-2 text-black/60">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <div className="text-xs">Generando QR…</div>
+                  </div>
+                ) : qrError ? (
+                  <div className="text-center">
+                    <div className="text-xs text-red-600 mb-2">{qrError}</div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); fetchQr(); }}
+                      className="text-xs underline text-black/70"
+                    >
+                      Reintentar
+                    </button>
+                  </div>
+                ) : qr ? (
+                  <div className="bg-white p-2 rounded-md">
+                    <QRCodeSVG value={qr.token} size={172} level="M" includeMargin={false} />
+                  </div>
+                ) : (
+                  <div className="text-xs text-black/50">Toca para generar</div>
                 )}
               </div>
-            </div>
+
+              <div
+                className="flex items-center justify-between rounded-xl px-3 py-2 mb-2"
+                style={{ background: `${tier.accent}1f`, border: `1px solid ${tier.accent}55` }}
+              >
+                <span className="text-[10px] uppercase tracking-[0.14em] text-black/55 font-bold">Acceso</span>
+                <span className="text-[12px] font-bold text-black inline-flex items-center gap-1">
+                  <MapPin className="w-3 h-3" /> {accessZone}
+                </span>
+              </div>
+
+              {qr?.match ? (
+                <div className="text-[11px] text-black/70 leading-snug">
+                  <div className="font-bold text-black truncate">
+                    {qr.match.home_team} vs {qr.match.away_team}
+                  </div>
+                  <div className="flex items-center gap-3 mt-0.5 flex-wrap">
+                    <span className="inline-flex items-center gap-1">
+                      <Calendar className="w-3 h-3" /> {qr.match.match_date}
+                      {qr.match.match_time ? ` · ${qr.match.match_time.slice(0, 5)}` : ""}
+                    </span>
+                    {qr.match.venue && (
+                      <span className="inline-flex items-center gap-1">
+                        <MapPin className="w-3 h-3" /> {qr.match.venue}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-[11px] text-black/50">No hay próximo partido programado.</div>
+              )}
+            </>
           ) : (
-            <div className="text-[11px] text-black/50">No hay próximo partido programado.</div>
+            <>
+              <div className="flex items-start justify-between mt-3">
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.14em] text-black/55 font-bold">Beneficios en comercios</div>
+                  <div className="text-[11px] text-black/55">Muestra este QR en el mostrador</div>
+                </div>
+                <Store className="w-5 h-5" style={{ color: tier.accent }} />
+              </div>
+
+              <div className="flex-1 flex items-center justify-center my-2">
+                {memberQr ? (
+                  <div className="relative" style={{ width: 196, height: 196 }}>
+                    <svg width="196" height="196" className="absolute inset-0 -rotate-90">
+                      <circle cx="98" cy="98" r="93" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="5" />
+                      <circle
+                        cx="98" cy="98" r="93" fill="none"
+                        stroke={tier.accent === "#FFFFFF" ? "#0a0a0a" : tier.accent}
+                        strokeWidth="5"
+                        strokeLinecap="round"
+                        strokeDasharray={2 * Math.PI * 93}
+                        strokeDashoffset={2 * Math.PI * 93 * (1 - memberProgress)}
+                        style={{ transition: "stroke-dashoffset 1s linear" }}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="bg-white p-1.5 rounded-md">
+                        <QRCodeSVG value={memberQr.token} size={140} level="M" includeMargin={false} />
+                      </div>
+                    </div>
+                  </div>
+                ) : memberLoading ? (
+                  <div className="flex flex-col items-center gap-2 text-black/60">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                    <div className="text-xs">Generando QR…</div>
+                  </div>
+                ) : (
+                  <div className="text-center px-4">
+                    <div className="text-xs text-black/60 mb-2">{memberError ?? "Toca para generar"}</div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); fetchMemberQr(); }}
+                      className="text-xs underline text-black/70"
+                    >
+                      Reintentar
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="text-center text-[10px] text-black/45 mb-2">
+                {memberStale
+                  ? `Sin conexión · actualizado hace ${memberAgeLabel}`
+                  : `Se renueva en ${formatSeconds(memberSecondsLeft)}`}
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${tier.accent}22`, border: `2px solid ${tier.accent}` }}
+                >
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt={pass.full_name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-sm font-bold text-black/70">{getInitials(pass.full_name) || "LCU"}</span>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[15px] font-extrabold text-black leading-tight truncate">
+                    {pass.full_name}
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span
+                      className="text-[9px] font-bold uppercase tracking-[0.14em] px-2 py-0.5 rounded-full"
+                      style={{ background: tier.accent === "#FFFFFF" ? "#0a0a0a" : tier.accent, color: tier.accent === "#FFFFFF" ? "#fff" : "#0a0a0a" }}
+                    >
+                      {tier.label}
+                    </span>
+                    <span className="text-[11px] font-bold text-black/70">
+                      {TIER_DISCOUNT[pass.tier]}% de descuento
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
         </div>
+
       </motion.div>
 
       <div className="mt-4 flex flex-col items-center gap-3">
