@@ -236,18 +236,8 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                   Resumen
                 </a>
               )}
-              <Link
-                to="/conoce-los-cabos"
-                className="h-11 flex items-center justify-center gap-2 rounded-xl text-xs sm:text-sm font-medium text-white transition-colors hover:bg-white/[0.15]"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.30)",
-                }}
-              >
-                <MapPin className="w-4 h-4" />
-                Visita Los Cabos
-              </Link>
             </div>
+
 
             {/* Row 2: Vota por el Amo del Partido (primary, full width) */}
             <Link to="/fan-zone" className="w-full">

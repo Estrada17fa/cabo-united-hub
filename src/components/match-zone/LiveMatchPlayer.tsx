@@ -194,8 +194,9 @@ export function LiveMatchPlayer({ match, onRequestLogin }: LiveMatchPlayerProps)
           </div>
 
           {/* CTAs */}
-          <div className="grid grid-cols-[3fr_2fr] gap-2 pt-1">
+          <div className="pt-1">
             <Link to="/fan-zone" className="w-full">
+
               <motion.button
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
