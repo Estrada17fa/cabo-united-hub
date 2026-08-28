@@ -1,73 +1,73 @@
-# Welcome to your Lovable project
+# loscabosunited.mx
 
-## Project info
+Crea una web app deportiva pero minimalista (principalmente para móvil, pero también para escritorio) en español para Los Cabos United.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Define el sistema de diseño global y el lenguaje visual para una web app "mobile-first". No llenes las páginas todavía, solo establece las reglas visuales, la tipografía y la paleta de colores que se aplicarán en toda la aplicación.
 
-## How can I edit this code?
+Tech Stack: React, Tailwind CSS, Lucide React Icons.
 
-There are several ways of editing your application.
+Tipografía (Cumplimiento Estricto):
 
-**Use Lovable**
+Familia Tipográfica: Usa 'Poppins' para TODOS los elementos de texto (títulos, cuerpo, botones).
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Jerarquía: Usa pesos "bold" (negrita) o pesados para los encabezados para crear impacto, y pesos regulares/medios para el texto del cuerpo para facilitar la lectura.
 
-Changes made via Lovable will be committed automatically to this repo.
+Paleta de Colores (Solo Modo Oscuro):
 
-**Use your preferred IDE**
+Fondo de la App: Negro Profundo/Gris (#050505). El lienzo principal debe ser muy oscuro.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Superficie de las Tarjetas: Gris Oscuro (#121212). Usado para los contenedores tipo "Bento" para separarlos del fondo.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Bordes de Tarjetas: Bordes oscuros muy sutiles (#2A2A2A) para dar definición.
 
-Follow these steps:
+Color Primario de Marca (Azul): #00abc4. Úsalo para los botones principales de llamada a la acción (CTA), iconos de navegación activos y resaltados principales.
+
+Color Secundario de Marca (Rosa): #f298c0. Úsalo para acentos, etiquetas, resaltados secundarios o gradientes sutiles.
+
+Color de Texto: Blanco (#FFFFFF) para el texto principal, y Gris Claro (#A0A0A0) para texto secundario/etiquetas.
+
+Filosofía de Layout y Componentes ('Dark Bento Modular'):
+
+Tarjetas Flotantes: Todo el contenido debe estar contenido dentro de tarjetas flotantes y distintas. Nada debe tocar los bordes absolutos de la pantalla.
+
+Esquinas Redondeadas: Usa esquinas grandes y modernas para todas las tarjetas y botones (ej. rounded-3xl o rounded-2xl de Tailwind).
+
+Espaciado: Usa un espacio negativo generoso (padding y margin) para que los elementos respiren.
+
+Estilo de Navegación: La navegación inferior debe ser un 'Floating Dock' (Muelle Flotante). Debe ser un contenedor en forma de píldora que flote ligeramente por encima del borde inferior de la pantalla y contenga los iconos de navegación. NO debe ser una barra sólida pegada al fondo.
+
+Roles: Habrá 2 roles: Club (Admin) y Fan (Usuario).
+
+Páginas: Solo crea las siguientes páginas y ponlas en una barra de navegación superior (Tipo pagina web, pero moderna con iconos minimalistas) para tener acceso rápido, no las llenes de contenido aún:
+
+Inicio
+Club
+Quiniela
+Liga
+Tickets
+Tienda
+
+En la parte superior con el menu de navegacion, del lado izquierdo pon un escudo (que mas adelante cambiaremos por el del equipo) y del lado derecho un menu de hamburguesa desplegable con las paginas vacias de "Perfil" y "Noticias"
+
+Hasta abajo de todo en todas las paginas (debe ser fijo al pie de pagina, por lo que si se agrega mas info a la pagina, se quede hasta abajo) un carrusel para los logos de los patrocinadores
+
+This project was built with [Lovable](https://lovable.dev).
+
+## Build with Lovable
+
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/e49c35ac-eda9-420a-8e49-cf35396d2a3c).
+
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+
+## Development
+
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+git clone <this-repository-url>
+cd <repository-name>
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
