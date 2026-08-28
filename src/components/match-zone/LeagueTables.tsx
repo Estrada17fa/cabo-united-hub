@@ -6,7 +6,8 @@ import { FinalStageBracket } from "./FinalStageBracket";
 import { TopScorersBoard } from "./TopScorersBoard";
 import { LeagueScoringInfo } from "./LeagueScoringInfo";
 import { LeagueGroupSwitch } from "./LeagueGroupSwitch";
-import { TeamCrest } from "./TeamCrest";
+import { BentoTile, Crest, LcuTabs, SectionHeader } from "@/components/ui-lcu";
+
 import {
   useLeagueGroups,
   useLeagueMatches,
