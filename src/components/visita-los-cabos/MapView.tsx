@@ -2,11 +2,13 @@ import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
-  CATEGORY_META,
+  FALLBACK_CATEGORY,
   MAPBOX_TOKEN,
   Place,
+  PlaceCategoryMeta,
   SPONSOR_GOLD,
 } from "@/lib/visita-los-cabos-data";
+import { useCategoryMeta } from "@/hooks/usePlaceCategories";
 import { categoryIconSvg } from "./CategoryIcon";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
@@ -17,13 +19,17 @@ interface MapViewProps {
   onSelect: (place: Place) => void;
 }
 
-function buildPinElement(place: Place, isSelected: boolean): HTMLElement {
+function buildPinElement(
+  place: Place,
+  isSelected: boolean,
+  meta: PlaceCategoryMeta = FALLBACK_CATEGORY
+): HTMLElement {
   const wrapper = document.createElement("div");
   wrapper.style.cursor = "pointer";
   wrapper.style.transform = "translate(-50%, -100%)";
 
-  const meta = CATEGORY_META[place.category] ?? CATEGORY_META.restaurantes;
   const ringStyle = isSelected
+
     ? "box-shadow: 0 0 0 3px hsl(0 0% 100%), 0 0 0 4px hsl(0 0% 0% / 0.6);"
     : "";
 
