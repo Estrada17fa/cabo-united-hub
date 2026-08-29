@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -10,59 +10,64 @@ import { Field, Hint, adminInput } from "@/components/admin/AdminUI";
 interface Row {
   home_team_id: string;
   away_team_id: string;
-  time: string;
+  kickoff_at: string;
   venue: string;
-  venueTouched: boolean;
 }
 
-const emptyRow = (time: string): Row => ({
-  home_team_id: "",
-  away_team_id: "",
-  time,
-  venue: "",
-  venueTouched: false,
-});
+const emptyRow = (): Row => ({ home_team_id: "", away_team_id: "", kickoff_at: "", venue: "" });
 
 export function MatchdayBuilder({
   open,
   onOpenChange,
+  suggestedMatchday,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
+  /** jornada máxima existente + 1 */
+  suggestedMatchday: number;
 }) {
   const season = useSeasonKey();
   const qc = useQueryClient();
   const { data: teams } = useTeams();
-  const [matchday, setMatchday] = useState("");
-  const [date, setDate] = useState("");
-  const [baseTime, setBaseTime] = useState("18:00");
-  const [rows, setRows] = useState<Row[]>([emptyRow("18:00"), emptyRow("18:00")]);
+  const [matchday, setMatchday] = useState(String(suggestedMatchday));
+  const [rows, setRows] = useState<Row[]>([emptyRow(), emptyRow()]);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    setMatchday(String(suggestedMatchday));
+    setRows([emptyRow(), emptyRow()]);
+  }, [open, suggestedMatchday]);
 
   const update = (i: number, patch: Partial<Row>) =>
     setRows((rs) => rs.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
 
+  /** La sede se toma automáticamente del equipo local. */
   const setHome = (i: number, id: string) => {
     const venue = teams?.find((t) => t.id === id)?.venue ?? "";
     setRows((rs) =>
       rs.map((r, idx) =>
-        idx === i ? { ...r, home_team_id: id, venue: r.venueTouched ? r.venue : venue } : r
+        idx === i
+          ? { ...r, home_team_id: id, venue, away_team_id: r.away_team_id === id ? "" : r.away_team_id }
+          : r
       )
     );
   };
 
   const save = async () => {
     if (!matchday) return toast.error("Indica el número de jornada");
-    if (!date) return toast.error("Indica la fecha de la jornada");
 
-    const filled = rows.filter((r) => r.home_team_id && r.away_team_id);
-    if (!filled.length) return toast.error("Captura al menos un cruce");
+    const filled = rows.filter((r) => r.home_team_id || r.away_team_id || r.kickoff_at);
+    if (!filled.length) return toast.error("Captura al menos un enfrentamiento");
+    if (filled.some((r) => !r.home_team_id || !r.away_team_id))
+      return toast.error("Cada enfrentamiento necesita local y visitante");
     if (filled.some((r) => r.home_team_id === r.away_team_id))
       return toast.error("Un equipo no puede jugar contra sí mismo");
+    if (filled.some((r) => !r.kickoff_at))
+      return toast.error("Cada partido necesita su fecha y hora");
 
     const ids = filled.flatMap((r) => [r.home_team_id, r.away_team_id]);
-    if (new Set(ids).size !== ids.length)
-      return toast.error("Hay equipos repetidos en la jornada");
+    if (new Set(ids).size !== ids.length) return toast.error("Hay equipos repetidos en la jornada");
 
     setSaving(true);
     const payload = filled.map((r) => ({
@@ -71,9 +76,11 @@ export function MatchdayBuilder({
       stage: "regular",
       home_team_id: r.home_team_id,
       away_team_id: r.away_team_id,
-      kickoff_at: new Date(`${date}T${r.time || baseTime}`).toISOString(),
+      kickoff_at: new Date(r.kickoff_at).toISOString(),
       venue: r.venue.trim() || null,
       phase: "scheduled",
+      home_score: 0,
+      away_score: 0,
     }));
 
     const { error } = await supabase.from("matches").insert(payload as never);
@@ -82,8 +89,7 @@ export function MatchdayBuilder({
 
     toast.success(`Jornada ${matchday} creada con ${payload.length} partidos`);
     qc.invalidateQueries({ queryKey: ["lcu-matches"] });
-    setRows([emptyRow(baseTime), emptyRow(baseTime)]);
-    setMatchday("");
+    qc.invalidateQueries({ queryKey: ["lcu-standings"] });
     onOpenChange(false);
   };
 
@@ -102,31 +108,19 @@ export function MatchdayBuilder({
         </button>
       }
     >
-      <div className="grid grid-cols-3 gap-3">
-        <Field label="Jornada">
-          <input
-            type="number"
-            className={adminInput}
-            value={matchday}
-            onChange={(e) => setMatchday(e.target.value)}
-          />
-        </Field>
-        <Field label="Fecha">
-          <input type="date" className={adminInput} value={date} onChange={(e) => setDate(e.target.value)} />
-        </Field>
-        <Field label="Hora base">
-          <input
-            type="time"
-            className={adminInput}
-            value={baseTime}
-            onChange={(e) => {
-              setBaseTime(e.target.value);
-              setRows((rs) => rs.map((r) => (r.time ? r : { ...r, time: e.target.value })));
-            }}
-          />
-        </Field>
-      </div>
-      <Hint>La sede se autollena con la del equipo local; puedes cambiarla por partido.</Hint>
+      <Field label="Número de jornada">
+        <input
+          type="number"
+          min={1}
+          className={adminInput}
+          value={matchday}
+          onChange={(e) => setMatchday(e.target.value)}
+        />
+      </Field>
+      <Hint>
+        Cada partido lleva su propia fecha y hora. La sede se toma automáticamente del equipo local. El
+        marcador se captura después, al editar el partido.
+      </Hint>
 
       <div className="space-y-3">
         {rows.map((r, i) => (
@@ -145,13 +139,19 @@ export function MatchdayBuilder({
               )}
             </div>
             <div className="space-y-2">
-              <select className={adminInput} value={r.home_team_id} onChange={(e) => setHome(i, e.target.value)}>
+              <select
+                className={adminInput}
+                value={r.home_team_id}
+                onChange={(e) => setHome(i, e.target.value)}
+              >
                 <option value="">— Local —</option>
-                {teams?.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
+                {teams
+                  ?.filter((t) => t.id !== r.away_team_id)
+                  .map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
               </select>
               <select
                 className={adminInput}
@@ -159,33 +159,33 @@ export function MatchdayBuilder({
                 onChange={(e) => update(i, { away_team_id: e.target.value })}
               >
                 <option value="">— Visitante —</option>
-                {teams?.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
+                {teams
+                  ?.filter((t) => t.id !== r.home_team_id)
+                  .map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
               </select>
-              <div className="grid grid-cols-[100px_1fr] gap-2">
-                <input
-                  type="time"
-                  className={adminInput}
-                  value={r.time}
-                  onChange={(e) => update(i, { time: e.target.value })}
-                />
-                <input
-                  className={adminInput}
-                  placeholder="Sede"
-                  value={r.venue}
-                  onChange={(e) => update(i, { venue: e.target.value, venueTouched: true })}
-                />
-              </div>
+              <input
+                type="datetime-local"
+                className={adminInput}
+                value={r.kickoff_at}
+                onChange={(e) => update(i, { kickoff_at: e.target.value })}
+              />
+              <input
+                readOnly
+                className={`${adminInput} cursor-not-allowed opacity-70`}
+                placeholder="Sede del equipo local"
+                value={r.venue}
+              />
             </div>
           </div>
         ))}
       </div>
 
       <button
-        onClick={() => setRows((rs) => [...rs, emptyRow(baseTime)])}
+        onClick={() => setRows((rs) => [...rs, emptyRow()])}
         className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-hairline py-2 text-xs font-bold text-foreground hover:border-primary/50"
       >
         <Plus className="h-3.5 w-3.5" /> Agregar partido
