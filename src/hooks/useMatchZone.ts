@@ -21,8 +21,16 @@ export function useFeaturedMatch() {
     if (live) return { match: live, state: "live" as MatchZoneState };
 
     const featured = ours.find((m) => m.is_featured && m.phase === "scheduled");
+    // Un partido programado sigue siendo protagonista hasta 4 h después de su
+    // hora de arranque: así el countdown se convierte en sala en vivo aunque
+    // el admin todavía no cambie la fase.
+    const GRACE_AFTER_KICKOFF = 4 * 3600 * 1000;
     const next = ours
-      .filter((m) => m.phase === "scheduled" && new Date(m.kickoff_at).getTime() > now)
+      .filter(
+        (m) =>
+          m.phase === "scheduled" &&
+          new Date(m.kickoff_at).getTime() > now - GRACE_AFTER_KICKOFF
+      )
       .sort((a, b) => +new Date(a.kickoff_at) - +new Date(b.kickoff_at))[0];
 
     const recent = ours
