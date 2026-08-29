@@ -34,7 +34,7 @@ export function Crest({ team, size = "md", className }: Props) {
   return (
     <span
       className={cn(
-        "relative flex shrink-0 items-center justify-center overflow-hidden font-semibold text-fg-muted",
+        "relative flex shrink-0 items-center justify-center overflow-hidden font-semibold text-muted-foreground",
         team?.is_ours ? "bg-primary/15 text-primary" : "bg-surface-3",
         SIZES[size],
         className
