@@ -33,7 +33,6 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const AdminShell = lazy(() => import("./pages/admin/AdminShell"));
 
 import { CartDrawer } from "@/components/tienda/CartDrawer";
-import { useCartSync } from "@/hooks/useCartSync";
 
 const queryClient = new QueryClient();
 
@@ -44,7 +43,6 @@ const PageFallback = () => (
 );
 
 const AppShell = () => {
-  useCartSync();
   return (
     <AppLayout>
       <ScrollToTop />

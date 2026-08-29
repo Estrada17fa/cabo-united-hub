@@ -1,81 +1,66 @@
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
 import { ShopHeader } from "@/components/tienda/ShopHeader";
 import { ProductCard } from "@/components/tienda/ProductCard";
-import { useShopifyProducts } from "@/hooks/useShopify";
+import { useProducts } from "@/hooks/useProducts";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const TiendaBuscar = () => {
   const [params, setParams] = useSearchParams();
-  const initialQ = params.get("q") ?? "";
-  const [q, setQ] = useState(initialQ);
-  const { data: products, isLoading } = useShopifyProducts({ first: 100 });
+  const [q, setQ] = useState(params.get("q") ?? "");
+  const { data: products, isLoading } = useProducts();
 
   useEffect(() => {
-    const handle = setTimeout(() => {
+    const t = setTimeout(() => {
       if (q) setParams({ q }, { replace: true });
       else setParams({}, { replace: true });
     }, 200);
-    return () => clearTimeout(handle);
+    return () => clearTimeout(t);
   }, [q, setParams]);
 
   const filtered = useMemo(() => {
     if (!products) return [];
-    if (!q.trim()) return products;
     const term = q.trim().toLowerCase();
-    return products.filter((p) => {
-      const n = p.node;
-      return (
-        n.title.toLowerCase().includes(term) ||
-        n.description?.toLowerCase().includes(term) ||
-        n.productType?.toLowerCase().includes(term) ||
-        n.vendor?.toLowerCase().includes(term) ||
-        n.tags?.some((t) => t.toLowerCase().includes(term))
-      );
-    });
+    if (!term) return products;
+    return products.filter(
+      (p) =>
+        p.title.toLowerCase().includes(term) ||
+        p.description.toLowerCase().includes(term) ||
+        p.tags.some((t) => t.toLowerCase().includes(term)),
+    );
   }, [products, q]);
 
   return (
-    <div className="pb-16">
+    <div className="pb-20">
       <ShopHeader />
 
-      <div className="max-w-2xl mx-auto mb-10 md:mb-14">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <input
-            autoFocus
-            type="search"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Buscar jersey, accesorio, edición…"
-            className="h-14 w-full rounded-full bg-card border border-border pl-12 pr-5 text-base placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/50 transition-colors"
-          />
-        </div>
-        {q && (
-          <p className="text-xs text-muted-foreground text-center mt-3">
-            {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"} para "{q}"
-          </p>
-        )}
+      <div className="relative mb-6">
+        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <input
+          autoFocus
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Buscar jerseys, playeras, accesorios…"
+          className="h-11 w-full rounded-xl border border-hairline bg-surface-1 pl-10 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
+        />
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-square w-full rounded-2xl" />
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="aspect-[4/5] w-full rounded-2xl" />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-lg font-normal mb-2">Sin resultados</p>
-          <p className="text-sm text-muted-foreground">
-            Intenta con otra palabra o explora todo el catálogo.
-          </p>
+        <div className="rounded-2xl border border-dashed border-hairline py-16 text-center">
+          <p className="text-sm font-bold text-foreground">Sin resultados</p>
+          <p className="mt-1 text-[12px] text-muted-foreground">Prueba con otra palabra.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
           {filtered.map((p, i) => (
-            <ProductCard key={p.node.id} product={p} index={i} />
+            <ProductCard key={p.id} product={p} index={i} />
           ))}
         </div>
       )}

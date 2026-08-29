@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Loader2, MapPin, Newspaper, ShieldCheck, Ticket, Trophy, Users } from "lucide-react";
+import { ArrowLeft, Loader2, MapPin, Newspaper, ShieldCheck, ShoppingBag, Ticket, Trophy, Users } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 /** Cada sección se carga sola (lazy). Nada se monta ni consulta si no la abres. */
@@ -10,6 +10,7 @@ const SECTIONS = [
   { id: "noticias", label: "Noticias", icon: Newspaper, Component: lazy(() => import("./sections/Noticias")) },
   { id: "aficion", label: "Afición", icon: Users, Component: lazy(() => import("./sections/Aficion")) },
   { id: "visita", label: "Visita Los Cabos", icon: MapPin, Component: lazy(() => import("./sections/Visita")) },
+  { id: "tienda", label: "Tienda", icon: ShoppingBag, Component: lazy(() => import("./sections/Tienda")) },
   {
     id: "abonos",
     label: "Lista de espera",
