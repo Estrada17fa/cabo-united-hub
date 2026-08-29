@@ -481,7 +481,7 @@ function ClubBlock() {
       {youth && (
         <Link
           to="/club"
-          className="relative block overflow-hidden rounded-2xl border border-hairline bg-surface-1 transition-colors hover:border-primary/40"
+          className="relative flex min-h-[168px] items-center overflow-hidden rounded-2xl border border-hairline bg-surface-1 transition-colors hover:border-primary/40 md:min-h-[200px]"
         >
           {youth.image_url && (
             <>
@@ -491,10 +491,10 @@ function ClubBlock() {
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/10" />
+              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/25" />
             </>
           )}
-          <div className="relative p-4 pt-16 md:pt-24">
+          <div className="relative w-full p-4 md:p-5">
             <div className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4 text-primary" />
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
@@ -611,7 +611,7 @@ function VisitaBlock() {
     <section className="space-y-3">
       <SectionHeader
         eyebrow="Visita Los Cabos"
-        title="El paraíso, según la afición"
+        title="Conoce y recorre Tu Paraíso"
         subtitle={
           places.length > 0
             ? `${places.length} ${places.length === 1 ? "lugar" : "lugares"} recomendados por la afición`

@@ -12,7 +12,7 @@ interface Props {
   value: string | null;
   onChange: (url: string | null) => void;
   /** Carpeta dentro del bucket público */
-  folder: "teams" | "tournaments" | "players" | "places" | "place-logos" | "tienda";
+  folder: "teams" | "tournaments" | "players" | "places" | "place-logos" | "tienda" | "sponsors";
   hint?: string;
 }
 
