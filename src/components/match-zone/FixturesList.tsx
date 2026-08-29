@@ -216,7 +216,14 @@ function MatchRow({ match }: { match: Match }) {
       </div>
 
       <div className="mt-2 flex items-center justify-between gap-2">
-        <span className="flex min-w-0 items-center gap-1 text-[11px] text-muted-foreground">
+        <span className="flex min-w-0 items-center gap-1.5 text-[11px] text-muted-foreground">
+          {match.group_name && (
+            <span className="shrink-0 rounded-full border border-hairline bg-surface-2 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {match.group_name.toLowerCase() === "interzonal"
+                ? "Interzonal"
+                : `Grupo ${match.group_name}`}
+            </span>
+          )}
           <MapPin className="h-3 w-3 shrink-0" />
           <span className="truncate">{match.venue || "Sede por confirmar"}</span>
         </span>
