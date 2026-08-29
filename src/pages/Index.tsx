@@ -86,7 +86,7 @@ function Hero({ onSignup, onLogin }: { onSignup: () => void; onLogin: () => void
         className="absolute inset-0 h-full w-full object-cover"
       />
       {/* Degradado que funde la foto con el fondo de la página */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
 
       <div className="relative mx-auto w-full max-w-5xl px-4 pb-14 pt-12 md:px-6 md:pb-20 md:pt-16">
         <img src={lcuCrest} alt="Escudo de Los Cabos United" className="h-14 w-auto md:h-16" />
