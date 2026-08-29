@@ -144,6 +144,7 @@ export default function Lugares() {
       lat: form.lat,
       lng: form.lng,
       photo_url: form.photo_url,
+      logo_url: form.logo_url,
       photo_gradient: form.photo_gradient,
       whatsapp: form.whatsapp.trim() || null,
       visited_by: num(form.visited_by),
