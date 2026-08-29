@@ -16,6 +16,7 @@ import {
   User,
   LogOut,
   ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 import lcuCrest from "@/assets/lcu-crest.png";
 import { soccerBall } from "@lucide/lab";
@@ -36,6 +37,8 @@ import { FanPassMini } from "@/components/pass/FanPassMini";
 import { MiniPassChip } from "@/components/pass/MiniPassChip";
 import { AuthFlow } from "@/components/auth/AuthFlow";
 import { cn } from "@/lib/utils";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+
 
 const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
   <Icon iconNode={soccerBall} {...props} />
@@ -85,6 +88,7 @@ export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const { i18n } = useTranslation();
   const isActive = (path: string) =>
     path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
@@ -223,6 +227,16 @@ export function Header() {
                   </div>
                 </Link>
                 <FanPassMini userId={user.id} onNavigate={() => setIsMenuOpen(false)} />
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-[13px] font-semibold text-foreground transition-colors hover:border-primary/40"
+                  >
+                    <ShieldCheck className="h-4 w-4 text-primary" />
+                    Panel de administración
+                  </Link>
+                )}
                 <button
                   onClick={async () => {
                     await signOut();

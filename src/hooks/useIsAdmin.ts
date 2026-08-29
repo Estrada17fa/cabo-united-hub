@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 
-/** Verifica el rol admin vía RPC (has_role) del usuario en sesión. */
+/** Verifica el rol admin del usuario en sesión (is_admin, con has_role como respaldo). */
 export function useIsAdmin() {
   const { user, loading: authLoading } = useAuth();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
@@ -14,12 +14,22 @@ export function useIsAdmin() {
       return;
     }
     let active = true;
-    supabase
-      .rpc("has_role", { _user_id: user.id, _role: "admin" })
-      .then(({ data, error }) => {
-        if (!active) return;
-        setIsAdmin(!error && data === true);
+
+    (async () => {
+      const primary = await supabase.rpc("is_admin", { _user_id: user.id });
+      if (!active) return;
+      if (!primary.error) {
+        setIsAdmin(primary.data === true);
+        return;
+      }
+      const fallback = await supabase.rpc("has_role", {
+        _user_id: user.id,
+        _role: "admin",
       });
+      if (!active) return;
+      setIsAdmin(!fallback.error && fallback.data === true);
+    })();
+
     return () => {
       active = false;
     };
