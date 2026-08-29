@@ -15,7 +15,10 @@ export function Scoreboard({ match, variant = "hero" }: Props) {
   const live = isLivePhase(match.phase);
   const now = useTicker(live, 15000);
   const clock = getMatchClock(match, now);
-  const played = live || match.phase === "finished";
+  // Llegó la hora pero el admin aún no cambia la fase: mostrar 0-0 "Por arrancar".
+  const kickoffDue =
+    match.phase === "scheduled" && Date.now() >= +new Date(match.kickoff_at);
+  const played = live || match.phase === "finished" || kickoffDue;
   const { date, time } = formatKickoff(match.kickoff_at);
 
   if (variant === "compact") {
@@ -73,7 +76,7 @@ export function Scoreboard({ match, variant = "hero" }: Props) {
             live ? "text-pop" : "text-muted-foreground"
           )}
         >
-          {clock ?? PHASE_LABEL[match.phase]}
+          {clock ?? (kickoffDue ? "Por arrancar" : PHASE_LABEL[match.phase])}
         </span>
       </div>
 
