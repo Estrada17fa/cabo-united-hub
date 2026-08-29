@@ -1,6 +1,6 @@
 # Match Zone — rediseño y nuevo sistema visual del sitio
 
-Nota: cuando subas la imagen hago un pase de fidelidad sobre este plan (espaciados, tamaños y detalles exactos) antes de construir. Lo de abajo ya está alineado a la especificación escrita.
+Referencia confirmada con la imagen adjunta. Detalles leídos de ella, ya incorporados: label superior en mayúsculas con tracking amplio y gris muted ("PRÓXIMO PARTIDO · JORNADA 12"); matchup con escudo · nombre en dos líneas · "VS" gris · rival + escudo; 4 tiles de countdown con número grande tabular y label chico en mayúsculas (segundos en cyan, el resto en blanco); meta en una fila con iconos de calendario y pin; chip "LOCAL" con borde y texto cyan; botón primario cyan de ancho completo; encabezado "Torneo" con selector "Apertura 2026" a la derecha; tabs de subrayado; tabla con encabezado en mayúsculas muted, escudos chicos y la fila de LCU con barra cyan a la izquierda, número y puntos en cyan y nombre en negrita. Bottom nav de 5 ítems: Inicio · Match Zone · Tu Club · Fan Zone · Tienda.
 
 ## Diagnóstico de cómo está hoy
 
