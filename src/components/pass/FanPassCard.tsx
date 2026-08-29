@@ -378,12 +378,6 @@ export function FanPassCard({
                 </div>
               </div>
 
-              <div className="text-center text-[10px] text-black/45 mb-2">
-                {memberStale
-                  ? `Sin conexión · actualizado hace ${memberAgeLabel}`
-                  : `Se renueva en ${formatSeconds(memberSecondsLeft)}`}
-              </div>
-
               <div className="flex items-center gap-3">
                 <div
                   className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0"
