@@ -82,16 +82,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Next match
-    const today = new Date().toISOString().slice(0, 10);
-    const { data: match } = await admin
-      .from('matches')
-      .select('id, home_team, away_team, match_date, match_time, venue, is_home_game')
-      .gte('match_date', today)
-      .eq('status', 'scheduled')
-      .order('match_date', { ascending: true })
-      .limit(1)
-      .maybeSingle();
+    // El modelo de partidos se esta reconstruyendo: sin partido asociado por ahora.
+    const match: { id: string; match_date: string } | null = null;
+
 
     // Token validity: until end of match day, or 24h ahead if no match
     const expIso = match
