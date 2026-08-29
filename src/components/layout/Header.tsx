@@ -1,9 +1,25 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Home, Users, Heart, Ticket, ShoppingBag, MapPin, Handshake, Mail, Shield, Icon, Facebook, Instagram, User, LogOut, ChevronRight } from "lucide-react";
+import {
+  Menu,
+  Home,
+  Users,
+  Heart,
+  ShoppingBag,
+  MapPin,
+  Handshake,
+  Mail,
+  Ticket,
+  Icon,
+  Facebook,
+  Instagram,
+  User,
+  LogOut,
+  ChevronRight,
+} from "lucide-react";
 import lcuCrest from "@/assets/lcu-crest.png";
 import { soccerBall } from "@lucide/lab";
-import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Sheet,
   SheetContent,
@@ -17,10 +33,9 @@ import { AuthModal } from "@/components/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cartStore";
 import { FanPassMini } from "@/components/pass/FanPassMini";
+import { MiniPassChip } from "@/components/pass/MiniPassChip";
 import { AuthFlow } from "@/components/auth/AuthFlow";
-
-
-
+import { cn } from "@/lib/utils";
 
 const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
   <Icon iconNode={soccerBall} {...props} />
@@ -45,112 +60,33 @@ const socialLinks = [
   { icon: WhatsAppIcon, href: "#", label: "WhatsApp" },
 ];
 
+/** Nav principal del shell: 5 links + Tienda (carrito) + Boletos (CTA). */
 const navLinks = [
   { name: "Inicio", path: "/", icon: Home },
   { name: "Match Zone", path: "/zona-partido", icon: SoccerBallIcon },
   { name: "Tu Club", path: "/club", icon: Users },
   { name: "Fan Zone", path: "/fan-zone", icon: Heart },
-  { name: "Mi Pase", path: "/mi-pase", icon: Ticket },
-  { name: "Tienda Oficial", path: "/tienda", icon: ShoppingBag },
   { name: "Visita Los Cabos", path: "/conoce-los-cabos", icon: MapPin },
 ];
+
+const shopLink = { name: "Tienda", path: "/tienda", icon: ShoppingBag };
+const ticketsLink = { name: "Boletos", path: "/accesos", icon: Ticket };
 
 const menuLinks = [
   { name: "Patrocinios", path: "/patrocinios", icon: Handshake },
   { name: "Contáctanos", path: "/contacto", icon: Mail },
 ];
 
-function MobileNav() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const activeIndex = navLinks.findIndex((link) => link.path === location.pathname);
-  const currentIndex = activeIndex >= 0 ? activeIndex : 0;
-
-  const transition = { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] as const };
-  const handleNavigate = (path: string) => {
-    if (path === location.pathname) return;
-    window.scrollTo(0, 0);
-    navigate(path);
-  };
-
-  return (
-    <motion.div layoutRoot className="flex items-center justify-center gap-1.5 px-2">
-      <LayoutGroup>
-        {navLinks.map((link, index) => {
-          const NavIcon = link.icon;
-          const isActive = index === currentIndex;
-
-          return (
-            <motion.div
-              key={link.path}
-              layout="position"
-              onClick={() => handleNavigate(link.path)}
-              className="relative flex items-center cursor-pointer"
-              transition={{ layout: transition }}
-            >
-              {/* Background plate — local per tab, scales from center */}
-              <AnimatePresence mode="wait" initial={false}>
-                {isActive && (
-                  <motion.div
-                    key="plate"
-                    className="absolute inset-0 bg-primary rounded-full shadow-lg shadow-primary/25"
-                    initial={{ scaleX: 0, opacity: 0 }}
-                    animate={{ scaleX: 1, opacity: 1 }}
-                    exit={{ scaleX: 0, opacity: 0 }}
-                    style={{ originX: 0.5, originY: 0.5 }}
-                    transition={transition}
-                  />
-                )}
-              </AnimatePresence>
-
-              {/* Non-active subtle bg */}
-              {!isActive && (
-                <div className="absolute inset-0 bg-muted/40 rounded-full" />
-              )}
-
-              {/* Content: rigid icon + animated label */}
-              <div
-                className={`relative z-10 flex items-center gap-1.5 ${
-                  isActive ? "px-3.5 py-2 text-secondary-foreground" : "p-2 text-foreground/50"
-                }`}
-              >
-                {/* Icon — fixed size, never participates in scaling */}
-                <div className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
-                  <NavIcon className="w-4 h-4" strokeWidth={2.5} />
-                </div>
-
-                {/* Label — only rendered when active, animates width independently */}
-                <AnimatePresence initial={false}>
-                  {isActive && (
-                    <motion.span
-                      key="label"
-                      initial={{ width: 0, opacity: 0 }}
-                      animate={{ width: "auto", opacity: 1 }}
-                      exit={{ width: 0, opacity: 0 }}
-                      transition={transition}
-                      className="text-[13px] font-bold uppercase whitespace-nowrap overflow-hidden block"
-                    >
-                      {link.name}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </div>
-            </motion.div>
-          );
-        })}
-      </LayoutGroup>
-    </motion.div>
-  );
-}
-
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [showSignupWizard, setShowSignupWizard] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
   const { i18n } = useTranslation();
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) =>
+    path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
   const totalCartItems = useCartStore((s) =>
     s.items.reduce((sum, item) => sum + item.quantity, 0),
   );
@@ -159,165 +95,168 @@ export function Header() {
 
   const handleOpenCart = () => {
     setIsMenuOpen(false);
-    // Pequeño delay para que la animación del sheet del menú se cierre
-    // antes de abrir el del carrito y evitar conflictos del overlay.
     setTimeout(() => setCartOpen(true), 200);
   };
 
+  const openAuth = () => {
+    setIsMenuOpen(true);
+    setShowAuth(true);
+  };
+
+  const go = (path: string) => {
+    setIsMenuOpen(false);
+    if (path !== location.pathname) {
+      window.scrollTo(0, 0);
+      navigate(path);
+    }
+  };
+
   return (
-    <motion.header layoutRoot className="fixed top-0 left-0 right-0 z-50 bg-background/95 safe-top">
-      {/* Mobile + Tablet layout */}
-      <div className="lg:hidden">
-        {/* Top row: hamburger left, shield center, social right */}
-        <div className="relative flex items-center justify-center h-14 px-2">
-          <button
-            onClick={() => setIsMenuOpen(true)}
-            className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-card border border-border text-foreground active:bg-muted transition-colors"
-            aria-label="Abrir menú"
-          >
-            <div className="relative">
-              <Menu className="w-5 h-5" />
-              {hasCartItems && (
-                <span
-                  className="absolute -top-1.5 -right-1.5 min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-bold flex items-center justify-center"
-                  style={{ background: "#00abc4", color: "#000" }}
-                  aria-label={`${totalCartItems} en carrito`}
-                >
-                  {totalCartItems}
-                </span>
-              )}
-            </div>
-          </button>
-
-          <Link to="/" className="flex items-center justify-center" aria-label="Inicio">
-            <img
-              src={lcuCrest}
-              alt="Los Cabos United"
-              className="h-10 w-auto object-contain"
-            />
-          </Link>
-
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
-            {user ? (
-              <Link to="/mi-perfil" aria-label="Mi perfil">
-                <Avatar className="w-9 h-9 border border-hairline">
-                  <AvatarImage src={profile?.avatar_url ?? undefined} />
-                  <AvatarFallback className="bg-surface-3 text-muted-foreground">
-                    <User className="w-4 h-4" />
-                  </AvatarFallback>
-                </Avatar>
-              </Link>
-            ) : (
-              <button
-                onClick={() => setIsMenuOpen(true)}
-                aria-label="Iniciar sesión"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-hairline bg-surface-3 text-muted-foreground"
-              >
-                <User className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Separator line */}
-        <div className="h-px bg-border" />
-      </div>
-
-      {/* Desktop layout */}
-      <div className="hidden lg:flex items-center h-20 px-4 gap-1.5 border-b border-border">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md safe-top">
+      {/* Línea 1 — hamburguesa · logo · mini pase */}
+      <div className="relative flex h-14 items-center justify-center px-2 lg:px-4">
         <button
           onClick={() => setIsMenuOpen(true)}
-          className="relative flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-card border border-border text-foreground hover:bg-muted active:bg-muted transition-colors"
+          className="absolute left-2 top-1/2 -translate-y-1/2 rounded-[11px] border border-hairline bg-surface-2 p-2 text-foreground transition-colors active:bg-surface-3 lg:left-4"
           aria-label="Abrir menú"
         >
-          <Menu className="w-5 h-5" />
-          {hasCartItems && (
-            <span
-              className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold flex items-center justify-center"
-              style={{ background: "#00abc4", color: "#000" }}
-              aria-label={`${totalCartItems} en carrito`}
-            >
-              {totalCartItems}
-            </span>
-          )}
+          <span className="relative block">
+            <Menu className="h-5 w-5" />
+            {hasCartItems && (
+              <span
+                className="absolute -right-1.5 -top-1.5 flex h-[16px] min-w-[16px] items-center justify-center rounded-full px-1 text-[9px] font-bold text-background"
+                style={{ background: "hsl(var(--primary))" }}
+                aria-label={`${totalCartItems} en carrito`}
+              >
+                {totalCartItems}
+              </span>
+            )}
+          </span>
         </button>
 
-        <Link to="/" className="flex-shrink-0" aria-label="Inicio">
-          <img
-            src={lcuCrest}
-            alt="Los Cabos United"
-            className="h-12 w-auto object-contain"
-          />
+        <Link to="/" className="flex items-center justify-center" aria-label="Inicio">
+          <img src={lcuCrest} alt="Los Cabos United" className="h-10 w-auto object-contain" />
         </Link>
 
-        <nav className="flex flex-1 items-center justify-center gap-1">
-          {navLinks.map((link) => {
-            const NavIcon = link.icon;
-            return (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-full text-xs lg:text-sm transition-all duration-300 ${
-                  isActive(link.path)
-                    ? "bg-primary text-secondary-foreground shadow-lg shadow-primary/25 font-bold"
-                    : "text-foreground/50 hover:text-foreground/80 hover:bg-muted/40 font-semibold"
-                }`}
-              >
-                <NavIcon className="w-3.5 h-3.5" strokeWidth={2.5} />
-                <span className="hidden lg:inline uppercase">{link.name}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="flex-shrink-0 flex items-center gap-1.5">
-          {socialLinks.map((social) => {
-            const SocialIcon = social.icon;
-            return (
-              <a
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-card active:text-primary transition-colors"
-                aria-label={social.label}
-              >
-                <SocialIcon className="w-5 h-5" />
-              </a>
-            );
-          })}
+        <div className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center lg:right-4">
+          <MiniPassChip onRequestAuth={openAuth} />
         </div>
       </div>
 
-      {/* Sheet lateral */}
+      <div className="h-px bg-hairline" />
+
+      {/* Línea 2 — navegación con subrayado activo animado (desktop/tablet) */}
+      <nav
+        className="hidden border-b border-hairline lg:block"
+        aria-label="Navegación principal"
+      >
+        <ul className="mx-auto flex max-w-6xl items-center justify-center gap-1 px-4">
+          {navLinks.map((link) => {
+            const NavIcon = link.icon;
+            const active = isActive(link.path);
+            return (
+              <li key={link.path} className="relative">
+                <Link
+                  to={link.path}
+                  onClick={() => window.scrollTo(0, 0)}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-3 text-[13px] transition-colors",
+                    active
+                      ? "font-semibold text-foreground"
+                      : "font-medium text-muted-foreground hover:text-foreground/80",
+                  )}
+                >
+                  <NavIcon className="h-4 w-4" strokeWidth={2} />
+                  {link.name}
+                </Link>
+                {active && (
+                  <motion.span
+                    layoutId="nav-underline"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                    className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-primary"
+                  />
+                )}
+              </li>
+            );
+          })}
+
+          <li className="relative">
+            <Link
+              to={shopLink.path}
+              onClick={() => window.scrollTo(0, 0)}
+              aria-label="Tienda"
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-3 text-[13px] transition-colors",
+                isActive(shopLink.path)
+                  ? "font-semibold text-foreground"
+                  : "font-medium text-muted-foreground hover:text-foreground/80",
+              )}
+            >
+              <span className="relative">
+                <ShoppingBag className="h-4 w-4" strokeWidth={2} />
+                {hasCartItems && (
+                  <span
+                    className="absolute -right-2 -top-1.5 flex h-[14px] min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-bold text-background"
+                    style={{ background: "hsl(var(--primary))" }}
+                  >
+                    {totalCartItems}
+                  </span>
+                )}
+              </span>
+              Tienda
+            </Link>
+            {isActive(shopLink.path) && (
+              <motion.span
+                layoutId="nav-underline"
+                transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-primary"
+              />
+            )}
+          </li>
+
+          <li className="ml-2">
+            <Link
+              to={ticketsLink.path}
+              onClick={() => window.scrollTo(0, 0)}
+              className="flex items-center gap-1.5 rounded-[11px] bg-primary px-3.5 py-2 text-[13px] font-semibold text-primary-foreground transition-transform active:scale-[0.98]"
+            >
+              <Ticket className="h-4 w-4" strokeWidth={2.2} />
+              Boletos
+            </Link>
+          </li>
+        </ul>
+      </nav>
+
+      {/* Drawer */}
       <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-        <SheetContent side="left" className="w-[85vw] max-w-80 flex flex-col">
+        <SheetContent side="left" className="flex w-[85vw] max-w-80 flex-col overflow-y-auto">
           <SheetHeader>
             <SheetTitle className="sr-only">Menú</SheetTitle>
-            <SheetDescription className="sr-only">Menú de navegación adicional</SheetDescription>
+            <SheetDescription className="sr-only">Menú de navegación</SheetDescription>
           </SheetHeader>
 
-          {/* Profile / Auth section */}
-          <div className="mt-4 mb-6">
+          {/* Perfil / Auth */}
+          <div className="mb-5 mt-4">
             {user && profile ? (
               <div className="space-y-4">
                 <Link
                   to="/mi-perfil"
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 group"
+                  className="group flex items-center gap-3"
                 >
-                  <Avatar className="w-12 h-12 ring-2 ring-primary/30 group-hover:ring-primary transition-all">
+                  <Avatar className="h-12 w-12 ring-2 ring-primary/30 transition-all group-hover:ring-primary">
                     <AvatarImage src={profile.avatar_url ?? undefined} />
-                    <AvatarFallback className="bg-muted">
-                      <User className="w-5 h-5 text-muted-foreground" />
+                    <AvatarFallback className="bg-surface-3">
+                      <User className="h-5 w-5 text-muted-foreground" />
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-foreground truncate">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-foreground">
                       ¡Hola!, {profile.display_name ?? "Fan"}
                     </p>
                     {profile.username && (
-                      <p className="text-xs text-muted-foreground truncate">@{profile.username}</p>
+                      <p className="truncate text-xs text-muted-foreground">@{profile.username}</p>
                     )}
                   </div>
                 </Link>
@@ -327,9 +266,9 @@ export function Header() {
                     await signOut();
                     setIsMenuOpen(false);
                   }}
-                  className="flex items-center gap-2 text-xs text-muted-foreground hover:text-destructive transition-colors"
+                  className="flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-destructive"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
+                  <LogOut className="h-3.5 w-3.5" />
                   Cerrar sesión
                 </button>
               </div>
@@ -338,15 +277,18 @@ export function Header() {
                 {showAuth ? (
                   <AuthModal
                     loginOnly
-                    onSuccess={() => { setShowAuth(false); setIsMenuOpen(false); }}
+                    onSuccess={() => {
+                      setShowAuth(false);
+                      setIsMenuOpen(false);
+                    }}
                   />
                 ) : (
                   <div className="space-y-2">
                     <button
                       onClick={() => setShowAuth(true)}
-                      className="flex items-center gap-3 w-full px-3.5 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-normal"
+                      className="flex w-full items-center gap-3 rounded-[11px] bg-primary px-3.5 py-3 text-sm font-semibold text-primary-foreground"
                     >
-                      <User className="w-4 h-4" />
+                      <User className="h-4 w-4" />
                       Iniciar sesión
                     </button>
                     <button
@@ -354,7 +296,7 @@ export function Header() {
                         setIsMenuOpen(false);
                         setTimeout(() => setShowSignupWizard(true), 200);
                       }}
-                      className="flex items-center justify-center gap-2 w-full px-3.5 py-3 rounded-xl border border-border bg-card text-foreground text-sm font-normal hover:bg-muted transition-colors"
+                      className="flex w-full items-center justify-center gap-2 rounded-[11px] border border-hairline bg-surface-2 px-3.5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface-3"
                     >
                       Crear cuenta
                     </button>
@@ -366,42 +308,101 @@ export function Header() {
                       setIsMenuOpen(false);
                       setTimeout(() => setShowSignupWizard(true), 200);
                     }}
-                    className="mt-3 w-full text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    className="mt-3 w-full text-xs text-muted-foreground transition-colors hover:text-foreground"
                   >
-                    ¿No tienes cuenta? <span className="text-primary font-semibold">Crea tu pase</span>
+                    ¿No tienes cuenta? <span className="font-semibold text-primary">Crea tu pase</span>
                   </button>
                 )}
               </div>
             )}
           </div>
 
-          {/* Ver Carrito */}
+          {/* Navegación apilada (móvil) */}
+          <nav className="mb-4 lg:hidden" aria-label="Navegación">
+            <AnimatePresence initial={false}>
+              {isMenuOpen && (
+                <ul className="space-y-1">
+                  {[...navLinks, shopLink].map((link, i) => {
+                    const NavIcon = link.icon;
+                    const active = isActive(link.path);
+                    return (
+                      <motion.li
+                        key={link.path}
+                        initial={{ opacity: 0, x: -12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.03 * i, duration: 0.22, ease: "easeOut" }}
+                      >
+                        <button
+                          onClick={() => go(link.path)}
+                          aria-current={active ? "page" : undefined}
+                          className={cn(
+                            "relative flex w-full items-center gap-3 rounded-[11px] px-3.5 py-3 text-sm transition-colors",
+                            active
+                              ? "bg-surface-2 font-semibold text-foreground"
+                              : "font-medium text-muted-foreground hover:text-foreground",
+                          )}
+                        >
+                          {active && (
+                            <span className="absolute left-0 top-1/2 h-5 w-[2px] -translate-y-1/2 rounded-full bg-primary" />
+                          )}
+                          <NavIcon className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
+                          <span className="flex-1 truncate text-left">{link.name}</span>
+                          {link.path === shopLink.path && hasCartItems && (
+                            <span
+                              className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold text-background"
+                              style={{ background: "hsl(var(--primary))" }}
+                            >
+                              {totalCartItems}
+                            </span>
+                          )}
+                        </button>
+                      </motion.li>
+                    );
+                  })}
+                  <motion.li
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.03 * 6, duration: 0.22, ease: "easeOut" }}
+                  >
+                    <button
+                      onClick={() => go(ticketsLink.path)}
+                      className="flex w-full items-center gap-3 rounded-[11px] bg-primary px-3.5 py-3 text-sm font-semibold text-primary-foreground"
+                    >
+                      <Ticket className="h-4 w-4" strokeWidth={2.2} />
+                      Boletos
+                    </button>
+                  </motion.li>
+                </ul>
+              )}
+            </AnimatePresence>
+          </nav>
+
+          {/* Ver carrito */}
           <button
             onClick={handleOpenCart}
-            className="flex items-center gap-3 w-full px-3.5 py-3 rounded-xl text-sm font-bold transition-all active:scale-[0.99]"
-            style={{
-              background: "#00abc4",
-              color: "#000",
-              boxShadow: "0 4px 14px -4px #00abc480",
-            }}
+            className="flex w-full items-center gap-3 rounded-[11px] border border-hairline bg-surface-2 px-3.5 py-3 text-sm font-semibold text-foreground transition-all active:scale-[0.99]"
           >
-            <ShoppingBag className="w-4 h-4 flex-shrink-0" />
+            <ShoppingBag className="h-4 w-4 flex-shrink-0" />
             <span className="flex-1 text-left">Ver Carrito</span>
             {hasCartItems && (
-              <span className="min-w-[20px] h-[20px] px-1 rounded-full bg-black text-[10px] font-bold text-white flex items-center justify-center">
+              <span
+                className="flex h-[20px] min-w-[20px] items-center justify-center rounded-full px-1 text-[10px] font-bold text-background"
+                style={{ background: "hsl(var(--primary))" }}
+              >
                 {totalCartItems}
               </span>
             )}
-            <ChevronRight className="w-4 h-4 opacity-70" />
+            <ChevronRight className="h-4 w-4 opacity-60" />
           </button>
 
-          {/* Spacer pushes Extras to the bottom */}
           <div className="flex-1" />
 
-          <div className="h-px bg-border mb-4" />
+          <div className="mb-4 h-px bg-hairline" />
 
           <div className="space-y-1.5 pb-2">
-            <p className="text-label text-muted-foreground mb-3">Extras</p>
+            <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              Extras
+            </p>
             {menuLinks.map((link) => {
               const NavIcon = link.icon;
               return (
@@ -409,27 +410,48 @@ export function Header() {
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-normal transition-all ${
+                  className={cn(
+                    "flex items-center gap-3 rounded-[11px] px-3.5 py-3 text-sm transition-all",
                     isActive(link.path)
-                      ? "bg-secondary text-secondary-foreground"
-                      : "bg-card border border-border text-foreground active:border-secondary/50"
-                  }`}
+                      ? "bg-surface-2 font-semibold text-foreground"
+                      : "border border-hairline bg-surface-1 font-medium text-foreground",
+                  )}
                 >
-                  <NavIcon className="w-4 h-4 flex-shrink-0" />
+                  <NavIcon className="h-4 w-4 flex-shrink-0" />
                   <span className="truncate">{link.name}</span>
                 </Link>
               );
             })}
+
+            <div className="flex items-center gap-1.5 pt-3">
+              {socialLinks.map((social) => {
+                const SocialIcon = social.icon;
+                return (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-[11px] border border-hairline bg-surface-1 p-2 text-muted-foreground transition-colors hover:text-foreground"
+                    aria-label={social.label}
+                  >
+                    <SocialIcon className="h-4 w-4" />
+                  </a>
+                );
+              })}
+            </div>
+
             <div className="flex gap-1.5 pt-2">
               {(["es", "en"] as const).map((lng) => (
                 <button
                   key={lng}
                   onClick={() => i18n.changeLanguage(lng)}
-                  className={`flex-1 px-2 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-colors ${
+                  className={cn(
+                    "flex-1 rounded-[11px] px-2 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] transition-colors",
                     i18n.resolvedLanguage === lng
                       ? "bg-primary text-primary-foreground"
-                      : "bg-card border border-border text-muted-foreground hover:text-foreground"
-                  }`}
+                      : "border border-hairline bg-surface-1 text-muted-foreground hover:text-foreground",
+                  )}
                 >
                   {lng === "es" ? "Español" : "English"}
                 </button>
@@ -444,7 +466,6 @@ export function Header() {
         onClose={() => setShowSignupWizard(false)}
         initialTierId="fan"
       />
-
-    </motion.header>
+    </header>
   );
 }
