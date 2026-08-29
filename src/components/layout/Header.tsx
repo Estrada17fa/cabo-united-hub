@@ -60,13 +60,14 @@ const socialLinks = [
   { icon: WhatsAppIcon, href: "#", label: "WhatsApp" },
 ];
 
-/** Nav principal del shell: 5 links + Tienda (carrito) + Boletos (CTA). */
+/** Navbar principal: visible en móvil (etiqueta corta) y desktop (nombre completo). */
 const navLinks = [
-  { name: "Inicio", path: "/", icon: Home },
-  { name: "Match Zone", path: "/zona-partido", icon: SoccerBallIcon },
-  { name: "Tu Club", path: "/club", icon: Users },
-  { name: "Fan Zone", path: "/fan-zone", icon: Heart },
-  { name: "Visita Los Cabos", path: "/conoce-los-cabos", icon: MapPin },
+  { name: "Inicio", shortName: "Inicio", path: "/", icon: Home },
+  { name: "Match Zone", shortName: "Match", path: "/zona-partido", icon: SoccerBallIcon },
+  { name: "Tu Club", shortName: "Club", path: "/club", icon: Users },
+  { name: "Fan Zone", shortName: "Fans", path: "/fan-zone", icon: Heart },
+  { name: "Visita Los Cabos", shortName: "Visita", path: "/conoce-los-cabos", icon: MapPin },
+  { name: "Tienda Oficial", shortName: "Tienda", path: "/tienda", icon: ShoppingBag },
 ];
 
 const shopLink = { name: "Tienda", path: "/tienda", icon: ShoppingBag };
