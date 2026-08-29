@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useSeasonKey, useTeams } from "@/hooks/useLeague";
+import { useSeasonGroups, useSeasonKey, useTeams } from "@/hooks/useLeague";
 import type { Match } from "@/components/match-zone/types";
 import { AdminSheet } from "@/components/admin/AdminSheet";
 import { EmptyRow, Field, Hint, adminInput } from "@/components/admin/AdminUI";
@@ -93,10 +93,12 @@ export function MatchSheet({
   defaultMatchday?: number;
 }) {
   const season = useSeasonKey();
+  const groups = useSeasonGroups();
   const qc = useQueryClient();
   const { data: teams } = useTeams();
   const [form, setForm] = useState<FormState>(EMPTY);
   const [saving, setSaving] = useState(false);
+  const groupTouched = useRef(false);
 
   useEffect(() => {
     if (!open) return;
@@ -125,16 +127,39 @@ export function MatchSheet({
     }
   }, [open, match, defaultMatchday]);
 
+  /** Grupo sugerido: el común de ambos equipos, o Interzonal si son de grupos distintos. */
+  const suggestGroup = (homeId: string, awayId: string, current: string) => {
+    if (groupTouched.current) return current;
+    const h = teams?.find((t) => t.id === homeId)?.group_name ?? "";
+    const a = teams?.find((t) => t.id === awayId)?.group_name ?? "";
+    if (!h || !a) return h || a || current;
+    return h === a ? h : INTERZONAL;
+  };
+
   /** Sede derivada del equipo local (no se edita a mano). */
   const setHome = (id: string) => {
     const venue = teams?.find((t) => t.id === id)?.venue ?? "";
+    setForm((f) => {
+      const away = f.away_team_id === id ? "" : f.away_team_id;
+      return {
+        ...f,
+        home_team_id: id,
+        venue,
+        away_team_id: away,
+        group_name: suggestGroup(id, away, f.group_name),
+      };
+    });
+  };
+
+  const setAway = (id: string) => {
     setForm((f) => ({
       ...f,
-      home_team_id: id,
-      venue,
-      away_team_id: f.away_team_id === id ? "" : f.away_team_id,
+      away_team_id: id,
+      group_name: suggestGroup(f.home_team_id, id, f.group_name),
     }));
   };
+
+
 
   /** El link de transmisión solo aplica a nuestros partidos. */
   const isOurs = useMemo(() => {
