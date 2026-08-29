@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Bell, CalendarDays, MapPin, Ticket } from "lucide-react";
-import { toast } from "sonner";
-import { buildIcs, downloadIcs, formatKickoff } from "@/lib/matchClock";
+import { CalendarDays, MapPin, Ticket } from "lucide-react";
+import { formatKickoff } from "@/lib/matchClock";
 import { CountdownTimer, MatchupRow, PrimaryButton } from "@/components/lcu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AuthModal } from "@/components/auth/AuthModal";
@@ -9,21 +8,14 @@ import { AuthFlow } from "@/components/auth/AuthFlow";
 import { useAuth } from "@/hooks/useAuth";
 import type { Match } from "./types";
 
+const PINK = "#F199C1";
+
 export function NextMatchCard({ match }: { match: Match }) {
   const { user } = useAuth();
   const [loginOpen, setLoginOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
   const { date, time } = formatKickoff(match.kickoff_at);
   const isHome = !!match.home_team?.is_ours;
-
-  const remind = () => {
-    const title = `${match.home_team?.name ?? "Local"} vs ${match.away_team?.name ?? "Visita"}`;
-    downloadIcs(
-      "los-cabos-united.ics",
-      buildIcs({ title, start: match.kickoff_at, venue: match.venue, url: window.location.href })
-    );
-    toast.success("Recordatorio listo: ábrelo para agregarlo a tu calendario");
-  };
 
   return (
     <article className="rounded-2xl border border-hairline bg-surface-1 p-4">
@@ -48,12 +40,17 @@ export function NextMatchCard({ match }: { match: Match }) {
             Crea tu cuenta gratis y estará lista cuando arranque el partido.
           </p>
           <div className="mt-3 flex flex-col items-center gap-2">
-            <PrimaryButton className="w-full" onClick={() => setSignupOpen(true)}>
+            <button
+              onClick={() => setSignupOpen(true)}
+              className="w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-[#1A0B12] transition-opacity hover:opacity-90"
+              style={{ backgroundColor: PINK }}
+            >
               Crear cuenta gratis
-            </PrimaryButton>
+            </button>
             <button
               onClick={() => setLoginOpen(true)}
-              className="text-xs font-semibold text-primary underline-offset-4 hover:underline"
+              className="text-xs font-semibold underline-offset-4 hover:underline"
+              style={{ color: PINK }}
             >
               Ya tengo cuenta, iniciar sesión
             </button>
@@ -78,18 +75,13 @@ export function NextMatchCard({ match }: { match: Match }) {
         </span>
       </div>
 
-      {isHome && match.tickets_url ? (
+      {isHome && match.tickets_url && (
         <PrimaryButton
           className="mt-4 w-full"
           onClick={() => window.open(match.tickets_url!, "_blank")}
         >
           <Ticket className="h-4 w-4" />
           Comprar boletos
-        </PrimaryButton>
-      ) : (
-        <PrimaryButton className="mt-4 w-full" onClick={remind}>
-          <Bell className="h-4 w-4" />
-          Recordarme
         </PrimaryButton>
       )}
 
