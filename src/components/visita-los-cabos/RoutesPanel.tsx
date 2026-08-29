@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
-import { CATEGORY_META, LCU_CYAN } from "@/lib/visita-los-cabos-data";
+import { LCU_CYAN } from "@/lib/visita-los-cabos-data";
 import { useFanRoutes } from "@/hooks/useVisitaLosCabos";
+import { useCategoryMeta } from "@/hooks/usePlaceCategories";
 import { CategoryIcon } from "./CategoryIcon";
 
 interface RoutesPanelProps {
@@ -10,7 +11,9 @@ interface RoutesPanelProps {
 
 export function RoutesPanel({ onSelectPlace }: RoutesPanelProps) {
   const { data: routes = [], isLoading } = useFanRoutes();
+  const { metaFor } = useCategoryMeta();
   const [openId, setOpenId] = useState<string | null>(null);
+
 
   return (
     <div className="flex flex-col h-full overflow-y-auto scrollbar-hide space-y-4">
