@@ -371,43 +371,11 @@ export function FanPassCard({
                 <Store className="w-5 h-5" style={{ color: tier.accent }} />
               </div>
 
-              <div className="flex-1 flex items-center justify-center my-2">
-                {memberQr ? (
-                  <div className="relative" style={{ width: 196, height: 196 }}>
-                    <svg width="196" height="196" className="absolute inset-0 -rotate-90">
-                      <circle cx="98" cy="98" r="93" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="5" />
-                      <circle
-                        cx="98" cy="98" r="93" fill="none"
-                        stroke={tier.accent === "#FFFFFF" ? "#0a0a0a" : tier.accent}
-                        strokeWidth="5"
-                        strokeLinecap="round"
-                        strokeDasharray={2 * Math.PI * 93}
-                        strokeDashoffset={2 * Math.PI * 93 * (1 - memberProgress)}
-                        style={{ transition: "stroke-dashoffset 1s linear" }}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-white p-1.5 rounded-md">
-                        <QRCodeSVG value={memberQr.token} size={140} level="M" includeMargin={false} />
-                      </div>
-                    </div>
-                  </div>
-                ) : memberLoading ? (
-                  <div className="flex flex-col items-center gap-2 text-black/60">
-                    <Loader2 className="w-6 h-6 animate-spin" />
-                    <div className="text-xs">Generando QR…</div>
-                  </div>
-                ) : (
-                  <div className="text-center px-4">
-                    <div className="text-xs text-black/60 mb-2">{memberError ?? "Toca para generar"}</div>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); fetchMemberQr(); }}
-                      className="text-xs underline text-black/70"
-                    >
-                      Reintentar
-                    </button>
-                  </div>
-                )}
+              <div className="flex-1 flex flex-col items-center justify-center my-2 text-center px-4">
+                <Store className="w-8 h-8 mb-3" style={{ color: tier.accent }} />
+                <div className="text-sm font-bold text-black/80 leading-snug">
+                  Próximamente verás tu QR para sumar puntos y obtener descuentos en comercios
+                </div>
               </div>
 
               <div className="text-center text-[10px] text-black/45 mb-2">
