@@ -4,4 +4,3 @@ export { CountdownTimer } from "./CountdownTimer";
 export { MatchupRow } from "./MatchupRow";
 export { LeagueTabs, type LeagueTabItem } from "./LeagueTabs";
 export { PrimaryButton } from "./PrimaryButton";
-export { BottomNav } from "./BottomNav";

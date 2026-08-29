@@ -6,6 +6,7 @@ import { Loader2, Calendar, MapPin, Sparkles, ShieldCheck, RefreshCw, Download, 
 import { toPng } from "html-to-image";
 import { supabase } from "@/integrations/supabase/client";
 import lcuCrest from "@/assets/lcu-crest.png";
+import { tierStyle } from "@/lib/tiers";
 
 interface FanPass {
   id: string;
@@ -32,12 +33,7 @@ interface QrPayload {
   } | null;
 }
 
-const TIER_STYLE: Record<FanPass["tier"], { accent: string; label: string; bg: string }> = {
-  fan: { accent: "#FFFFFF", label: "FAN", bg: "linear-gradient(135deg, #1a1a1a, #0a0a0a)" },
-  gold: { accent: "#F59E0B", label: "GOLD", bg: "linear-gradient(135deg, #2a1f08, #0a0a0a)" },
-  premium: { accent: "#00abc4", label: "PREMIUM", bg: "linear-gradient(135deg, #06222a, #0a0a0a)" },
-  platino: { accent: "#E2E8F0", label: "PLATINO", bg: "linear-gradient(135deg, #1f2330, #0a0a0a)" },
-};
+// Estilo de tier centralizado en src/lib/tiers.ts (fuente única)
 
 const TIER_DISCOUNT: Record<FanPass["tier"], number> = {
   fan: 10, gold: 15, premium: 20, platino: 25,
@@ -84,7 +80,7 @@ export function FanPassCard({
   const frontRef = useRef<HTMLDivElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
 
-  const tier = TIER_STYLE[pass.tier];
+  const tier = tierStyle(pass.tier);
   const issuedDate = new Date(pass.issued_at).toLocaleDateString("es-MX", {
     day: "2-digit", month: "short", year: "numeric",
   });

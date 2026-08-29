@@ -16,6 +16,7 @@ const sponsors = [
   { id: 10, name: "Patrocinador 10", logo: sponsor10 },
 ];
 
+/** Banda fija de patrocinadores: marquee de loop perfecto, logos homologados por altura. */
 export function SponsorCarousel() {
   const singleSetRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -34,11 +35,7 @@ export function SponsorCarousel() {
     updateWidth();
 
     const resizeObserver = new ResizeObserver(updateWidth);
-
-    if (singleSetRef.current) {
-      resizeObserver.observe(singleSetRef.current);
-    }
-
+    if (singleSetRef.current) resizeObserver.observe(singleSetRef.current);
     window.addEventListener("resize", updateWidth);
 
     return () => {
@@ -48,37 +45,32 @@ export function SponsorCarousel() {
   }, []);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border py-4 sm:py-3 z-40 safe-bottom">
-      <div className="overflow-hidden flex items-center justify-center">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-hairline bg-surface-1/95 backdrop-blur-md safe-bottom">
+      <div className="flex items-center overflow-hidden py-2">
         <motion.div
           ref={containerRef}
-          className="flex w-max items-center gap-3 sm:gap-8"
+          className="flex w-max items-center gap-8"
           animate={travelDistance > 0 ? { x: [0, -travelDistance] } : { x: 0 }}
           transition={{
-            x: {
-              duration: 30,
-              repeat: Infinity,
-              ease: "linear",
-              repeatType: "loop",
-            },
+            x: { duration: 30, repeat: Infinity, ease: "linear", repeatType: "loop" },
           }}
         >
-          {[0, 1, 2].map((copyIdx) => (
+          {[0, 1, 2, 3].map((copyIdx) => (
             <div
               key={`set-${copyIdx}`}
               ref={copyIdx === 0 ? singleSetRef : undefined}
               aria-hidden={copyIdx !== 0}
-              className="flex items-center gap-3 sm:gap-8"
+              className="flex items-center gap-8"
             >
               {sponsors.map((sponsor) => (
                 <div
                   key={`${copyIdx}-${sponsor.id}`}
-                  className="flex h-9 sm:h-8 flex-shrink-0 items-center justify-center px-3 sm:px-6"
+                  className="flex h-7 flex-shrink-0 items-center justify-center px-2"
                 >
                   <img
                     src={sponsor.logo}
                     alt={copyIdx === 0 ? sponsor.name : ""}
-                    className="h-9 sm:h-8 max-w-[88px] sm:max-w-none w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
+                    className="h-7 w-auto max-w-none flex-shrink-0 object-contain opacity-90 transition-opacity hover:opacity-100"
                     loading="lazy"
                   />
                 </div>

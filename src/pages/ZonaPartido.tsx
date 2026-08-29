@@ -20,15 +20,8 @@ const ZonaPartido = () => {
   const live = !!match && isLivePhase(match.phase);
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 pb-10">
-      <header>
-        <h1 className="text-[26px] font-bold leading-tight tracking-tight text-foreground">
-          Match Zone
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          El partido y el torneo, en un solo lugar.
-        </p>
-      </header>
+    <div className="mx-auto max-w-2xl space-y-6 pt-4 pb-10">
+
 
       {isLoading ? (
         <div className="flex justify-center py-16">
