@@ -9,7 +9,7 @@ export function MatchupRow({ match, center }: { match: Match; center?: React.Rea
       <Side team={match.home_team} />
       <div className="min-w-[44px] text-center">
         {center ?? (
-          <span className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+          <span className="text-xs font-medium uppercase tracking-[0.04em] text-muted-foreground">
             VS
           </span>
         )}

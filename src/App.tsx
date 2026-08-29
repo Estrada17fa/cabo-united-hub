@@ -8,7 +8,6 @@ import { ScrollToTop } from "./components/layout/ScrollToTop";
 import { AuthProvider } from "./hooks/useAuth";
 import Index from "./pages/Index";
 import Club from "./pages/Club";
-import DemoMZ from "./pages/__DemoMZ";
 import ZonaPartido from "./pages/ZonaPartido";
 import FanZone from "./pages/FanZone";
 import Accesos from "./pages/Accesos";
@@ -45,7 +44,6 @@ const AppShell = () => {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/zona-partido" element={<ZonaPartido />} />
-        <Route path="/__demo-mz" element={<DemoMZ />} />
         <Route path="/club" element={<Club />} />
         <Route path="/fan-zone" element={<FanZone />} />
         <Route path="/accesos" element={<Accesos />} />
