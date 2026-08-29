@@ -1,8 +1,17 @@
-import { ArrowRight, Sparkles } from "lucide-react";
-import { FAN_ROUTES, LCU_CYAN } from "@/lib/visita-los-cabos-data";
+import { useState } from "react";
+import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
+import { CATEGORY_META, LCU_CYAN } from "@/lib/visita-los-cabos-data";
+import { useFanRoutes } from "@/hooks/useVisitaLosCabos";
 import { CategoryIcon } from "./CategoryIcon";
 
-export function RoutesPanel() {
+interface RoutesPanelProps {
+  onSelectPlace?: (placeId: string) => void;
+}
+
+export function RoutesPanel({ onSelectPlace }: RoutesPanelProps) {
+  const { data: routes = [], isLoading } = useFanRoutes();
+  const [openId, setOpenId] = useState<string | null>(null);
+
   return (
     <div className="flex flex-col h-full overflow-y-auto scrollbar-hide space-y-4">
       <div>
@@ -14,32 +23,109 @@ export function RoutesPanel() {
         </p>
       </div>
 
-      <div className="space-y-2.5">
-        {FAN_ROUTES.map((route) => (
-          <button
-            key={route.id}
-            className="w-full text-left bg-card border border-border rounded-2xl p-4 hover:border-foreground/30 transition-all group"
-          >
-            <div className="flex items-start gap-3">
-              <span className="w-10 h-10 rounded-xl bg-surface-2 border border-border flex items-center justify-center shrink-0">
-                <CategoryIcon name={route.icon} className="w-[18px] h-[18px] text-primary" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-[14px] font-bold text-foreground leading-tight">
-                  {route.name}
-                </h3>
-                <p className="text-[12px] text-muted-foreground mt-1 leading-relaxed">
-                  {route.description}
-                </p>
-                <p className="text-[11px] text-muted-foreground mt-2 font-semibold font-display tabular-nums">
-                  {route.stops} paradas · {route.duration}
-                </p>
+      {isLoading ? (
+        <div className="space-y-2.5">
+          {[0, 1].map((i) => (
+            <div
+              key={i}
+              className="h-[92px] rounded-2xl border border-border bg-card animate-pulse"
+            />
+          ))}
+        </div>
+      ) : routes.length === 0 ? (
+        <p className="text-[12px] text-muted-foreground bg-card border border-border rounded-2xl p-4 leading-relaxed">
+          Estamos armando las rutas. Muy pronto vas a poder recorrer Los Cabos
+          como un Amo del Paraíso.
+        </p>
+      ) : (
+        <div className="space-y-2.5">
+          {routes.map((route) => {
+            const open = openId === route.id;
+            return (
+              <div
+                key={route.id}
+                className="bg-card border border-border rounded-2xl overflow-hidden transition-all"
+              >
+                <button
+                  onClick={() => setOpenId(open ? null : route.id)}
+                  className="w-full text-left p-4 group"
+                >
+                  <div className="flex items-start gap-3">
+                    <span
+                      className="w-10 h-10 rounded-xl bg-surface-2 border border-border flex items-center justify-center shrink-0"
+                      style={route.color ? { borderColor: `${route.color}55` } : undefined}
+                    >
+                      <CategoryIcon
+                        name={route.icon}
+                        className="w-[18px] h-[18px]"
+                        style={{ color: route.color || LCU_CYAN }}
+                      />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-[14px] font-bold text-foreground leading-tight">
+                        {route.name}
+                      </h3>
+                      {route.description && (
+                        <p className="text-[12px] text-muted-foreground mt-1 leading-relaxed">
+                          {route.description}
+                        </p>
+                      )}
+                      <p className="text-[11px] text-muted-foreground mt-2 font-semibold font-display tabular-nums">
+                        {route.stops.length} paradas
+                        {route.duration ? ` · ${route.duration}` : ""}
+                      </p>
+                    </div>
+                    <ChevronDown
+                      className={`w-4 h-4 text-muted-foreground shrink-0 mt-0.5 transition-transform ${
+                        open ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </button>
+
+                {open && route.stops.length > 0 && (
+                  <ol className="border-t border-border divide-y divide-border">
+                    {route.stops.map((stop, i) => {
+                      const meta =
+                        CATEGORY_META[stop.category] ?? CATEGORY_META.restaurantes;
+                      return (
+                        <li key={stop.placeId}>
+                          <button
+                            onClick={() => onSelectPlace?.(stop.placeId)}
+                            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left hover:bg-surface-2 transition-colors"
+                          >
+                            <span
+                              className="w-5 text-[11px] font-bold font-display tabular-nums"
+                              style={{ color: meta.color }}
+                            >
+                              {i + 1}
+                            </span>
+                            <span className="min-w-0 flex-1">
+                              <span className="block text-[12px] font-semibold text-foreground truncate">
+                                {stop.name}
+                              </span>
+                              {stop.area && (
+                                <span className="block text-[10px] text-muted-foreground truncate">
+                                  {stop.area}
+                                </span>
+                              )}
+                            </span>
+                            <CategoryIcon
+                              name={meta.icon}
+                              className="w-3.5 h-3.5 shrink-0"
+                              style={{ color: meta.color }}
+                            />
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                )}
               </div>
-              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-all shrink-0 mt-0.5" />
-            </div>
-          </button>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Business CTA */}
       <div

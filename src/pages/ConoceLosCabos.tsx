@@ -3,10 +3,8 @@ import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  PLACES,
-  Place,
-} from "@/lib/visita-los-cabos-data";
+import { Place } from "@/lib/visita-los-cabos-data";
+import { usePlaces } from "@/hooks/useVisitaLosCabos";
 import { MapView } from "@/components/visita-los-cabos/MapView";
 import { FilterPills, FilterValue } from "@/components/visita-los-cabos/FilterPills";
 import { PlaceDetail } from "@/components/visita-los-cabos/PlaceDetail";
@@ -15,6 +13,7 @@ import { FeaturedStrip } from "@/components/visita-los-cabos/FeaturedStrip";
 
 const ConoceLosCabos = () => {
   const isMobile = useIsMobile();
+  const { data: places = [] } = usePlaces();
   const [searchParams, setSearchParams] = useSearchParams();
   const [filter, setFilter] = useState<FilterValue>("todos");
   const [search, setSearch] = useState("");
@@ -24,16 +23,16 @@ const ConoceLosCabos = () => {
   // Open the place detail when arriving via ?place=<id>
   useEffect(() => {
     const placeId = searchParams.get("place");
-    if (placeId && PLACES.some((p) => p.id === placeId)) {
+    if (placeId && places.some((p) => p.id === placeId)) {
       setSelectedId(placeId);
       if (isMobile) setSheetOpen(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, isMobile]);
+  }, [searchParams, isMobile, places]);
 
   const filteredPlaces = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return PLACES.filter((p) => {
+    return places.filter((p) => {
       if (filter === "patrocinadores" && p.tier !== "patrocinador") return false;
       if (
         filter !== "todos" &&
@@ -41,14 +40,18 @@ const ConoceLosCabos = () => {
         p.category !== filter
       )
         return false;
-      if (q && !p.name.toLowerCase().includes(q) && !p.area.toLowerCase().includes(q))
+      if (
+        q &&
+        !p.name.toLowerCase().includes(q) &&
+        !(p.area ?? "").toLowerCase().includes(q)
+      )
         return false;
       return true;
     });
-  }, [filter, search]);
+  }, [filter, search, places]);
 
   const selected = selectedId
-    ? PLACES.find((p) => p.id === selectedId) ?? null
+    ? places.find((p) => p.id === selectedId) ?? null
     : null;
 
   function handleSelect(place: Place) {
@@ -119,7 +122,7 @@ const ConoceLosCabos = () => {
                 transition={{ duration: 0.2 }}
                 className="h-full"
               >
-                <RoutesPanel />
+                <RoutesPanel onSelectPlace={(id) => { const pl = places.find((p) => p.id === id); if (pl) handleSelect(pl); }} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -141,16 +144,16 @@ const ConoceLosCabos = () => {
             onSelect={handleSelect}
           />
         </div>
-        <FeaturedStrip onSelect={handleSelect} />
+        <FeaturedStrip places={places} onSelect={handleSelect} />
         {/* Routes panel inline below on mobile */}
         <div className="bg-card border border-border rounded-2xl p-4">
-          <RoutesPanel />
+          <RoutesPanel onSelectPlace={(id) => { const pl = places.find((p) => p.id === id); if (pl) handleSelect(pl); }} />
         </div>
       </div>
 
       {/* Desktop bottom strip */}
       <div className="hidden md:block pt-2">
-        <FeaturedStrip onSelect={handleSelect} />
+        <FeaturedStrip places={places} onSelect={handleSelect} />
       </div>
 
       {/* MOBILE bottom sheet */}
