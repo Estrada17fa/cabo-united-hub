@@ -20,8 +20,19 @@ const SIZES = {
   lg: "h-12 w-12 text-sm",
 };
 
-/** Escudo con forma real de escudo. Usa el PNG del equipo; iniciales solo como fallback. */
+/** Logo PNG tal cual, sin fondo ni recorte. Iniciales solo como fallback cuando no hay logo. */
 export function Crest({ team, size = "md", className }: Props) {
+  if (team?.logo_url) {
+    return (
+      <img
+        src={team.logo_url}
+        alt={`Escudo de ${team.name ?? "equipo"}`}
+        loading="lazy"
+        className={cn("shrink-0 object-contain", SIZES[size], className)}
+      />
+    );
+  }
+
   const initials = (team?.short_name || team?.name || "?")
     .replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ ]/g, "")
     .split(" ")
@@ -34,26 +45,13 @@ export function Crest({ team, size = "md", className }: Props) {
   return (
     <span
       className={cn(
-        "relative flex shrink-0 items-center justify-center overflow-hidden font-semibold text-muted-foreground",
+        "relative flex shrink-0 items-center justify-center overflow-hidden rounded-full font-semibold text-muted-foreground",
         team?.is_ours ? "bg-primary/15 text-primary" : "bg-surface-3",
         SIZES[size],
         className
       )}
-      style={{
-        clipPath:
-          "polygon(50% 0%, 100% 14%, 100% 62%, 50% 100%, 0% 62%, 0% 14%)",
-      }}
     >
-      {team?.logo_url ? (
-        <img
-          src={team.logo_url}
-          alt={`Escudo de ${team.name ?? "equipo"}`}
-          loading="lazy"
-          className="h-full w-full object-contain p-[1px]"
-        />
-      ) : (
-        initials
-      )}
+      {initials}
     </span>
   );
 }

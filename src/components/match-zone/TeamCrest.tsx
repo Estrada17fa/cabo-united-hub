@@ -14,7 +14,19 @@ const SIZES = {
   xl: "h-20 w-20 text-base",
 };
 
+/** Logo PNG tal cual, sin fondo, círculo ni borde. Iniciales solo como fallback cuando no hay logo. */
 export function TeamCrest({ team, size = "md", className }: Props) {
+  if (team?.logo_url) {
+    return (
+      <img
+        src={team.logo_url}
+        alt={`Escudo de ${team.name}`}
+        loading="lazy"
+        className={cn("shrink-0 object-contain", SIZES[size], className)}
+      />
+    );
+  }
+
   const initials = (team?.short_name || team?.name || "?")
     .replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ ]/g, "")
     .split(" ")
@@ -33,16 +45,7 @@ export function TeamCrest({ team, size = "md", className }: Props) {
       )}
       aria-hidden={!team}
     >
-      {team?.logo_url ? (
-        <img
-          src={team.logo_url}
-          alt={`Escudo de ${team.name}`}
-          loading="lazy"
-          className="h-full w-full object-contain p-1"
-        />
-      ) : (
-        initials
-      )}
+      {initials}
     </div>
   );
 }
