@@ -24,7 +24,13 @@ export function StreamGate({ streamUrl, title }: Props) {
 
   return (
     <>
-      <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-hairline bg-surface-3">
+      <div
+        className={
+          embed && user
+            ? "relative aspect-video w-full overflow-hidden rounded-xl border border-hairline bg-surface-3"
+            : "relative w-full overflow-hidden rounded-xl border border-hairline bg-surface-3 min-h-[320px] sm:aspect-video"
+        }
+      >
         {embed && user ? (
           <iframe
             src={embed.embedUrl}
