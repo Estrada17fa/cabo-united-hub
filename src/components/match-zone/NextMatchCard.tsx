@@ -28,6 +28,9 @@ export function NextMatchCard({ match }: { match: Match }) {
       </div>
 
       <div className="mt-4">
+        <p className="mb-1.5 text-center text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          La transmisión empieza en
+        </p>
         <CountdownTimer kickoffAt={match.kickoff_at} />
       </div>
 
