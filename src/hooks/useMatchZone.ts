@@ -15,15 +15,17 @@ export function useFeaturedMatch() {
 
   const { match, state } = useMemo(() => {
     const now = Date.now();
-    const live = matches.find((m) => isLivePhase(m.phase));
+    // Solo partidos de Los Cabos United protagonizan la página.
+    const ours = matches.filter((m) => m.home_team?.is_ours || m.away_team?.is_ours);
+    const live = ours.find((m) => isLivePhase(m.phase));
     if (live) return { match: live, state: "live" as MatchZoneState };
 
-    const featured = matches.find((m) => m.is_featured && m.phase === "scheduled");
-    const next = matches
+    const featured = ours.find((m) => m.is_featured && m.phase === "scheduled");
+    const next = ours
       .filter((m) => m.phase === "scheduled" && new Date(m.kickoff_at).getTime() > now)
       .sort((a, b) => +new Date(a.kickoff_at) - +new Date(b.kickoff_at))[0];
 
-    const recent = matches
+    const recent = ours
       .filter(
         (m) =>
           m.phase === "finished" &&
