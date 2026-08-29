@@ -271,63 +271,6 @@ export type Database = {
         }
         Relationships: []
       }
-      league_standings: {
-        Row: {
-          adjustment_note: string | null
-          dg: number
-          gc: number
-          gf: number
-          group_name: string | null
-          id: string
-          je: number
-          jg: number
-          jj: number
-          jp: number
-          manual_adjustment: number
-          pos: number
-          pts: number
-          season: string
-          team: string
-          updated_at: string
-        }
-        Insert: {
-          adjustment_note?: string | null
-          dg?: number
-          gc?: number
-          gf?: number
-          group_name?: string | null
-          id?: string
-          je?: number
-          jg?: number
-          jj?: number
-          jp?: number
-          manual_adjustment?: number
-          pos?: number
-          pts?: number
-          season?: string
-          team: string
-          updated_at?: string
-        }
-        Update: {
-          adjustment_note?: string | null
-          dg?: number
-          gc?: number
-          gf?: number
-          group_name?: string | null
-          id?: string
-          je?: number
-          jg?: number
-          jj?: number
-          jp?: number
-          manual_adjustment?: number
-          pos?: number
-          pts?: number
-          season?: string
-          team?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       locations: {
         Row: {
           active: boolean
@@ -379,140 +322,6 @@ export type Database = {
           type?: Database["public"]["Enums"]["location_type_enum"]
           visit_cc?: number
           visit_xp?: number
-        }
-        Relationships: []
-      }
-      match_events: {
-        Row: {
-          created_at: string
-          description: string | null
-          event_type: Database["public"]["Enums"]["match_event_type"]
-          id: string
-          match_id: string
-          minute: number
-          player_name: string | null
-          team: string | null
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          event_type: Database["public"]["Enums"]["match_event_type"]
-          id?: string
-          match_id: string
-          minute: number
-          player_name?: string | null
-          team?: string | null
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          event_type?: Database["public"]["Enums"]["match_event_type"]
-          id?: string
-          match_id?: string
-          minute?: number
-          player_name?: string | null
-          team?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_events_match_id_fkey"
-            columns: ["match_id"]
-            isOneToOne: false
-            referencedRelation: "matches"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      matches: {
-        Row: {
-          away_pens: number | null
-          away_points: number
-          away_score: number | null
-          away_team: string
-          created_at: string
-          first_half_started_at: string | null
-          group_name: string | null
-          home_pens: number | null
-          home_points: number
-          home_score: number | null
-          home_team: string
-          id: string
-          is_home_game: boolean
-          jornada: number | null
-          live_stream_url: string | null
-          match_date: string
-          match_summary_url: string | null
-          match_time: string | null
-          phase: string
-          round_name: string | null
-          season: string
-          second_half_started_at: string | null
-          source: Database["public"]["Enums"]["match_source"]
-          stage: string
-          status: Database["public"]["Enums"]["match_status"]
-          stoppage_minutes: number
-          updated_at: string
-          venue: string | null
-        }
-        Insert: {
-          away_pens?: number | null
-          away_points?: number
-          away_score?: number | null
-          away_team: string
-          created_at?: string
-          first_half_started_at?: string | null
-          group_name?: string | null
-          home_pens?: number | null
-          home_points?: number
-          home_score?: number | null
-          home_team: string
-          id?: string
-          is_home_game?: boolean
-          jornada?: number | null
-          live_stream_url?: string | null
-          match_date: string
-          match_summary_url?: string | null
-          match_time?: string | null
-          phase?: string
-          round_name?: string | null
-          season?: string
-          second_half_started_at?: string | null
-          source?: Database["public"]["Enums"]["match_source"]
-          stage?: string
-          status?: Database["public"]["Enums"]["match_status"]
-          stoppage_minutes?: number
-          updated_at?: string
-          venue?: string | null
-        }
-        Update: {
-          away_pens?: number | null
-          away_points?: number
-          away_score?: number | null
-          away_team?: string
-          created_at?: string
-          first_half_started_at?: string | null
-          group_name?: string | null
-          home_pens?: number | null
-          home_points?: number
-          home_score?: number | null
-          home_team?: string
-          id?: string
-          is_home_game?: boolean
-          jornada?: number | null
-          live_stream_url?: string | null
-          match_date?: string
-          match_summary_url?: string | null
-          match_time?: string | null
-          phase?: string
-          round_name?: string | null
-          season?: string
-          second_half_started_at?: string | null
-          source?: Database["public"]["Enums"]["match_source"]
-          stage?: string
-          status?: Database["public"]["Enums"]["match_status"]
-          stoppage_minutes?: number
-          updated_at?: string
-          venue?: string | null
         }
         Relationships: []
       }
@@ -1197,69 +1006,6 @@ export type Database = {
         }
         Relationships: []
       }
-      teams: {
-        Row: {
-          active: boolean
-          created_at: string
-          group_name: string | null
-          id: string
-          is_ours: boolean
-          logo_url: string | null
-          name: string
-          season: string
-          short_name: string | null
-        }
-        Insert: {
-          active?: boolean
-          created_at?: string
-          group_name?: string | null
-          id?: string
-          is_ours?: boolean
-          logo_url?: string | null
-          name: string
-          season?: string
-          short_name?: string | null
-        }
-        Update: {
-          active?: boolean
-          created_at?: string
-          group_name?: string | null
-          id?: string
-          is_ours?: boolean
-          logo_url?: string | null
-          name?: string
-          season?: string
-          short_name?: string | null
-        }
-        Relationships: []
-      }
-      top_scorers: {
-        Row: {
-          goals: number
-          id: string
-          player_name: string
-          season: string
-          team: string
-          updated_at: string
-        }
-        Insert: {
-          goals?: number
-          id?: string
-          player_name: string
-          season?: string
-          team: string
-          updated_at?: string
-        }
-        Update: {
-          goals?: number
-          id?: string
-          player_name?: string
-          season?: string
-          team?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       transactions: {
         Row: {
           cc_delta: number
@@ -1418,15 +1164,6 @@ export type Database = {
         Returns: boolean
       }
       compute_level: { Args: { _xp: number }; Returns: number }
-      compute_match_points: {
-        Args: {
-          _away_pens: number
-          _away_score: number
-          _home_pens: number
-          _home_score: number
-        }
-        Returns: number[]
-      }
       generate_pass_code:
         | { Args: never; Returns: string }
         | {
@@ -1460,7 +1197,6 @@ export type Database = {
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_minor_user: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
-      recalculate_standings: { Args: { _season?: string }; Returns: number }
       record_game_play: {
         Args: { _game_id: string; _result?: Json; _score?: number }
         Returns: string
@@ -1469,15 +1205,6 @@ export type Database = {
       run_level_at_risk_warning: { Args: never; Returns: number }
       run_level_demotion_check: { Args: never; Returns: number }
       run_subscription_expiry_check: { Args: never; Returns: number }
-      set_standings_adjustment: {
-        Args: {
-          _adjustment: number
-          _note: string
-          _season: string
-          _team: string
-        }
-        Returns: undefined
-      }
       spend_cabo_coins: {
         Args: {
           p_cc: number
@@ -1500,15 +1227,6 @@ export type Database = {
         | "stadium_regular"
       level_status_enum: "permanent" | "active" | "at_risk" | "demoted"
       location_type_enum: "stadium" | "sponsor"
-      match_event_type:
-        | "goal"
-        | "yellow_card"
-        | "red_card"
-        | "substitution"
-        | "penalty"
-        | "own_goal"
-      match_source: "manual" | "scraped"
-      match_status: "scheduled" | "live" | "finished"
       pass_tier: "fan" | "gold" | "premium" | "platino"
       payment_status: "free" | "pending" | "mock_paid" | "paid" | "failed"
       qr_kind: "master" | "match" | "benefit" | "experience" | "member"
@@ -1669,16 +1387,6 @@ export const Constants = {
       ],
       level_status_enum: ["permanent", "active", "at_risk", "demoted"],
       location_type_enum: ["stadium", "sponsor"],
-      match_event_type: [
-        "goal",
-        "yellow_card",
-        "red_card",
-        "substitution",
-        "penalty",
-        "own_goal",
-      ],
-      match_source: ["manual", "scraped"],
-      match_status: ["scheduled", "live", "finished"],
       pass_tier: ["fan", "gold", "premium", "platino"],
       payment_status: ["free", "pending", "mock_paid", "paid", "failed"],
       qr_kind: ["master", "match", "benefit", "experience", "member"],
