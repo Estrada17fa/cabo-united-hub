@@ -4,7 +4,6 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import {
   CATEGORY_META,
   MAPBOX_TOKEN,
-  PLACES,
   Place,
   SPONSOR_GOLD,
 } from "@/lib/visita-los-cabos-data";
@@ -23,7 +22,7 @@ function buildPinElement(place: Place, isSelected: boolean): HTMLElement {
   wrapper.style.cursor = "pointer";
   wrapper.style.transform = "translate(-50%, -100%)";
 
-  const meta = CATEGORY_META[place.category];
+  const meta = CATEGORY_META[place.category] ?? CATEGORY_META.restaurantes;
   const ringStyle = isSelected
     ? "box-shadow: 0 0 0 3px hsl(0 0% 100%), 0 0 0 4px hsl(0 0% 0% / 0.6);"
     : "";
@@ -145,33 +144,16 @@ export function MapView({ filteredPlaces, selectedId, onSelect }: MapViewProps) 
     });
 
     // Add / refresh markers
-    PLACES.forEach((place) => {
-      if (!visibleIds.has(place.id)) return;
-
+    filteredPlaces.forEach((place) => {
       const existing = markersRef.current.get(place.id);
-      if (existing) {
-        // Re-render element to reflect selection state
-        const newEl = buildPinElement(place, place.id === selectedId);
-        newEl.addEventListener("click", (e) => {
-          e.stopPropagation();
-          onSelectRef.current(place);
-        });
-        const oldEl = existing.getElement();
-        oldEl.replaceWith(newEl);
-        // Re-bind marker element
-        existing.remove();
-        const m = new mapboxgl.Marker({ element: newEl })
-          .setLngLat(place.coords)
-          .addTo(map);
-        markersRef.current.set(place.id, m);
-        return;
-      }
-
       const el = buildPinElement(place, place.id === selectedId);
       el.addEventListener("click", (e) => {
         e.stopPropagation();
         onSelectRef.current(place);
       });
+
+      if (existing) existing.remove();
+
       const marker = new mapboxgl.Marker({ element: el })
         .setLngLat(place.coords)
         .addTo(map);
@@ -183,7 +165,7 @@ export function MapView({ filteredPlaces, selectedId, onSelect }: MapViewProps) 
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !selectedId) return;
-    const place = PLACES.find((p) => p.id === selectedId);
+    const place = filteredPlaces.find((p) => p.id === selectedId);
     if (!place) return;
     map.flyTo({
       center: place.coords,
@@ -191,6 +173,7 @@ export function MapView({ filteredPlaces, selectedId, onSelect }: MapViewProps) 
       duration: 1200,
       essential: true,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId]);
 
   return (
