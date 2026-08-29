@@ -33,12 +33,7 @@ export function useActiveSeason() {
         .eq("is_active", true)
         .maybeSingle();
       if (error) throw error;
-      return (data ?? null) as unknown as (Season & {
-        is_active: boolean;
-        logo_url: string | null;
-        points_rules: Record<string, unknown>;
-        qualifiers_count: number;
-      }) | null;
+      return (data ?? null) as unknown as SeasonRow | null;
     },
   });
 }
@@ -130,12 +125,7 @@ export function useSeasons() {
         .select(SEASON_SELECT)
         .order("start_date", { ascending: false });
       if (error) throw error;
-      return (data ?? []) as unknown as (Season & {
-        is_active: boolean;
-        logo_url: string | null;
-        points_rules: Record<string, unknown>;
-        qualifiers_count: number;
-      })[];
+      return (data ?? []) as unknown as SeasonRow[];
     },
   });
 }
