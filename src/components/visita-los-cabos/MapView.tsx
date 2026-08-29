@@ -142,8 +142,8 @@ export function MapView({ filteredPlaces, selectedId, onSelect }: MapViewProps) 
     const map = new mapboxgl.Map({
       container: containerRef.current,
       style: "mapbox://styles/mapbox/dark-v11",
-      center: [-109.6917, 23.0545],
-      zoom: 11,
+      center: [-109.9167, 22.8905],
+      zoom: 11.5,
       attributionControl: false,
     });
 
