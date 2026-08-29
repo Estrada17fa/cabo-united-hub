@@ -320,8 +320,9 @@ export default function Rutas() {
                     {form.stops.map((id, i) => {
                       const p: any = placeById(id);
                       const meta = p
-                        ? CATEGORY_META[p.category as PlaceCategory]
+                        ? metaFor(p.category as PlaceCategory)
                         : undefined;
+
                       return (
                         <li
                           key={id}
