@@ -112,6 +112,7 @@ export function MatchdayBuilder({
       away_team_id: r.away_team_id,
       kickoff_at: new Date(r.kickoff_at).toISOString(),
       venue: r.venue.trim() || null,
+      group_name: r.group_name.trim() || null,
       phase: "scheduled",
       home_score: 0,
       away_score: 0,
@@ -190,7 +191,7 @@ export function MatchdayBuilder({
               <select
                 className={adminInput}
                 value={r.away_team_id}
-                onChange={(e) => update(i, { away_team_id: e.target.value })}
+                onChange={(e) => setAway(i, e.target.value)}
               >
                 <option value="">— Visitante —</option>
                 {teams
@@ -201,6 +202,21 @@ export function MatchdayBuilder({
                     </option>
                   ))}
               </select>
+              {groups.length > 0 && (
+                <select
+                  className={adminInput}
+                  value={r.group_name}
+                  onChange={(e) => update(i, { group_name: e.target.value, groupTouched: true })}
+                >
+                  <option value="">Sin grupo</option>
+                  {groups.map((g) => (
+                    <option key={g} value={g}>
+                      Grupo {g}
+                    </option>
+                  ))}
+                  <option value={INTERZONAL}>Interzonal</option>
+                </select>
+              )}
               <input
                 type="datetime-local"
                 className={adminInput}
