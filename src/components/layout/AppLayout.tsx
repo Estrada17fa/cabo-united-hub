@@ -1,26 +1,37 @@
 import { ReactNode } from "react";
+import { useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "./Header";
 import { SponsorCarousel } from "./SponsorCarousel";
-import { BottomNav } from "@/components/lcu";
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
+  const location = useLocation();
+
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
 
-      <main className="flex-1 pt-[4.5rem] lg:pt-24 pb-16 sm:pb-20">
+      <main className="flex-1 pb-16 pt-[3.75rem] lg:pt-[7rem]">
         <div className="container mx-auto px-3 sm:px-4">
-          {children}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
 
       <SponsorCarousel />
-      <BottomNav />
-      <div className="h-16 lg:hidden" aria-hidden />
     </div>
   );
 }
