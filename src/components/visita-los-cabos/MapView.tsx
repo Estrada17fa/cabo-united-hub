@@ -6,8 +6,9 @@ import {
   MAPBOX_TOKEN,
   PLACES,
   Place,
-  SPONSOR_GREEN,
+  SPONSOR_GOLD,
 } from "@/lib/visita-los-cabos-data";
+import { categoryIconSvg } from "./CategoryIcon";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -33,21 +34,23 @@ function buildPinElement(place: Place, isSelected: boolean): HTMLElement {
         position: relative;
         width: 36px; height: 36px;
         border-radius: 10px;
-        background: ${SPONSOR_GREEN};
+        background: ${SPONSOR_GOLD};
         display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 12px ${SPONSOR_GREEN}99, 0 4px 10px hsl(0 0% 0% / 0.5);
+        color: hsl(0 0% 8%);
+        box-shadow: 0 0 12px ${SPONSOR_GOLD}66, 0 4px 10px hsl(0 0% 0% / 0.5);
         ${ringStyle}
       ">
-        <span style="font-size: 18px; line-height: 1;">${meta.emoji}</span>
+        ${categoryIconSvg(meta.icon, 18)}
         <span style="
           position: absolute; top: -6px; right: -6px;
           width: 16px; height: 16px; border-radius: 50%;
-          background: hsl(42 100% 55%);
-          color: hsl(0 0% 8%);
-          font-size: 10px; font-weight: 800;
+          background: hsl(0 0% 8%);
+          color: ${SPONSOR_GOLD};
           display: flex; align-items: center; justify-content: center;
           box-shadow: 0 2px 6px hsl(0 0% 0% / 0.6);
-        ">★</span>
+        ">
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+        </span>
       </div>
     `;
   } else if (place.tier === "destacado") {
@@ -61,16 +64,16 @@ function buildPinElement(place: Place, isSelected: boolean): HTMLElement {
           width: 28px; height: 28px;
           border-radius: 50% 50% 50% 0;
           transform: rotate(-45deg);
-          background: hsl(0 0% 12%);
-          border: 1.5px solid hsl(0 0% 100% / 0.3);
+          background: hsl(0 0% 8%);
+          border: 1.5px solid ${meta.color};
           display: flex; align-items: center; justify-content: center;
           box-shadow: 0 4px 8px hsl(0 0% 0% / 0.5);
         ">
           <span style="
             transform: rotate(45deg);
             color: ${meta.color};
-            font-size: 14px;
-          ">${meta.emoji}</span>
+            display: flex; align-items: center; justify-content: center;
+          ">${categoryIconSvg(meta.icon, 13)}</span>
         </div>
       </div>
     `;
@@ -79,9 +82,9 @@ function buildPinElement(place: Place, isSelected: boolean): HTMLElement {
       <div style="
         width: 12px; height: 12px;
         border-radius: 50%;
-        background: hsl(0 0% 100% / 0.35);
-        border: 1px solid hsl(0 0% 100% / 0.5);
-        ${isSelected ? 'box-shadow: 0 0 0 3px hsl(0 0% 100% / 0.8);' : ''}
+        background: ${meta.color};
+        border: 1px solid hsl(0 0% 100% / 0.4);
+        ${isSelected ? "box-shadow: 0 0 0 3px hsl(0 0% 100% / 0.8);" : ""}
       "></div>
     `;
   }

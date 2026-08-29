@@ -1,16 +1,22 @@
 import { Search } from "lucide-react";
-import { CATEGORY_META, PlaceCategory } from "@/lib/visita-los-cabos-data";
+import {
+  CATEGORY_META,
+  LCU_CYAN,
+  PlaceCategory,
+  SPONSOR_GOLD,
+} from "@/lib/visita-los-cabos-data";
+import { CategoryIcon } from "./CategoryIcon";
 
 export type FilterValue = PlaceCategory | "todos" | "patrocinadores";
 
-const FILTERS: { value: FilterValue; label: string; emoji: string }[] = [
-  { value: "todos", label: "Todos", emoji: "" },
-  { value: "restaurantes", label: "Restaurantes", emoji: CATEGORY_META.restaurantes.emoji },
-  { value: "bares", label: "Bares", emoji: CATEGORY_META.bares.emoji },
-  { value: "tours", label: "Tours", emoji: CATEGORY_META.tours.emoji },
-  { value: "tiendas", label: "Tiendas", emoji: CATEGORY_META.tiendas.emoji },
-  { value: "hoteles", label: "Hoteles", emoji: CATEGORY_META.hoteles.emoji },
-  { value: "patrocinadores", label: "Patrocinadores", emoji: "⭐" },
+const FILTERS: { value: FilterValue; label: string; icon?: string }[] = [
+  { value: "todos", label: "Todos" },
+  { value: "restaurantes", label: "Restaurantes", icon: CATEGORY_META.restaurantes.icon },
+  { value: "bares", label: "Bares", icon: CATEGORY_META.bares.icon },
+  { value: "tours", label: "Tours", icon: CATEGORY_META.tours.icon },
+  { value: "tiendas", label: "Tiendas", icon: CATEGORY_META.tiendas.icon },
+  { value: "hoteles", label: "Hoteles", icon: CATEGORY_META.hoteles.icon },
+  { value: "patrocinadores", label: "Patrocinadores", icon: "star" },
 ];
 
 interface FilterPillsProps {
@@ -26,11 +32,13 @@ export function FilterPills({ active, onChange, search, onSearchChange }: Filter
       <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
         {FILTERS.map((f) => {
           const isActive = f.value === active;
+          const isSponsors = f.value === "patrocinadores";
+          const activeColor = isSponsors ? SPONSOR_GOLD : LCU_CYAN;
           return (
             <button
               key={f.value}
               onClick={() => onChange(f.value)}
-              className={`shrink-0 px-3 py-1.5 rounded-full text-[12px] font-semibold transition-all whitespace-nowrap ${
+              className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold transition-all whitespace-nowrap ${
                 isActive
                   ? "text-[hsl(0_0%_8%)]"
                   : "bg-card border border-border text-foreground hover:border-foreground/40"
@@ -38,13 +46,21 @@ export function FilterPills({ active, onChange, search, onSearchChange }: Filter
               style={
                 isActive
                   ? {
-                      backgroundColor: "#00FF87",
-                      boxShadow: "0 4px 14px -4px #00FF8780",
+                      backgroundColor: activeColor,
+                      boxShadow: `0 4px 14px -4px ${activeColor}80`,
                     }
                   : undefined
               }
             >
-              {f.emoji && <span className="mr-1">{f.emoji}</span>}
+              {f.icon && (
+                <CategoryIcon
+                  name={f.icon}
+                  className="w-3.5 h-3.5"
+                  style={
+                    !isActive && isSponsors ? { color: SPONSOR_GOLD } : undefined
+                  }
+                />
+              )}
               {f.label}
             </button>
           );
