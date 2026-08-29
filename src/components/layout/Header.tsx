@@ -146,12 +146,9 @@ export function Header() {
 
       <div className="h-px bg-hairline" />
 
-      {/* Línea 2 — navegación con subrayado activo animado (desktop/tablet) */}
-      <nav
-        className="hidden border-b border-hairline lg:block"
-        aria-label="Navegación principal"
-      >
-        <ul className="mx-auto flex max-w-6xl items-center justify-center gap-1 px-4">
+      {/* Línea 2 — navbar visible en todos los formatos, subrayado activo animado */}
+      <nav className="border-b border-hairline" aria-label="Navegación principal">
+        <ul className="mx-auto grid max-w-6xl grid-cols-6 px-1 sm:flex sm:items-center sm:justify-center sm:gap-1 sm:px-4">
           {navLinks.map((link) => {
             const NavIcon = link.icon;
             const active = isActive(link.path);
@@ -162,70 +159,34 @@ export function Header() {
                   onClick={() => window.scrollTo(0, 0)}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex items-center gap-1.5 px-3 py-3 text-[13px] transition-colors",
+                    "flex flex-col items-center justify-center gap-0.5 py-1.5 transition-colors sm:flex-row sm:gap-1.5 sm:px-3 sm:py-3",
                     active
-                      ? "font-semibold text-foreground"
+                      ? "font-semibold text-primary sm:text-foreground"
                       : "font-medium text-muted-foreground hover:text-foreground/80",
                   )}
                 >
-                  <NavIcon className="h-4 w-4" strokeWidth={2} />
-                  {link.name}
+                  <motion.span
+                    animate={active ? { scale: [1, 1.25, 1] } : { scale: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 18 }}
+                    className="flex"
+                  >
+                    <NavIcon className="h-[18px] w-[18px] sm:h-4 sm:w-4" strokeWidth={2} />
+                  </motion.span>
+                  <span className="text-[9px] leading-none tracking-wide sm:hidden">
+                    {link.shortName}
+                  </span>
+                  <span className="hidden text-[13px] sm:inline">{link.name}</span>
                 </Link>
                 {active && (
                   <motion.span
                     layoutId="nav-underline"
                     transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                    className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-primary"
+                    className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-primary sm:inset-x-2"
                   />
                 )}
               </li>
             );
           })}
-
-          <li className="relative">
-            <Link
-              to={shopLink.path}
-              onClick={() => window.scrollTo(0, 0)}
-              aria-label="Tienda"
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-3 text-[13px] transition-colors",
-                isActive(shopLink.path)
-                  ? "font-semibold text-foreground"
-                  : "font-medium text-muted-foreground hover:text-foreground/80",
-              )}
-            >
-              <span className="relative">
-                <ShoppingBag className="h-4 w-4" strokeWidth={2} />
-                {hasCartItems && (
-                  <span
-                    className="absolute -right-2 -top-1.5 flex h-[14px] min-w-[14px] items-center justify-center rounded-full px-1 text-[8px] font-bold text-background"
-                    style={{ background: "hsl(var(--primary))" }}
-                  >
-                    {totalCartItems}
-                  </span>
-                )}
-              </span>
-              Tienda
-            </Link>
-            {isActive(shopLink.path) && (
-              <motion.span
-                layoutId="nav-underline"
-                transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-primary"
-              />
-            )}
-          </li>
-
-          <li className="ml-2">
-            <Link
-              to={ticketsLink.path}
-              onClick={() => window.scrollTo(0, 0)}
-              className="flex items-center gap-1.5 rounded-[11px] bg-primary px-3.5 py-2 text-[13px] font-semibold text-primary-foreground transition-transform active:scale-[0.98]"
-            >
-              <Ticket className="h-4 w-4" strokeWidth={2.2} />
-              Boletos
-            </Link>
-          </li>
         </ul>
       </nav>
 
