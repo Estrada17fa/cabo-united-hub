@@ -28,7 +28,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
-import { useTranslation } from "react-i18next";
+
 import { AuthModal } from "@/components/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cartStore";
@@ -87,7 +87,7 @@ export function Header() {
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
   const { isAdmin } = useIsAdmin();
-  const { i18n } = useTranslation();
+  
   const isActive = (path: string) =>
     path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
   const totalCartItems = useCartStore((s) =>
