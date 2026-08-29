@@ -188,6 +188,48 @@ export type Database = {
           },
         ]
       }
+      fan_posts: {
+        Row: {
+          author: string
+          created_at: string
+          handle: string | null
+          id: string
+          image_url: string | null
+          link_url: string | null
+          network: string
+          published: boolean
+          sort_order: number
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          created_at?: string
+          handle?: string | null
+          id?: string
+          image_url?: string | null
+          link_url?: string | null
+          network?: string
+          published?: boolean
+          sort_order?: number
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          handle?: string | null
+          id?: string
+          image_url?: string | null
+          link_url?: string | null
+          network?: string
+          published?: boolean
+          sort_order?: number
+          text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       game_plays: {
         Row: {
           cc_awarded: number
@@ -765,6 +807,7 @@ export type Database = {
       news: {
         Row: {
           author: string | null
+          category: string | null
           content: string | null
           created_at: string
           excerpt: string | null
@@ -778,6 +821,7 @@ export type Database = {
         }
         Insert: {
           author?: string | null
+          category?: string | null
           content?: string | null
           created_at?: string
           excerpt?: string | null
@@ -791,6 +835,7 @@ export type Database = {
         }
         Update: {
           author?: string | null
+          category?: string | null
           content?: string | null
           created_at?: string
           excerpt?: string | null
@@ -1603,6 +1648,39 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      youth_team: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          tournament: string
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          tournament?: string
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          tournament?: string
+          updated_at?: string
+          visible?: boolean
         }
         Relationships: []
       }
