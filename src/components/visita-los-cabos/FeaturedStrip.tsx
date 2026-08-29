@@ -1,10 +1,8 @@
 import { Flame } from "lucide-react";
-import {
-  CATEGORY_META,
-  Place,
-  placeBackground,
-} from "@/lib/visita-los-cabos-data";
+import { Place, placeBackground } from "@/lib/visita-los-cabos-data";
+import { useCategoryMeta } from "@/hooks/usePlaceCategories";
 import { CategoryIcon } from "./CategoryIcon";
+
 
 interface FeaturedStripProps {
   places: Place[];
@@ -12,6 +10,7 @@ interface FeaturedStripProps {
 }
 
 export function FeaturedStrip({ places, onSelect }: FeaturedStripProps) {
+  const { metaFor } = useCategoryMeta();
   const featured = places.filter((p) => p.featured);
   const list = featured.length > 0 ? featured : places.slice(0, 6);
 
@@ -24,14 +23,18 @@ export function FeaturedStrip({ places, onSelect }: FeaturedStripProps) {
       </h3>
       <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
         {list.map((place) => {
-          const meta = CATEGORY_META[place.category] ?? CATEGORY_META.restaurantes;
+          const meta = metaFor(place.category);
+
           return (
             <button
               key={place.id}
               onClick={() => onSelect(place)}
               className="shrink-0 w-[180px] h-[100px] relative rounded-xl overflow-hidden border border-border hover:border-foreground/40 transition-all group text-left"
               style={{
-                background: place.photoUrl ? undefined : placeBackground(place),
+                background: place.photoUrl
+                  ? undefined
+                  : placeBackground(place, meta.gradient),
+
                 borderLeft: `3px solid ${meta.color}`,
               }}
             >

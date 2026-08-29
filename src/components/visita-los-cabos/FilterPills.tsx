@@ -1,23 +1,14 @@
 import { Search } from "lucide-react";
 import {
-  CATEGORY_META,
   LCU_CYAN,
   PlaceCategory,
   SPONSOR_GOLD,
 } from "@/lib/visita-los-cabos-data";
+import { usePlaceCategories } from "@/hooks/usePlaceCategories";
 import { CategoryIcon } from "./CategoryIcon";
 
 export type FilterValue = PlaceCategory | "todos" | "patrocinadores";
 
-const FILTERS: { value: FilterValue; label: string; icon?: string }[] = [
-  { value: "todos", label: "Todos" },
-  { value: "restaurantes", label: "Restaurantes", icon: CATEGORY_META.restaurantes.icon },
-  { value: "bares", label: "Bares", icon: CATEGORY_META.bares.icon },
-  { value: "tours", label: "Tours", icon: CATEGORY_META.tours.icon },
-  { value: "tiendas", label: "Tiendas", icon: CATEGORY_META.tiendas.icon },
-  { value: "hoteles", label: "Hoteles", icon: CATEGORY_META.hoteles.icon },
-  { value: "patrocinadores", label: "Patrocinadores", icon: "star" },
-];
 
 interface FilterPillsProps {
   active: FilterValue;
@@ -27,10 +18,18 @@ interface FilterPillsProps {
 }
 
 export function FilterPills({ active, onChange, search, onSearchChange }: FilterPillsProps) {
+  const { categories } = usePlaceCategories();
+  const filters: { value: FilterValue; label: string; icon?: string }[] = [
+    { value: "todos", label: "Todos" },
+    ...categories.map((c) => ({ value: c.slug, label: c.label, icon: c.icon })),
+    { value: "patrocinadores", label: "Patrocinadores", icon: "star" },
+  ];
+
   return (
     <div className="space-y-2">
       <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-        {FILTERS.map((f) => {
+        {filters.map((f) => {
+
           const isActive = f.value === active;
           const isSponsors = f.value === "patrocinadores";
           const activeColor = isSponsors ? SPONSOR_GOLD : LCU_CYAN;

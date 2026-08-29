@@ -2,11 +2,13 @@ import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
-  CATEGORY_META,
+  FALLBACK_CATEGORY,
   MAPBOX_TOKEN,
   Place,
+  PlaceCategoryMeta,
   SPONSOR_GOLD,
 } from "@/lib/visita-los-cabos-data";
+import { useCategoryMeta } from "@/hooks/usePlaceCategories";
 import { categoryIconSvg } from "./CategoryIcon";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
@@ -17,13 +19,17 @@ interface MapViewProps {
   onSelect: (place: Place) => void;
 }
 
-function buildPinElement(place: Place, isSelected: boolean): HTMLElement {
+function buildPinElement(
+  place: Place,
+  isSelected: boolean,
+  meta: PlaceCategoryMeta = FALLBACK_CATEGORY
+): HTMLElement {
   const wrapper = document.createElement("div");
   wrapper.style.cursor = "pointer";
   wrapper.style.transform = "translate(-50%, -100%)";
 
-  const meta = CATEGORY_META[place.category] ?? CATEGORY_META.restaurantes;
   const ringStyle = isSelected
+
     ? "box-shadow: 0 0 0 3px hsl(0 0% 100%), 0 0 0 4px hsl(0 0% 0% / 0.6);"
     : "";
 
@@ -134,6 +140,8 @@ export function MapView({ filteredPlaces, selectedId, onSelect }: MapViewProps) 
   const markersRef = useRef<Map<string, mapboxgl.Marker>>(new Map());
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
+  const { metaFor } = useCategoryMeta();
+
 
   // Init map once
   useEffect(() => {
@@ -183,7 +191,11 @@ export function MapView({ filteredPlaces, selectedId, onSelect }: MapViewProps) 
     // Add / refresh markers
     filteredPlaces.forEach((place) => {
       const existing = markersRef.current.get(place.id);
-      const el = buildPinElement(place, place.id === selectedId);
+      const el = buildPinElement(
+        place,
+        place.id === selectedId,
+        metaFor(place.category)
+      );
       el.addEventListener("click", (e) => {
         e.stopPropagation();
         onSelectRef.current(place);
@@ -196,7 +208,8 @@ export function MapView({ filteredPlaces, selectedId, onSelect }: MapViewProps) 
         .addTo(map);
       markersRef.current.set(place.id, marker);
     });
-  }, [filteredPlaces, selectedId]);
+  }, [filteredPlaces, selectedId, metaFor]);
+
 
   // Fly to selected
   useEffect(() => {

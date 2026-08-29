@@ -1047,10 +1047,46 @@ export type Database = {
           },
         ]
       }
+      place_categories: {
+        Row: {
+          active: boolean
+          color: string
+          created_at: string
+          gradient: string | null
+          icon: string
+          label: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          color?: string
+          created_at?: string
+          gradient?: string | null
+          icon?: string
+          label: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          color?: string
+          created_at?: string
+          gradient?: string | null
+          icon?: string
+          label?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       places: {
         Row: {
           area: string | null
-          category: Database["public"]["Enums"]["place_category"]
+          category: string
           created_at: string
           description: string | null
           featured: boolean
@@ -1074,7 +1110,7 @@ export type Database = {
         }
         Insert: {
           area?: string | null
-          category?: Database["public"]["Enums"]["place_category"]
+          category?: string
           created_at?: string
           description?: string | null
           featured?: boolean
@@ -1098,7 +1134,7 @@ export type Database = {
         }
         Update: {
           area?: string | null
-          category?: Database["public"]["Enums"]["place_category"]
+          category?: string
           created_at?: string
           description?: string | null
           featured?: boolean
@@ -1120,7 +1156,15 @@ export type Database = {
           visited_by?: number | null
           whatsapp?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "places_category_fkey"
+            columns: ["category"]
+            isOneToOne: false
+            referencedRelation: "place_categories"
+            referencedColumns: ["slug"]
+          },
+        ]
       }
       players: {
         Row: {

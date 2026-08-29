@@ -15,19 +15,12 @@ import {
   adminInput,
 } from "@/components/admin/AdminUI";
 import {
-  CATEGORY_META,
   GRADIENT_PRESETS,
   PlaceCategory,
   SPONSOR_GOLD,
 } from "@/lib/visita-los-cabos-data";
+import { useCategoryMeta } from "@/hooks/usePlaceCategories";
 
-const CATEGORIES: PlaceCategory[] = [
-  "restaurantes",
-  "bares",
-  "tours",
-  "tiendas",
-  "hoteles",
-];
 
 const TIERS = [
   { id: "basico", label: "Normal" },
@@ -84,6 +77,8 @@ export default function Lugares() {
   const qc = useQueryClient();
   const [form, setForm] = useState<Form | null>(null);
   const [saving, setSaving] = useState(false);
+  const { categories, metaFor } = useCategoryMeta();
+
 
   const { data: places, isLoading } = useQuery({
     queryKey: ["admin-places"],
@@ -201,7 +196,7 @@ export default function Lugares() {
         ) : (
           <ul className="divide-y divide-hairline">
             {places.map((p: any) => {
-              const meta = CATEGORY_META[p.category as PlaceCategory];
+              const meta = metaFor(p.category as PlaceCategory);
               return (
                 <li key={p.id}>
                   <button
@@ -294,11 +289,12 @@ export default function Lugares() {
                   }
                   className={adminInput}
                 >
-                  {CATEGORIES.map((c) => (
-                    <option key={c} value={c}>
-                      {CATEGORY_META[c].label}
+                  {categories.map((c) => (
+                    <option key={c.slug} value={c.slug}>
+                      {c.label}
                     </option>
                   ))}
+
                 </select>
               </Field>
               <Field label="Nivel">

@@ -12,7 +12,9 @@ import {
   adminCard,
   adminInput,
 } from "@/components/admin/AdminUI";
-import { CATEGORY_META, PlaceCategory, ROUTE_ICONS } from "@/lib/visita-los-cabos-data";
+import { PlaceCategory, ROUTE_ICONS } from "@/lib/visita-los-cabos-data";
+import { useCategoryMeta } from "@/hooks/usePlaceCategories";
+
 
 interface Form {
   id?: string;
@@ -41,6 +43,9 @@ export default function Rutas() {
   const qc = useQueryClient();
   const [form, setForm] = useState<Form | null>(null);
   const [saving, setSaving] = useState(false);
+  const { metaFor } = useCategoryMeta();
+
+
 
   const { data: places } = useQuery({
     queryKey: ["admin-places-min"],
@@ -320,8 +325,9 @@ export default function Rutas() {
                     {form.stops.map((id, i) => {
                       const p: any = placeById(id);
                       const meta = p
-                        ? CATEGORY_META[p.category as PlaceCategory]
+                        ? metaFor(p.category as PlaceCategory)
                         : undefined;
+
                       return (
                         <li
                           key={id}
