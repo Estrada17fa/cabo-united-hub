@@ -1,10 +1,8 @@
 import { Flame } from "lucide-react";
-import {
-  CATEGORY_META,
-  Place,
-  placeBackground,
-} from "@/lib/visita-los-cabos-data";
+import { Place, placeBackground } from "@/lib/visita-los-cabos-data";
+import { useCategoryMeta } from "@/hooks/usePlaceCategories";
 import { CategoryIcon } from "./CategoryIcon";
+
 
 interface FeaturedStripProps {
   places: Place[];
