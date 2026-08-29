@@ -135,7 +135,7 @@ export function FixturesList({ matches }: Props) {
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <span className="min-w-8 text-center font-grotesk text-xs font-bold tabular-nums text-secondary-fg">
+            <span className="min-w-8 text-center font-display text-xs font-bold tabular-nums text-secondary-fg">
               {group.shortLabel}
             </span>
             <button
