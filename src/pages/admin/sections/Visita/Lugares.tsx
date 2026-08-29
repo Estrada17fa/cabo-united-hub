@@ -46,6 +46,7 @@ interface Form {
   lat: number | null;
   lng: number | null;
   photo_url: string | null;
+  logo_url: string | null;
   photo_gradient: string | null;
   whatsapp: string;
   visited_by: string;

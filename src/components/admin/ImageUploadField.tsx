@@ -11,8 +11,8 @@ interface Props {
   label: string;
   value: string | null;
   onChange: (url: string | null) => void;
-  /** Carpeta dentro del bucket público: teams | tournaments | players | places */
-  folder: "teams" | "tournaments" | "players" | "places";
+  /** Carpeta dentro del bucket público */
+  folder: "teams" | "tournaments" | "players" | "places" | "place-logos";
   hint?: string;
 }
 
