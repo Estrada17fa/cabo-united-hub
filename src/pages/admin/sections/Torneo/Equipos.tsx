@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Shield, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useSeasonKey, useTeams } from "@/hooks/useLeague";
+import { useSeasonGroups, useSeasonKey, useTeams } from "@/hooks/useLeague";
 import type { Team } from "@/components/match-zone/types";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { AdminSheet } from "@/components/admin/AdminSheet";
@@ -34,6 +34,7 @@ const EMPTY: FormState = {
 
 export default function Equipos() {
   const season = useSeasonKey();
+  const groups = useSeasonGroups();
   const qc = useQueryClient();
   const { data: teams, isLoading } = useTeams();
   const [open, setOpen] = useState(false);
@@ -209,12 +210,27 @@ export default function Equipos() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Grupo">
-            <input
-              className={adminInput}
-              value={form.group_name}
-              placeholder="A"
-              onChange={(e) => setForm({ ...form, group_name: e.target.value })}
-            />
+            {groups.length ? (
+              <select
+                className={adminInput}
+                value={form.group_name}
+                onChange={(e) => setForm({ ...form, group_name: e.target.value })}
+              >
+                <option value="">Sin grupo</option>
+                {groups.map((g) => (
+                  <option key={g} value={g}>
+                    Grupo {g}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                className={adminInput}
+                value={form.group_name}
+                placeholder="Define los grupos en Configuración"
+                onChange={(e) => setForm({ ...form, group_name: e.target.value })}
+              />
+            )}
           </Field>
           <Field label="Sede habitual">
             <input
