@@ -8,6 +8,7 @@ const SECTIONS = [
   { id: "torneo", label: "Torneo", icon: Trophy, Component: lazy(() => import("./sections/Torneo")) },
   { id: "plantel", label: "Plantel", icon: Users, Component: lazy(() => import("./sections/Plantel")) },
   { id: "noticias", label: "Noticias", icon: Newspaper, Component: lazy(() => import("./sections/Noticias")) },
+  { id: "aficion", label: "Afición", icon: Users, Component: lazy(() => import("./sections/Aficion")) },
   {
     id: "abonos",
     label: "Lista de espera",
