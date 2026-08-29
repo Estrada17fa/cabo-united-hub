@@ -197,6 +197,10 @@ function MatchRow({ match }: { match: Match }) {
         <div className="shrink-0 border-l border-hairline pl-3 text-right">
           {live ? (
             <span className="text-[10px] font-bold uppercase tracking-wider text-pop">En vivo</span>
+          ) : match.phase === "finished" ? (
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Finalizado
+            </span>
           ) : (
             <>
               <p className="text-xs font-semibold text-foreground">{time}</p>
