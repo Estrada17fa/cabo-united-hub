@@ -19,7 +19,6 @@ const TiendaProducto = () => {
   const { handle } = useParams();
   const { data: product, isLoading } = useProduct(handle);
   const addItem = useCartStore((s) => s.addItem);
-  const setCartOpen = useCartStore((s) => s.setOpen);
 
   const [activeImage, setActiveImage] = useState(0);
   const [size, setSize] = useState<string | null>(null);
@@ -29,7 +28,8 @@ const TiendaProducto = () => {
   useEffect(() => {
     setActiveImage(0);
     setQuantity(1);
-    setSize(product?.sizes.length === 1 ? product.sizes[0] : null);
+    const availableSizes = product?.variants.filter((v) => v.availableForSale).map((v) => v.title);
+    setSize(availableSizes?.length === 1 ? availableSizes[0] : null);
   }, [product?.id]);
 
   if (isLoading) {
@@ -63,17 +63,18 @@ const TiendaProducto = () => {
   }
 
   const sale = isOnSale(product);
+  const availableVariants = product.variants.filter((v) => v.availableForSale);
+  const isSoldOut = availableVariants.length === 0;
 
-  const handleAdd = () => {
-    if (product.soldOut) return;
+  const handleAdd = async () => {
+    if (isSoldOut) return;
     if (!size) {
       toast.error("Elige una talla");
       return;
     }
-    addItem(product, size, quantity);
+    await addItem(product, size, quantity);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1400);
-    setCartOpen(true);
   };
 
   return (
@@ -145,7 +146,7 @@ const TiendaProducto = () => {
                 {formatMoney(product.compareAtPrice!, product.currency)}
               </span>
             )}
-            {product.soldOut && (
+            {isSoldOut && (
               <span className="rounded-md border border-hairline px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 Agotado
               </span>
@@ -158,25 +159,26 @@ const TiendaProducto = () => {
               <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Talla
               </span>
-              {!size && !product.soldOut && (
+              {!size && !isSoldOut && (
                 <span className="text-[11px] text-muted-foreground">Elige una talla</span>
               )}
             </div>
             <div className="flex flex-wrap gap-2">
-              {product.sizes.map((s) => {
-                const active = s === size;
+              {product.variants.map((variant) => {
+                const active = variant.title === size;
+                const disabled = !variant.availableForSale;
                 return (
                   <button
-                    key={s}
-                    onClick={() => setSize(s)}
-                    disabled={product.soldOut}
+                    key={variant.id}
+                    onClick={() => !disabled && setSize(variant.title)}
+                    disabled={disabled}
                     className={`min-w-[52px] rounded-xl border px-3 py-2 text-[12px] font-bold transition-colors disabled:opacity-40 ${
                       active
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-hairline bg-surface-1 text-foreground hover:border-white/25"
                     }`}
                   >
-                    {s}
+                    {variant.title}
                   </button>
                 );
               })}
@@ -209,10 +211,10 @@ const TiendaProducto = () => {
             </div>
           </div>
 
-          {/* CTA desktop */}
+          {/* CTA */}
           <button
             onClick={handleAdd}
-            disabled={product.soldOut}
+            disabled={isSoldOut}
             className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-[13px] font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
           >
             {justAdded ? (
@@ -222,7 +224,7 @@ const TiendaProducto = () => {
             ) : (
               <>
                 <ShoppingBag className="h-4 w-4" />
-                {product.soldOut ? "Agotado" : "Agregar al carrito"}
+                {isSoldOut ? "Agotado" : "Agregar al carrito"}
               </>
             )}
           </button>
@@ -248,7 +250,6 @@ const TiendaProducto = () => {
           </div>
         </div>
       </div>
-
     </motion.div>
   );
 };
