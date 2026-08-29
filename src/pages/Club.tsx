@@ -1,1289 +1,170 @@
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Trophy,
-  Star,
-  GraduationCap,
-  Sun,
-  ArrowRight,
-  Goal,
-  Shield,
-  Facebook,
-  Instagram,
-  MapPin,
-  Sparkles,
-  Tent,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import stadiumHero from "@/assets/stadium-hero.jpg";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { MapPin } from "lucide-react";
 import donKollImg from "@/assets/don-koll.jpg";
 import adnCabenoImg from "@/assets/adn-cabeno.jpg";
-import lcuCrest from "@/assets/lcu-crest.png";
-import ligaPremierLogo from "@/assets/liga-premier-logo.png";
-
-/* ----------------------------- Placeholder data ----------------------------- */
+import { SeasonSummary } from "@/components/club/SeasonSummary";
+import { RosterSection } from "@/components/club/RosterSection";
+import { YouthTeamCard } from "@/components/club/YouthTeamCard";
+import { NewsSection } from "@/components/club/NewsSection";
+import { FanWall } from "@/components/club/FanWall";
+import { cn } from "@/lib/utils";
 
 const FOUNDED_YEAR = 2022;
 
 const MILESTONES = [
   { year: "Enero 2022", label: "Fundación" },
-  { year: "Agosto 2022", label: "Debút" },
+  { year: "Agosto 2022", label: "Debut" },
   { year: "Mayo 2024", label: "Campeones" },
 ];
 
-const SEASON_STATS = [
-  { value: "18", label: "Partidos Jugados" },
-  { value: "3°", label: "Posición en Liga" },
-  { value: "32", label: "Goles Anotados" },
-];
+/* ------------------------------- ADN Cabeño ------------------------------- */
 
-const PLAYER_OF_WEEK = {
-  name: "Diego Hernández",
-  position: "Delantero",
-  number: 9,
-  matchLabel: "Cabos United 3-1 Real Cabos",
-  timesAwarded: 4,
-};
-
-type Position = "Porteros" | "Defensas" | "Mediocampistas" | "Delanteros" | "Cuerpo Técnico";
-
-const ROSTER: Record<
-  Position,
-  {
-    name: string;
-    number: number | string;
-    flag: string;
-    country: string;
-    birthState: string;
-    age: number;
-    height: string;
-    matches: number;
-    goals: number;
-    assists: number;
-    timesAmo: number;
-    positionDetail: string;
-    role?: string;
-  }[]
-> = {
-  Porteros: [
-    { name: "Luis Robles", number: 1, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 28, height: "1.88 m", matches: 16, goals: 0, assists: 1, timesAmo: 3, positionDetail: "Portero Titular" },
-    { name: "Andrés Castillo", number: 12, flag: "🇲🇽", country: "México", birthState: "Sinaloa", age: 22, height: "1.86 m", matches: 4, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Suplente" },
-    { name: "Mateo Salinas", number: 25, flag: "🇦🇷", country: "Argentina", birthState: "Buenos Aires", age: 31, height: "1.90 m", matches: 0, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Tercer Portero" },
-    { name: "Iván Flores", number: 30, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 19, height: "1.84 m", matches: 1, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Cantera" },
-  ],
-  Defensas: [
-    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 26, height: "1.82 m", matches: 18, goals: 1, assists: 3, timesAmo: 2, positionDetail: "Lateral Derecho" },
-    { name: "Rafael Márquez", number: 4, flag: "🇲🇽", country: "México", birthState: "Michoacán", age: 30, height: "1.85 m", matches: 17, goals: 2, assists: 1, timesAmo: 5, positionDetail: "Defensa Central" },
-    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴", country: "Colombia", birthState: "Antioquia", age: 24, height: "1.83 m", matches: 15, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Defensa Central" },
-    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽", country: "México", birthState: "Sonora", age: 22, height: "1.79 m", matches: 12, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Lateral Izquierdo" },
-    { name: "Joaquín Rivas", number: 13, flag: "🇨🇱", country: "Chile", birthState: "Santiago", age: 27, height: "1.81 m", matches: 9, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Defensa Suplente" },
-  ],
-  Mediocampistas: [
-    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 25, height: "1.76 m", matches: 18, goals: 2, assists: 4, timesAmo: 3, positionDetail: "Mediocampista Defensivo" },
-    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷", country: "Argentina", birthState: "Córdoba", age: 28, height: "1.78 m", matches: 16, goals: 3, assists: 5, timesAmo: 4, positionDetail: "Mediocampista Central" },
-    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽", country: "México", birthState: "Jalisco", age: 24, height: "1.74 m", matches: 17, goals: 5, assists: 7, timesAmo: 6, positionDetail: "Mediocampista Ofensivo" },
-    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾", country: "Uruguay", birthState: "Montevideo", age: 23, height: "1.77 m", matches: 11, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Volante por Banda" },
-    { name: "Marco Téllez", number: 17, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 21, height: "1.75 m", matches: 8, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Mediocampista Suplente" },
-  ],
-  Delanteros: [
-    { name: "Diego Hernández", number: 9, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 26, height: "1.80 m", matches: 17, goals: 12, assists: 4, timesAmo: 4, positionDetail: "Delantero Centro" },
-    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷", country: "Brasil", birthState: "São Paulo", age: 25, height: "1.79 m", matches: 16, goals: 8, assists: 6, timesAmo: 3, positionDetail: "Extremo Izquierdo" },
-    { name: "Adrián Solís", number: 19, flag: "🇲🇽", country: "México", birthState: "Nuevo León", age: 22, height: "1.77 m", matches: 13, goals: 5, assists: 3, timesAmo: 2, positionDetail: "Extremo Derecho" },
-    { name: "Tomás Rincón", number: 22, flag: "🇻🇪", country: "Venezuela", birthState: "Caracas", age: 27, height: "1.83 m", matches: 7, goals: 2, assists: 1, timesAmo: 0, positionDetail: "Delantero Suplente" },
-  ],
-  "Cuerpo Técnico": [
-    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", country: "México", birthState: "Ciudad de México", age: 52, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Director Técnico", role: "Director Técnico" },
-    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 45, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Asistente Técnico", role: "Asistente Técnico" },
-    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", country: "México", birthState: "Jalisco", age: 41, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Preparador Físico", role: "Preparador Físico" },
-    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", country: "España", birthState: "Madrid", age: 38, height: "—", matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Entrenador de Porteros", role: "Entrenador de Porteros" },
-  ],
-};
-
-const ACADEMY_CATEGORIES = [
-  {
-    icon: Sparkles,
-    name: "Semillero",
-    age: "3 – 8 años",
-    desc: "Primer contacto con el balón, juego y motricidad.",
-  },
-  {
-    icon: GraduationCap,
-    name: "Academia",
-    age: "7 – 14 años",
-    desc: "Formación técnica, táctica y valores deportivos.",
-  },
-  {
-    icon: Goal,
-    name: "Fuerzas Básicas",
-    age: "Sub 15 y Sub 17",
-    desc: "Camino al primer equipo y alto rendimiento.",
-  },
-  {
-    icon: Sun,
-    name: "Curso de Verano",
-    age: "Temporada",
-    desc: "Entrenamientos intensivos durante el verano.",
-  },
-  {
-    icon: Tent,
-    name: "Campamento",
-    age: "Experiencia",
-    desc: "Convivencia, fútbol y vida en equipo.",
-  },
-];
-
-const NOTES = [
-  {
-    tag: "Noticias",
-    tagColor: "hsl(336 80% 77%)",
-    title: "Los Cabos United firma nuevo acuerdo con la afición local",
-    date: "12 Abr 2025",
-    read: "3 min",
-  },
-  {
-    tag: "Entrevista",
-    tagColor: "hsl(38 92% 60%)",
-    title: "Diego Hernández: 'Quiero romper el récord de goles de la Serie A'",
-    date: "08 Abr 2025",
-    read: "5 min",
-  },
-  {
-    tag: "Detrás de Cámaras",
-    tagColor: "hsl(199 89% 60%)",
-    title: "Un día con el plantel: la rutina antes del clásico del noroeste",
-    date: "02 Abr 2025",
-    read: "4 min",
-  },
-];
-
-type SocialNetwork = "facebook" | "instagram" | "x";
-
-const FAN_POSTS: { user: string; handle: string; network: SocialNetwork; text: string }[] = [
-  {
-    user: "Mariana López",
-    handle: "@marisol_lc",
-    network: "instagram",
-    text: "¡Qué partidazo! Orgullosa de ser parte de esta afición 💚 #AmosDelParaíso",
-  },
-  {
-    user: "Rafa SJC",
-    handle: "@rafa_sjc",
-    network: "x",
-    text: "Vamos por la Serie A 🏆 No hay nada como ver a Los Cabos United en casa. #AmosDelParaíso",
-  },
-  {
-    user: "Cabeño 4ever",
-    handle: "Cabeño 4ever",
-    network: "facebook",
-    text: "La afición más caliente del noroeste presente otra vez en el estadio. #AmosDelParaíso",
-  },
-  {
-    user: "Ana P.",
-    handle: "@ana_p",
-    network: "instagram",
-    text: "Mi club, mi paraíso. Aquí se respira fútbol 🌊⚽ #AmosDelParaíso",
-  },
-  {
-    user: "Baja Pride",
-    handle: "@baja_pride",
-    network: "x",
-    text: "Amos del Paraíso siempre. Esto no se compra, se vive. #AmosDelParaíso",
-  },
-];
-
-/* --------------------------------- Helpers --------------------------------- */
-
-const PRIMARY = "hsl(189 100% 38%)"; // Brand blue from LCU crest (#00abc4)
-const SECONDARY = "hsl(336 80% 77%)"; // Brand pink from LCU crest (#f298c0)
-
-function avatarUrl(name: string) {
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(
-    name,
-  )}&background=0a0a0a&color=00abc4&bold=true&size=128`;
+function AdnContent() {
+  return (
+    <div className="space-y-3">
+      <h2 className="text-display-md text-foreground md:text-3xl">
+        Amos del Paraíso desde el {FOUNDED_YEAR}
+      </h2>
+      <p className="text-sm leading-relaxed text-secondary-fg md:max-w-lg">
+        Nacidos entre el desierto y el mar, Los Cabos United representa el orgullo
+        sudcaliforniano. Un club joven con un sueño grande: llevar a Baja California Sur a
+        la élite del fútbol mexicano.
+      </p>
+      <div className="relative pt-3">
+        <div className="absolute left-[16.666%] right-[16.666%] top-[16px] h-px bg-primary/25" />
+        <div className="relative grid grid-cols-3 gap-2">
+          {MILESTONES.map((m) => (
+            <div key={m.year} className="relative z-10 flex flex-col items-center gap-1 text-center">
+              <span className="h-3 w-3 rounded-full border-2 border-primary bg-background" />
+              <span className="text-[11px] font-semibold leading-none text-foreground">
+                {m.year}
+              </span>
+              <span className="text-[10px] leading-tight text-muted-foreground">{m.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
-/* ---------------------------------- Page ---------------------------------- */
+function StadiumContent() {
+  return (
+    <div className="space-y-2">
+      <h2 className="text-display-md text-foreground md:text-3xl">Estadio Don Koll</h2>
+      <div className="flex items-start gap-1.5 text-sm text-secondary-fg">
+        <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+        <span>C. P.º Pacífico, Los Cangrejos, 23473 Cabo San Lucas, B.C.S.</span>
+      </div>
+    </div>
+  );
+}
+
+function ImageCard({
+  image,
+  alt,
+  chip,
+  children,
+  className = "",
+}: {
+  image: string;
+  alt: string;
+  chip: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <section
+      className={cn(
+        "relative overflow-hidden rounded-2xl border border-hairline bg-surface-1",
+        className
+      )}
+    >
+      <img src={image} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/25" />
+      <div className="relative flex min-h-[280px] flex-col justify-between p-4 md:min-h-[320px] md:p-6">
+        <span className="w-fit rounded-lg border border-primary/30 bg-background/60 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary backdrop-blur">
+          {chip}
+        </span>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------- Página ---------------------------------- */
 
 const Club = () => {
-  const [activePos, setActivePos] = useState<Position>("Delanteros");
-  const [mobileBottomTab, setMobileBottomTab] = useState<"vestuario" | "aficion">("vestuario");
-  const [mobileTopTab, setMobileTopTab] = useState<"adn" | "estadio">("adn");
+  const [topTab, setTopTab] = useState<"adn" | "estadio">("adn");
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-6 pb-8"
+      transition={{ duration: 0.4 }}
+      className="space-y-4 pb-8"
     >
-      {/* Mini-card de posición — centrada arriba */}
-      <PositionMiniCard />
+      <SeasonSummary />
 
-      {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 auto-rows-[minmax(140px,auto)] gap-4">
-        {/* ADN Cabeño y Tu Estadio — 70% / 30% en desktop, tabs en móvil */}
-        <div className="md:hidden col-span-1">
-          <MobileTopTabs activeTab={mobileTopTab} setActiveTab={setMobileTopTab} />
+      {/* Móvil: ADN / Estadio en pestañas */}
+      <div className="md:hidden">
+        <div className="mb-3 flex gap-1.5">
+          {[
+            { id: "adn" as const, label: "ADN Cabeño" },
+            { id: "estadio" as const, label: "Tu Estadio" },
+          ].map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setTopTab(t.id)}
+              className={cn(
+                "rounded-xl border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-colors",
+                topTab === t.id
+                  ? "border-primary/40 bg-primary/10 text-primary"
+                  : "border-hairline bg-surface-1 text-muted-foreground"
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
         </div>
-        <HeroCard className="hidden md:block lg:col-span-8 md:col-span-2" />
-        <StadiumCard className="hidden md:block lg:col-span-4 md:col-span-2 h-full" />
+        {topTab === "adn" ? (
+          <ImageCard image={adnCabenoImg} alt="Los Cabos United" chip="ADN Cabeño">
+            <AdnContent />
+          </ImageCard>
+        ) : (
+          <ImageCard image={donKollImg} alt="Estadio Don Koll" chip="Tu Estadio">
+            <StadiumContent />
+          </ImageCard>
+        )}
+      </div>
 
-        {/* Nuestro Plantel — ancho completo (con Amo del Partido integrado) */}
-        <RosterCard
-          className="lg:col-span-12 md:col-span-2"
-          activePos={activePos}
-          setActivePos={setActivePos}
-        />
+      {/* Desktop: lado a lado */}
+      <div className="hidden gap-4 md:grid md:grid-cols-3">
+        <ImageCard
+          image={adnCabenoImg}
+          alt="Los Cabos United"
+          chip="ADN Cabeño"
+          className="md:col-span-2"
+        >
+          <AdnContent />
+        </ImageCard>
+        <ImageCard image={donKollImg} alt="Estadio Don Koll" chip="Tu Estadio">
+          <StadiumContent />
+        </ImageCard>
+      </div>
 
-        {/* Academias — ancho completo */}
-        <AcademyCard className="lg:col-span-12 md:col-span-2" />
+      <RosterSection />
 
-        {/* Desde el Vestuario y La Afición en vivo — 70% / 30% en desktop, tabs en móvil */}
-        <div className="md:hidden col-span-1">
-          <MobileBottomTabs activeTab={mobileBottomTab} setActiveTab={setMobileBottomTab} />
-        </div>
-        <NotesCard className="hidden md:block lg:col-span-8 md:col-span-2" />
-        <FanTickerCard className="hidden md:block lg:col-span-4 md:col-span-2" />
+      <YouthTeamCard />
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <NewsSection className="md:col-span-2" />
+        <FanWall />
       </div>
     </motion.div>
   );
 };
 
 export default Club;
-
-/* ---------------------------- Card primitives ----------------------------- */
-
-function CardShell({
-  className = "",
-  children,
-  interactive = false,
-  style,
-}: {
-  className?: string;
-  children: React.ReactNode;
-  interactive?: boolean;
-  style?: React.CSSProperties;
-}) {
-  return (
-    <motion.div
-      whileHover={interactive ? { scale: 1.005 } : undefined}
-      transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      className={`relative rounded-2xl border border-border bg-card overflow-hidden transition-all duration-300 ${
-        interactive ? "hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_24px_-8px_hsl(189_100%_38%/0.4)]" : ""
-      } ${className}`}
-      style={style}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-/* -------------------------------- CARD 1 -------------------------------- */
-
-function HeroCard({ className = "" }: { className?: string }) {
-  return (
-    <CardShell className={className} interactive>
-      <img
-        src={adnCabenoImg}
-        alt="Estadio Los Cabos United"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
-
-      <div className="relative grid min-h-[230px] md:min-h-[320px] grid-rows-[auto_auto_1fr] gap-3 p-4 md:flex md:h-full md:flex-col md:justify-between md:gap-0 md:p-8">
-        <div className="flex items-center">
-          <span
-            className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
-            style={{
-              color: PRIMARY,
-              borderColor: `${PRIMARY.replace(")", " / 0.4)")}`,
-              backgroundColor: "hsl(0 0% 0% / 0.5)",
-            }}
-          >
-            ADN Cabeño
-          </span>
-        </div>
-
-        <div className="space-y-1.5 md:space-y-3 md:max-w-2xl">
-          <h2 className="text-lg md:text-5xl font-bold tracking-tight leading-[1.1] md:leading-tight">
-            Amos del Paraíso desde el {FOUNDED_YEAR}
-          </h2>
-          <p className="text-[11px] md:text-base text-muted-foreground leading-[1.4] md:leading-relaxed md:max-w-lg">
-            Nacidos entre el desierto y el mar, Los Cabos United representa el orgullo
-            sudcaliforniano. Un club joven con un sueño grande: llevar a Baja California Sur a la élite del fútbol mexicano.
-          </p>
-        </div>
-
-        <div className="relative pt-2 md:pt-4 self-end md:self-stretch md:w-full">
-          <div
-            className="absolute left-[16.666%] right-[16.666%] top-[9px] h-px md:left-[8.333%] md:right-[8.333%] md:top-[14px]"
-            style={{ background: "hsl(189 100% 38% / 0.3)" }}
-          />
-          <div className="relative grid grid-cols-3 gap-2 md:gap-0 md:w-full">
-            {MILESTONES.map((m) => (
-              <div
-                key={m.year}
-                className="relative z-10 flex min-w-0 flex-col items-center gap-1 text-center"
-              >
-                <div
-                  className="w-3.5 h-3.5 md:w-4 md:h-4 rounded-full border-2"
-                  style={{
-                    backgroundColor: "hsl(0 0% 7%)",
-                    borderColor: PRIMARY,
-                    boxShadow: `0 0 10px ${PRIMARY.replace(")", " / 0.6)")}`,
-                  }}
-                />
-                <span className="text-[10px] md:text-xs font-bold text-foreground leading-none">{m.year}</span>
-                <span className="text-[9px] md:text-[10px] text-muted-foreground text-center leading-tight">
-                  {m.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </CardShell>
-  );
-}
-
-/* -------------------------------- CARD 2 -------------------------------- */
-
-function StadiumCard({ className = "" }: { className?: string }) {
-  return (
-    <CardShell className={className} interactive>
-      <img
-        src={donKollImg}
-        alt="Estadio Don Koll"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-      {/* Top fade — mantiene legible el chip "Tu Estadio" */}
-      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
-      {/* Bottom fade — degradado negro a transparente para legibilidad del título */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
-
-      <div className="relative h-full p-5 md:p-7 flex flex-col justify-between min-h-[160px] md:min-h-[320px]">
-        <div className="flex items-center gap-2">
-          <span
-            className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
-            style={{
-              color: PRIMARY,
-              borderColor: "hsl(189 100% 38% / 0.4)",
-              backgroundColor: "hsl(0 0% 0% / 0.5)",
-            }}
-          >
-            Tu Estadio
-          </span>
-        </div>
-
-        <div className="space-y-1.5 md:space-y-2">
-          <h2 className="text-lg md:text-4xl font-bold tracking-tight leading-[1.1] md:leading-tight">
-            Estadio Don Koll
-          </h2>
-          <div className="flex items-start gap-1.5 text-[11px] md:text-sm text-muted-foreground">
-            <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: PRIMARY }} />
-            <span>C. P.º Pacífico, Los Cangrejos, 23473 Cabo San Lucas, B.C.S.</span>
-          </div>
-        </div>
-      </div>
-    </CardShell>
-  );
-}
-
-/* -------------------------------- Mini-card de posición (top, centrada) -------------------------------- */
-
-function PositionMiniCard() {
-  const LAST_5: ("W" | "D" | "L")[] = ["W", "W", "D", "L", "W"];
-
-  const resultStyle = (r: "W" | "D" | "L") => {
-    if (r === "W") return { bg: "hsl(142 76% 45%)", label: "G" };
-    if (r === "D") return { bg: "hsl(45 95% 55%)", label: "E" };
-    return { bg: "hsl(0 84% 60%)", label: "P" };
-  };
-
-  return (
-    <div className="flex justify-center pt-5 md:pt-0">
-      <div className="inline-flex items-center gap-4 md:gap-6 rounded-full border border-border bg-card/80 backdrop-blur px-4 md:px-5 py-2 md:py-2.5 shadow-lg">
-        {/* Lugar actual */}
-        <div className="flex items-center gap-2">
-          <span
-            className="text-2xl md:text-3xl font-bold tabular-nums leading-none"
-            style={{
-              color: PRIMARY,
-              textShadow:
-                "0 0 14px hsl(189 100% 38% / 0.55), 0 0 32px hsl(189 100% 38% / 0.18)",
-            }}
-          >
-            3°
-          </span>
-          <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted-foreground leading-tight max-w-[80px]">
-            Lugar
-            <br />
-            Actual
-          </span>
-        </div>
-
-        {/* Divider */}
-        <div className="h-7 w-px bg-white/10" />
-
-        {/* Últimos 5 partidos */}
-        <div className="flex items-center gap-2">
-          <span className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-muted-foreground leading-tight hidden sm:inline">
-            Últimos 5
-          </span>
-          <div className="flex items-center gap-1.5">
-            {LAST_5.map((r, i) => {
-              const s = resultStyle(r);
-              return (
-                <div
-                  key={i}
-                  className="w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center justify-center text-[10px] md:text-[11px] font-bold text-background"
-                  style={{ backgroundColor: s.bg }}
-                  title={r === "W" ? "Ganado" : r === "D" ? "Empate" : "Perdido"}
-                >
-                  {s.label}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* CARD 3 (Amo de la Semana) — eliminada e integrada dentro de RosterCard */
-
-/* -------------------------------- CARD 4 (Plantel) -------------------------------- */
-
-function RosterCard({
-  className = "",
-  activePos,
-  setActivePos,
-}: {
-  className?: string;
-  activePos: Position;
-  setActivePos: (p: Position) => void;
-}) {
-  const players = ROSTER[activePos];
-  const positions: Position[] = ["Porteros", "Defensas", "Mediocampistas", "Delanteros", "Cuerpo Técnico"];
-  const p = PLAYER_OF_WEEK;
-  const [expandPlayers, setExpandPlayers] = useState(false);
-
-  // Reset collapse when changing position tab
-  useEffect(() => {
-    setExpandPlayers(false);
-  }, [activePos]);
-
-  const visiblePlayers = expandPlayers ? players : players.slice(0, 4);
-  const hiddenCount = players.length - visiblePlayers.length;
-
-  return (
-    <CardShell className={className}>
-      <div className="p-5 md:p-6 h-full flex flex-col">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-title">Nuestro Plantel</h3>
-          <Shield className="w-4 h-4" style={{ color: PRIMARY }} />
-        </div>
-
-        {/* Amo del Partido — destacado */}
-        <div
-          className="relative rounded-xl border overflow-hidden mb-5 p-4"
-          style={{
-            borderColor: "hsl(189 100% 38% / 0.35)",
-            background:
-              "linear-gradient(90deg, hsl(189 100% 38% / 0.10) 0%, hsl(0 0% 7% / 0.4) 60%, transparent 100%)",
-          }}
-        >
-          <div
-            className="absolute left-0 top-0 bottom-0 w-1"
-            style={{ background: PRIMARY }}
-          />
-          <div className="flex items-center gap-3 md:gap-4">
-            <img
-              src={avatarUrl(p.name)}
-              alt={p.name}
-              className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 shrink-0"
-              style={{ borderColor: "hsl(189 100% 38% / 0.6)" }}
-            />
-            <div className="min-w-0 flex-1">
-              <div
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold mb-1"
-                style={{ backgroundColor: "hsl(336 80% 77% / 0.15)", color: SECONDARY }}
-              >
-                <Star className="w-2.5 h-2.5" /> AMO DEL PARTIDO
-              </div>
-              <div className="text-base md:text-lg font-bold text-foreground truncate leading-tight">
-                {p.name}
-              </div>
-              <div className="text-[11px] text-muted-foreground truncate">
-                {p.position} · #{p.number}
-              </div>
-              <div className="text-[11px] md:text-xs text-foreground/90 mt-1 truncate">
-                <span className="text-muted-foreground">Partido: </span>
-                <span className="font-semibold">{p.matchLabel}</span>
-              </div>
-            </div>
-            <div
-              className="hidden sm:flex flex-col items-center justify-center px-3 shrink-0 rounded-lg border"
-              style={{
-                borderColor: "hsl(189 100% 38% / 0.35)",
-                backgroundColor: "hsl(189 100% 38% / 0.08)",
-              }}
-            >
-              <span className="text-2xl font-bold text-foreground tabular-nums leading-none">
-                ×{p.timesAwarded}
-              </span>
-              <span
-                className="text-[9px] uppercase tracking-[0.18em] mt-1 font-semibold text-center"
-                style={{ color: PRIMARY }}
-              >
-                Veces
-              </span>
-            </div>
-          </div>
-          {/* Mobile-only times awarded chip */}
-          <div className="flex sm:hidden items-center gap-1.5 mt-3">
-            <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border"
-              style={{
-                borderColor: "hsl(189 100% 38% / 0.3)",
-                backgroundColor: "hsl(189 100% 38% / 0.08)",
-              }}
-            >
-              <span className="tabular-nums font-bold text-foreground">×{p.timesAwarded}</span>
-              <span style={{ color: PRIMARY }}>VECES AMO</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Filter tabs */}
-        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide mb-5 -mx-1 px-1">
-          {positions.map((pos) => {
-            const active = pos === activePos;
-            return (
-              <button
-                key={pos}
-                onClick={() => setActivePos(pos)}
-                className="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all border"
-                style={
-                  active
-                    ? {
-                        backgroundColor: "hsl(189 100% 38% / 0.15)",
-                        color: PRIMARY,
-                        borderColor: `${PRIMARY.replace(")", " / 0.5)")}`,
-                      }
-                    : {
-                        backgroundColor: "transparent",
-                        color: "hsl(0 0% 63%)",
-                        borderColor: "hsl(0 0% 16%)",
-                      }
-                }
-              >
-                {pos}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Player grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 flex-1 content-start">
-          {/* On mobile, show collapsed list. On md+, show all. */}
-          {players.map((player, idx) => {
-            const hideOnMobile = !expandPlayers && idx >= 4;
-            return (
-              <motion.div
-                key={player.name}
-                whileHover={{ y: -3 }}
-                transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                className={`group relative rounded-xl border border-border bg-background/40 p-3 transition-all hover:border-[hsl(189_100%_38%/0.5)] hover:shadow-[0_0_18px_-6px_hsl(189_100%_38%/0.4)] ${
-                  hideOnMobile ? "hidden md:block" : ""
-                }`}
-              >
-                <div className="aspect-square rounded-lg bg-muted flex items-center justify-center mb-2 relative overflow-hidden">
-                  <span className="text-3xl font-bold text-muted-foreground/60">
-                    {player.number}
-                  </span>
-                  <span className="absolute top-1 right-1 text-sm">{player.flag}</span>
-                </div>
-                <div className="text-xs font-semibold text-foreground truncate">
-                  {player.name}
-                </div>
-                <div className="text-[10px] text-muted-foreground truncate">
-                  {player.role ? player.role : `#${player.number}`}
-                </div>
-
-                {/* Hover detail overlay */}
-                <div
-                  className="absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity p-2.5 md:p-4 flex flex-col justify-between border"
-                  style={{ borderColor: "hsl(189 100% 38% / 0.5)" }}
-                >
-                  {/* TOP: name + age + birth state + position + flag */}
-                  <div className="flex items-start gap-1.5 md:gap-2 min-w-0">
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[12px] md:text-[16px] font-bold text-foreground leading-tight truncate">
-                        {player.name}
-                      </div>
-                      <div className="text-[9px] md:text-[12px] text-muted-foreground leading-tight truncate">
-                        {player.age} años
-                      </div>
-                      <div className="text-[9px] md:text-[12px] text-muted-foreground leading-tight truncate">
-                        {player.birthState}
-                      </div>
-                      <div
-                        className="text-[9px] md:text-[12px] font-semibold leading-tight truncate mt-0.5 md:mt-1"
-                        style={{ color: PRIMARY }}
-                      >
-                        {player.positionDetail}
-                      </div>
-                    </div>
-                    <span className="text-base md:text-2xl shrink-0 leading-none" title={player.country}>
-                      {player.flag}
-                    </span>
-                  </div>
-
-                  {/* STATS ROW: Goles + Partidos jugados */}
-                  <div className="flex items-stretch justify-between gap-1 my-1 md:my-2">
-                    {[
-                      { value: player.goals, label: "GOLES" },
-                      { value: player.matches, label: "PJ" },
-                    ].map((s, i) => (
-                      <div key={s.label} className="flex items-center flex-1">
-                        <div className="flex flex-col items-center justify-center flex-1 min-w-0">
-                          <span className="text-[24px] md:text-[38px] font-bold text-foreground tabular-nums leading-none">
-                            {s.value}
-                          </span>
-                          <span
-                            className="text-[8px] md:text-[11px] uppercase tracking-[0.12em] mt-1 md:mt-1.5 font-semibold"
-                            style={{ color: PRIMARY }}
-                          >
-                            {s.label}
-                          </span>
-                        </div>
-                        {i < 1 && <div className="w-px self-stretch bg-white/10" />}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* BOTTOM BADGE */}
-                  {player.timesAmo > 0 ? (
-                    <div className="flex justify-center">
-                      <span
-                        className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-2.5 py-0.5 md:py-1 rounded-full text-[9px] md:text-[12px] font-bold border"
-                        style={{
-                          backgroundColor: "hsl(336 80% 77% / 0.12)",
-                          color: SECONDARY,
-                          borderColor: "hsl(336 80% 77% / 0.35)",
-                        }}
-                      >
-                        <Star className="w-2.5 h-2.5 md:w-3 md:h-3 fill-current" />
-                        ×{player.timesAmo} VECES AMO
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="h-[18px]" aria-hidden />
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Mobile-only "Ver todos" toggle */}
-        {players.length > 4 && (
-          <button
-            onClick={() => setExpandPlayers((v) => !v)}
-            className="md:hidden mt-3 self-center inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold border transition-all"
-            style={{
-              borderColor: "hsl(189 100% 38% / 0.4)",
-              color: PRIMARY,
-              backgroundColor: "hsl(189 100% 38% / 0.08)",
-            }}
-          >
-            {expandPlayers ? "Ver menos" : `Ver todos (${players.length})`}
-            <ArrowRight className={`w-3 h-3 transition-transform ${expandPlayers ? "rotate-90" : ""}`} />
-          </button>
-        )}
-      </div>
-    </CardShell>
-  );
-}
-
-/* -------------------------------- CARD 5 (Academias) -------------------------------- */
-
-function AcademyCategoryCard({
-  category,
-}: {
-  category: { icon: any; name: string; age: string; desc: string };
-}) {
-  const Icon = category.icon;
-  return (
-    <div className="group rounded-xl border border-border bg-background/40 p-3 md:p-3 lg:p-3.5 flex items-center md:items-start gap-3 md:gap-2.5 lg:gap-3 transition-colors hover:border-[hsl(189_100%_38%/0.5)] md:min-h-[96px] lg:min-h-[100px]">
-      <div
-        className="w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10 rounded-lg flex items-center justify-center shrink-0"
-        style={{ backgroundColor: "hsl(189 100% 38% / 0.12)" }}
-      >
-        <Icon className="w-4 h-4 md:w-[18px] md:h-[18px] lg:w-5 lg:h-5" style={{ color: PRIMARY }} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-baseline gap-1.5 flex-wrap">
-          <div className="text-sm md:text-[13px] lg:text-sm font-semibold text-foreground leading-tight">{category.name}</div>
-          <div
-            className="text-[10px] md:text-[9px] lg:text-[10px] font-bold tracking-wide whitespace-nowrap"
-            style={{ color: PRIMARY }}
-          >
-            {category.age}
-          </div>
-        </div>
-        <div className="text-[11px] md:text-[11px] lg:text-xs text-muted-foreground leading-snug mt-0.5">
-          {category.desc}
-        </div>
-      </div>
-      <ArrowRight
-        className="w-4 h-4 text-muted-foreground/60 shrink-0 self-center md:self-start md:mt-0.5 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
-      />
-    </div>
-  );
-}
-
-function AcademyCard({ className = "" }: { className?: string }) {
-  return (
-    <CardShell className={className} interactive>
-      <div className="p-5 md:p-6 h-full flex flex-col">
-        <div className="mb-4">
-          <span className="text-label text-muted-foreground">Pathway | Los Cabos United</span>
-          <h3 className="text-title mt-1">Academia oficial de fútbol de Los Cabos United</h3>
-        </div>
-
-        <div className="flex flex-col gap-2 md:gap-2.5 flex-1">
-          {/* Row 1 — tablet/desktop: 3 cards, mobile: stacked */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-2.5">
-            {ACADEMY_CATEGORIES.slice(0, 3).map((c) => (
-              <AcademyCategoryCard key={c.name} category={c} />
-            ))}
-          </div>
-          {/* Row 2 — tablet/desktop: 2 wider cards, mobile: stacked */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-2.5">
-            {ACADEMY_CATEGORIES.slice(3).map((c) => (
-              <AcademyCategoryCard key={c.name} category={c} />
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-4 md:mt-5 flex flex-col items-center gap-2">
-          <Button
-            size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold w-full md:w-auto md:min-w-[320px] h-12 px-8 text-base shadow-lg shadow-primary/20"
-          >
-            Inscribe a tu hijo
-            <ArrowRight className="w-4 h-4 ml-1" />
-          </Button>
-        </div>
-      </div>
-    </CardShell>
-  );
-}
-
-/* -------------------------------- CARD 6 (Vestuario) -------------------------------- */
-
-function NotesCard({ className = "" }: { className?: string }) {
-  return (
-    <CardShell className={className}>
-      <div className="p-5 md:p-6 h-full flex flex-col">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-title">Desde el Vestuario</h3>
-          <a
-            href="#"
-            className="text-xs font-semibold text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-          >
-            Ver todas <ArrowRight className="w-3 h-3" />
-          </a>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
-          {NOTES.map((n) => (
-            <motion.a
-              key={n.title}
-              href="#"
-              whileHover={{ y: -2 }}
-              className="group rounded-xl border border-border bg-background/40 overflow-hidden flex flex-col transition-all hover:border-[hsl(189_100%_38%/0.4)]"
-            >
-              <div className="relative h-28 sm:h-24 overflow-hidden bg-muted">
-                <div
-                  className="absolute inset-0 transition-transform duration-500 group-hover:scale-110"
-                  style={{
-                    background: `linear-gradient(135deg, ${n.tagColor.replace(")", " / 0.35)")} 0%, hsl(0 0% 6%) 100%)`,
-                  }}
-                />
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(180deg, transparent 40%, hsl(0 0% 4% / 0.6) 100%)",
-                  }}
-                />
-              </div>
-              <div className="p-3 flex-1 flex flex-col">
-                <span
-                  className="self-start px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider mb-1.5"
-                  style={{
-                    backgroundColor: "hsl(0 0% 7% / 0.8)",
-                    color: n.tagColor,
-                    border: `1px solid ${n.tagColor.replace(")", " / 0.4)")}`,
-                  }}
-                >
-                  {n.tag}
-                </span>
-                <div className="text-xs font-semibold text-foreground leading-snug line-clamp-2 mb-2">
-                  {n.title}
-                </div>
-                <div className="text-[10px] text-muted-foreground mt-auto flex items-center gap-2">
-                  <span>{n.date}</span>
-                  <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
-                  <span>{n.read}</span>
-                </div>
-              </div>
-            </motion.a>
-          ))}
-        </div>
-      </div>
-    </CardShell>
-  );
-}
-
-/* -------------------------------- CARD 8 -------------------------------- */
-
-// Inline X (Twitter) logo since lucide doesn't ship it
-function XLogo({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
-
-const NETWORK_META: Record<
-  SocialNetwork,
-  { label: string; color: string; Icon: React.ComponentType<{ className?: string }> }
-> = {
-  facebook: { label: "Facebook", color: "hsl(221 78% 60%)", Icon: Facebook },
-  instagram: { label: "Instagram", color: "hsl(330 78% 60%)", Icon: Instagram },
-  x: { label: "X", color: "hsl(0 0% 95%)", Icon: XLogo },
-};
-
-function FanTickerCard({ className = "" }: { className?: string }) {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setIndex((i) => (i + 1) % FAN_POSTS.length);
-    }, 4500);
-    return () => clearInterval(id);
-  }, []);
-
-  return (
-    <CardShell className={className}>
-      <div className="relative h-full p-5 md:p-6 flex flex-col min-h-[320px]">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <span
-              className="w-1.5 h-1.5 rounded-full animate-pulse"
-              style={{ backgroundColor: PRIMARY }}
-            />
-            <span className="text-label text-muted-foreground">La Afición · En vivo</span>
-          </div>
-          <span
-            className="text-[10px] font-bold tracking-wider"
-            style={{ color: PRIMARY }}
-          >
-            #AmosDelParaíso
-          </span>
-        </div>
-
-        {/* Vertical carousel */}
-        <div className="relative flex-1 overflow-hidden">
-          <AnimatePresence mode="wait">
-            {FAN_POSTS.map((post, i) =>
-              i === index ? (
-                <motion.div
-                  key={post.handle + i}
-                  initial={{ y: 40, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -40, opacity: 0 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="absolute inset-0 flex flex-col"
-                >
-                  <SocialPost post={post} />
-                </motion.div>
-              ) : null,
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Dots indicator */}
-        <div className="flex items-center justify-center gap-1.5 mt-4">
-          {FAN_POSTS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setIndex(i)}
-              aria-label={`Post ${i + 1}`}
-              className="h-1 rounded-full transition-all"
-              style={{
-                width: i === index ? 18 : 6,
-                backgroundColor:
-                  i === index ? PRIMARY : "hsl(0 0% 100% / 0.15)",
-              }}
-            />
-          ))}
-        </div>
-      </div>
-    </CardShell>
-  );
-}
-
-function SocialPost({ post }: { post: (typeof FAN_POSTS)[number] }) {
-  const meta = NETWORK_META[post.network];
-  const Icon = meta.Icon;
-  return (
-    <div
-      className="relative h-full rounded-xl border border-border bg-background/40 p-4 flex flex-col gap-3 overflow-hidden"
-    >
-      {/* Network badge */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-            style={{ backgroundColor: `${meta.color.replace(")", " / 0.15)")}` }}
-          >
-            <Icon className="w-4 h-4" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-sm font-semibold text-foreground truncate leading-tight">
-              {post.user}
-            </div>
-            <div className="text-[10px] text-muted-foreground truncate">
-              {post.handle}
-            </div>
-          </div>
-        </div>
-        <div
-          className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
-          style={{ backgroundColor: "hsl(0 0% 100% / 0.04)", color: meta.color }}
-          aria-label={meta.label}
-        >
-          <Icon className="w-3.5 h-3.5" />
-        </div>
-      </div>
-
-      {/* Post text */}
-      <p className="text-sm text-foreground/90 leading-relaxed flex-1">
-        {post.text.split(/(#\w+)/g).map((part, i) =>
-          part.startsWith("#") ? (
-            <span key={i} className="font-semibold" style={{ color: PRIMARY }}>
-              {part}
-            </span>
-          ) : (
-            <span key={i}>{part}</span>
-          ),
-        )}
-      </p>
-
-      {/* Footer */}
-      <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-2 border-t border-white/5">
-        <span className="uppercase tracking-wider">vía {meta.label}</span>
-        <span>hace 2h</span>
-      </div>
-    </div>
-  );
-}
-
-/* -------------------------------- Mobile-only combined ADN + Estadio -------------------------------- */
-
-function MobileTopTabs({
-  activeTab,
-  setActiveTab,
-}: {
-  activeTab: "adn" | "estadio";
-  setActiveTab: (t: "adn" | "estadio") => void;
-}) {
-  return (
-    <CardShell interactive>
-      {/* Background image — cubre toda la card, cambia según tab */}
-      {/* Ambas imágenes precargadas — solo se hace fade entre ellas (sin recarga) */}
-      <img
-        src={adnCabenoImg}
-        alt="Los Cabos United"
-        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-        style={{ opacity: activeTab === "adn" ? 1 : 0 }}
-      />
-      <img
-        src={donKollImg}
-        alt="Estadio Don Koll"
-        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-        style={{ opacity: activeTab === "estadio" ? 1 : 0 }}
-      />
-      {/* Overlays para legibilidad — coinciden con el tratamiento de las cards desktop */}
-      {activeTab === "adn" ? (
-        <>
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/70 to-transparent" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/70 to-transparent" />
-        </>
-      )}
-
-      <div className="relative p-4 flex flex-col" style={{ minHeight: 340 }}>
-        {/* Tabs header */}
-        <div className="flex items-center gap-1.5 mb-4 p-1 rounded-full border border-border bg-card/70 backdrop-blur-md self-start">
-          {[
-            { id: "adn" as const, label: "ADN Cabeño" },
-            { id: "estadio" as const, label: "Tu Estadio" },
-          ].map((t) => {
-            const active = activeTab === t.id;
-            return (
-              <button
-                key={t.id}
-                onClick={() => setActiveTab(t.id)}
-                className="px-3 py-1 rounded-full text-[11px] font-semibold transition-all"
-                style={
-                  active
-                    ? {
-                        backgroundColor: "hsl(189 100% 38% / 0.15)",
-                        color: PRIMARY,
-                        border: "1px solid hsl(189 100% 38% / 0.5)",
-                      }
-                    : {
-                        color: "hsl(0 0% 63%)",
-                        border: "1px solid transparent",
-                      }
-                }
-              >
-                {t.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 flex flex-col justify-end">
-          {activeTab === "adn" ? (
-            <div className="relative flex flex-col gap-3">
-              <div className="space-y-1.5">
-                <h2 className="text-lg font-bold tracking-tight leading-[1.1]">
-                  Amos del Paraíso desde el {FOUNDED_YEAR}
-                </h2>
-                <p className="text-[11px] text-muted-foreground leading-[1.4]">
-                  Nacidos entre el desierto y el mar, Los Cabos United representa el orgullo
-                  sudcaliforniano. Un club joven con un sueño grande: llevar a Baja California Sur a la élite del fútbol mexicano.
-                </p>
-              </div>
-
-              <div className="relative pt-2">
-                <div
-                  className="absolute left-[16.666%] right-[16.666%] top-[15px] h-px"
-                  style={{ background: "hsl(189 100% 38% / 0.3)" }}
-                />
-                <div className="relative grid grid-cols-3 gap-2">
-                  {MILESTONES.map((m) => (
-                    <div
-                      key={m.year}
-                      className="relative z-10 flex min-w-0 flex-col items-center gap-1 text-center"
-                    >
-                      <div
-                        className="w-3.5 h-3.5 rounded-full border-2"
-                        style={{
-                          backgroundColor: "hsl(0 0% 7%)",
-                          borderColor: PRIMARY,
-                          boxShadow: `0 0 10px ${PRIMARY.replace(")", " / 0.6)")}`,
-                        }}
-                      />
-                      <span className="text-[10px] font-bold text-foreground leading-none">{m.year}</span>
-                      <span className="text-[9px] text-muted-foreground text-center leading-tight">
-                        {m.label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-1.5">
-              <h2 className="text-lg font-bold tracking-tight leading-[1.1]">
-                Estadio Don Koll
-              </h2>
-              <div className="flex items-start gap-1.5 text-[11px] text-muted-foreground">
-                <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: PRIMARY }} />
-                <span>C. P.º Pacífico, Los Cangrejos, 23473 Cabo San Lucas, B.C.S.</span>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </CardShell>
-  );
-}
-
-/* -------------------------------- Mobile-only combined Vestuario + Afición -------------------------------- */
-
-function MobileBottomTabs({
-  activeTab,
-  setActiveTab,
-}: {
-  activeTab: "vestuario" | "aficion";
-  setActiveTab: (t: "vestuario" | "aficion") => void;
-}) {
-  const [fanIndex, setFanIndex] = useState(0);
-
-  useEffect(() => {
-    if (activeTab !== "aficion") return;
-    const id = setInterval(() => {
-      setFanIndex((i) => (i + 1) % FAN_POSTS.length);
-    }, 4500);
-    return () => clearInterval(id);
-  }, [activeTab]);
-
-  return (
-    <CardShell>
-      <div className="p-4 flex flex-col" style={{ minHeight: 360 }}>
-        {/* Tabs header */}
-        <div className="flex items-center gap-1.5 mb-4 p-1 rounded-full border border-border bg-background/40 self-start">
-          {[
-            { id: "vestuario" as const, label: "Vestuario" },
-            { id: "aficion" as const, label: "Afición" },
-          ].map((t) => {
-            const active = activeTab === t.id;
-            return (
-              <button
-                key={t.id}
-                onClick={() => setActiveTab(t.id)}
-                className="px-3 py-1 rounded-full text-[11px] font-semibold transition-all"
-                style={
-                  active
-                    ? {
-                        backgroundColor: "hsl(189 100% 38% / 0.15)",
-                        color: PRIMARY,
-                        border: "1px solid hsl(189 100% 38% / 0.5)",
-                      }
-                    : {
-                        color: "hsl(0 0% 63%)",
-                        border: "1px solid transparent",
-                      }
-                }
-              >
-                {t.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 flex flex-col">
-          {activeTab === "vestuario" ? (
-            <div className="grid grid-cols-1 gap-2.5">
-              {NOTES.map((n) => (
-                <a
-                  key={n.title}
-                  href="#"
-                  className="group rounded-xl border border-border bg-background/40 overflow-hidden flex flex-col transition-all hover:border-[hsl(189_100%_38%/0.4)]"
-                >
-                  <div className="relative h-24 overflow-hidden bg-muted">
-                    <div
-                      className="absolute inset-0 transition-transform duration-500 group-hover:scale-110"
-                      style={{
-                        background: `linear-gradient(135deg, ${n.tagColor.replace(")", " / 0.35)")} 0%, hsl(0 0% 6%) 100%)`,
-                      }}
-                    />
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(180deg, transparent 40%, hsl(0 0% 4% / 0.6) 100%)",
-                      }}
-                    />
-                  </div>
-                  <div className="p-3 min-w-0 flex-1 flex flex-col">
-                    <span
-                      className="self-start px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider mb-1.5"
-                      style={{
-                        backgroundColor: "hsl(0 0% 7% / 0.8)",
-                        color: n.tagColor,
-                        border: `1px solid ${n.tagColor.replace(")", " / 0.4)")}`,
-                      }}
-                    >
-                      {n.tag}
-                    </span>
-                    <div className="text-xs font-semibold text-foreground leading-snug line-clamp-2">
-                      {n.title}
-                    </div>
-                    <div className="text-[10px] text-muted-foreground mt-1.5 flex items-center gap-2">
-                      <span>{n.date}</span>
-                      <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
-                      <span>{n.read}</span>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <div className="flex-1 flex flex-col">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="w-1.5 h-1.5 rounded-full animate-pulse"
-                    style={{ backgroundColor: PRIMARY }}
-                  />
-                  <span className="text-label text-muted-foreground">En vivo</span>
-                </div>
-                <span
-                  className="text-[10px] font-bold tracking-wider"
-                  style={{ color: PRIMARY }}
-                >
-                  #AmosDelParaíso
-                </span>
-              </div>
-
-              <div className="relative flex-1 overflow-hidden" style={{ minHeight: 220 }}>
-                <AnimatePresence mode="wait">
-                  {FAN_POSTS.map((post, i) =>
-                    i === fanIndex ? (
-                      <motion.div
-                        key={post.handle + i}
-                        initial={{ y: 30, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: -30, opacity: 0 }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="absolute inset-0 flex flex-col"
-                      >
-                        <SocialPost post={post} />
-                      </motion.div>
-                    ) : null,
-                  )}
-                </AnimatePresence>
-              </div>
-
-              <div className="flex items-center justify-center gap-1.5 mt-3">
-                {FAN_POSTS.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setFanIndex(i)}
-                    aria-label={`Post ${i + 1}`}
-                    className="h-1 rounded-full transition-all"
-                    style={{
-                      width: i === fanIndex ? 18 : 6,
-                      backgroundColor:
-                        i === fanIndex ? PRIMARY : "hsl(0 0% 100% / 0.15)",
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </CardShell>
-  );
-}
