@@ -197,31 +197,26 @@ export function Header() {
             />
           </Link>
 
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-            {socialLinks.map((social) => {
-              const SocialIcon = social.icon;
-              return (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground active:text-primary transition-colors"
-                  aria-label={social.label}
-                >
-                  <SocialIcon className="w-4 h-4" />
-                </a>
-              );
-            })}
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+            {user ? (
+              <Link to="/mi-perfil" aria-label="Mi perfil">
+                <Avatar className="w-9 h-9 border border-hairline">
+                  <AvatarImage src={profile?.avatar_url ?? undefined} />
+                  <AvatarFallback className="bg-surface-3 text-muted-foreground">
+                    <User className="w-4 h-4" />
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+            ) : (
+              <button
+                onClick={() => setIsMenuOpen(true)}
+                aria-label="Iniciar sesión"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-hairline bg-surface-3 text-muted-foreground"
+              >
+                <User className="w-4 h-4" />
+              </button>
+            )}
           </div>
-        </div>
-
-        {/* Separator line */}
-        <div className="h-px bg-border" />
-
-        {/* Nav row below shield */}
-        <div className="py-2.5 overflow-x-auto scrollbar-hide bg-card/50 backdrop-blur-sm">
-          <MobileNav />
         </div>
 
         {/* Separator line */}
