@@ -253,7 +253,7 @@ function TeamLine({ team, score }: { team?: Match["home_team"]; score: number | 
           team?.is_ours ? "text-primary" : "text-foreground"
         )}
       >
-        {team?.short_name || team?.name || "—"}
+        {team?.name || team?.short_name || "—"}
       </span>
       {score != null && (
         <span className="text-sm font-bold tabular-nums text-foreground">{score}</span>

@@ -24,7 +24,7 @@ export function TeamsGrid({ teams }: { teams: Team[] }) {
                 t.is_ours ? "text-primary" : "text-foreground"
               )}
             >
-              {t.short_name || t.name}
+              {t.name || t.short_name}
             </p>
             <p className="truncate text-[11px] text-muted-foreground">
               {[t.city, t.group_name ? `Grupo ${t.group_name}` : null].filter(Boolean).join(" · ") || "—"}
