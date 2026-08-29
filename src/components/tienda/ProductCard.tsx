@@ -1,75 +1,83 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { formatPrice, type ShopifyProduct } from "@/lib/shopify";
+import { formatMoney, isOnSale, type StoreProduct } from "@/lib/store-types";
 
 interface Props {
-  product: ShopifyProduct;
+  product: StoreProduct;
   index?: number;
 }
 
+/** Tarjeta de producto: la foto manda, el chrome se hace a un lado. */
 export function ProductCard({ product, index = 0 }: Props) {
-  const node = product.node;
-  const img = node.images.edges[0]?.node;
-  const imgHover = node.images.edges[1]?.node ?? img;
-  const price = node.priceRange.minVariantPrice;
-  const firstVariant = node.variants.edges[0]?.node;
-  const soldOut = !node.variants.edges.some((v) => v.node.availableForSale);
+  const img = product.images[0];
+  const imgHover = product.images[1] ?? img;
+  const sale = isOnSale(product);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: Math.min(index * 0.05, 0.3) }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: Math.min(index * 0.04, 0.2) }}
     >
       <Link
-        to={`/tienda/producto/${node.handle}`}
-        className="group block"
+        to={`/tienda/producto/${product.handle}`}
+        className="group block overflow-hidden rounded-2xl border border-hairline bg-surface-1 transition-colors hover:border-white/20"
       >
-        <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-card border border-border">
+        <div className="relative aspect-[4/5] w-full overflow-hidden bg-surface-2">
           {img && (
             <>
               <img
-                src={img.url}
-                alt={img.altText ?? node.title}
+                src={img}
+                alt={product.title}
                 loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-[1.04] group-hover:opacity-0"
+                className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-0"
               />
-              {imgHover && (
-                <img
-                  src={imgHover.url}
-                  alt={imgHover.altText ?? node.title}
-                  loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover opacity-0 transition-all duration-700 ease-out group-hover:opacity-100 group-hover:scale-[1.04]"
-                />
-              )}
+              <img
+                src={imgHover}
+                alt={product.title}
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              />
             </>
           )}
-          {soldOut && (
-            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-sm text-[10px] font-bold uppercase tracking-wider text-muted-foreground border border-border">
-              Agotado
-            </div>
-          )}
-          {firstVariant?.availableForSale && !soldOut && (
-            <div className="absolute bottom-3 right-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out">
-              <span className="px-3 py-1.5 rounded-full bg-foreground text-background text-[11px] font-semibold uppercase tracking-wider">
-                Ver
-              </span>
-            </div>
+
+          {(product.soldOut || sale) && (
+            <span
+              className={`absolute left-2.5 top-2.5 rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                product.soldOut
+                  ? "border border-hairline bg-black/70 text-muted-foreground backdrop-blur-sm"
+                  : "bg-primary text-primary-foreground"
+              }`}
+            >
+              {product.soldOut ? "Agotado" : "Oferta"}
+            </span>
           )}
         </div>
-        <div className="mt-4 flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h3 className="text-sm md:text-base font-semibold text-foreground truncate">
-              {node.title}
-            </h3>
-            {node.productType && (
-              <p className="text-xs text-muted-foreground mt-0.5 truncate">{node.productType}</p>
+
+        <div className="p-3">
+          {product.eyebrow && (
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              {product.eyebrow}
+            </p>
+          )}
+          <h3 className="mb-1.5 line-clamp-2 text-[13px] font-bold leading-tight text-foreground">
+            {product.title}
+          </h3>
+          <div className="flex items-baseline gap-2">
+            <span
+              className={`font-grotesk text-[15px] font-bold tabular-nums ${
+                product.soldOut ? "text-muted-foreground" : sale ? "text-primary" : "text-foreground"
+              }`}
+            >
+              {formatMoney(product.price, product.currency)}
+            </span>
+            {sale && (
+              <span className="font-grotesk text-[12px] tabular-nums text-muted-foreground line-through">
+                {formatMoney(product.compareAtPrice!, product.currency)}
+              </span>
             )}
           </div>
-          <p className="text-sm md:text-base font-semibold text-foreground whitespace-nowrap">
-            {formatPrice(price.amount, price.currencyCode)}
-          </p>
         </div>
       </Link>
     </motion.div>
