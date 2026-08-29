@@ -15,19 +15,12 @@ import {
   adminInput,
 } from "@/components/admin/AdminUI";
 import {
-  CATEGORY_META,
   GRADIENT_PRESETS,
   PlaceCategory,
   SPONSOR_GOLD,
 } from "@/lib/visita-los-cabos-data";
+import { useCategoryMeta } from "@/hooks/usePlaceCategories";
 
-const CATEGORIES: PlaceCategory[] = [
-  "restaurantes",
-  "bares",
-  "tours",
-  "tiendas",
-  "hoteles",
-];
 
 const TIERS = [
   { id: "basico", label: "Normal" },
