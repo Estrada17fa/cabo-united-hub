@@ -27,7 +27,6 @@ import Abonos from "./pages/Abonos";
 import AbonosExito from "./pages/AbonosExito";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AbonosWaitlist from "./pages/admin/AbonosWaitlist";
-import MatchZoneAdmin from "./pages/admin/MatchZoneAdmin";
 import NotFound from "./pages/NotFound";
 
 import { CartDrawer } from "@/components/tienda/CartDrawer";
@@ -62,7 +61,6 @@ const AppShell = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="/admin/abonos" replace />} />
           <Route path="abonos" element={<AbonosWaitlist />} />
-          <Route path="match-zone" element={<MatchZoneAdmin />} />
         </Route>
         <Route path="/abonos/exito" element={<AbonosExito />} />
         <Route path="*" element={<NotFound />} />

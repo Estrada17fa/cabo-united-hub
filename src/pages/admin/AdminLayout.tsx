@@ -6,7 +6,6 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 /** Secciones del panel. Agregar nuevas entradas aquí (Comercios, Pagos, etc.). */
 export const ADMIN_SECTIONS = [
   { label: "Lista de espera", to: "/admin/abonos", icon: Ticket },
-  { label: "Match Zone", to: "/admin/match-zone", icon: Radio },
 ];
 
 
