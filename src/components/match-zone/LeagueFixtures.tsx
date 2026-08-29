@@ -114,7 +114,7 @@ export function LeagueFixtures({
             grouped.map(([jornada, group]) => (
               <div key={jornada} className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-muted-foreground">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                     {jornada}
                   </span>
                   <div className="flex-1 h-px bg-border/60" />
@@ -176,7 +176,7 @@ function FixtureRow({
           )}
         </span>
         {isOurs && (
-          <span className="text-[9px] font-extrabold uppercase tracking-[0.14em] text-primary">
+          <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-primary">
             {isHomeOurs ? "Local" : "Visita"}
           </span>
         )}
@@ -249,7 +249,7 @@ function TeamRow({
   return (
     <div className="flex items-center gap-2">
       <TeamCrest teamName={name} logoUrl={logo} size={20} />
-      <span className={`flex-1 truncate text-sm ${highlight ? "font-bold text-primary" : "font-medium text-foreground"}`}>
+      <span className={`flex-1 truncate text-sm ${highlight ? "font-bold text-primary" : "font-normal text-foreground"}`}>
         {name}
       </span>
       {points != null && points > 0 && (
@@ -259,7 +259,7 @@ function TeamRow({
       )}
       {pens != null && <span className="text-[10px] text-muted-foreground tabular-nums">({pens})</span>}
       {score != null && (
-        <span className={`text-sm font-extrabold tabular-nums ${highlight ? "text-primary" : "text-foreground"}`}>
+        <span className={`text-sm font-bold tabular-nums ${highlight ? "text-primary" : "text-foreground"}`}>
           {score}
         </span>
       )}

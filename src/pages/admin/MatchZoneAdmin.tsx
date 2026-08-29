@@ -1268,7 +1268,7 @@ function Section({
   return (
     <div className="rounded-2xl border border-border bg-card p-4 space-y-2">
       <div>
-        <h2 className="text-[13px] font-extrabold uppercase tracking-wider text-foreground">
+        <h2 className="text-[13px] font-semibold uppercase tracking-wider text-foreground">
           {title}
         </h2>
         {subtitle && <p className="text-[11px] text-muted-foreground mt-0.5">{subtitle}</p>}

@@ -63,7 +63,7 @@ export function CartDrawer() {
               <div className="w-16 h-16 rounded-full bg-card border border-border flex items-center justify-center mb-4">
                 <ShoppingBag className="w-7 h-7 text-muted-foreground" />
               </div>
-              <p className="text-base font-medium text-foreground mb-1">
+              <p className="text-base font-normal text-foreground mb-1">
                 Aún no agregas nada
               </p>
               <p className="text-sm text-muted-foreground mb-6">

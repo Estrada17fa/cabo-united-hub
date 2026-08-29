@@ -74,7 +74,7 @@ export function AuthModal({ onSuccess, loginOnly, onSignupClick }: AuthModalProp
           type="button"
           onClick={() => handleOAuth("google")}
           disabled={isLoading}
-          className="w-full flex items-center justify-center gap-2 h-10 rounded-lg border border-border bg-card hover:bg-muted text-sm font-medium transition-colors"
+          className="w-full flex items-center justify-center gap-2 h-10 rounded-lg border border-border bg-card hover:bg-muted text-sm font-normal transition-colors"
         >
           <GoogleIcon className="w-4 h-4" />
           {t("auth.google")}
@@ -83,7 +83,7 @@ export function AuthModal({ onSuccess, loginOnly, onSignupClick }: AuthModalProp
           type="button"
           onClick={() => handleOAuth("apple")}
           disabled={isLoading}
-          className="w-full flex items-center justify-center gap-2 h-10 rounded-lg border border-border bg-card hover:bg-muted text-sm font-medium transition-colors"
+          className="w-full flex items-center justify-center gap-2 h-10 rounded-lg border border-border bg-card hover:bg-muted text-sm font-normal transition-colors"
         >
           <AppleIcon className="w-4 h-4" />
           {t("auth.apple")}
@@ -103,7 +103,7 @@ export function AuthModal({ onSuccess, loginOnly, onSignupClick }: AuthModalProp
         <button
           type="button"
           onClick={() => setMode("login")}
-          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
+          className={`flex-1 py-2 text-sm font-normal rounded-lg transition-all ${
             mode === "login"
               ? "bg-primary text-primary-foreground shadow"
               : "text-muted-foreground hover:text-foreground"
@@ -114,7 +114,7 @@ export function AuthModal({ onSuccess, loginOnly, onSignupClick }: AuthModalProp
         <button
           type="button"
           onClick={() => onSignupClick ? onSignupClick() : setMode("signup")}
-          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
+          className={`flex-1 py-2 text-sm font-normal rounded-lg transition-all ${
             mode === "signup"
               ? "bg-primary text-primary-foreground shadow"
               : "text-muted-foreground hover:text-foreground"

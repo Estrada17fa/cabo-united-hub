@@ -47,14 +47,14 @@ export function TopScorersBoard({ scorers, logoMap = {}, ourTeam = "Los Cabos Un
             >
               <div className="flex justify-center mb-1.5">
                 <span
-                  className={`grid place-items-center rounded-full text-[10px] font-extrabold ${
+                  className={`grid place-items-center rounded-full text-[10px] font-semibold ${
                     isFirst ? "bg-primary text-primary-foreground w-6 h-6" : "bg-muted/40 text-foreground w-5 h-5"
                   }`}
                 >
                   {i + 1}
                 </span>
               </div>
-              <div className={`text-[19px] font-extrabold leading-none tabular-nums ${isFirst ? "text-primary" : "text-foreground"}`}>
+              <div className={`text-[19px] font-bold leading-none tabular-nums ${isFirst ? "text-primary" : "text-foreground"}`}>
                 {s.goals}
               </div>
               <div className="text-[9px] uppercase tracking-wider text-muted-foreground mb-1.5">goles</div>
@@ -89,7 +89,7 @@ export function TopScorersBoard({ scorers, logoMap = {}, ourTeam = "Los Cabos Un
                   </span>
                   <span className="block truncate text-[10px] text-muted-foreground">{s.team}</span>
                 </span>
-                <span className={`text-[13px] font-extrabold tabular-nums ${isOurs ? "text-primary" : "text-foreground"}`}>
+                <span className={`text-[13px] font-semibold tabular-nums ${isOurs ? "text-primary" : "text-foreground"}`}>
                   {s.goals}
                 </span>
               </div>

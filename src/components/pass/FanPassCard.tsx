@@ -449,7 +449,7 @@ export function FanPassCard({
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-[15px] font-extrabold text-black leading-tight truncate">
+                  <div className="text-[15px] font-bold text-black leading-tight truncate">
                     {pass.full_name}
                   </div>
                   <div className="flex items-center gap-1.5 mt-1">

@@ -383,11 +383,11 @@ function TierBigCard({ tier, onSelectTier }: { tier: Tier; onSelectTier: (id: Ti
           </div>
         )}
         <div className="absolute bottom-4 left-5 right-5">
-          <div className="text-[11px] font-medium text-white/60 tracking-[0.18em] mb-1">
+          <div className="text-[11px] font-semibold text-white/60 tracking-[0.18em] mb-1">
             AMO DEL PARAÍSO
           </div>
           <div
-            className="font-extrabold leading-none"
+            className="font-bold leading-none"
             style={{ color: tier.accent, fontSize: 38, letterSpacing: "0.04em" }}
           >
             {tier.badge}
@@ -959,7 +959,7 @@ const Accesos = () => {
               }}
             >
               <Quote className="w-5 h-5 mb-3" style={{ color: "#00abc4" }} />
-              <p className="text-white text-[15px] md:text-base leading-snug font-medium">
+              <p className="text-white text-[15px] md:text-base leading-snug font-normal">
                 {m.quote}
               </p>
               <div
@@ -1099,7 +1099,7 @@ const Accesos = () => {
                     </div>
                     <span className="text-white/40 text-xs font-bold">VS</span>
                     <div className="flex items-center gap-2">
-                      <div className="w-9 h-9 flex items-center justify-center text-[11px] font-extrabold text-white/80">
+                      <div className="w-9 h-9 flex items-center justify-center text-[11px] font-semibold text-white/80">
                         RFC
                       </div>
                       <span className="text-sm font-bold text-white">Rival FC</span>

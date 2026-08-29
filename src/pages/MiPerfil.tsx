@@ -169,7 +169,7 @@ export default function MiPerfil() {
       )}
 
       <section className="rounded-2xl border border-border bg-card p-4 md:p-6">
-        <h2 className="text-sm font-extrabold uppercase tracking-wider text-foreground mb-2">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-2">
           {t("profile.transactions")}
         </h2>
         <TransactionsList items={transactions} />
@@ -184,7 +184,7 @@ function Stat({ label, value, accent }: { label: string; value: string; accent: 
   return (
     <div className="text-right">
       <div
-        className="text-2xl font-extrabold tabular-nums tracking-tight"
+        className="text-2xl font-bold tabular-nums tracking-tight"
         style={{ color: accent === "primary" ? "hsl(var(--brand-primary))" : "hsl(var(--brand-accent))" }}
       >
         {value}

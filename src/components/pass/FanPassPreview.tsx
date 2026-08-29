@@ -134,7 +134,7 @@ export function FanPassPreview({ userId, onTierLoad, preview }: Props) {
             >
               {t.label}
             </span>
-            <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/60">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/60">
               Amo del Paraíso
             </span>
             {!active && (

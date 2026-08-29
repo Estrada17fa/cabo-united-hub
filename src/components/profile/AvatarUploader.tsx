@@ -52,7 +52,7 @@ export function AvatarUploader({ size = 96 }: { size?: number }) {
     <div className="flex items-center gap-3">
       <Avatar style={{ width: size, height: size }} className="ring-2 ring-border">
         <AvatarImage src={profile?.avatar_url ?? undefined} />
-        <AvatarFallback className="bg-muted text-base font-extrabold tracking-wider text-muted-foreground">
+        <AvatarFallback className="bg-muted text-base font-semibold tracking-wider text-muted-foreground">
           {initials}
         </AvatarFallback>
       </Avatar>

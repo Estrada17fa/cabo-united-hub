@@ -93,7 +93,7 @@ export default function Comercios() {
   return (
     <div className="max-w-md mx-auto py-8 space-y-5">
       <header className="text-center space-y-1">
-        <h1 className="text-2xl font-extrabold text-foreground">Validar pase</h1>
+        <h1 className="text-2xl font-bold text-foreground">Validar pase</h1>
         <p className="text-sm text-muted-foreground">{business ?? "Escanea o escribe el código del aficionado"}</p>
       </header>
 
@@ -130,7 +130,7 @@ export default function Comercios() {
             )}
           </div>
           <div>
-            <div className="text-lg font-extrabold text-foreground">{member.full_name}</div>
+            <div className="text-lg font-bold text-foreground">{member.full_name}</div>
             <div className="text-xs font-mono text-muted-foreground">{member.pass_code}</div>
           </div>
           <div className="flex items-center justify-center gap-2">

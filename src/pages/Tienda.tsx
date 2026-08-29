@@ -309,7 +309,7 @@ const Tienda = () => {
           <DropdownMenuTrigger asChild>
             <button className="shrink-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-[12px] font-semibold bg-card border border-border text-foreground hover:border-white/40 transition-colors">
               Ordenar:{" "}
-              <span className="text-muted-foreground font-medium">{sortLabel}</span>
+              <span className="text-muted-foreground font-normal">{sortLabel}</span>
               <ChevronDown className="w-3.5 h-3.5" />
             </button>
           </DropdownMenuTrigger>

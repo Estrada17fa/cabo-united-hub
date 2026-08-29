@@ -19,7 +19,7 @@ export function LiveBadge({ clock, label = "EN VIVO", className = "" }: LiveBadg
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-pop opacity-75" />
         <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-pop" />
       </span>
-      <span className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-pop">
+      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-pop">
         {label}
         {clock ? ` · ${clock}` : ""}
       </span>

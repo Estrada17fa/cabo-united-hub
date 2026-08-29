@@ -77,7 +77,7 @@ export function OnboardingFlow() {
               >
                 <Icon className="w-8 h-8 text-brand-primary" />
               </div>
-              <h2 className="text-xl font-extrabold text-foreground">
+              <h2 className="text-xl font-bold text-foreground">
                 {t(`onboarding.${k}Title`)}
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">

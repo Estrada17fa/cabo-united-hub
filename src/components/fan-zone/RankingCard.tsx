@@ -54,7 +54,7 @@ export function RankingCard({
         <div className="flex items-center gap-2">
           <Trophy className="w-4 h-4" style={{ color: ACCENT }} />
           <h3
-            className="font-extrabold text-white uppercase"
+            className="font-semibold text-white uppercase"
             style={{ fontSize: 12, letterSpacing: "0.16em" }}
           >
             Ranking general
@@ -93,7 +93,7 @@ export function RankingCard({
               }}
             >
               <div
-                className="w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-[12px] tabular-nums shrink-0"
+                className="w-7 h-7 rounded-full flex items-center justify-center font-semibold text-[12px] tabular-nums shrink-0"
                 style={{
                   background:
                     i < 3 ? `${medalColor}22` : "rgba(255,255,255,0.06)",
@@ -113,7 +113,7 @@ export function RankingCard({
               </div>
               <div className="text-right shrink-0">
                 <div
-                  className="text-[14px] font-extrabold tabular-nums"
+                  className="text-[14px] font-bold tabular-nums"
                   style={{ color: ACCENT }}
                 >
                   {r.points.toLocaleString()}

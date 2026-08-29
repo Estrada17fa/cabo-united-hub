@@ -120,7 +120,7 @@ export default function AbonosWaitlist() {
     <div className="rounded-2xl border border-border bg-card p-4 md:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
-          <h2 className="text-sm font-extrabold uppercase tracking-wider text-foreground">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-foreground">
             Lista de espera de abonos
           </h2>
           <p className="text-[12px] text-muted-foreground mt-0.5">

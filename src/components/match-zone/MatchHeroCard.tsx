@@ -27,7 +27,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
       >
         <div className="p-8 text-center">
           <Shield className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-          <p className="text-muted-foreground font-medium">No hay partidos programados</p>
+          <p className="text-muted-foreground font-normal">No hay partidos programados</p>
         </div>
       </motion.div>
     );
@@ -104,7 +104,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                 />
               </span>
               <span
-                className="text-[10px] font-extrabold tracking-widest"
+                className="text-[10px] font-semibold tracking-widest"
                 style={{ color: "hsl(142 76% 55%)" }}
               >
                 EN VIVO {clock ?? ""}
@@ -120,7 +120,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
               }}
             >
               <span
-                className="text-[10px] font-extrabold tracking-widest"
+                className="text-[10px] font-semibold tracking-widest"
                 style={{ color: "hsl(142 76% 55%)" }}
               >
                 FINALIZADO
@@ -145,13 +145,13 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
           {showLiveLayout ? (
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <ScoreNumber value={match.home_score ?? 0} />
-              <span className="text-base sm:text-lg font-extrabold text-muted-foreground tracking-wider">
+              <span className="text-base sm:text-lg font-semibold text-muted-foreground tracking-wider">
                 VS
               </span>
               <ScoreNumber value={match.away_score ?? 0} />
             </div>
           ) : (
-            <span className="text-lg font-extrabold text-muted-foreground tracking-wider shrink-0">
+            <span className="text-lg font-semibold text-muted-foreground tracking-wider shrink-0">
               VS
             </span>
           )}
@@ -176,7 +176,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
             <MapPin className="w-3.5 h-3.5 text-primary" />
             {match.venue || "Estadio Don Koll"} · Cabo San Lucas, BCS
           </div>
-          <div className="flex items-center gap-1.5 text-sm text-muted-foreground font-medium capitalize">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground font-normal capitalize">
             <Calendar className="w-3.5 h-3.5" />
             {formattedDate}
           </div>
@@ -204,7 +204,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                     if (!match.live_stream_url) e.preventDefault();
                   }}
                   title={match.live_stream_url ? "Abrir transmisión" : "Transmisión no disponible"}
-                  className={`h-11 flex items-center justify-center gap-2 rounded-xl text-xs sm:text-sm font-medium text-white transition-colors ${
+                  className={`h-11 flex items-center justify-center gap-2 rounded-xl text-xs sm:text-sm font-semibold text-white transition-colors ${
                     !match.live_stream_url ? "opacity-50 cursor-not-allowed" : "hover:bg-white/[0.15]"
                   }`}
                   style={{
@@ -224,7 +224,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
                     if (!(match as any).match_summary_url) e.preventDefault();
                   }}
                   title={(match as any).match_summary_url ? "Ver resumen" : "Resumen no disponible"}
-                  className={`h-11 flex items-center justify-center gap-2 rounded-xl text-xs sm:text-sm font-medium text-white transition-colors ${
+                  className={`h-11 flex items-center justify-center gap-2 rounded-xl text-xs sm:text-sm font-semibold text-white transition-colors ${
                     !(match as any).match_summary_url ? "opacity-50 cursor-not-allowed" : "hover:bg-white/[0.15]"
                   }`}
                   style={{
@@ -262,7 +262,7 @@ export function MatchHeroCard({ match }: MatchHeroCardProps) {
             <Link to="/abonos">
               <motion.button
                 whileTap={{ scale: 0.96 }}
-                className="flex items-center gap-1 px-3 py-2 rounded-full font-extrabold text-[10px] tracking-wide whitespace-nowrap"
+                className="flex items-center gap-1 px-3 py-2 rounded-full font-semibold text-[10px] tracking-wide whitespace-nowrap"
                 style={{
                   backgroundColor: "hsl(189 100% 55%)",
                   color: "hsl(0 0% 8%)",
@@ -288,7 +288,7 @@ function ScoreNumber({ value }: { value: number }) {
       initial={{ scale: 1.4, color: "hsl(142 76% 55%)" }}
       animate={{ scale: 1, color: "hsl(var(--foreground))" }}
       transition={{ duration: 0.6 }}
-      className="text-4xl sm:text-5xl font-extrabold tabular-nums leading-none"
+      className="text-4xl sm:text-5xl font-bold tabular-nums leading-none"
       style={{ textShadow: "0 0 18px hsl(142 76% 45% / 0.5)" }}
     >
       {value}

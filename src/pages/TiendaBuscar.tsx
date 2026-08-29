@@ -67,7 +67,7 @@ const TiendaBuscar = () => {
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-lg font-medium mb-2">Sin resultados</p>
+          <p className="text-lg font-normal mb-2">Sin resultados</p>
           <p className="text-sm text-muted-foreground">
             Intenta con otra palabra o explora todo el catálogo.
           </p>

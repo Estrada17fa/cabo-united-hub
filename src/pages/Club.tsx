@@ -306,7 +306,7 @@ function HeroCard({ className = "" }: { className?: string }) {
         </div>
 
         <div className="space-y-1.5 md:space-y-3 md:max-w-2xl">
-          <h2 className="text-lg md:text-5xl font-extrabold tracking-tight leading-[1.1] md:leading-tight">
+          <h2 className="text-lg md:text-5xl font-bold tracking-tight leading-[1.1] md:leading-tight">
             Amos del Paraíso desde el {FOUNDED_YEAR}
           </h2>
           <p className="text-[11px] md:text-base text-muted-foreground leading-[1.4] md:leading-relaxed md:max-w-lg">
@@ -377,7 +377,7 @@ function StadiumCard({ className = "" }: { className?: string }) {
         </div>
 
         <div className="space-y-1.5 md:space-y-2">
-          <h2 className="text-lg md:text-4xl font-extrabold tracking-tight leading-[1.1] md:leading-tight">
+          <h2 className="text-lg md:text-4xl font-bold tracking-tight leading-[1.1] md:leading-tight">
             Estadio Don Koll
           </h2>
           <div className="flex items-start gap-1.5 text-[11px] md:text-sm text-muted-foreground">
@@ -407,7 +407,7 @@ function PositionMiniCard() {
         {/* Lugar actual */}
         <div className="flex items-center gap-2">
           <span
-            className="text-2xl md:text-3xl font-extrabold tabular-nums leading-none"
+            className="text-2xl md:text-3xl font-bold tabular-nums leading-none"
             style={{
               color: PRIMARY,
               textShadow:
@@ -601,7 +601,7 @@ function RosterCard({
                 }`}
               >
                 <div className="aspect-square rounded-lg bg-muted flex items-center justify-center mb-2 relative overflow-hidden">
-                  <span className="text-3xl font-extrabold text-muted-foreground/60">
+                  <span className="text-3xl font-bold text-muted-foreground/60">
                     {player.number}
                   </span>
                   <span className="absolute top-1 right-1 text-sm">{player.flag}</span>
@@ -650,7 +650,7 @@ function RosterCard({
                     ].map((s, i) => (
                       <div key={s.label} className="flex items-center flex-1">
                         <div className="flex flex-col items-center justify-center flex-1 min-w-0">
-                          <span className="text-[24px] md:text-[38px] font-extrabold text-foreground tabular-nums leading-none">
+                          <span className="text-[24px] md:text-[38px] font-bold text-foreground tabular-nums leading-none">
                             {s.value}
                           </span>
                           <span
@@ -1073,7 +1073,7 @@ function MobileTopTabs({
           {activeTab === "adn" ? (
             <div className="relative flex flex-col gap-3">
               <div className="space-y-1.5">
-                <h2 className="text-lg font-extrabold tracking-tight leading-[1.1]">
+                <h2 className="text-lg font-bold tracking-tight leading-[1.1]">
                   Amos del Paraíso desde el {FOUNDED_YEAR}
                 </h2>
                 <p className="text-[11px] text-muted-foreground leading-[1.4]">
@@ -1112,7 +1112,7 @@ function MobileTopTabs({
             </div>
           ) : (
             <div className="space-y-1.5">
-              <h2 className="text-lg font-extrabold tracking-tight leading-[1.1]">
+              <h2 className="text-lg font-bold tracking-tight leading-[1.1]">
                 Estadio Don Koll
               </h2>
               <div className="flex items-start gap-1.5 text-[11px] text-muted-foreground">

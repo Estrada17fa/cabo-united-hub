@@ -11,7 +11,7 @@ export function LevelProgress({ xp }: { xp: number }) {
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5">
           <Crown className="w-4 h-4 text-brand-accent" />
-          <span className="text-sm font-extrabold text-brand-accent">{current.name}</span>
+          <span className="text-sm font-bold text-brand-accent">{current.name}</span>
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold ml-1">
             {t("fanZone.level")} {current.level}
           </span>

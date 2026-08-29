@@ -23,7 +23,7 @@ export function LeagueScoringInfo() {
           <Scale className="w-3.5 h-3.5" />
         </span>
         <span className="flex-1 min-w-0">
-          <span className="block text-[11px] font-extrabold uppercase tracking-[0.14em] text-foreground">
+          <span className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground">
             Cómo se puntúa
           </span>
           <span className="block text-[11px] text-muted-foreground truncate">
@@ -50,7 +50,7 @@ export function LeagueScoringInfo() {
                   key={`${r.pts}-${r.label}-${r.detail}`}
                   className="flex items-center gap-2.5 rounded-xl border border-border/60 bg-background/40 px-2.5 py-2"
                 >
-                  <span className="min-w-[34px] rounded-lg bg-primary/15 px-1.5 py-0.5 text-center text-[11px] font-extrabold text-primary tabular-nums">
+                  <span className="min-w-[34px] rounded-lg bg-primary/15 px-1.5 py-0.5 text-center text-[11px] font-semibold text-primary tabular-nums">
                     {r.pts}
                   </span>
                   <span className="flex-1 min-w-0">

@@ -94,14 +94,24 @@
   }
 }
 
-/* Typography System */
+/* Typography System — LCU (norma global del sitio)
+   Títulos / números hero ....... Poppins Bold (700)
+   Subtítulos / chips / tabs .... Poppins Semibold (600)
+   Texto largo / detalles ....... Poppins Regular (400)
+   Escala de espaciado homologada:
+   · label → su título: 4px  · dentro de tarjeta: 12px
+   · entre bloques de sección: 16–20px  · entre secciones: 24–32px */
 @layer components {
   .text-display {
-    @apply text-4xl md:text-5xl font-extrabold tracking-tight;
+    @apply text-4xl md:text-5xl font-bold tracking-tight;
   }
 
   .text-headline {
     @apply text-2xl md:text-3xl font-bold tracking-tight;
+  }
+
+  .text-subtitle {
+    @apply text-base md:text-lg font-semibold;
   }
 
   .text-title {
@@ -112,12 +122,20 @@
     @apply text-base font-normal;
   }
 
+  .text-detail {
+    @apply text-sm font-normal text-secondary-fg;
+  }
+
   .text-caption {
-    @apply text-sm font-medium text-muted-foreground;
+    @apply text-sm font-normal text-muted-foreground;
   }
 
   .text-label {
     @apply text-xs font-semibold uppercase tracking-wider;
+  }
+
+  .text-chip {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em];
   }
 }
 
@@ -215,21 +233,21 @@
 
 @layer utilities {
   .text-display-xl {
-    @apply font-display font-black tracking-[-0.03em] leading-[0.92];
+    @apply font-display font-bold tracking-[-0.03em] leading-[0.92];
     font-size: clamp(2.5rem, 12vw, 4.5rem);
   }
 
   .text-display-lg {
-    @apply font-display font-extrabold tracking-[-0.02em] leading-[0.95];
+    @apply font-display font-bold tracking-[-0.02em] leading-[0.95];
     font-size: clamp(1.75rem, 8vw, 2.75rem);
   }
 
   .text-display-md {
-    @apply font-display font-extrabold tracking-[-0.01em] leading-tight text-xl md:text-2xl;
+    @apply font-display font-bold tracking-[-0.01em] leading-tight text-xl md:text-2xl;
   }
 
   .num-hero {
-    @apply font-display font-black tabular-nums tracking-[-0.04em] leading-none;
+    @apply font-display font-bold tabular-nums tracking-[-0.04em] leading-none;
   }
 
   .text-secondary-fg {

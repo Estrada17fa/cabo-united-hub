@@ -53,7 +53,7 @@ export function FanCard() {
         <div className="flex items-center gap-3 min-w-0 md:flex-1">
           <Avatar className="w-12 h-12 md:w-14 md:h-14 shrink-0 ring-1 ring-border">
             <AvatarImage src={profile?.avatar_url ?? undefined} />
-            <AvatarFallback className="bg-muted text-[11px] font-extrabold tracking-wider text-muted-foreground">
+            <AvatarFallback className="bg-muted text-[11px] font-semibold tracking-wider text-muted-foreground">
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -63,7 +63,7 @@ export function FanCard() {
             </p>
             <div className="flex items-center gap-1.5 mt-1">
               <Crown className="w-3.5 h-3.5 shrink-0 text-brand-accent" />
-              <span className="text-[13px] font-extrabold leading-none text-brand-accent">
+              <span className="text-[13px] font-semibold leading-none text-brand-accent">
                 {current.name}
               </span>
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold ml-1">
@@ -99,7 +99,7 @@ export function FanCard() {
           </span>
           <div className="flex items-baseline gap-1.5">
             <Trophy className="w-3.5 h-3.5 text-brand-accent self-center" />
-            <span className="text-xl md:text-2xl font-extrabold tabular-nums tracking-tight text-brand-accent">
+            <span className="text-xl md:text-2xl font-bold tabular-nums tracking-tight text-brand-accent">
               {cc.toLocaleString()}
             </span>
           </div>
@@ -114,7 +114,7 @@ export function FanCard() {
             XP
           </span>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-xl md:text-2xl font-extrabold tabular-nums tracking-tight text-brand-primary">
+            <span className="text-xl md:text-2xl font-bold tabular-nums tracking-tight text-brand-primary">
               {xp.toLocaleString()}
             </span>
             <span className="text-[10px] text-muted-foreground uppercase tracking-wider">

@@ -49,7 +49,7 @@ export function FinalStageBracket({ matches, logoMap = {}, ourTeam = "Los Cabos 
       {rounds.map(([round, group]) => (
         <div key={round} className="space-y-2">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-primary">{round}</span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">{round}</span>
             <div className="flex-1 h-px bg-border/60" />
           </div>
           {group.map((m) => {
@@ -66,7 +66,7 @@ export function FinalStageBracket({ matches, logoMap = {}, ourTeam = "Los Cabos 
                     {format(matchDateTime(m), "EEE d MMM", { locale: es })}
                   </span>
                   {done && (
-                    <span className="text-[9px] font-extrabold uppercase tracking-[0.14em] text-primary">Final</span>
+                    <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-primary">Final</span>
                   )}
                 </div>
                 {[
@@ -77,7 +77,7 @@ export function FinalStageBracket({ matches, logoMap = {}, ourTeam = "Los Cabos 
                     <TeamCrest teamName={side.name} logoUrl={logoMap[side.name]} size={20} />
                     <span
                       className={`flex-1 truncate text-sm ${
-                        side.name === ourTeam ? "font-bold text-primary" : "font-medium text-foreground"
+                        side.name === ourTeam ? "font-bold text-primary" : "font-normal text-foreground"
                       }`}
                     >
                       {side.name}
@@ -86,7 +86,7 @@ export function FinalStageBracket({ matches, logoMap = {}, ourTeam = "Los Cabos 
                       <span className="text-[10px] text-muted-foreground tabular-nums">({side.pens})</span>
                     )}
                     {done && (
-                      <span className="text-sm font-extrabold tabular-nums text-foreground">{side.score ?? 0}</span>
+                      <span className="text-sm font-bold tabular-nums text-foreground">{side.score ?? 0}</span>
                     )}
                   </div>
                 ))}

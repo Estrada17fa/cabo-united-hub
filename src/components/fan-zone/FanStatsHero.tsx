@@ -61,7 +61,7 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
             <div className="flex items-center gap-1.5">
               <Crown className="w-4 h-4 shrink-0" style={{ color: AMBER }} />
               <span
-                className="font-extrabold leading-none truncate"
+                className="font-bold leading-none truncate"
                 style={{ color: AMBER, fontSize: "18px" }}
               >
                 {LEVEL_NAME}
@@ -89,7 +89,7 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
                 Ranking
               </p>
               <p
-                className="font-extrabold tabular-nums tracking-tight leading-none flex items-center gap-1"
+                className="font-bold tabular-nums tracking-tight leading-none flex items-center gap-1"
                 style={{ color: GREEN, fontSize: "22px" }}
               >
                 <Trophy className="w-3.5 h-3.5" />
@@ -114,7 +114,7 @@ export function FanStatsHero({ onLoginClick }: { onLoginClick?: () => void }) {
                 Puntos
               </p>
               <p
-                className="font-extrabold tabular-nums tracking-tight leading-none text-foreground"
+                className="font-bold tabular-nums tracking-tight leading-none text-foreground"
                 style={{ fontSize: "22px" }}
               >
                 {stats.points.toLocaleString()}
