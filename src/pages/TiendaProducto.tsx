@@ -81,7 +81,7 @@ const TiendaProducto = () => {
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="pb-36 md:pb-20"
+      className="pb-20"
     >
       <ShopHeader />
 
@@ -213,7 +213,7 @@ const TiendaProducto = () => {
           <button
             onClick={handleAdd}
             disabled={product.soldOut}
-            className="mt-6 hidden w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-[13px] font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40 md:inline-flex"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-[13px] font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
           >
             {justAdded ? (
               <>
@@ -249,27 +249,6 @@ const TiendaProducto = () => {
         </div>
       </div>
 
-      {/* CTA móvil fijo */}
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-hairline bg-surface-1/95 p-3 backdrop-blur md:hidden">
-        <button
-          onClick={handleAdd}
-          disabled={product.soldOut}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-[13px] font-bold text-primary-foreground disabled:opacity-40"
-        >
-          {justAdded ? (
-            <>
-              <Check className="h-4 w-4" /> Agregado
-            </>
-          ) : (
-            <>
-              <ShoppingBag className="h-4 w-4" />
-              {product.soldOut
-                ? "Agotado"
-                : `Agregar · ${formatMoney(product.price * quantity, product.currency)}`}
-            </>
-          )}
-        </button>
-      </div>
     </motion.div>
   );
 };
