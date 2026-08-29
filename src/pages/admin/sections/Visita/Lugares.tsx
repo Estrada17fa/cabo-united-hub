@@ -368,6 +368,14 @@ export default function Lugares() {
               hint="Si no subes foto, se usa el color del lugar."
             />
 
+            <ImageUploadField
+              label="Logo del lugar"
+              value={form.logo_url}
+              onChange={(url) => setForm({ ...form, logo_url: url })}
+              folder="place-logos"
+              hint="Se muestra dentro del pin del mapa. PNG sin fondo."
+            />
+
             <Field label="Color / degradado">
               <select
                 value={form.photo_gradient ?? ""}
