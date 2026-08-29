@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useClubPlayers, type ClubPlayer } from "@/hooks/useClub";
@@ -26,35 +26,134 @@ function initials(name: string) {
     .join("");
 }
 
-function PlayerCard({ player }: { player: ClubPlayer }) {
+function ageFrom(birthDate: string): number | null {
+  const d = new Date(birthDate);
+  if (Number.isNaN(d.getTime())) return null;
+  const now = new Date();
+  let age = now.getFullYear() - d.getFullYear();
+  const m = now.getMonth() - d.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age--;
+  return age >= 0 && age < 100 ? age : null;
+}
+
+function hasBackData(p: ClubPlayer) {
   return (
-    <div className="overflow-hidden rounded-xl border border-hairline bg-surface-3">
-      <div className="relative aspect-[4/5] bg-surface-2">
-        {player.photo_url ? (
-          <img
-            src={player.photo_url}
-            alt={player.name}
-            loading="lazy"
-            className="h-full w-full object-cover object-top"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <span className="num-display text-3xl text-muted-foreground">
-              {initials(player.name) || <User className="h-6 w-6" />}
-            </span>
+    p.goals != null ||
+    p.matches_played != null ||
+    p.birth_date != null ||
+    p.nationality != null ||
+    p.birth_place != null
+  );
+}
+
+function PlayerCard({
+  player,
+  flipped,
+  canHover,
+  onFlip,
+}: {
+  player: ClubPlayer;
+  flipped: boolean;
+  canHover: boolean;
+  onFlip: (id: string | null) => void;
+}) {
+  const withBack = hasBackData(player);
+  const age = player.birth_date ? ageFrom(player.birth_date) : null;
+
+  const rotate = withBack
+    ? canHover
+      ? "group-hover:[transform:rotateY(180deg)]"
+      : flipped
+        ? "[transform:rotateY(180deg)]"
+        : ""
+    : "";
+
+  return (
+    <div
+      className={cn("group [perspective:1200px]", withBack && !canHover && "cursor-pointer")}
+      onClick={(e) => {
+        if (!withBack || canHover) return;
+        e.stopPropagation();
+        onFlip(flipped ? null : player.id);
+      }}
+    >
+      <div
+        className={cn(
+          "relative aspect-[3/4] w-full transition-transform duration-500 ease-out [transform-style:preserve-3d] motion-reduce:transition-none",
+          rotate
+        )}
+      >
+        {/* Frente */}
+        <div className="absolute inset-0 flex flex-col overflow-hidden rounded-xl border border-hairline bg-surface-3 [backface-visibility:hidden]">
+          <div className="relative min-h-0 flex-1 bg-surface-2">
+            {player.photo_url ? (
+              <img
+                src={player.photo_url}
+                alt={player.name}
+                loading="lazy"
+                className="h-full w-full object-cover object-top"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center">
+                <span className="num-display text-3xl text-muted-foreground">
+                  {initials(player.name) || <User className="h-6 w-6" />}
+                </span>
+              </div>
+            )}
+            {player.jersey_number != null && (
+              <span className="num-display absolute left-2 top-2 rounded-lg bg-background/70 px-1.5 py-0.5 text-sm text-primary backdrop-blur">
+                {player.jersey_number}
+              </span>
+            )}
+          </div>
+          <div className="shrink-0 p-2.5">
+            <p className="truncate text-xs font-semibold text-foreground">{player.name}</p>
+            <p className="truncate text-[11px] text-muted-foreground">
+              {player.position || "Plantel"}
+            </p>
+            {player.nationality && (
+              <p className="truncate text-[10px] text-muted-foreground/80">
+                {player.nationality}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Reverso */}
+        {withBack && (
+          <div className="absolute inset-0 flex flex-col overflow-hidden rounded-xl border border-hairline bg-surface-3 p-3 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+            <p className="truncate text-[11px] font-semibold text-foreground">
+              {player.name}
+            </p>
+            {(player.goals != null || player.matches_played != null) && (
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <div className="rounded-lg border border-hairline bg-surface-2 px-1 py-2 text-center">
+                  <div className="num-display text-xl leading-none text-primary">
+                    {player.goals ?? 0}
+                  </div>
+                  <div className="mt-1 text-[8px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                    Goles
+                  </div>
+                </div>
+                <div className="rounded-lg border border-hairline bg-surface-2 px-1 py-2 text-center">
+                  <div className="num-display text-xl leading-none text-foreground">
+                    {player.matches_played ?? 0}
+                  </div>
+                  <div className="mt-1 text-[8px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                    PJ
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="mt-auto space-y-0.5 text-[10px] leading-tight text-muted-foreground">
+              {age != null && <p>{age} años</p>}
+              {player.nationality && <p className="truncate">{player.nationality}</p>}
+              {player.birth_place && (
+                <p className="line-clamp-2">{player.birth_place}</p>
+              )}
+            </div>
           </div>
         )}
-        {player.jersey_number != null && (
-          <span className="num-display absolute left-2 top-2 rounded-lg bg-background/70 px-1.5 py-0.5 text-sm text-primary backdrop-blur">
-            {player.jersey_number}
-          </span>
-        )}
-      </div>
-      <div className="p-2.5">
-        <p className="truncate text-xs font-semibold text-foreground">{player.name}</p>
-        <p className="truncate text-[11px] text-muted-foreground">
-          {player.position || "Plantel"}
-        </p>
       </div>
     </div>
   );
