@@ -25,6 +25,7 @@ export interface Team {
   logo_url: string | null;
   group_name: string | null;
   city: string | null;
+  venue?: string | null;
   is_ours: boolean;
   season: string;
   active: boolean;
