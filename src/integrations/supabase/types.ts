@@ -1558,6 +1558,90 @@ export type Database = {
         }
         Relationships: []
       }
+      shop_banners: {
+        Row: {
+          bg_color: string | null
+          body: string | null
+          created_at: string
+          cta_label: string | null
+          cta_url: string | null
+          id: string
+          image_url: string | null
+          published: boolean
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          bg_color?: string | null
+          body?: string | null
+          created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          bg_color?: string | null
+          body?: string | null
+          created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      shop_hero_slides: {
+        Row: {
+          created_at: string
+          cta_label: string | null
+          cta_url: string | null
+          eyebrow: string | null
+          id: string
+          image_url: string | null
+          published: boolean
+          sort_order: number
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          eyebrow?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          sort_order?: number
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          cta_label?: string | null
+          cta_url?: string | null
+          eyebrow?: string | null
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          sort_order?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       stripe_products: {
         Row: {
           active: boolean
