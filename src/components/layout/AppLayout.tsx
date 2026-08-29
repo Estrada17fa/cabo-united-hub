@@ -15,7 +15,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
 
-      <main className="flex-1 pb-16 pt-[3.75rem] lg:pt-[7rem]">
+      <main className="flex-1 pb-16 pt-[6.75rem] sm:pt-[6.5rem]">
         <div className="container mx-auto px-3 sm:px-4">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div

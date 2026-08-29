@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronRight, User } from "lucide-react";
+import { ChevronRight, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { tierStyle } from "@/lib/tiers";
-import lcuCrest from "@/assets/lcu-crest.png";
 
 interface Props {
   /** Se invoca cuando no hay sesión y el usuario toca el chip. */
@@ -12,73 +11,60 @@ interface Props {
 }
 
 /**
- * Versión compacta del pase real para la barra superior.
- * Color/estilo derivados de los tokens de tier (src/lib/tiers.ts).
+ * Versión compacta del pase para la barra superior.
+ * Solo texto + chevron; el color de fondo/borde viene del tier del usuario.
  */
 export function MiniPassChip({ onRequestAuth }: Props) {
   const { user } = useAuth();
-  const [pass, setPass] = useState<{ pass_code: string; tier: string } | null>(null);
+  const [tier, setTier] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
-      setPass(null);
+      setTier(null);
       return;
     }
     let alive = true;
     supabase
       .from("fan_passes")
-      .select("pass_code, tier")
+      .select("tier")
       .eq("user_id", user.id)
       .maybeSingle()
       .then(({ data }) => {
-        if (alive) setPass((data as { pass_code: string; tier: string } | null) ?? null);
+        if (alive) setTier((data as { tier: string } | null)?.tier ?? "fan");
       });
     return () => {
       alive = false;
     };
   }, [user]);
 
-  if (!user || !pass) {
+  if (!user) {
     return (
       <button
         type="button"
         onClick={onRequestAuth}
-        className="flex items-center gap-1.5 rounded-[11px] border border-hairline bg-surface-2 px-2.5 py-1.5 text-[11px] font-semibold text-foreground transition-colors hover:border-primary/50"
+        className="flex items-center gap-1 rounded-[11px] border border-primary/40 bg-primary/10 px-2.5 py-1.5 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/15"
       >
-        <User className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="hidden sm:inline">Iniciar sesión</span>
-        <span className="sm:hidden">Entrar</span>
+        <Sparkles className="h-3.5 w-3.5" />
+        <span className="whitespace-nowrap">Quiero Mi Pase</span>
       </button>
     );
   }
 
-  const t = tierStyle(pass.tier);
+  const t = tierStyle(tier ?? "fan");
 
   return (
     <Link
       to="/mi-pase"
       aria-label="Ver mi pase"
-      className="flex items-center gap-2 overflow-hidden rounded-[11px] px-2 py-1.5 transition-transform active:scale-[0.98]"
+      className="flex items-center gap-0.5 rounded-[11px] px-2.5 py-1.5 transition-transform active:scale-[0.97]"
       style={{
         background: t.bg,
         border: `1px solid ${t.accent}40`,
         boxShadow: `inset 0 1px 0 ${t.accent}1f`,
       }}
     >
-      <img src={lcuCrest} alt="" className="h-6 w-6 flex-shrink-0 object-contain" />
-      <span className="min-w-0 leading-tight">
-        <span
-          className="block text-[8px] font-bold uppercase tracking-[0.14em]"
-          style={{ color: t.accent }}
-        >
-          {t.label}
-        </span>
-        <span className="block truncate font-display text-[10px] font-medium tabular-nums text-foreground/80">
-          {pass.pass_code}
-        </span>
-      </span>
       <span
-        className="hidden text-[10px] font-semibold sm:inline"
+        className="whitespace-nowrap text-[11px] font-semibold"
         style={{ color: t.accent }}
       >
         Ver mi pase
