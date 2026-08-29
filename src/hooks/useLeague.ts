@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { Match, Scorer, Standing, Team } from "@/components/match-zone/types";
+import type { Match, Scorer, Season, Standing, Team } from "@/components/match-zone/types";
 
 export const SEASON = "2026";
 
