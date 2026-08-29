@@ -1,1211 +1,489 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
-  ChevronRight,
-  Crown,
-  MapPin,
-  Ticket,
-  Users,
   GraduationCap,
+  MapPin,
   Newspaper,
-  Gift,
   ShoppingBag,
   Sparkles,
-  Goal,
-  Sun,
-  Tent,
-  Shield,
-  Star,
+  Ticket,
+  Users,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useProducts } from "@/hooks/useProducts";
-import type { Tables } from "@/integrations/supabase/types";
-import { ProductCard } from "@/components/tienda/ProductCard";
-import { AuthModal } from "@/components/auth/AuthModal";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { usePlaces } from "@/hooks/useVisitaLosCabos";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { useCategoryMeta } from "@/hooks/usePlaceCategories";
+import { useClubNews, useClubPlayers, useYouthTeam } from "@/hooks/useClub";
+import { useFeaturedMatch } from "@/hooks/useMatchZone";
+import { SeasonSummary } from "@/components/club/SeasonSummary";
+import { NextMatchCard } from "@/components/match-zone/NextMatchCard";
+import { ProductCard } from "@/components/tienda/ProductCard";
+import { SectionHeader } from "@/components/ui-lcu/SectionHeader";
+import { HomeMiniMap } from "@/components/home/HomeMiniMap";
+import { CategoryIcon } from "@/components/visita-los-cabos/CategoryIcon";
+import { AuthFlow } from "@/components/auth/AuthFlow";
+import { AuthModal } from "@/components/auth/AuthModal";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { lcuButtonClasses } from "@/components/ui-lcu/LcuButton";
 import stadiumHero from "@/assets/stadium-hero.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
-import tiendaHero from "@/assets/tienda-hero-jersey.jpg";
-import accesosHero from "@/assets/accesos-hero.jpg";
-import adnCabenoImg from "@/assets/adn-cabeno.jpg";
-import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
-import { RankingCard } from "@/components/fan-zone/RankingCard";
-import { PrizesCarouselCard } from "@/components/fan-zone/PrizesCarouselCard";
 
-const ACCENT = "#00abc4";
-const LCU = "Los Cabos United";
+/* --------------------------------- helpers --------------------------------- */
 
-/* --- Tu Club: data mirrors src/pages/Club.tsx --- */
-type ClubPosition =
-  | "Porteros"
-  | "Defensas"
-  | "Mediocampistas"
-  | "Delanteros"
-  | "Cuerpo Técnico";
-
-type ClubPlayer = {
-  name: string;
-  number: number | string;
-  flag: string;
-  country: string;
-  birthState: string;
-  age: number;
-  matches: number;
-  goals: number;
-  assists: number;
-  timesAmo: number;
-  positionDetail: string;
-  role?: string;
-};
-
-const CLUB_ROSTER: Record<ClubPosition, ClubPlayer[]> = {
-  Porteros: [
-    { name: "Luis Robles", number: 1, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 28, matches: 16, goals: 0, assists: 1, timesAmo: 3, positionDetail: "Portero Titular" },
-    { name: "Andrés Castillo", number: 12, flag: "🇲🇽", country: "México", birthState: "Sinaloa", age: 22, matches: 4, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Suplente" },
-    { name: "Mateo Salinas", number: 25, flag: "🇦🇷", country: "Argentina", birthState: "Buenos Aires", age: 31, matches: 0, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Tercer Portero" },
-    { name: "Iván Flores", number: 30, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 19, matches: 1, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Portero Cantera" },
-  ],
-  Defensas: [
-    { name: "Carlos Vela Jr.", number: 2, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 26, matches: 18, goals: 1, assists: 3, timesAmo: 2, positionDetail: "Lateral Derecho" },
-    { name: "Rafael Márquez", number: 4, flag: "🇲🇽", country: "México", birthState: "Michoacán", age: 30, matches: 17, goals: 2, assists: 1, timesAmo: 5, positionDetail: "Defensa Central" },
-    { name: "Sebastián Núñez", number: 5, flag: "🇨🇴", country: "Colombia", birthState: "Antioquia", age: 24, matches: 15, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Defensa Central" },
-    { name: "Emilio Pacheco", number: 3, flag: "🇲🇽", country: "México", birthState: "Sonora", age: 22, matches: 12, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Lateral Izquierdo" },
-    { name: "Joaquín Rivas", number: 13, flag: "🇨🇱", country: "Chile", birthState: "Santiago", age: 27, matches: 9, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Defensa Suplente" },
-  ],
-  Mediocampistas: [
-    { name: "Juan Pablo Ortiz", number: 6, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 25, matches: 18, goals: 2, assists: 4, timesAmo: 3, positionDetail: "Mediocampista Defensivo" },
-    { name: "Lucas Bermúdez", number: 8, flag: "🇦🇷", country: "Argentina", birthState: "Córdoba", age: 28, matches: 16, goals: 3, assists: 5, timesAmo: 4, positionDetail: "Mediocampista Central" },
-    { name: "Alejandro Ríos", number: 10, flag: "🇲🇽", country: "México", birthState: "Jalisco", age: 24, matches: 17, goals: 5, assists: 7, timesAmo: 6, positionDetail: "Mediocampista Ofensivo" },
-    { name: "Nicolás Vargas", number: 14, flag: "🇺🇾", country: "Uruguay", birthState: "Montevideo", age: 23, matches: 11, goals: 1, assists: 2, timesAmo: 1, positionDetail: "Volante por Banda" },
-    { name: "Marco Téllez", number: 17, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 21, matches: 8, goals: 0, assists: 1, timesAmo: 0, positionDetail: "Mediocampista Suplente" },
-  ],
-  Delanteros: [
-    { name: "Diego Hernández", number: 9, flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 26, matches: 17, goals: 12, assists: 4, timesAmo: 4, positionDetail: "Delantero Centro" },
-    { name: "Bruno Cardozo", number: 11, flag: "🇧🇷", country: "Brasil", birthState: "São Paulo", age: 25, matches: 16, goals: 8, assists: 6, timesAmo: 3, positionDetail: "Extremo Izquierdo" },
-    { name: "Adrián Solís", number: 19, flag: "🇲🇽", country: "México", birthState: "Nuevo León", age: 22, matches: 13, goals: 5, assists: 3, timesAmo: 2, positionDetail: "Extremo Derecho" },
-    { name: "Tomás Rincón", number: 22, flag: "🇻🇪", country: "Venezuela", birthState: "Caracas", age: 27, matches: 7, goals: 2, assists: 1, timesAmo: 0, positionDetail: "Delantero Suplente" },
-  ],
-  "Cuerpo Técnico": [
-    { name: "Ricardo Mendoza", number: "DT", flag: "🇲🇽", country: "México", birthState: "Ciudad de México", age: 52, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Director Técnico", role: "Director Técnico" },
-    { name: "Pablo Espinoza", number: "AT", flag: "🇲🇽", country: "México", birthState: "Baja California Sur", age: 45, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Asistente Técnico", role: "Asistente Técnico" },
-    { name: "Héctor Lozano", number: "PF", flag: "🇲🇽", country: "México", birthState: "Jalisco", age: 41, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Preparador Físico", role: "Preparador Físico" },
-    { name: "Sergio Vidal", number: "PA", flag: "🇪🇸", country: "España", birthState: "Madrid", age: 38, matches: 18, goals: 0, assists: 0, timesAmo: 0, positionDetail: "Entren. Porteros", role: "Entren. Porteros" },
-  ],
-};
-
-const CLUB_ACADEMY_CATEGORIES = [
-  { icon: Sparkles, name: "Semillero", age: "3 – 8 años" },
-  { icon: GraduationCap, name: "Academia", age: "7 – 14 años" },
-  { icon: Goal, name: "Fuerzas Básicas", age: "Sub 15 y Sub 17" },
-  { icon: Sun, name: "Curso de Verano", age: "Temporada" },
-  { icon: Tent, name: "Campamento", age: "Experiencia" },
-];
-
-const CLUB_NEWS = [
-  {
-    tag: "Noticias",
-    tagColor: "hsl(336 80% 77%)",
-    title: "Los Cabos United firma nuevo acuerdo con la afición local",
-    date: "12 Abr 2025",
-    read: "3 min",
-  },
-  {
-    tag: "Entrevista",
-    tagColor: "hsl(38 92% 60%)",
-    title: "Diego Hernández: 'Quiero romper el récord de goles de la Serie A'",
-    date: "08 Abr 2025",
-    read: "5 min",
-  },
-  {
-    tag: "Detrás de Cámaras",
-    tagColor: "hsl(199 89% 60%)",
-    title: "Un día con el plantel: la rutina antes del clásico del noroeste",
-    date: "02 Abr 2025",
-    read: "4 min",
-  },
-];
-
-const CATEGORY_THEME: Record<
-  string,
-  { label: string; color: string; bg: string }
-> = {
-  restaurantes: {
-    label: "Restaurantes",
-    color: "#F59E0B",
-    bg: "linear-gradient(135deg, #1a0f00 0%, #111 100%)",
-  },
-  bares: {
-    label: "Bares",
-    color: "#FF6B6B",
-    bg: "linear-gradient(135deg, #1a0008 0%, #111 100%)",
-  },
-  tours: {
-    label: "Tours",
-    color: "#00abc4",
-    bg: "linear-gradient(135deg, #001a1f 0%, #111 100%)",
-  },
-  tiendas: {
-    label: "Tiendas",
-    color: "#A78BFA",
-    bg: "linear-gradient(135deg, #0f0a1a 0%, #111 100%)",
-  },
-  hoteles: {
-    label: "Hoteles",
-    color: "#5EEAD4",
-    bg: "linear-gradient(135deg, #00140f 0%, #111 100%)",
-  },
-};
-
-/* ============================================================ */
-/*  SECTION DIVIDER + HEADER                                     */
-/* ============================================================ */
-
-function SectionDivider() {
+function VerTodo({ to }: { to: string }) {
   return (
-    <div className="relative">
-      <div
-        className="h-px w-full"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.10) 50%, transparent 100%)",
-        }}
-      />
-    </div>
-  );
-}
-
-function SectionHeader({
-  eyebrow,
-  title,
-  href,
-  hrefLabel = "Ver todo",
-}: {
-  eyebrow?: string;
-  title: string;
-  href?: string;
-  hrefLabel?: string;
-}) {
-  return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-4 mb-4 px-1">
-      <div className="min-w-0">
-        {eyebrow && (
-          <div
-            className="font-bold mb-1.5 inline-flex items-center gap-2 flex-wrap"
-            style={{ color: ACCENT, fontSize: 11, letterSpacing: "0.2em" }}
-          >
-            <span
-              className="inline-block w-6 h-px"
-              style={{ background: ACCENT }}
-            />
-            {eyebrow}
-          </div>
-        )}
-        <h2
-          className="font-bold text-white"
-          style={{
-            fontSize: "clamp(22px, 6vw, 44px)",
-            letterSpacing: "-0.03em",
-            lineHeight: 1.05,
-          }}
-        >
-          {title}
-        </h2>
-      </div>
-      {href && (
-        <Link
-          to={href}
-          className="self-start sm:self-auto inline-flex items-center gap-1 text-white/70 hover:text-white transition-colors font-semibold whitespace-nowrap shrink-0"
-          style={{ fontSize: 13 }}
-        >
-          {hrefLabel}
-          <ChevronRight className="w-4 h-4" />
-        </Link>
-      )}
-    </div>
-  );
-}
-
-/* ============================================================ */
-/*  HERO                                                         */
-/* ============================================================ */
-
-function HomeHero() {
-  return (
-    <section className="relative -mx-3 sm:-mx-4 lg:-mx-[calc((100vw-100%)/2)] overflow-hidden">
-      <div className="relative w-full" style={{ minHeight: 460 }}>
-        <img
-          src={mobileTeamBg}
-          alt="Plantel Los Cabos United"
-          className="md:hidden absolute inset-0 w-full h-full object-cover"
-          loading="eager"
-        />
-        <img
-          src={stadiumHero}
-          alt="Estadio Don Koll"
-          className="hidden md:block absolute inset-0 w-full h-full object-cover"
-          loading="eager"
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.7) 55%, #050505 100%)",
-          }}
-        />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(60% 40% at 50% 30%, rgba(0,171,196,0.25) 0%, transparent 70%)",
-          }}
-        />
-
-        <div className="relative z-10 px-4 pt-12 md:pt-20 pb-12 md:pb-16 text-center max-w-3xl mx-auto">
-          <motion.img
-            src={lcuCrest}
-            alt="Los Cabos United"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="h-24 md:h-28 w-auto mx-auto mb-5 object-contain drop-shadow-[0_0_40px_rgba(0,171,196,0.5)]"
-          />
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="font-bold mb-4"
-            style={{
-              color: ACCENT,
-              fontSize: 11,
-              letterSpacing: "0.18em",
-            }}
-          >
-            TEMPORADA 2025–26 · LIGA PREMIER SERIE A
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="font-bold text-white mb-4"
-            style={{
-              fontSize: "clamp(36px, 7vw, 60px)",
-              letterSpacing: "-0.03em",
-              lineHeight: 1.02,
-            }}
-          >
-            Tu equipo. <span style={{ color: ACCENT }}>Tu paraíso.</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mx-auto text-white/75"
-            style={{ fontSize: 16, maxWidth: 540, lineHeight: 1.5 }}
-          >
-            Bienvenido a la casa oficial de Los Cabos United. Vive cada partido,
-            sé Amo del Paraíso y descubre la afición más caliente de Baja.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3"
-          >
-            <Link
-              to="/accesos"
-              className="inline-flex items-center justify-center gap-2 font-bold rounded-full transition-opacity hover:opacity-90"
-              style={{
-                background: ACCENT,
-                color: "#0a0a0a",
-                height: 48,
-                padding: "0 22px",
-                fontSize: 14,
-                letterSpacing: "0.02em",
-              }}
-            >
-              <Crown className="w-4 h-4" />
-              Únete a la afición
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-10"
-          >
-            <HeroAbonoCards />
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------- Hero: Abonos compact cards ---------- */
-const HERO_ABONOS: {
-  id: "free" | "gold" | "premium" | "platino";
-  badge: string;
-  price: string;
-  tagline: string;
-  accent: string;
-  bg: string;
-  topBg: string;
-  isPopular?: boolean;
-}[] = [
-  {
-    id: "free",
-    badge: "GRATIS",
-    price: "$0",
-    tagline: "Acceso digital y comunidad oficial",
-    accent: "#FFFFFF",
-    bg: "#1a1a1a",
-    topBg: "linear-gradient(135deg, #1a1a1a, #222)",
-  },
-  {
-    id: "gold",
-    badge: "GOLD",
-    price: "$1,499",
-    tagline: "Entrada a partidos + kit oficial básico",
-    accent: "#F59E0B",
-    bg: "linear-gradient(135deg, #1a1200, #1a1a1a)",
-    topBg: "linear-gradient(135deg, #2a1f00, #1a1400)",
-  },
-  {
-    id: "premium",
-    badge: "PREMIUM",
-    price: "$2,499",
-    tagline: "Acceso VIP + foto con jugadores",
-    accent: "#00abc4",
-    bg: "linear-gradient(135deg, #001a1f, #0a1a1f)",
-    topBg: "linear-gradient(135deg, #002a35, #001a22)",
-    isPopular: true,
-  },
-  {
-    id: "platino",
-    badge: "PLATINO",
-    price: "$4,499",
-    tagline: "Experiencia completa + jersey personalizado",
-    accent: "#E2E8F0",
-    bg: "linear-gradient(135deg, #111, #1a1a1a)",
-    topBg: "linear-gradient(135deg, #1f1f1f, #111)",
-  },
-];
-
-function HeroAbonoCards() {
-  return (
-    <div className="relative max-w-4xl mx-auto">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-left">
-        {HERO_ABONOS.map((a) => (
-        <div key={a.id} className="relative pt-2.5">
-          {a.isPopular && (
-            <div
-              className="absolute top-0 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md font-bold shadow z-10 whitespace-nowrap"
-              style={{
-                background: a.accent,
-                color: "#0a0a0a",
-                fontSize: 9,
-                letterSpacing: "0.08em",
-              }}
-            >
-              MÁS POPULAR
-            </div>
-          )}
-          <Link
-            to="/accesos"
-            className="group relative rounded-xl overflow-hidden flex flex-col transition-transform hover:-translate-y-0.5 h-full"
-            style={{
-              background: a.bg,
-              borderTop: `3px solid ${a.accent}`,
-              boxShadow:
-                a.id === "premium"
-                  ? "0 0 30px rgba(0,171,196,0.25)"
-                  : "0 8px 24px rgba(0,0,0,0.4)",
-              minHeight: 150,
-            }}
-          >
-            {/* Top label area */}
-            <div
-              className="relative flex items-center justify-center px-3"
-              style={{ background: a.topBg, height: 64 }}
-            >
-              <div className="flex flex-col items-center text-center">
-              <span
-                className="font-normal text-white/55"
-                style={{ fontSize: 9, letterSpacing: "0.15em" }}
-              >
-                AMO DEL PARAÍSO
-              </span>
-              <span
-                className="font-bold mt-0.5"
-                style={{
-                  fontSize: 18,
-                  color: a.accent,
-                  letterSpacing: "0.05em",
-                  lineHeight: 1,
-                }}
-              >
-                {a.badge}
-              </span>
-              </div>
-            </div>
-
-            {/* Bottom info */}
-            <div className="px-3 py-3 flex-1 flex flex-col justify-between gap-2">
-              <div>
-                <div
-                  className="font-bold text-white tracking-tight leading-none"
-                  style={{ fontSize: 20 }}
-                >
-                  {a.price}
-                </div>
-                <div className="text-[10px] text-white/55 mt-0.5">
-                  por temporada
-                </div>
-              </div>
-              <p
-                className="text-white/70 leading-snug line-clamp-2"
-                style={{ fontSize: 11 }}
-              >
-                {a.tagline}
-              </p>
-            </div>
-          </Link>
-        </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-
-/* ============================================================ */
-/*  TU CLUB SECTION                                              */
-/* ============================================================ */
-
-function TuClubSection() {
-  return (
-    <section>
-      <SectionHeader
-        eyebrow="TU CLUB"
-        title="Conoce a tu equipo"
-        href="/club"
-        hrefLabel="Ir al Club"
-      />
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <TuClubPlantelCard />
-        <TuClubAcademiaCard />
-        <TuClubNoticiasCard />
-      </div>
-    </section>
-  );
-}
-
-/* ---------- Tu Club: Plantel ---------- */
-function TuClubPlantelCard() {
-  const [activePos, setActivePos] = useState<ClubPosition>("Delanteros");
-  const [openPlayer, setOpenPlayer] = useState<string | null>(null);
-  const positions: ClubPosition[] = [
-    "Porteros",
-    "Defensas",
-    "Mediocampistas",
-    "Delanteros",
-    "Cuerpo Técnico",
-  ];
-  const players = CLUB_ROSTER[activePos];
-
-  // Reset opened player when changing position
-  useEffect(() => {
-    setOpenPlayer(null);
-  }, [activePos]);
-
-  return (
-    <>
-    <div
-      className="lg:col-span-2 rounded-2xl border overflow-hidden flex flex-col"
-      style={{
-        background: "#0f0f0f",
-        borderColor: "rgba(255,255,255,0.07)",
-        minHeight: 280,
-      }}
+    <Link
+      to={to}
+      className="inline-flex shrink-0 items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary"
     >
-      <div className="p-5 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4" style={{ color: ACCENT }} />
-            <h3
-              className="font-bold text-white"
-              style={{ fontSize: 18, letterSpacing: "-0.01em" }}
-            >
-              Nuestro plantel
-            </h3>
-          </div>
-          <Link
-            to="/club"
-            className="inline-flex items-center gap-1 text-[12px] font-bold transition-colors hover:text-white"
-            style={{ color: ACCENT }}
-          >
-            Ver todo
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        {/* Position tabs */}
-        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide mb-4 -mx-1 px-1">
-          {positions.map((pos) => {
-            const active = pos === activePos;
-            return (
-              <button
-                key={pos}
-                onClick={() => setActivePos(pos)}
-                className="px-3 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap transition-all border shrink-0"
-                style={
-                  active
-                    ? {
-                        backgroundColor: `${ACCENT}26`,
-                        color: ACCENT,
-                        borderColor: `${ACCENT}80`,
-                      }
-                    : {
-                        backgroundColor: "transparent",
-                        color: "rgba(255,255,255,0.55)",
-                        borderColor: "rgba(255,255,255,0.1)",
-                      }
-                }
-              >
-                {pos}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Players carousel — horizontal scroll, all players in active position */}
-        <div className="flex-1 -mx-2">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activePos}
-              initial={{ opacity: 0, x: 12 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -12 }}
-              transition={{ duration: 0.25 }}
-              className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-2 pb-1"
-            >
-              {players.map((player) => {
-                const isOpen = openPlayer === player.name;
-                return (
-                  <motion.div
-                    key={player.name}
-                    whileHover={{ y: -3 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 22 }}
-                    onClick={() =>
-                      setOpenPlayer((cur) => (cur === player.name ? null : player.name))
-                    }
-                    className="group snap-start shrink-0 w-[150px] sm:w-[160px] relative rounded-xl border bg-black/30 p-2.5 text-left cursor-pointer transition-all hover:border-[#00abc4]/60"
-                    style={{ borderColor: "rgba(255,255,255,0.07)" }}
-                  >
-                    <div className="aspect-square rounded-lg bg-white/5 flex items-center justify-center mb-1.5 relative overflow-hidden">
-                      <span className="text-2xl font-bold text-white/55">
-                        {player.number}
-                      </span>
-                      <span className="absolute top-1 right-1 text-sm">
-                        {player.flag}
-                      </span>
-                      {player.timesAmo > 0 && (
-                        <span
-                          className="absolute bottom-1 left-1 inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[8px] font-bold"
-                          style={{
-                            background: "hsl(336 80% 77% / 0.18)",
-                            color: "hsl(336 80% 77%)",
-                            border: "1px solid hsl(336 80% 77% / 0.4)",
-                          }}
-                        >
-                          <Star className="w-2 h-2 fill-current" />
-                          {player.timesAmo}
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-[11px] font-semibold text-white truncate">
-                      {player.name}
-                    </div>
-                    <div className="text-[10px] text-white/50 truncate">
-                      {player.role ? player.role : `#${player.number}`}
-                    </div>
-
-                    {/* Hover/click detail overlay (mirrors Club.tsx pattern) */}
-                    <div
-                      className={`absolute inset-0 rounded-xl bg-card/95 backdrop-blur-sm transition-opacity p-2.5 flex flex-col justify-between border ${
-                        isOpen
-                          ? "opacity-100"
-                          : "opacity-0 group-hover:opacity-100 focus-within:opacity-100"
-                      }`}
-                      style={{ borderColor: "hsl(189 100% 38% / 0.5)" }}
-                    >
-                      {/* TOP: name + age + birth state + position + flag */}
-                      <div className="flex items-start gap-1.5 min-w-0">
-                        <div className="min-w-0 flex-1">
-                          <div className="text-[12px] font-bold text-white leading-tight truncate">
-                            {player.name}
-                          </div>
-                          <div className="text-[9px] text-white/55 leading-tight truncate">
-                            {player.age} años
-                          </div>
-                          <div className="text-[9px] text-white/55 leading-tight truncate">
-                            {player.birthState}
-                          </div>
-                          <div
-                            className="text-[9px] font-semibold leading-tight truncate mt-0.5"
-                            style={{ color: ACCENT }}
-                          >
-                            {player.positionDetail}
-                          </div>
-                        </div>
-                        <span
-                          className="text-base shrink-0 leading-none"
-                          title={player.country}
-                        >
-                          {player.flag}
-                        </span>
-                      </div>
-
-                      {/* STATS ROW: Goles + Partidos jugados */}
-                      <div className="flex items-stretch justify-between gap-1 my-1">
-                        {[
-                          { value: player.goals, label: "GOLES" },
-                          { value: player.matches, label: "PJ" },
-                        ].map((s, i) => (
-                          <div key={s.label} className="flex items-center flex-1">
-                            <div className="flex flex-col items-center justify-center flex-1 min-w-0">
-                              <span className="text-[22px] font-bold text-white tabular-nums leading-none">
-                                {s.value}
-                              </span>
-                              <span
-                                className="text-[8px] uppercase tracking-[0.12em] mt-1 font-semibold"
-                                style={{ color: ACCENT }}
-                              >
-                                {s.label}
-                              </span>
-                            </div>
-                            {i < 1 && <div className="w-px self-stretch bg-white/10" />}
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* BOTTOM BADGE */}
-                      {player.timesAmo > 0 ? (
-                        <div className="flex justify-center">
-                          <span
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold border"
-                            style={{
-                              backgroundColor: "hsl(336 80% 77% / 0.12)",
-                              color: "hsl(336 80% 77%)",
-                              borderColor: "hsl(336 80% 77% / 0.35)",
-                            }}
-                          >
-                            <Star className="w-2.5 h-2.5 fill-current" />
-                            ×{player.timesAmo} VECES AMO
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="h-[18px]" aria-hidden />
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          </AnimatePresence>
-          <div className="text-[10px] text-white/35 text-center mt-2">
-            ← Desliza para ver más jugadores →
-          </div>
-        </div>
-      </div>
-    </div>
-    </>
+      Ver todo
+      <ArrowRight className="h-3.5 w-3.5" />
+    </Link>
   );
 }
 
-/* ---------- Tu Club: Academia ---------- */
-function TuClubAcademiaCard() {
-  return (
-    <div
-      className="lg:col-span-1 rounded-2xl border overflow-hidden flex flex-col"
-      style={{
-        background:
-          "linear-gradient(135deg, #001a1f 0%, #0a0a0a 60%, #001218 100%)",
-        borderColor: "rgba(255,255,255,0.07)",
-        minHeight: 280,
-      }}
-    >
-      <div className="p-5 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <GraduationCap className="w-4 h-4" style={{ color: ACCENT }} />
-            <h3
-              className="font-bold text-white"
-              style={{ fontSize: 18, letterSpacing: "-0.01em" }}
-            >
-              Academia
-            </h3>
-          </div>
-          <Link
-            to="/club"
-            className="inline-flex items-center gap-1 text-[12px] font-bold transition-colors hover:text-white whitespace-nowrap"
-            style={{ color: ACCENT }}
-          >
-            Inscribe a tu hijo
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="flex flex-col gap-1.5 flex-1">
-          {CLUB_ACADEMY_CATEGORIES.map((c) => {
-            const Icon = c.icon;
-            return (
-              <Link
-                key={c.name}
-                to="/club"
-                className="group flex items-center gap-2.5 rounded-lg border bg-black/20 px-2.5 py-2 transition-all hover:border-[#00abc4]/50"
-                style={{ borderColor: "rgba(255,255,255,0.07)" }}
-              >
-                <div
-                  className="w-8 h-8 rounded-md flex items-center justify-center shrink-0"
-                  style={{ background: `${ACCENT}1f` }}
-                >
-                  <Icon className="w-4 h-4" style={{ color: ACCENT }} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[12px] font-semibold text-white truncate leading-tight">
-                    {c.name}
-                  </div>
-                  <div
-                    className="text-[10px] font-bold tracking-wide truncate"
-                    style={{ color: ACCENT }}
-                  >
-                    {c.age}
-                  </div>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-white/40 shrink-0 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
+function formatNewsDate(iso: string | null) {
+  if (!iso) return "";
+  return new Date(iso).toLocaleDateString("es-MX", {
+    day: "2-digit",
+    month: "short",
+  });
 }
 
-/* ---------- Tu Club: Noticias (carousel) ---------- */
-function TuClubNoticiasCard() {
-  const [index, setIndex] = useState(0);
+/* ----------------------------------- hero ----------------------------------- */
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      setIndex((i) => (i + 1) % CLUB_NEWS.length);
-    }, 4500);
-    return () => clearInterval(id);
-  }, []);
-
-  const current = CLUB_NEWS[index];
-
-  return (
-    <div
-      className="lg:col-span-1 rounded-2xl border overflow-hidden flex flex-col"
-      style={{
-        background: "#0f0f0f",
-        borderColor: "rgba(255,255,255,0.07)",
-        minHeight: 280,
-      }}
-    >
-      <div className="p-5 flex flex-col h-full">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <Newspaper
-              className="w-4 h-4"
-              style={{ color: "hsl(336 80% 77%)" }}
-            />
-            <h3
-              className="font-bold text-white"
-              style={{ fontSize: 18, letterSpacing: "-0.01em" }}
-            >
-              Noticias
-            </h3>
-          </div>
-          <Link
-            to="/club"
-            className="inline-flex items-center gap-1 text-[12px] font-bold text-white/85 hover:text-white transition-colors"
-          >
-            Ver todas
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        {/* Carousel */}
-        <Link
-          to="/club"
-          className="relative flex-1 rounded-xl border overflow-hidden block group"
-          style={{
-            background: "rgba(255,255,255,0.02)",
-            borderColor: "rgba(255,255,255,0.07)",
-            minHeight: 180,
-          }}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -16 }}
-              transition={{ duration: 0.35 }}
-              className="absolute inset-0 flex flex-col"
-            >
-              <div
-                className="h-20 relative overflow-hidden"
-                style={{
-                  background: `linear-gradient(135deg, ${current.tagColor.replace(
-                    ")",
-                    " / 0.4)",
-                  )} 0%, #0a0a0a 100%)`,
-                }}
-              />
-              <div className="p-3 flex-1 flex flex-col">
-                <span
-                  className="self-start px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider mb-1.5"
-                  style={{
-                    backgroundColor: "rgba(0,0,0,0.5)",
-                    color: current.tagColor,
-                    border: `1px solid ${current.tagColor.replace(")", " / 0.4)")}`,
-                  }}
-                >
-                  {current.tag}
-                </span>
-                <div className="text-[12px] font-semibold text-white leading-snug line-clamp-2 mb-2">
-                  {current.title}
-                </div>
-                <div className="text-[10px] text-white/55 mt-auto flex items-center gap-2">
-                  <span>{current.date}</span>
-                  <span className="w-1 h-1 rounded-full bg-white/40" />
-                  <span>{current.read}</span>
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </Link>
-
-        {/* Dots */}
-        <div className="flex items-center justify-center gap-1.5 mt-3">
-          {CLUB_NEWS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setIndex(i)}
-              aria-label={`Ir a noticia ${i + 1}`}
-              className="h-1.5 rounded-full transition-all"
-              style={{
-                width: i === index ? 18 : 6,
-                background:
-                  i === index ? "hsl(336 80% 77%)" : "rgba(255,255,255,0.2)",
-              }}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ============================================================ */
-/*  FAN ZONE SECTION — Ranking + Premios                         */
-/* ============================================================ */
-
-function FanZoneSection({ onLoginClick }: { onLoginClick: () => void }) {
+function Hero({ onSignup }: { onSignup: () => void }) {
   const { user } = useAuth();
 
   return (
-    <section>
-      <SectionHeader
-        eyebrow="FAN ZONE"
-        title="Juega y Gana Premios"
-        href="/fan-zone"
-        hrefLabel="Ir a Fan Zone"
+    <section className="relative overflow-hidden rounded-2xl border border-hairline bg-surface-1">
+      <img
+        src={stadiumHero}
+        alt="Afición de Los Cabos United en el estadio Don Koll"
+        className="absolute inset-0 h-full w-full object-cover opacity-40"
       />
-
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <RankingCard
-          className="lg:col-span-3"
-          user={user}
-          onLoginClick={onLoginClick}
-        />
-        <PrizesCarouselCard className="lg:col-span-2" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/30" />
+      <div className="relative px-5 py-9 md:px-8 md:py-14">
+        <img src={lcuCrest} alt="Escudo de Los Cabos United" className="h-14 w-auto md:h-16" />
+        <h1 className="text-display-lg mt-4 max-w-lg text-foreground">
+          Los Cabos United, Amos del Paraíso
+        </h1>
+        <p className="mt-2.5 max-w-md text-sm leading-relaxed text-secondary-fg">
+          Partidos en vivo, tu club, la tienda oficial y los mejores lugares de Los Cabos
+          en un solo lugar.
+        </p>
+        <div className="mt-5 flex flex-wrap items-center gap-2.5">
+          {user ? (
+            <Link to="/mi-pase" className={lcuButtonClasses("primary")}>
+              <Ticket className="h-4 w-4" />
+              Ver mi pase
+            </Link>
+          ) : (
+            <button type="button" onClick={onSignup} className={lcuButtonClasses("primary")}>
+              <Sparkles className="h-4 w-4" />
+              Obtener mi pase
+            </button>
+          )}
+          <Link to="/zona-partido" className={lcuButtonClasses("outline")}>
+            Ir a Match Zone
+          </Link>
+        </div>
       </div>
     </section>
   );
 }
 
-/* ============================================================ */
-/*  TIENDA OFICIAL — 50/50                                       */
-/* ============================================================ */
+/* ------------------------------- próximo partido ------------------------------ */
 
-function TiendaSection() {
+function MatchBlock() {
+  const { match, state, isLoading } = useFeaturedMatch();
+
+  return (
+    <section className="space-y-3">
+      <SectionHeader
+        eyebrow="Match Zone"
+        title={state === "live" ? "Partido en vivo" : "Próximo partido"}
+        action={<VerTodo to="/zona-partido" />}
+      />
+      {isLoading ? (
+        <div className="h-52 rounded-2xl border border-hairline bg-surface-1" />
+      ) : match ? (
+        state === "pre" ? (
+          <NextMatchCard match={match} />
+        ) : (
+          <Link
+            to="/zona-partido"
+            className="block rounded-2xl border border-hairline bg-surface-1 p-4 transition-colors hover:border-primary/40"
+          >
+            <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              {state === "live" ? "Ahora en vivo" : "Último resultado"}
+            </p>
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <span className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">
+                {match.home_team?.name}
+              </span>
+              <span className="num-display text-xl text-foreground">
+                {match.home_score} – {match.away_score}
+              </span>
+              <span className="min-w-0 flex-1 truncate text-right text-sm font-semibold text-foreground">
+                {match.away_team?.name}
+              </span>
+            </div>
+          </Link>
+        )
+      ) : (
+        <p className="rounded-2xl border border-hairline bg-surface-1 p-5 text-sm text-muted-foreground">
+          Aún no hay partidos programados. En cuanto se publique el calendario aparecerá aquí.
+        </p>
+      )}
+    </section>
+  );
+}
+
+/* ---------------------------------- tu club --------------------------------- */
+
+function ClubBlock() {
+  const { data: players = [], isLoading: loadingPlayers } = useClubPlayers();
+  const { data: news = [] } = useClubNews(3);
+  const { data: youth } = useYouthTeam();
+
+  return (
+    <section className="space-y-3">
+      <SectionHeader
+        eyebrow="Tu Club"
+        title="Cómo va la temporada"
+        action={<VerTodo to="/club" />}
+      />
+
+      <SeasonSummary />
+
+      {(loadingPlayers || players.length > 0) && (
+        <div className="rounded-2xl border border-hairline bg-surface-1 p-4">
+          <div className="mb-3 flex items-center gap-2">
+            <Users className="h-4 w-4 text-primary" />
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
+              Plantel
+            </p>
+          </div>
+          <div className="-mx-1 flex gap-2.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {players.slice(0, 10).map((p) => (
+              <Link
+                key={p.id}
+                to="/club"
+                className="w-[104px] shrink-0 overflow-hidden rounded-xl border border-hairline bg-surface-3 transition-colors hover:border-primary/40"
+              >
+                <div className="relative aspect-[3/4] bg-surface-2">
+                  {p.photo_url ? (
+                    <img
+                      src={p.photo_url}
+                      alt={p.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover object-top"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <span className="num-display text-2xl text-muted-foreground">
+                        {p.jersey_number ?? "—"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="p-2">
+                  <p className="truncate text-[11px] font-semibold text-foreground">{p.name}</p>
+                  <p className="truncate text-[10px] text-muted-foreground">
+                    {p.position ?? "Plantel"}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {youth && (
+        <Link
+          to="/club"
+          className="block overflow-hidden rounded-2xl border border-hairline bg-surface-1 transition-colors hover:border-primary/40"
+        >
+          {youth.image_url && (
+            <img
+              src={youth.image_url}
+              alt={youth.name}
+              loading="lazy"
+              className="h-32 w-full object-cover"
+            />
+          )}
+          <div className="p-4">
+            <div className="flex items-center gap-2">
+              <GraduationCap className="h-4 w-4 text-primary" />
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
+                Fuerzas juveniles
+              </p>
+            </div>
+            <h3 className="text-display-md mt-1.5 text-foreground">{youth.name}</h3>
+            {youth.tournament && (
+              <span className="mt-2 inline-block rounded-lg border border-hairline bg-surface-3 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-secondary-fg">
+                {youth.tournament}
+              </span>
+            )}
+          </div>
+        </Link>
+      )}
+
+      {news.length > 0 && (
+        <div className="rounded-2xl border border-hairline bg-surface-1 p-4">
+          <div className="mb-3 flex items-center gap-2">
+            <Newspaper className="h-4 w-4 text-primary" />
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
+              Desde el vestuario
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {news.map((n) => (
+              <Link
+                key={n.id}
+                to="/club"
+                className="overflow-hidden rounded-xl border border-hairline bg-surface-3 transition-colors hover:border-primary/40"
+              >
+                <div className="h-24 w-full bg-surface-2">
+                  {n.image_url && (
+                    <img
+                      src={n.image_url}
+                      alt={n.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  )}
+                </div>
+                <div className="p-3">
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                    {formatNewsDate(n.published_at ?? n.created_at)}
+                  </p>
+                  <p className="mt-1 line-clamp-2 text-sm font-semibold text-foreground">
+                    {n.title}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+/* -------------------------------- fan zone -------------------------------- */
+
+function FanZoneTeaser() {
+  return (
+    <section className="space-y-3">
+      <SectionHeader eyebrow="Fan Zone" title="Muy pronto" action={<VerTodo to="/fan-zone" />} />
+      <div className="rounded-2xl border border-hairline bg-surface-1 p-5">
+        <p className="text-sm leading-relaxed text-secondary-fg">
+          Estamos construyendo la Fan Zone: retos, predicciones y recompensas por apoyar al
+          club. Crea tu cuenta hoy y serás de los primeros en entrar.
+        </p>
+        <Link
+          to="/fan-zone"
+          className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-primary"
+        >
+          Conocer la Fan Zone
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+/* --------------------------------- tienda --------------------------------- */
+
+function ShopBlock() {
   const { data: products = [], isLoading } = useProducts();
   const featured = products.slice(0, 4);
 
   return (
-    <section>
+    <section className="space-y-3">
       <SectionHeader
-        eyebrow="TIENDA OFICIAL"
-        title="Lleva el escudo a donde vayas"
-        href="/tienda"
-        hrefLabel="Ver tienda"
+        eyebrow="Tienda oficial"
+        title="Viste los colores"
+        action={<VerTodo to="/tienda" />}
       />
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Hero card 50% */}
-        <Link
-          to="/tienda"
-          className="group relative rounded-2xl overflow-hidden border transition-all hover:border-[#00abc4]/40"
-          style={{
-            background: "#0f0f0f",
-            borderColor: "rgba(255,255,255,0.07)",
-            minHeight: 360,
-          }}
-        >
-          <img
-            src={tiendaHero}
-            alt="Tienda Oficial Los Cabos United"
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(to top, #050505 0%, rgba(5,5,5,0.5) 55%, rgba(5,5,5,0.1) 100%)",
-            }}
-          />
-          <div className="relative h-full flex flex-col justify-between p-6 z-10 min-h-[360px]">
-            <div className="flex items-center gap-2">
-              <span
-                className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border"
-                style={{
-                  color: ACCENT,
-                  borderColor: `${ACCENT}66`,
-                  background: "rgba(0,0,0,0.55)",
-                }}
-              >
-                Tienda Oficial
-              </span>
-              <span
-                className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md"
-                style={{
-                  background: ACCENT,
-                  color: "#000",
-                }}
-              >
-                Nueva colección
-              </span>
-            </div>
-            <div>
-              <h3
-                className="font-bold text-white mb-3"
-                style={{ fontSize: "clamp(24px, 3vw, 34px)", letterSpacing: "-0.025em", lineHeight: 1.05 }}
-              >
-                Jersey 2025–26
-              </h3>
-              <p className="text-white/75 text-[13px] mb-5 max-w-sm leading-relaxed">
-                Vístete como un Amo del Paraíso. Edición de temporada con detalles bordados.
-              </p>
-              <div
-                className="inline-flex items-center gap-2 font-bold rounded-full"
-                style={{
-                  background: ACCENT,
-                  color: "#000",
-                  height: 42,
-                  padding: "0 18px",
-                  fontSize: 13,
-                }}
-              >
-                <ShoppingBag className="w-4 h-4" />
-                Comprar ahora
-                <ArrowRight className="w-4 h-4" />
-              </div>
-            </div>
-          </div>
-        </Link>
-
-        {/* Products grid 50% — 2x2 */}
-        <div
-          className="rounded-2xl border p-4"
-          style={{
-            background: "#0f0f0f",
-            borderColor: "rgba(255,255,255,0.07)",
-            minHeight: 360,
-          }}
-        >
-          <div className="flex items-center justify-between mb-3 px-1">
-            <h3
-              className="font-semibold text-white uppercase"
-              style={{ fontSize: 12, letterSpacing: "0.16em" }}
-            >
-              Destacados
-            </h3>
-            <Link
-              to="/tienda"
-              className="text-[12px] font-bold inline-flex items-center gap-1"
-              style={{ color: ACCENT }}
-            >
-              Ver más <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            {isLoading
-              ? Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i}>
-                    <Skeleton className="aspect-square rounded-xl mb-2" />
-                    <Skeleton className="h-3 w-2/3 mb-1" />
-                    <Skeleton className="h-3 w-1/2" />
-                  </div>
-                ))
-              : featured.length === 0
-              ? (
-                <div className="col-span-2 flex items-center justify-center py-12 text-white/40 text-sm">
-                  No hay productos disponibles
-                </div>
-              )
-              : featured.map((product, i) => (
-                  <ProductCard key={product.id} product={product} index={i} />
-                ))}
-          </div>
+      {isLoading ? (
+        <div className="grid grid-cols-2 gap-3">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="aspect-[4/5] rounded-2xl border border-hairline bg-surface-1" />
+          ))}
         </div>
-      </div>
+      ) : featured.length === 0 ? (
+        <div className="rounded-2xl border border-hairline bg-surface-1 p-5">
+          <p className="text-sm text-muted-foreground">
+            La tienda está por abrir. Muy pronto habrá jerseys y streetwear disponibles.
+          </p>
+          <Link
+            to="/tienda"
+            className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-primary"
+          >
+            <ShoppingBag className="h-3.5 w-3.5" />
+            Ir a la tienda
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {featured.map((p, i) => (
+            <ProductCard key={p.id} product={p} index={i} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
 
-/* ============================================================ */
-/*  VISITA LOS CABOS                                             */
-/* ============================================================ */
+/* ----------------------------- visita los cabos ---------------------------- */
 
-function LosCabosStrip() {
-  const { data: places = [] } = usePlaces();
-  const flagged = places.filter((p) => p.featured);
-  const featured = (flagged.length ? flagged : places).slice(0, 6);
-
-  if (featured.length === 0) return null;
+function VisitaBlock() {
+  const { data: places = [], isLoading } = usePlaces();
+  const { metaFor } = useCategoryMeta();
+  const highlights = places
+    .slice()
+    .sort((a, b) => Number(b.featured) - Number(a.featured))
+    .slice(0, 6);
 
   return (
-    <section>
+    <section className="space-y-3">
       <SectionHeader
-        eyebrow="VISITA LOS CABOS"
-        title="El Paraíso te espera"
-        href="/conoce-los-cabos"
-        hrefLabel="Explorar mapa"
+        eyebrow="Visita Los Cabos"
+        title="El paraíso, según la afición"
+        subtitle={
+          places.length > 0
+            ? `${places.length} lugares recomendados en Cabo San Lucas y San José`
+            : undefined
+        }
+        action={<VerTodo to="/conoce-los-cabos" />}
       />
-      <div className="-mx-3 md:mx-0">
-        <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-3 md:px-0 pb-2">
-          {featured.map((place) => {
-            const meta =
-              CATEGORY_THEME[place.category] ?? {
-                label: place.category,
-                color: "#ffffff",
-                bg: "linear-gradient(135deg, #111 0%, #0a0a0a 100%)",
-              };
+
+      <Link
+        to="/conoce-los-cabos"
+        className="relative block h-56 overflow-hidden rounded-2xl border border-hairline bg-surface-1 md:h-64"
+      >
+        {!isLoading && <HomeMiniMap places={places} />}
+        <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-background to-transparent px-4 pb-3 pt-10">
+          <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+            <MapPin className="h-3.5 w-3.5 text-primary" />
+            Abrir el mapa completo
+          </span>
+          <ArrowRight className="h-4 w-4 text-primary" />
+        </span>
+      </Link>
+
+      {highlights.length > 0 && (
+        <div className="-mx-1 flex gap-2.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {highlights.map((place) => {
+            const meta = metaFor(place.category);
             return (
               <Link
                 key={place.id}
-                to={`/conoce-los-cabos?place=${place.id}`}
-                className="snap-start shrink-0 w-[240px] h-[150px] relative rounded-2xl overflow-hidden border border-white/[0.07] hover:border-white/[0.18] transition-all group"
-                style={{ background: meta.bg }}
+                to="/conoce-los-cabos"
+                className="w-[152px] shrink-0 overflow-hidden rounded-xl border border-hairline bg-surface-1 transition-colors hover:border-primary/40"
               >
-                <div className="absolute inset-0 p-3 flex flex-col justify-between">
-                  <div className="flex justify-start items-start">
-                    <span
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-md"
-                      style={{
-                        backgroundColor: `${meta.color}1a`,
-                        color: meta.color,
-                        border: `1px solid ${meta.color}33`,
-                        letterSpacing: "0.04em",
-                      }}
+                <div className="h-20 w-full bg-surface-2">
+                  {place.photoUrl && (
+                    <img
+                      src={place.photoUrl}
+                      alt={place.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  )}
+                </div>
+                <div className="p-2.5">
+                  <div className="flex items-center gap-1.5">
+                    <CategoryIcon
+                      name={meta.icon}
+                      className="h-3.5 w-3.5"
+                      style={{ color: meta.color }}
+                    />
+                    <p
+                      className="truncate text-[10px] font-semibold uppercase tracking-[0.14em]"
+                      style={{ color: meta.color }}
                     >
                       {meta.label}
-                    </span>
+                    </p>
                   </div>
-                  <div>
-                    <div
-                      className="font-bold text-white leading-tight line-clamp-2"
-                      style={{ fontSize: 14 }}
-                    >
-                      {place.name}
-                    </div>
-                    <div
-                      className="flex items-center gap-1 text-white/55 mt-1"
-                      style={{ fontSize: 11 }}
-                    >
-                      <MapPin className="w-3 h-3" />
-                      {place.area ?? ""}
-                    </div>
-                  </div>
+                  <p className="mt-1 truncate text-sm font-semibold text-foreground">
+                    {place.name}
+                  </p>
+                  {place.area && (
+                    <p className="truncate text-[11px] text-muted-foreground">{place.area}</p>
+                  )}
                 </div>
               </Link>
             );
           })}
         </div>
-      </div>
+      )}
     </section>
   );
 }
 
-/* ============================================================ */
-/*  PAGE                                                         */
-/* ============================================================ */
+/* ----------------------------------- page ---------------------------------- */
 
-const Index = () => {
-  const [authOpen, setAuthOpen] = useState(false);
+export default function Index() {
+  const { user } = useAuth();
+  const [signupOpen, setSignupOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   return (
-    <>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="pb-10"
-        style={{ display: "flex", flexDirection: "column", gap: 32 }}
-      >
-        <HomeHero />
-        <SectionDivider />
-        <TuClubSection />
-        <SectionDivider />
-        <FanZoneSection onLoginClick={() => setAuthOpen(true)} />
-        <SectionDivider />
-        <TiendaSection />
-        <SectionDivider />
-        <LosCabosStrip />
-      </motion.div>
+    <div className="mx-auto w-full max-w-5xl space-y-8 px-4 pb-20 pt-4 md:px-6">
+      <Hero onSignup={() => setSignupOpen(true)} />
+      <MatchBlock />
+      <ClubBlock />
+      <FanZoneTeaser />
+      <ShopBlock />
+      <VisitaBlock />
 
-      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
-        <DialogContent className="bg-card border-border max-w-sm">
+      {!user && (
+        <section className="rounded-2xl border border-hairline bg-surface-1 p-5 text-center">
+          <h2 className="text-display-md text-foreground">Tu pase digital es gratis</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-secondary-fg">
+            Acceso a la transmisión en vivo, beneficios en comercios y tu credencial de
+            aficionado.
+          </p>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => setSignupOpen(true)}
+              className={lcuButtonClasses("primary")}
+            >
+              Crear mi cuenta
+            </button>
+            <button
+              type="button"
+              onClick={() => setLoginOpen(true)}
+              className={lcuButtonClasses("ghost")}
+            >
+              Ya tengo cuenta
+            </button>
+          </div>
+        </section>
+      )}
+
+      <AuthFlow open={signupOpen} onClose={() => setSignupOpen(false)} />
+      <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
+        <DialogContent className="max-h-[90vh] max-w-sm overflow-y-auto border-border bg-card">
           <DialogHeader>
-            <DialogTitle>Únete a Los Cabos United</DialogTitle>
+            <DialogTitle>Acceso de aficionados</DialogTitle>
           </DialogHeader>
-          <AuthModal onSuccess={() => setAuthOpen(false)} />
+          <AuthModal
+            loginOnly
+            onSuccess={() => setLoginOpen(false)}
+            onSignupClick={() => {
+              setLoginOpen(false);
+              setSignupOpen(true);
+            }}
+          />
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
-};
-
-export default Index;
+}
