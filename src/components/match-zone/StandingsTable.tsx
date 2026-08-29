@@ -107,7 +107,7 @@ export function StandingsTable({ standings, qualifySlots }: Props) {
                       ours ? "font-bold text-foreground" : "font-medium text-secondary-fg"
                     )}
                   >
-                    {s.team?.short_name || s.team?.name}
+                    {s.team?.name || s.team?.short_name}
                   </span>
                 </div>
                 <span className="num w-8 text-right text-sm text-muted-foreground">{s.played}</span>

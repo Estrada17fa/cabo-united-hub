@@ -106,7 +106,7 @@ function TeamSide({
             team?.is_ours ? "text-primary" : "text-foreground"
           )}
         >
-          {team?.short_name || team?.name || "—"}
+          {team?.name || team?.short_name || "—"}
         </p>
         <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
           {label}
