@@ -112,7 +112,7 @@ export function FanPassPreview({ userId, onTierLoad, preview }: Props) {
   return (
     <button
       type="button"
-      onClick={() => navigate("/mi-perfil")}
+      onClick={() => navigate("/mi-pase")}
       className="relative block w-full text-left rounded-2xl p-5 md:p-6 overflow-hidden group transition-transform hover:-translate-y-0.5"
       style={{
         background: t.bg,

@@ -220,10 +220,27 @@ export default function Patrocinadores() {
 
       <AdminSheet
         open={!!form}
-        onClose={() => setForm(null)}
+        onOpenChange={(v) => !v && setForm(null)}
         title={form?.id ? "Editar patrocinador" : "Nuevo patrocinador"}
-        onSave={save}
-        saving={saving}
+        footer={
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={save}
+              disabled={saving}
+              className="flex-1 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
+            >
+              {saving ? "Guardando…" : "Guardar"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setForm(null)}
+              className="rounded-xl border border-hairline px-4 py-2.5 text-sm font-semibold text-secondary-fg"
+            >
+              Cancelar
+            </button>
+          </div>
+        }
       >
         {form && (
           <div className="space-y-3">
