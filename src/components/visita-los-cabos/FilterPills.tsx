@@ -18,10 +18,18 @@ interface FilterPillsProps {
 }
 
 export function FilterPills({ active, onChange, search, onSearchChange }: FilterPillsProps) {
+  const { categories } = usePlaceCategories();
+  const filters: { value: FilterValue; label: string; icon?: string }[] = [
+    { value: "todos", label: "Todos" },
+    ...categories.map((c) => ({ value: c.slug, label: c.label, icon: c.icon })),
+    { value: "patrocinadores", label: "Patrocinadores", icon: "star" },
+  ];
+
   return (
     <div className="space-y-2">
       <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-        {FILTERS.map((f) => {
+        {filters.map((f) => {
+
           const isActive = f.value === active;
           const isSponsors = f.value === "patrocinadores";
           const activeColor = isSponsors ? SPONSOR_GOLD : LCU_CYAN;
