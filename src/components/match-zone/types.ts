@@ -97,11 +97,23 @@ export interface Scorer {
   season: string;
   player_name: string;
   team_id: string | null;
+  player_id?: string | null;
   goals: number;
   assists: number;
   matches_played: number;
   team?: Team | null;
+  player?: { id: string; name: string; photo_url: string | null; jersey_number: number | null } | null;
 }
+
+export interface Season {
+  id: string;
+  name: string;
+  season_key: string | null;
+  start_date: string;
+  end_date: string;
+  status: string;
+}
+
 
 export const LIVE_PHASES: MatchPhase[] = ["first_half", "halftime", "second_half"];
 

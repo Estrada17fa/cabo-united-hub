@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { Match, Scorer, Standing, Team } from "@/components/match-zone/types";
+import type { Match, Scorer, Season, Standing, Team } from "@/components/match-zone/types";
 
 export const SEASON = "2026";
 
@@ -61,7 +61,7 @@ export function useScorers(season = SEASON) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("top_scorers")
-        .select("*, team:teams(*)")
+        .select("*, team:teams(*), player:players(id, name, photo_url, jersey_number)")
         .eq("season", season)
         .order("goals", { ascending: false })
         .order("assists", { ascending: false });
@@ -70,6 +70,22 @@ export function useScorers(season = SEASON) {
     },
   });
 }
+
+/** Torneos/temporadas reales capturados en el panel de admin. */
+export function useSeasons() {
+  return useQuery({
+    queryKey: ["lcu-seasons"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("seasons")
+        .select("id, name, season_key, start_date, end_date, status")
+        .order("start_date", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as unknown as Season[];
+    },
+  });
+}
+
 
 /** Invalida las consultas de liga cuando cambian los partidos (realtime). */
 export function useLeagueRealtime() {
