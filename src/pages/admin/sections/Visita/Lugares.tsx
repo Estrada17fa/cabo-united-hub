@@ -289,11 +289,12 @@ export default function Lugares() {
                   }
                   className={adminInput}
                 >
-                  {CATEGORIES.map((c) => (
-                    <option key={c} value={c}>
-                      {CATEGORY_META[c].label}
+                  {categories.map((c) => (
+                    <option key={c.slug} value={c.slug}>
+                      {c.label}
                     </option>
                   ))}
+
                 </select>
               </Field>
               <Field label="Nivel">
