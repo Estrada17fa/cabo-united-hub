@@ -16,6 +16,7 @@ import {
   User,
   LogOut,
   ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 import lcuCrest from "@/assets/lcu-crest.png";
 import { soccerBall } from "@lucide/lab";
@@ -36,6 +37,8 @@ import { FanPassMini } from "@/components/pass/FanPassMini";
 import { MiniPassChip } from "@/components/pass/MiniPassChip";
 import { AuthFlow } from "@/components/auth/AuthFlow";
 import { cn } from "@/lib/utils";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+
 
 const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
   <Icon iconNode={soccerBall} {...props} />
