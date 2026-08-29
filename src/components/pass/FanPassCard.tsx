@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
-import { Loader2, Calendar, MapPin, Sparkles, ShieldCheck, RefreshCw, Download, Share2, Store, Ticket } from "lucide-react";
+import { Loader2, Calendar, MapPin, Sparkles, ShieldCheck, Download, Share2, Store, Ticket } from "lucide-react";
 
 import { toPng } from "html-to-image";
 import { supabase } from "@/integrations/supabase/client";
@@ -317,34 +317,17 @@ export function FanPassCard({
               <div className="flex items-start justify-between mt-3">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.14em] text-black/55 font-bold">Acceso al estadio</div>
-                  <div className="text-[11px] text-black/55">QR único por partido</div>
+                  <div className="text-[11px] text-black/55">Acceso digital próximamente</div>
                 </div>
                 <ShieldCheck className="w-5 h-5" style={{ color: tier.accent }} />
               </div>
 
-              <div className="flex-1 flex items-center justify-center my-2">
-                {loadingQr ? (
-                  <div className="flex flex-col items-center gap-2 text-black/60">
-                    <Loader2 className="w-6 h-6 animate-spin" />
-                    <div className="text-xs">Generando QR…</div>
-                  </div>
-                ) : qrError ? (
-                  <div className="text-center">
-                    <div className="text-xs text-red-600 mb-2">{qrError}</div>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); fetchQr(); }}
-                      className="text-xs underline text-black/70"
-                    >
-                      Reintentar
-                    </button>
-                  </div>
-                ) : qr ? (
-                  <div className="bg-white p-2 rounded-md">
-                    <QRCodeSVG value={qr.token} size={172} level="M" includeMargin={false} />
-                  </div>
-                ) : (
-                  <div className="text-xs text-black/50">Toca para generar</div>
-                )}
+              <div className="flex-1 flex flex-col items-center justify-center my-2 text-center px-4">
+                <Ticket className="w-8 h-8 mb-3" style={{ color: tier.accent }} />
+                <div className="text-sm font-bold text-black/80 leading-snug">
+                  Próximamente verás tu QR para ingresar al estadio
+                </div>
+                <div className="text-[11px] text-black/55 mt-1">Espéralo</div>
               </div>
 
               <div
@@ -383,54 +366,16 @@ export function FanPassCard({
               <div className="flex items-start justify-between mt-3">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.14em] text-black/55 font-bold">Beneficios en comercios</div>
-                  <div className="text-[11px] text-black/55">Muestra este QR en el mostrador</div>
+                  <div className="text-[11px] text-black/55">Canjea beneficios próximamente</div>
                 </div>
                 <Store className="w-5 h-5" style={{ color: tier.accent }} />
               </div>
 
-              <div className="flex-1 flex items-center justify-center my-2">
-                {memberQr ? (
-                  <div className="relative" style={{ width: 196, height: 196 }}>
-                    <svg width="196" height="196" className="absolute inset-0 -rotate-90">
-                      <circle cx="98" cy="98" r="93" fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="5" />
-                      <circle
-                        cx="98" cy="98" r="93" fill="none"
-                        stroke={tier.accent === "#FFFFFF" ? "#0a0a0a" : tier.accent}
-                        strokeWidth="5"
-                        strokeLinecap="round"
-                        strokeDasharray={2 * Math.PI * 93}
-                        strokeDashoffset={2 * Math.PI * 93 * (1 - memberProgress)}
-                        style={{ transition: "stroke-dashoffset 1s linear" }}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-white p-1.5 rounded-md">
-                        <QRCodeSVG value={memberQr.token} size={140} level="M" includeMargin={false} />
-                      </div>
-                    </div>
-                  </div>
-                ) : memberLoading ? (
-                  <div className="flex flex-col items-center gap-2 text-black/60">
-                    <Loader2 className="w-6 h-6 animate-spin" />
-                    <div className="text-xs">Generando QR…</div>
-                  </div>
-                ) : (
-                  <div className="text-center px-4">
-                    <div className="text-xs text-black/60 mb-2">{memberError ?? "Toca para generar"}</div>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); fetchMemberQr(); }}
-                      className="text-xs underline text-black/70"
-                    >
-                      Reintentar
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <div className="text-center text-[10px] text-black/45 mb-2">
-                {memberStale
-                  ? `Sin conexión · actualizado hace ${memberAgeLabel}`
-                  : `Se renueva en ${formatSeconds(memberSecondsLeft)}`}
+              <div className="flex-1 flex flex-col items-center justify-center my-2 text-center px-4">
+                <Store className="w-8 h-8 mb-3" style={{ color: tier.accent }} />
+                <div className="text-sm font-bold text-black/80 leading-snug">
+                  Próximamente verás tu QR para sumar puntos y obtener descuentos en comercios
+                </div>
               </div>
 
               <div className="flex items-center gap-3">
@@ -492,15 +437,6 @@ export function FanPassCard({
             {exporting === "story" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Share2 className="w-3.5 h-3.5" />}
             Compartir story
           </button>
-          {flipped && (
-            <button
-              onClick={fetchQr}
-              disabled={loadingQr}
-              className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground underline disabled:opacity-50 ml-1"
-            >
-              <RefreshCw className="w-3 h-3" /> Regenerar QR
-            </button>
-          )}
         </div>
       </div>
 
