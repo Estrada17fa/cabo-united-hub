@@ -67,6 +67,7 @@ const EMPTY: Form = {
   lat: null,
   lng: null,
   photo_url: null,
+  logo_url: null,
   photo_gradient: null,
   whatsapp: "",
   visited_by: "",
