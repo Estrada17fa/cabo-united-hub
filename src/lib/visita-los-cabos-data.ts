@@ -60,7 +60,7 @@ export const FALLBACK_CATEGORY: PlaceCategoryMeta = {
   slug: "otros",
   label: "Lugar",
   icon: "map-pin",
-  color: LCU_CYAN_VALUE,
+  color: "#00ABC4",
   gradient: "linear-gradient(135deg, hsl(188 60% 26%) 0%, hsl(210 45% 16%) 100%)",
   sortOrder: 999,
   active: true,
