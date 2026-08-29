@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { LcuTabs, LcuButton } from "@/components/ui-lcu";
-import { SEASON, useMatches, useScorers, useStandings, useTeams } from "@/hooks/useLeague";
+import { SEASON, useMatches, useScorers, useSeasons, useStandings, useTeams } from "@/hooks/useLeague";
 import { useMatchEvents } from "@/hooks/useMatchZone";
 import { PHASE_LABEL, EVENT_LABEL, isLivePhase } from "@/components/match-zone/types";
 import type { Match, MatchEventType, MatchPhase, Team } from "@/components/match-zone/types";
@@ -32,6 +32,7 @@ export default function MatchZoneAdmin() {
           { id: "teams", label: "Equipos" },
           { id: "standings", label: "Posiciones" },
           { id: "scorers", label: "Goleo" },
+          { id: "tournament", label: "Torneo" },
         ]}
       />
       {tab === "live" && <LiveTab />}
@@ -39,6 +40,7 @@ export default function MatchZoneAdmin() {
       {tab === "teams" && <TeamsTab />}
       {tab === "standings" && <StandingsTab />}
       {tab === "scorers" && <ScorersTab />}
+      {tab === "tournament" && <TournamentTab />}
     </div>
   );
 }
@@ -768,6 +770,146 @@ function ScorersTab() {
               <button onClick={() => remove(s.id)} className="text-muted-foreground hover:text-destructive">
                 <Trash2 className="h-4 w-4" />
               </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+/* --------------------------------- Torneo --------------------------------- */
+
+function TournamentTab() {
+  const { data: seasons = [] } = useSeasons();
+  const qc = useQueryClient();
+  const [form, setForm] = useState({
+    name: "",
+    season_key: SEASON,
+    start_date: "",
+    end_date: "",
+    status: "active",
+  });
+
+  const refresh = () => qc.invalidateQueries({ queryKey: ["lcu-seasons"] });
+
+  const create = async () => {
+    if (!form.name.trim()) return toast.error("Nombre del torneo requerido");
+    if (!form.season_key.trim()) return toast.error("Clave de temporada requerida");
+    const { error } = await supabase.from("seasons").insert({
+      name: form.name.trim(),
+      season_key: form.season_key.trim(),
+      start_date: form.start_date || new Date().toISOString().slice(0, 10),
+      end_date: form.end_date || new Date().toISOString().slice(0, 10),
+      cc_reset_date: form.end_date || new Date().toISOString().slice(0, 10),
+      status: form.status,
+    } as never);
+    if (error) return toast.error(error.message);
+    setForm({ name: "", season_key: SEASON, start_date: "", end_date: "", status: "active" });
+    refresh();
+    toast.success("Torneo creado");
+  };
+
+  const update = async (id: string, values: Record<string, unknown>) => {
+    const { error } = await supabase.from("seasons").update(values as never).eq("id", id);
+    if (error) return toast.error(error.message);
+    refresh();
+    toast.success("Torneo actualizado");
+  };
+
+  const remove = async (id: string) => {
+    const { error } = await supabase.from("seasons").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    refresh();
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className={card}>
+        <p className={label}>Nuevo torneo</p>
+        <div className="grid grid-cols-2 gap-2">
+          <input
+            className={`${input} col-span-2`}
+            placeholder="Nombre visible (ej. Primera Premier)"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
+          <input
+            className={input}
+            placeholder="Clave de temporada"
+            value={form.season_key}
+            onChange={(e) => setForm({ ...form, season_key: e.target.value })}
+          />
+          <select
+            className={input}
+            value={form.status}
+            onChange={(e) => setForm({ ...form, status: e.target.value })}
+          >
+            <option value="upcoming">Próximo</option>
+            <option value="active">Activo</option>
+            <option value="closed">Cerrado</option>
+          </select>
+          <input
+            type="date"
+            className={input}
+            value={form.start_date}
+            onChange={(e) => setForm({ ...form, start_date: e.target.value })}
+          />
+          <input
+            type="date"
+            className={input}
+            value={form.end_date}
+            onChange={(e) => setForm({ ...form, end_date: e.target.value })}
+          />
+        </div>
+        <p className="mt-2 text-[11px] text-muted-foreground">
+          La clave de temporada debe coincidir con la de equipos y partidos ({SEASON}) para que la
+          liga muestre los datos correctos.
+        </p>
+        <LcuButton className="mt-3 w-full" onClick={create}>
+          <Plus className="mr-1 h-4 w-4" /> Crear torneo
+        </LcuButton>
+      </div>
+
+      <div className={card}>
+        <p className={label}>Torneos ({seasons.length})</p>
+        <ul className="divide-y divide-border">
+          {seasons.map((s) => (
+            <li key={s.id} className="space-y-2 py-3">
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  className={`${input} col-span-2`}
+                  defaultValue={s.name}
+                  onBlur={(e) => e.target.value !== s.name && update(s.id, { name: e.target.value })}
+                />
+                <input
+                  className={input}
+                  defaultValue={s.season_key ?? ""}
+                  placeholder="Clave"
+                  onBlur={(e) =>
+                    e.target.value !== (s.season_key ?? "") &&
+                    update(s.id, { season_key: e.target.value || null })
+                  }
+                />
+                <select
+                  className={input}
+                  defaultValue={s.status}
+                  onChange={(e) => update(s.id, { status: e.target.value })}
+                >
+                  <option value="upcoming">Próximo</option>
+                  <option value="active">Activo</option>
+                  <option value="reset_warning">Aviso de reinicio</option>
+                  <option value="closed">Cerrado</option>
+                </select>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] text-muted-foreground">
+                  {s.start_date} → {s.end_date}
+                </span>
+                <LcuButton size="sm" variant="ghost" onClick={() => remove(s.id)}>
+                  <Trash2 className="h-3.5 w-3.5" />
+                </LcuButton>
+              </div>
             </li>
           ))}
         </ul>
