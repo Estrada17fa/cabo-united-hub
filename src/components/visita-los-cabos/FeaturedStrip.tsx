@@ -10,6 +10,7 @@ interface FeaturedStripProps {
 }
 
 export function FeaturedStrip({ places, onSelect }: FeaturedStripProps) {
+  const { metaFor } = useCategoryMeta();
   const featured = places.filter((p) => p.featured);
   const list = featured.length > 0 ? featured : places.slice(0, 6);
 
@@ -22,7 +23,8 @@ export function FeaturedStrip({ places, onSelect }: FeaturedStripProps) {
       </h3>
       <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
         {list.map((place) => {
-          const meta = CATEGORY_META[place.category] ?? CATEGORY_META.restaurantes;
+          const meta = metaFor(place.category);
+
           return (
             <button
               key={place.id}
