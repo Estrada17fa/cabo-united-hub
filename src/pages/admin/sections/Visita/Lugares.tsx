@@ -77,6 +77,8 @@ export default function Lugares() {
   const qc = useQueryClient();
   const [form, setForm] = useState<Form | null>(null);
   const [saving, setSaving] = useState(false);
+  const { categories, metaFor } = useCategoryMeta();
+
 
   const { data: places, isLoading } = useQuery({
     queryKey: ["admin-places"],
