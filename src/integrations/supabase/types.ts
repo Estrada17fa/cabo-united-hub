@@ -47,6 +47,81 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_leads: {
+        Row: {
+          address: string | null
+          admin_notes: string | null
+          budget_range: string | null
+          business_name: string
+          business_type: string | null
+          city: string | null
+          contact_name: string
+          contact_role: string | null
+          created_at: string
+          description: string | null
+          email: string
+          facebook: string | null
+          goals: string | null
+          id: string
+          instagram: string | null
+          interest: string
+          phone: string
+          privacy_accepted: boolean
+          referral_source: string | null
+          status: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          admin_notes?: string | null
+          budget_range?: string | null
+          business_name: string
+          business_type?: string | null
+          city?: string | null
+          contact_name: string
+          contact_role?: string | null
+          created_at?: string
+          description?: string | null
+          email: string
+          facebook?: string | null
+          goals?: string | null
+          id?: string
+          instagram?: string | null
+          interest?: string
+          phone: string
+          privacy_accepted?: boolean
+          referral_source?: string | null
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          admin_notes?: string | null
+          budget_range?: string | null
+          business_name?: string
+          business_type?: string | null
+          city?: string | null
+          contact_name?: string
+          contact_role?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string
+          facebook?: string | null
+          goals?: string | null
+          id?: string
+          instagram?: string | null
+          interest?: string
+          phone?: string
+          privacy_accepted?: boolean
+          referral_source?: string | null
+          status?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       business_users: {
         Row: {
           active: boolean
@@ -128,6 +203,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      contact_messages: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          phone: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          phone?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          phone?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       fan_passes: {
         Row: {
