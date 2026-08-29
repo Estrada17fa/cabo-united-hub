@@ -10,7 +10,16 @@ const MATCH_SELECT =
   "*, home_team:teams!matches_home_team_id_fkey(*), away_team:teams!matches_away_team_id_fkey(*)";
 
 const SEASON_SELECT =
-  "id, name, season_key, start_date, end_date, status, is_active, logo_url, points_rules, qualifiers_count";
+  "id, name, season_key, start_date, end_date, status, is_active, logo_url, points_rules, qualifiers_count, groups";
+
+/** Torneo con los campos extra del panel de admin. */
+export type SeasonRow = Season & {
+  is_active: boolean;
+  logo_url: string | null;
+  points_rules: Record<string, unknown>;
+  qualifiers_count: number;
+  groups: string[];
+};
 
 /** Torneo activo: única fuente de verdad de la temporada que lee el sitio. */
 export function useActiveSeason() {
@@ -24,12 +33,7 @@ export function useActiveSeason() {
         .eq("is_active", true)
         .maybeSingle();
       if (error) throw error;
-      return (data ?? null) as unknown as (Season & {
-        is_active: boolean;
-        logo_url: string | null;
-        points_rules: Record<string, unknown>;
-        qualifiers_count: number;
-      }) | null;
+      return (data ?? null) as unknown as SeasonRow | null;
     },
   });
 }
@@ -39,6 +43,20 @@ export function useSeasonKey() {
   const { data } = useActiveSeason();
   return data?.season_key ?? SEASON;
 }
+
+/** Grupos configurados en el torneo activo (vacío = tabla única). */
+export function useSeasonGroups() {
+  const { data } = useActiveSeason();
+  return (data?.groups ?? []).filter(Boolean);
+}
+
+/** Clasificados configurados en el torneo activo. */
+export function useQualifiersCount() {
+  const { data } = useActiveSeason();
+  return data?.qualifiers_count ?? 4;
+}
+
+
 
 export function useTeams(season?: string) {
   const active = useSeasonKey();
@@ -121,12 +139,7 @@ export function useSeasons() {
         .select(SEASON_SELECT)
         .order("start_date", { ascending: false });
       if (error) throw error;
-      return (data ?? []) as unknown as (Season & {
-        is_active: boolean;
-        logo_url: string | null;
-        points_rules: Record<string, unknown>;
-        qualifiers_count: number;
-      })[];
+      return (data ?? []) as unknown as SeasonRow[];
     },
   });
 }

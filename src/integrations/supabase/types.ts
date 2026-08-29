@@ -1258,6 +1258,7 @@ export type Database = {
           cc_reset_date: string
           created_at: string
           end_date: string
+          groups: string[]
           id: string
           is_active: boolean
           logo_url: string | null
@@ -1272,6 +1273,7 @@ export type Database = {
           cc_reset_date: string
           created_at?: string
           end_date: string
+          groups?: string[]
           id?: string
           is_active?: boolean
           logo_url?: string | null
@@ -1286,6 +1288,7 @@ export type Database = {
           cc_reset_date?: string
           created_at?: string
           end_date?: string
+          groups?: string[]
           id?: string
           is_active?: boolean
           logo_url?: string | null

@@ -3,18 +3,28 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useSeasonKey, useTeams } from "@/hooks/useLeague";
+import { useSeasonGroups, useSeasonKey, useTeams } from "@/hooks/useLeague";
 import { AdminSheet } from "@/components/admin/AdminSheet";
 import { Field, Hint, adminInput } from "@/components/admin/AdminUI";
+import { INTERZONAL } from "./MatchSheet";
 
 interface Row {
   home_team_id: string;
   away_team_id: string;
   kickoff_at: string;
   venue: string;
+  group_name: string;
+  groupTouched: boolean;
 }
 
-const emptyRow = (): Row => ({ home_team_id: "", away_team_id: "", kickoff_at: "", venue: "" });
+const emptyRow = (): Row => ({
+  home_team_id: "",
+  away_team_id: "",
+  kickoff_at: "",
+  venue: "",
+  group_name: "",
+  groupTouched: false,
+});
 
 export function MatchdayBuilder({
   open,
@@ -27,6 +37,7 @@ export function MatchdayBuilder({
   suggestedMatchday: number;
 }) {
   const season = useSeasonKey();
+  const groups = useSeasonGroups();
   const qc = useQueryClient();
   const { data: teams } = useTeams();
   const [matchday, setMatchday] = useState(String(suggestedMatchday));
@@ -42,14 +53,37 @@ export function MatchdayBuilder({
   const update = (i: number, patch: Partial<Row>) =>
     setRows((rs) => rs.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
 
+  /** Grupo sugerido: el común de ambos equipos, o Interzonal si son distintos. */
+  const suggestGroup = (r: Row, homeId: string, awayId: string) => {
+    if (r.groupTouched) return r.group_name;
+    const h = teams?.find((t) => t.id === homeId)?.group_name ?? "";
+    const a = teams?.find((t) => t.id === awayId)?.group_name ?? "";
+    if (!h || !a) return h || a || r.group_name;
+    return h === a ? h : INTERZONAL;
+  };
+
   /** La sede se toma automáticamente del equipo local. */
   const setHome = (i: number, id: string) => {
     const venue = teams?.find((t) => t.id === id)?.venue ?? "";
     setRows((rs) =>
+      rs.map((r, idx) => {
+        if (idx !== i) return r;
+        const away = r.away_team_id === id ? "" : r.away_team_id;
+        return {
+          ...r,
+          home_team_id: id,
+          venue,
+          away_team_id: away,
+          group_name: suggestGroup(r, id, away),
+        };
+      })
+    );
+  };
+
+  const setAway = (i: number, id: string) => {
+    setRows((rs) =>
       rs.map((r, idx) =>
-        idx === i
-          ? { ...r, home_team_id: id, venue, away_team_id: r.away_team_id === id ? "" : r.away_team_id }
-          : r
+        idx === i ? { ...r, away_team_id: id, group_name: suggestGroup(r, r.home_team_id, id) } : r
       )
     );
   };
@@ -78,6 +112,7 @@ export function MatchdayBuilder({
       away_team_id: r.away_team_id,
       kickoff_at: new Date(r.kickoff_at).toISOString(),
       venue: r.venue.trim() || null,
+      group_name: r.group_name.trim() || null,
       phase: "scheduled",
       home_score: 0,
       away_score: 0,
@@ -156,7 +191,7 @@ export function MatchdayBuilder({
               <select
                 className={adminInput}
                 value={r.away_team_id}
-                onChange={(e) => update(i, { away_team_id: e.target.value })}
+                onChange={(e) => setAway(i, e.target.value)}
               >
                 <option value="">— Visitante —</option>
                 {teams
@@ -167,6 +202,21 @@ export function MatchdayBuilder({
                     </option>
                   ))}
               </select>
+              {groups.length > 0 && (
+                <select
+                  className={adminInput}
+                  value={r.group_name}
+                  onChange={(e) => update(i, { group_name: e.target.value, groupTouched: true })}
+                >
+                  <option value="">Sin grupo</option>
+                  {groups.map((g) => (
+                    <option key={g} value={g}>
+                      Grupo {g}
+                    </option>
+                  ))}
+                  <option value={INTERZONAL}>Interzonal</option>
+                </select>
+              )}
               <input
                 type="datetime-local"
                 className={adminInput}
