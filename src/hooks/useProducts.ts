@@ -1,14 +1,56 @@
 import { useQuery } from "@tanstack/react-query";
-import { MOCK_PRODUCTS } from "@/data/store-products-mock";
-import type { StoreProduct } from "@/lib/store-types";
+import {
+  fetchShopifyProductByHandle,
+  fetchShopifyProducts,
+  type ShopifyProduct,
+} from "@/lib/shopify-storefront";
+import { mapShopifyCategory, mapShopifySize, type StoreProduct } from "@/lib/store-types";
 
-/**
- * Punto ÚNICO de entrada del catálogo.
- * Hoy devuelve datos de ejemplo. Cuando conectemos el catálogo real,
- * solo se cambia el cuerpo de estas dos funciones.
- */
+function normalizeProduct(node: ShopifyProduct["node"]): StoreProduct {
+  const variants = node.variants.edges.map(({ node: v }) => ({
+    id: v.id,
+    title: mapShopifySize(v.title),
+    price: Number(v.price.amount),
+    compareAtPrice: v.compareAtPrice ? Number(v.compareAtPrice.amount) : null,
+    availableForSale: v.availableForSale,
+  }));
+
+  const availableVariants = variants.filter((v) => v.availableForSale);
+  const minPrice = Math.min(...variants.map((v) => v.price));
+  const compareAtPrice = variants[0]?.compareAtPrice ?? null;
+
+  const images = node.images.edges.map(({ node }) => node.url);
+  const sizes = variants.map((v) => v.title);
+
+  const category = mapShopifyCategory(node.productType, node.tags, node.title);
+
+  const eyebrow =
+    node.tags.find((t) => ["Local", "Visita", "Portero", "Tercero"].includes(t)) ||
+    node.productType ||
+    undefined;
+
+  return {
+    id: node.id,
+    handle: node.handle,
+    title: node.title,
+    description: node.description,
+    category,
+    eyebrow,
+    price: minPrice,
+    compareAtPrice: compareAtPrice && compareAtPrice > minPrice ? compareAtPrice : null,
+    currency: node.priceRange.minVariantPrice.currencyCode,
+    images,
+    sizes,
+    variants,
+    soldOut: availableVariants.length === 0,
+    tags: node.tags,
+    createdAt: node.createdAt,
+  };
+}
+
 async function fetchProducts(): Promise<StoreProduct[]> {
-  return MOCK_PRODUCTS;
+  const edges = await fetchShopifyProducts();
+  return edges.map((edge) => normalizeProduct(edge.node));
 }
 
 export function useProducts() {
@@ -24,8 +66,9 @@ export function useProduct(handle: string | undefined) {
     queryKey: ["store", "product", handle],
     enabled: !!handle,
     queryFn: async (): Promise<StoreProduct | null> => {
-      const list = await fetchProducts();
-      return list.find((p) => p.handle === handle) ?? null;
+      if (!handle) return null;
+      const node = await fetchShopifyProductByHandle(handle);
+      return node ? normalizeProduct(node) : null;
     },
     staleTime: 1000 * 60 * 5,
   });
