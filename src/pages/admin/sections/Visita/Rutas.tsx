@@ -12,7 +12,9 @@ import {
   adminCard,
   adminInput,
 } from "@/components/admin/AdminUI";
-import { CATEGORY_META, PlaceCategory, ROUTE_ICONS } from "@/lib/visita-los-cabos-data";
+import { PlaceCategory, ROUTE_ICONS } from "@/lib/visita-los-cabos-data";
+import { useCategoryMeta } from "@/hooks/usePlaceCategories";
+
 
 interface Form {
   id?: string;
