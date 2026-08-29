@@ -45,16 +45,16 @@ export function StreamGate({ streamUrl, title }: Props) {
               className="absolute inset-0 bg-surface-3 blur-[2px]"
               aria-hidden
             />
-            <div className="relative flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
+            <div className="relative flex min-h-[320px] h-full flex-col items-center justify-center gap-2.5 px-5 py-6 text-center sm:min-h-0">
               {embed ? (
                 <>
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline bg-surface-1">
-                    <Lock className="h-5 w-5 text-primary" />
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-hairline bg-surface-1 sm:h-11 sm:w-11">
+                    <Lock className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
                   </span>
-                  <p className="text-sm font-semibold text-foreground">
+                  <p className="text-[13px] font-semibold leading-snug text-foreground sm:text-sm">
                     Inicia sesión o crea tu cuenta para ver el partido en vivo
                   </p>
-                  <p className="max-w-xs text-xs text-muted-foreground">
+                  <p className="max-w-xs text-[11px] leading-snug text-muted-foreground sm:text-xs">
                     Crea tu cuenta gratis, ve el partido en vivo y gana XP mientras alientas.
                   </p>
                   <div className="mt-1 flex w-full max-w-xs flex-col gap-2">
