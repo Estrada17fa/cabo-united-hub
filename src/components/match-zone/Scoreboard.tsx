@@ -76,7 +76,7 @@ export function Scoreboard({ match, variant = "hero" }: Props) {
             live ? "text-pop" : "text-muted-foreground"
           )}
         >
-          {clock ?? PHASE_LABEL[match.phase]}
+          {clock ?? (kickoffDue ? "Por arrancar" : PHASE_LABEL[match.phase])}
         </span>
       </div>
 
