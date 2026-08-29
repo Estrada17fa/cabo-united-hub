@@ -322,29 +322,12 @@ export function FanPassCard({
                 <ShieldCheck className="w-5 h-5" style={{ color: tier.accent }} />
               </div>
 
-              <div className="flex-1 flex items-center justify-center my-2">
-                {loadingQr ? (
-                  <div className="flex flex-col items-center gap-2 text-black/60">
-                    <Loader2 className="w-6 h-6 animate-spin" />
-                    <div className="text-xs">Generando QR…</div>
-                  </div>
-                ) : qrError ? (
-                  <div className="text-center">
-                    <div className="text-xs text-red-600 mb-2">{qrError}</div>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); fetchQr(); }}
-                      className="text-xs underline text-black/70"
-                    >
-                      Reintentar
-                    </button>
-                  </div>
-                ) : qr ? (
-                  <div className="bg-white p-2 rounded-md">
-                    <QRCodeSVG value={qr.token} size={172} level="M" includeMargin={false} />
-                  </div>
-                ) : (
-                  <div className="text-xs text-black/50">Toca para generar</div>
-                )}
+              <div className="flex-1 flex flex-col items-center justify-center my-2 text-center px-4">
+                <Ticket className="w-8 h-8 mb-3" style={{ color: tier.accent }} />
+                <div className="text-sm font-bold text-black/80 leading-snug">
+                  Próximamente verás tu QR para ingresar al estadio
+                </div>
+                <div className="text-[11px] text-black/55 mt-1">Espéralo</div>
               </div>
 
               <div
