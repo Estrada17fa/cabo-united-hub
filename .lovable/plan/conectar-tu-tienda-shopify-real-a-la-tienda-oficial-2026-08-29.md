@@ -1,37 +1,31 @@
 # Conectar tu tienda Shopify real a la Tienda Oficial
 
-Hoy la Tienda funciona con productos de ejemplo (`useProducts` + mock) y el carrito es local. El diseño ya está preparado para enchufar Shopify sin rehacer nada: los productos salen de un solo hook y el botón "Pagar" es el único punto de checkout.
+La conexión con tu tienda `los-cabos-united` ya fue autorizada. Ahora implemento el catálogo real y el checkout.
 
-## Paso 1 — Conectar tu tienda existente
+## Paso 1 — Verificar la conexión y leer el catálogo
 
-Abro el flujo de conexión de Shopify (tienda existente). Necesitarás el enlace de administración de tu tienda (`admin.shopify.com/store/tu-tienda`) y autorizar el acceso.
+- Confirmar que la conexión de Shopify está vinculada al proyecto.
+- Leer productos publicados, imágenes, precios, variantes de talla y colecciones desde tu tienda.
 
-Importante: al conectar tu tienda de producción, los cambios de datos (productos, inventario, descuentos) que hagamos desde aquí afectan tu tienda real, siempre con confirmación previa.
+## Paso 2 — Reemplazar el mock por datos reales
 
-## Paso 2 — Traer el catálogo real
+- Actualizar `src/hooks/useProducts.ts` para consultar Shopify en lugar de `MOCK_PRODUCTS`.
+- Mapear colecciones de Shopify a las categorías del sitio: Jerseys, Playeras, Hoodies, Accesorios.
+- Ajustar `src/lib/store-types.ts` si hace falta algún campo real (por ejemplo, `variantId` para checkout).
 
-- Reemplazar el mock por datos reales de Shopify dentro de `useProducts` (mismo tipo `StoreProduct`, así ninguna vista cambia).
-- Mapear: título, descripción, imágenes, precio/moneda, variantes de talla, disponibilidad/agotado, colecciones → categorías de los filtros.
-- La búsqueda y el "Ordenar por" pasan a operar sobre el catálogo real.
-- Detalle de producto (`/tienda/producto/:handle`) usa el handle real de Shopify.
+## Paso 3 — Checkout real con Shopify
 
-## Paso 3 — Checkout real
+- Guardar el `variantId` de cada línea del carrito en `cartStore.ts`.
+- Al presionar "Pagar" en `CartDrawer.tsx`, crear un carrito de Shopify con las variantes seleccionadas y redirigir al checkout seguro de Shopify.
+- Eliminar `src/data/store-products-mock.ts` una vez el catálogo real funcione.
 
-- El carrito sigue siendo local (rápido, sin recargas), pero el botón "Pagar" crea un carrito en Shopify con las variantes seleccionadas y redirige al checkout seguro de Shopify.
-- Shopify se encarga del pago, envío, impuestos y confirmación del pedido.
-- Los pedidos aparecen en tu panel de Shopify como cualquier venta.
+## Paso 4 — Verificación
 
-## Paso 4 — Lo editorial se queda como está
-
-Hero slides y banners promocionales se siguen editando desde el panel de admin (sección Tienda). Shopify solo aporta productos y checkout.
+- Probar que `/tienda` muestra tus productos reales.
+- Probar que `/tienda/producto/:handle` abre el detalle correcto.
+- Probar que el carrito redirige al checkout de Shopify.
 
 ## Qué necesitas de tu lado
 
-- Que los productos estén publicados en tu tienda Shopify con imágenes, precios y variantes de talla.
-- Un plan de Shopify activo para poder cobrar de verdad.
-
-## Notas técnicas
-
-- Archivos que cambian: `src/hooks/useProducts.ts` (fuente real), `src/lib/store-types.ts` (si hace falta algún campo extra), `src/stores/cartStore.ts` (guardar variant id), `src/components/tienda/CartDrawer.tsx` (botón Pagar → checkout de Shopify).
-- Se elimina `src/data/store-products-mock.ts` cuando el catálogo real esté funcionando.
-- No se toca el shell, el header, la banda de patrocinadores ni otras secciones del sitio.
+- Productos publicados en tu tienda Shopify con imágenes, precios y variantes de talla.
+- Un plan de Shopify activo para cobrar de verdad.
