@@ -191,7 +191,11 @@ export function MapView({ filteredPlaces, selectedId, onSelect }: MapViewProps) 
     // Add / refresh markers
     filteredPlaces.forEach((place) => {
       const existing = markersRef.current.get(place.id);
-      const el = buildPinElement(place, place.id === selectedId);
+      const el = buildPinElement(
+        place,
+        place.id === selectedId,
+        metaFor(place.category)
+      );
       el.addEventListener("click", (e) => {
         e.stopPropagation();
         onSelectRef.current(place);
@@ -204,7 +208,8 @@ export function MapView({ filteredPlaces, selectedId, onSelect }: MapViewProps) 
         .addTo(map);
       markersRef.current.set(place.id, marker);
     });
-  }, [filteredPlaces, selectedId]);
+  }, [filteredPlaces, selectedId, metaFor]);
+
 
   // Fly to selected
   useEffect(() => {
