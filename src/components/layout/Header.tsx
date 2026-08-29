@@ -284,7 +284,7 @@ export function Header() {
             <AnimatePresence initial={false}>
               {isMenuOpen && (
                 <ul className="space-y-1">
-                  {[...navLinks, shopLink].map((link, i) => {
+                  {navLinks.map((link, i) => {
                     const NavIcon = link.icon;
                     const active = isActive(link.path);
                     return (
