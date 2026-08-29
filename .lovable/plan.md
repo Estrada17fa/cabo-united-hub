@@ -18,7 +18,7 @@ Reescribir solo `src/pages/FanZone.tsx` como teaser, con el look Match Zone (hai
 1. **Panel de usuario oculto** — se deja de renderizar `FanCard` en esta página. El componente no se borra (sirve para el lanzamiento); tampoco se toca `MiPerfil`.
 2. **Hero teaser** — badge "Próximamente", título Space Grotesk ("La Fan Zone viene en camino") y subtítulo que explica el concepto: juega minijuegos, gana Cabo Coins, sube de Visitante a Local, canjea premios.
 3. **Qué va a haber** — las 4 tarjetas de minijuegos (Quiniela del Paraíso, Arma tu 11, Marcador Exacto, Visitas al Paraíso) con ícono y descripción, cada una con sello discreto "Próximamente" y sin acción al tocarlas.
-4. **Premios / beneficios** — tira corta de 3 ítems: Cabo Coins canjeables (mercancía, boletos, experiencias), niveles (Visitante → Local), sorteos entre miembros. Texto breve, sin ornamento.
+4. **Premios / beneficios** — sección visual de 3 tarjetas de preview: "Mercancía oficial", "Boletos y experiencias", "Sorteos exclusivos". Cada una con ícono, miniatura ilustrativa (assets existentes del sitio o íconos LCU), breve descripción y sello "Próximamente". Sin inventar datos reales; son ejemplos para generar expectativa.
 5. **CTA de cuenta** —
    - Sin sesión: bloque destacado "Crea tu cuenta y sé de los primeros — te avisamos cuando abra la Fan Zone", botón cyan que abre `AuthFlow` y link secundario "Ya tengo cuenta" que abre `AuthModal`.
    - Con sesión: mismo bloque, pero con el mensaje "Ya estás dentro — te avisaremos en cuanto abra la Fan Zone" y sin panel de puntos.
