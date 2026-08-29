@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Handshake, Loader2, MapPin, Newspaper, ShieldCheck, ShoppingBag, Ticket, Trophy, Users } from "lucide-react";
+import { ArrowLeft, Handshake, Inbox, Mail, Loader2, MapPin, Newspaper, ShieldCheck, ShoppingBag, Ticket, Trophy, Users } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 /** Cada sección se carga sola (lazy). Nada se monta ni consulta si no la abres. */
@@ -16,6 +16,18 @@ const SECTIONS = [
     label: "Patrocinadores",
     icon: Handshake,
     Component: lazy(() => import("./sections/Patrocinadores")),
+  },
+  {
+    id: "solicitudes",
+    label: "Solicitudes de marca",
+    icon: Inbox,
+    Component: lazy(() => import("./sections/SolicitudesMarca")),
+  },
+  {
+    id: "mensajes",
+    label: "Mensajes",
+    icon: Mail,
+    Component: lazy(() => import("./sections/MensajesContacto")),
   },
   {
     id: "abonos",

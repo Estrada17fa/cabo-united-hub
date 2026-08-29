@@ -9,7 +9,6 @@ import {
   MapPin,
   Handshake,
   Mail,
-  Ticket,
   Icon,
   Facebook,
   Instagram,

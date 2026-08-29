@@ -9,10 +9,15 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { AuthGateDialog } from "@/components/auth/AuthGateDialog";
 import { useCartStore } from "@/stores/cartStore";
 import { formatMoney } from "@/lib/store-types";
 
 export function CartDrawer() {
+  const { user } = useAuth();
+  const [showAuth, setShowAuth] = useState(false);
   const items = useCartStore((s) => s.items);
   const isOpen = useCartStore((s) => s.isOpen);
   const isLoading = useCartStore((s) => s.isLoading);
@@ -33,6 +38,10 @@ export function CartDrawer() {
   };
 
   const handleCheckout = () => {
+    if (!user) {
+      setShowAuth(true);
+      return;
+    }
     const checkoutUrl = getCheckoutUrl();
     if (checkoutUrl) {
       window.open(checkoutUrl, "_blank");
@@ -179,7 +188,8 @@ export function CartDrawer() {
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
-                    <ExternalLink className="h-4 w-4" /> Pagar con Shopify
+                    <ExternalLink className="h-4 w-4" />
+                    {user ? "Pagar con Shopify" : "Inicia sesión para comprar"}
                   </>
                 )}
               </button>
@@ -187,6 +197,11 @@ export function CartDrawer() {
           </>
         )}
       </SheetContent>
+      <AuthGateDialog
+        open={showAuth}
+        onOpenChange={setShowAuth}
+        onSuccess={handleCheckout}
+      />
     </Sheet>
   );
 }
