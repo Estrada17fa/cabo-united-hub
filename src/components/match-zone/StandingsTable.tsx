@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { Standing } from "./types";
 import { Crest } from "@/components/lcu";
+import { useQualifiersCount, useSeasonGroups } from "@/hooks/useLeague";
 
 interface Props {
   standings: Standing[];
@@ -11,11 +12,18 @@ interface Props {
 
 const GENERAL = "General";
 
-export function StandingsTable({ standings, qualifySlots = 4 }: Props) {
-  const groups = useMemo(
-    () => Array.from(new Set(standings.map((s) => s.group_name ?? GENERAL))),
-    [standings]
-  );
+export function StandingsTable({ standings, qualifySlots }: Props) {
+  const configured = useSeasonGroups();
+  const configuredQualifiers = useQualifiersCount();
+  const slots = qualifySlots ?? configuredQualifiers;
+
+  /** Orden de pestañas: el configurado en el torneo; lo demás se agrega al final. */
+  const groups = useMemo(() => {
+    const present = Array.from(new Set(standings.map((s) => s.group_name ?? GENERAL)));
+    const ordered = configured.filter((g) => present.includes(g));
+    const extras = present.filter((g) => !ordered.includes(g));
+    return [...ordered, ...extras];
+  }, [standings, configured]);
 
   const ourGroup = useMemo(
     () => standings.find((s) => s.team?.is_ours)?.group_name ?? groups[0] ?? GENERAL,
