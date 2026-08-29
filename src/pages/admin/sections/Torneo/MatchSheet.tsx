@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -83,24 +83,24 @@ export function MatchSheet({
   open,
   onOpenChange,
   match,
+  defaultMatchday,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   /** null = nuevo partido */
   match: Match | null;
+  /** jornada sugerida al crear */
+  defaultMatchday?: number;
 }) {
   const season = useSeasonKey();
   const qc = useQueryClient();
   const { data: teams } = useTeams();
   const [form, setForm] = useState<FormState>(EMPTY);
   const [saving, setSaving] = useState(false);
-  const venueTouched = useRef(false);
 
   useEffect(() => {
-    venueTouched.current = false;
     if (!open) return;
     if (match) {
-      venueTouched.current = true;
       setForm({
         matchday: match.matchday != null ? String(match.matchday) : "",
         group_name: match.group_name ?? "",
@@ -121,15 +121,26 @@ export function MatchSheet({
         is_featured: match.is_featured ?? false,
       });
     } else {
-      setForm(EMPTY);
+      setForm({ ...EMPTY, matchday: defaultMatchday ? String(defaultMatchday) : "" });
     }
-  }, [open, match]);
+  }, [open, match, defaultMatchday]);
 
-  /** Autollenado de sede desde el equipo local (solo si no se editó a mano). */
+  /** Sede derivada del equipo local (no se edita a mano). */
   const setHome = (id: string) => {
     const venue = teams?.find((t) => t.id === id)?.venue ?? "";
-    setForm((f) => ({ ...f, home_team_id: id, venue: venueTouched.current ? f.venue : venue }));
+    setForm((f) => ({
+      ...f,
+      home_team_id: id,
+      venue,
+      away_team_id: f.away_team_id === id ? "" : f.away_team_id,
+    }));
   };
+
+  /** El link de transmisión solo aplica a nuestros partidos. */
+  const isOurs = useMemo(() => {
+    const ids = [form.home_team_id, form.away_team_id].filter(Boolean);
+    return !!teams?.some((t) => t.is_ours && ids.includes(t.id));
+  }, [teams, form.home_team_id, form.away_team_id]);
 
   const { data: events } = useQuery({
     queryKey: ["admin-match-events", match?.id],
@@ -159,7 +170,7 @@ export function MatchSheet({
     if (!form.kickoff_at) return toast.error("Falta la fecha y hora");
 
     setSaving(true);
-    const payload = {
+    const base = {
       season,
       matchday: form.matchday ? Number(form.matchday) : null,
       group_name: form.group_name.trim() || null,
@@ -168,17 +179,24 @@ export function MatchSheet({
       away_team_id: form.away_team_id,
       kickoff_at: new Date(form.kickoff_at).toISOString(),
       venue: form.venue.trim() || null,
-      phase: form.phase,
-      home_score: form.home_score,
-      away_score: form.away_score,
-      home_pens: form.home_pens === "" ? null : Number(form.home_pens),
-      away_pens: form.away_pens === "" ? null : Number(form.away_pens),
-      manual_score: form.manual_score,
-      stream_url: form.stream_url.trim() || null,
-      tickets_url: form.tickets_url.trim() || null,
-      highlights_url: form.highlights_url.trim() || null,
+      stream_url: isOurs ? form.stream_url.trim() || null : null,
       is_featured: form.is_featured,
     };
+
+    /** Marcador, penales y estado solo se capturan al editar. */
+    const payload = match
+      ? {
+          ...base,
+          phase: form.phase,
+          home_score: form.home_score,
+          away_score: form.away_score,
+          home_pens: form.home_pens === "" ? null : Number(form.home_pens),
+          away_pens: form.away_pens === "" ? null : Number(form.away_pens),
+          manual_score: form.manual_score,
+          tickets_url: form.tickets_url.trim() || null,
+          highlights_url: form.highlights_url.trim() || null,
+        }
+      : { ...base, phase: "scheduled", home_score: 0, away_score: 0 };
 
     if (form.is_featured) {
       await supabase.from("matches").update({ is_featured: false } as never).eq("season", season);
@@ -227,7 +245,8 @@ export function MatchSheet({
   };
 
   const teamName = useMemo(
-    () => (id?: string | null) => teams?.find((t) => t.id === id)?.short_name || teams?.find((t) => t.id === id)?.name || "",
+    () => (id?: string | null) =>
+      teams?.find((t) => t.id === id)?.short_name || teams?.find((t) => t.id === id)?.name || "",
     [teams]
   );
 
@@ -287,11 +306,13 @@ export function MatchSheet({
       <Field label="Local">
         <select className={adminInput} value={form.home_team_id} onChange={(e) => setHome(e.target.value)}>
           <option value="">— Elegir —</option>
-          {teams?.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
+          {teams
+            ?.filter((t) => t.id !== form.away_team_id)
+            .map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
         </select>
       </Field>
       <Field label="Visitante">
@@ -301,11 +322,13 @@ export function MatchSheet({
           onChange={(e) => setForm({ ...form, away_team_id: e.target.value })}
         >
           <option value="">— Elegir —</option>
-          {teams?.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
+          {teams
+            ?.filter((t) => t.id !== form.home_team_id)
+            .map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
         </select>
       </Field>
 
@@ -317,95 +340,99 @@ export function MatchSheet({
           onChange={(e) => setForm({ ...form, kickoff_at: e.target.value })}
         />
       </Field>
-      <Field label="Sede">
+      <Field label="Sede (del equipo local)">
         <input
-          className={adminInput}
+          readOnly
+          className={`${adminInput} cursor-not-allowed opacity-70`}
           value={form.venue}
-          placeholder="Se llena con la sede del local"
-          onChange={(e) => {
-            venueTouched.current = true;
-            setForm({ ...form, venue: e.target.value });
-          }}
+          placeholder="Se toma de la sede del local"
         />
       </Field>
 
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Estado">
-          <select
+      {isOurs && (
+        <Field label="Link de transmisión (Match Zone)">
+          <input
             className={adminInput}
-            value={form.phase}
-            onChange={(e) => setForm({ ...form, phase: e.target.value })}
-          >
-            {PHASES.map((p) => (
-              <option key={p.value} value={p.value}>
-                {p.label}
-              </option>
-            ))}
-          </select>
+            value={form.stream_url}
+            placeholder="https://…"
+            onChange={(e) => setForm({ ...form, stream_url: e.target.value })}
+          />
         </Field>
-        <Field label="Marcador (L - V)">
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              min={0}
-              className={adminInput}
-              value={form.home_score}
-              onChange={(e) => setForm({ ...form, home_score: Number(e.target.value) })}
-            />
-            <input
-              type="number"
-              min={0}
-              className={adminInput}
-              value={form.away_score}
-              onChange={(e) => setForm({ ...form, away_score: Number(e.target.value) })}
-            />
+      )}
+
+      {match ? (
+        <>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Estado">
+              <select
+                className={adminInput}
+                value={form.phase}
+                onChange={(e) => setForm({ ...form, phase: e.target.value })}
+              >
+                {PHASES.map((p) => (
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Marcador (L - V)">
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min={0}
+                  className={adminInput}
+                  value={form.home_score}
+                  onChange={(e) => setForm({ ...form, home_score: Number(e.target.value) })}
+                />
+                <input
+                  type="number"
+                  min={0}
+                  className={adminInput}
+                  value={form.away_score}
+                  onChange={(e) => setForm({ ...form, away_score: Number(e.target.value) })}
+                />
+              </div>
+            </Field>
           </div>
-        </Field>
-      </div>
 
-      <Field label="Penales (L - V, opcional)">
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            min={0}
-            className={adminInput}
-            value={form.home_pens}
-            onChange={(e) => setForm({ ...form, home_pens: e.target.value })}
-          />
-          <input
-            type="number"
-            min={0}
-            className={adminInput}
-            value={form.away_pens}
-            onChange={(e) => setForm({ ...form, away_pens: e.target.value })}
-          />
-        </div>
-      </Field>
+          <Field label="Penales (L - V, opcional)">
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min={0}
+                className={adminInput}
+                value={form.home_pens}
+                onChange={(e) => setForm({ ...form, home_pens: e.target.value })}
+              />
+              <input
+                type="number"
+                min={0}
+                className={adminInput}
+                value={form.away_pens}
+                onChange={(e) => setForm({ ...form, away_pens: e.target.value })}
+              />
+            </div>
+          </Field>
 
-      <Field label="Link de transmisión">
-        <input
-          className={adminInput}
-          value={form.stream_url}
-          placeholder="https://…"
-          onChange={(e) => setForm({ ...form, stream_url: e.target.value })}
-        />
-      </Field>
-      <div className="grid grid-cols-1 gap-3">
-        <Field label="Link de boletos">
-          <input
-            className={adminInput}
-            value={form.tickets_url}
-            onChange={(e) => setForm({ ...form, tickets_url: e.target.value })}
-          />
-        </Field>
-        <Field label="Link de resumen">
-          <input
-            className={adminInput}
-            value={form.highlights_url}
-            onChange={(e) => setForm({ ...form, highlights_url: e.target.value })}
-          />
-        </Field>
-      </div>
+          <Field label="Link de boletos">
+            <input
+              className={adminInput}
+              value={form.tickets_url}
+              onChange={(e) => setForm({ ...form, tickets_url: e.target.value })}
+            />
+          </Field>
+          <Field label="Link de resumen">
+            <input
+              className={adminInput}
+              value={form.highlights_url}
+              onChange={(e) => setForm({ ...form, highlights_url: e.target.value })}
+            />
+          </Field>
+        </>
+      ) : (
+        <Hint>El marcador, los penales y los eventos se capturan después, al editar el partido.</Hint>
+      )}
 
       <label className="flex items-center gap-2 text-xs font-semibold text-foreground">
         <input
@@ -416,24 +443,23 @@ export function MatchSheet({
         />
         Partido destacado (el que aparece en Inicio y Match Zone)
       </label>
-      <label className="flex items-center gap-2 text-xs font-semibold text-foreground">
-        <input
-          type="checkbox"
-          checked={form.manual_score}
-          onChange={(e) => setForm({ ...form, manual_score: e.target.checked })}
-          className="h-4 w-4 accent-primary"
-        />
-        Marcador manual (si lo desactivas se calcula con los goles del timeline)
-      </label>
 
-      <div className="rounded-xl border border-hairline bg-surface-2 p-3">
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Eventos del timeline
-        </p>
-        {!match ? (
-          <Hint>Guarda el partido para capturar eventos.</Hint>
-        ) : (
-          <>
+      {match && (
+        <>
+          <label className="flex items-center gap-2 text-xs font-semibold text-foreground">
+            <input
+              type="checkbox"
+              checked={form.manual_score}
+              onChange={(e) => setForm({ ...form, manual_score: e.target.checked })}
+              className="h-4 w-4 accent-primary"
+            />
+            Marcador manual (si lo desactivas se calcula con los goles del timeline)
+          </label>
+
+          <div className="rounded-xl border border-hairline bg-surface-2 p-3">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Eventos del timeline
+            </p>
             {!events?.length ? (
               <EmptyRow text="Sin eventos." />
             ) : (
@@ -449,7 +475,10 @@ export function MatchSheet({
                       {e.player_name ? ` · ${e.player_name}` : ""}
                       {e.team_id ? ` · ${teamName(e.team_id)}` : ""}
                     </span>
-                    <button onClick={() => deleteEvent(e.id)} className="text-muted-foreground hover:text-destructive">
+                    <button
+                      onClick={() => deleteEvent(e.id)}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -507,9 +536,9 @@ export function MatchSheet({
             >
               <Plus className="h-3.5 w-3.5" /> Agregar evento
             </button>
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </AdminSheet>
   );
 }
