@@ -164,6 +164,21 @@ export function RosterSection() {
   const { data: players = [], isLoading } = useClubPlayers();
   const [active, setActive] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [flippedId, setFlippedId] = useState<string | null>(null);
+
+  const canHover = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: hover)").matches,
+    []
+  );
+
+  useEffect(() => {
+    if (canHover || flippedId == null) return;
+    const close = () => setFlippedId(null);
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, [canHover, flippedId]);
 
   const tabs = useMemo(() => {
     const present = new Set(players.map((p) => groupOf(p.position)));
@@ -175,6 +190,22 @@ export function RosterSection() {
   const current = active && tabs.includes(active) ? active : tabs[0] ?? null;
   const rows = players.filter((p) => (current ? groupOf(p.position) === current : true));
   const visible = expanded ? rows : rows.slice(0, 4);
+
+  const cardProps = {
+    flipped: false,
+    canHover,
+    onFlip: setFlippedId,
+  };
+
+  const renderCard = (p: ClubPlayer) => (
+    <PlayerCard
+      key={p.id}
+      player={p}
+      flipped={flippedId === p.id}
+      canHover={canHover}
+      onFlip={setFlippedId}
+    />
+  );
 
   if (isLoading) {
     return <div className="h-56 rounded-2xl border border-hairline bg-surface-1" />;
@@ -204,6 +235,7 @@ export function RosterSection() {
                   onClick={() => {
                     setActive(t);
                     setExpanded(false);
+                    setFlippedId(null);
                   }}
                   className={cn(
                     "shrink-0 rounded-xl border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider transition-colors",
@@ -219,14 +251,12 @@ export function RosterSection() {
           )}
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {visible.map((p) => (
-              <PlayerCard key={p.id} player={p} />
-            ))}
+            {visible.map(renderCard)}
             {rows
               .slice(visible.length)
               .map((p) => (
                 <div key={p.id} className="hidden md:block">
-                  <PlayerCard player={p} />
+                  {renderCard(p)}
                 </div>
               ))}
           </div>
