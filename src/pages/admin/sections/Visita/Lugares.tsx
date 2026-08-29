@@ -116,6 +116,7 @@ export default function Lugares() {
       lat: row.lat != null ? Number(row.lat) : null,
       lng: row.lng != null ? Number(row.lng) : null,
       photo_url: row.photo_url,
+      logo_url: row.logo_url ?? null,
       photo_gradient: row.photo_gradient,
       whatsapp: row.whatsapp ?? "",
       visited_by: row.visited_by?.toString() ?? "",
