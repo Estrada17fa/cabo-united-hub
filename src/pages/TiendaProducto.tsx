@@ -81,7 +81,7 @@ const TiendaProducto = () => {
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="pb-28 md:pb-20"
+      className="pb-36 md:pb-20"
     >
       <ShopHeader />
 
@@ -250,7 +250,7 @@ const TiendaProducto = () => {
       </div>
 
       {/* CTA móvil fijo */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-hairline bg-surface-1/95 p-3 backdrop-blur md:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-hairline bg-surface-1/95 p-3 backdrop-blur md:hidden">
         <button
           onClick={handleAdd}
           disabled={product.soldOut}
