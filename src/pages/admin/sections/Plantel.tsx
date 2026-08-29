@@ -15,6 +15,11 @@ interface FormState {
   short_bio: string;
   photo_url: string | null;
   active: boolean;
+  goals: string;
+  matches_played: string;
+  birth_date: string;
+  nationality: string;
+  birth_place: string;
 }
 
 const EMPTY: FormState = {
@@ -24,6 +29,11 @@ const EMPTY: FormState = {
   short_bio: "",
   photo_url: null,
   active: true,
+  goals: "",
+  matches_played: "",
+  birth_date: "",
+  nationality: "",
+  birth_place: "",
 };
 
 export default function Plantel() {
@@ -60,6 +70,11 @@ export default function Plantel() {
       short_bio: form.short_bio.trim() || null,
       photo_url: form.photo_url,
       active: form.active,
+      goals: form.goals === "" ? null : Number(form.goals),
+      matches_played: form.matches_played === "" ? null : Number(form.matches_played),
+      birth_date: form.birth_date || null,
+      nationality: form.nationality.trim() || null,
+      birth_place: form.birth_place.trim() || null,
     };
     const { error } = form.id
       ? await supabase.from("players").update(payload as never).eq("id", form.id)
@@ -115,6 +130,11 @@ export default function Plantel() {
                     short_bio: p.short_bio ?? "",
                     photo_url: p.photo_url,
                     active: p.active,
+                    goals: p.goals != null ? String(p.goals) : "",
+                    matches_played: p.matches_played != null ? String(p.matches_played) : "",
+                    birth_date: p.birth_date ?? "",
+                    nationality: p.nationality ?? "",
+                    birth_place: p.birth_place ?? "",
                   })
                 }
                 className="flex w-full items-center gap-3 rounded-xl border border-hairline bg-surface-2 p-3 text-left transition-colors hover:border-primary/40"
@@ -198,6 +218,52 @@ export default function Plantel() {
                 className={adminInput}
                 value={form.short_bio}
                 onChange={(e) => setForm({ ...form, short_bio: e.target.value })}
+              />
+            </Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Goles (torneo)">
+                <input
+                  type="number"
+                  min={0}
+                  className={adminInput}
+                  value={form.goals}
+                  onChange={(e) => setForm({ ...form, goals: e.target.value })}
+                />
+              </Field>
+              <Field label="Partidos jugados">
+                <input
+                  type="number"
+                  min={0}
+                  className={adminInput}
+                  value={form.matches_played}
+                  onChange={(e) => setForm({ ...form, matches_played: e.target.value })}
+                />
+              </Field>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Fecha de nacimiento">
+                <input
+                  type="date"
+                  className={adminInput}
+                  value={form.birth_date}
+                  onChange={(e) => setForm({ ...form, birth_date: e.target.value })}
+                />
+              </Field>
+              <Field label="Nacionalidad">
+                <input
+                  className={adminInput}
+                  placeholder="México"
+                  value={form.nationality}
+                  onChange={(e) => setForm({ ...form, nationality: e.target.value })}
+                />
+              </Field>
+            </div>
+            <Field label="Lugar de nacimiento">
+              <input
+                className={adminInput}
+                placeholder="Cabo San Lucas, B.C.S."
+                value={form.birth_place}
+                onChange={(e) => setForm({ ...form, birth_place: e.target.value })}
               />
             </Field>
             <ImageUploadField
