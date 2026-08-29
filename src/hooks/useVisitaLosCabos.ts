@@ -44,6 +44,7 @@ export function normalizePlace(row: PlaceRow): Place {
     goingToday: row.going_today,
     whatsapp: row.whatsapp,
     photoUrl: row.photo_url,
+    logoUrl: row.logo_url ?? null,
     photoGradient: row.photo_gradient,
     featured: row.featured,
   };
