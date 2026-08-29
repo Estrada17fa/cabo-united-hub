@@ -10,7 +10,16 @@ const MATCH_SELECT =
   "*, home_team:teams!matches_home_team_id_fkey(*), away_team:teams!matches_away_team_id_fkey(*)";
 
 const SEASON_SELECT =
-  "id, name, season_key, start_date, end_date, status, is_active, logo_url, points_rules, qualifiers_count";
+  "id, name, season_key, start_date, end_date, status, is_active, logo_url, points_rules, qualifiers_count, groups";
+
+/** Torneo con los campos extra del panel de admin. */
+export type SeasonRow = Season & {
+  is_active: boolean;
+  logo_url: string | null;
+  points_rules: Record<string, unknown>;
+  qualifiers_count: number;
+  groups: string[];
+};
 
 /** Torneo activo: única fuente de verdad de la temporada que lee el sitio. */
 export function useActiveSeason() {
