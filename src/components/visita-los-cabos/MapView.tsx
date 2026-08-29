@@ -140,6 +140,8 @@ export function MapView({ filteredPlaces, selectedId, onSelect }: MapViewProps) 
   const markersRef = useRef<Map<string, mapboxgl.Marker>>(new Map());
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
+  const { metaFor } = useCategoryMeta();
+
 
   // Init map once
   useEffect(() => {
