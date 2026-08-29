@@ -18,6 +18,7 @@ interface PlaceRow {
   lat: number | null;
   lng: number | null;
   photo_url: string | null;
+  logo_url: string | null;
   photo_gradient: string | null;
   whatsapp: string | null;
   visited_by: number | null;
@@ -43,6 +44,7 @@ export function normalizePlace(row: PlaceRow): Place {
     goingToday: row.going_today,
     whatsapp: row.whatsapp,
     photoUrl: row.photo_url,
+    logoUrl: row.logo_url ?? null,
     photoGradient: row.photo_gradient,
     featured: row.featured,
   };

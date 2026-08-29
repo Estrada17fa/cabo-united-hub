@@ -24,6 +24,7 @@ export interface Place {
   goingToday: number | null;
   whatsapp: string | null;
   photoUrl: string | null;
+  logoUrl: string | null;
   photoGradient: string | null;
   featured: boolean;
 }

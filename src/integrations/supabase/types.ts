@@ -1059,6 +1059,7 @@ export type Database = {
           id: string
           lat: number | null
           lng: number | null
+          logo_url: string | null
           name: string
           photo_gradient: string | null
           photo_url: string | null
@@ -1082,6 +1083,7 @@ export type Database = {
           id?: string
           lat?: number | null
           lng?: number | null
+          logo_url?: string | null
           name: string
           photo_gradient?: string | null
           photo_url?: string | null
@@ -1105,6 +1107,7 @@ export type Database = {
           id?: string
           lat?: number | null
           lng?: number | null
+          logo_url?: string | null
           name?: string
           photo_gradient?: string | null
           photo_url?: string | null

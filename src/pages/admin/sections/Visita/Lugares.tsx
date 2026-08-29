@@ -46,6 +46,7 @@ interface Form {
   lat: number | null;
   lng: number | null;
   photo_url: string | null;
+  logo_url: string | null;
   photo_gradient: string | null;
   whatsapp: string;
   visited_by: string;
@@ -66,6 +67,7 @@ const EMPTY: Form = {
   lat: null,
   lng: null,
   photo_url: null,
+  logo_url: null,
   photo_gradient: null,
   whatsapp: "",
   visited_by: "",
@@ -114,6 +116,7 @@ export default function Lugares() {
       lat: row.lat != null ? Number(row.lat) : null,
       lng: row.lng != null ? Number(row.lng) : null,
       photo_url: row.photo_url,
+      logo_url: row.logo_url ?? null,
       photo_gradient: row.photo_gradient,
       whatsapp: row.whatsapp ?? "",
       visited_by: row.visited_by?.toString() ?? "",
@@ -141,6 +144,7 @@ export default function Lugares() {
       lat: form.lat,
       lng: form.lng,
       photo_url: form.photo_url,
+      logo_url: form.logo_url,
       photo_gradient: form.photo_gradient,
       whatsapp: form.whatsapp.trim() || null,
       visited_by: num(form.visited_by),
@@ -208,9 +212,11 @@ export default function Lugares() {
                       className="h-9 w-9 shrink-0 overflow-hidden rounded-xl border border-hairline"
                       style={{ background: p.photo_gradient || "transparent" }}
                     >
-                      {p.photo_url && (
+                      {p.logo_url ? (
+                        <img src={p.logo_url} alt="" className="h-full w-full object-contain p-1" />
+                      ) : p.photo_url ? (
                         <img src={p.photo_url} alt="" className="h-full w-full object-cover" />
-                      )}
+                      ) : null}
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-1.5">
@@ -360,6 +366,14 @@ export default function Lugares() {
               onChange={(url) => setForm({ ...form, photo_url: url })}
               folder="places"
               hint="Si no subes foto, se usa el color del lugar."
+            />
+
+            <ImageUploadField
+              label="Logo del lugar"
+              value={form.logo_url}
+              onChange={(url) => setForm({ ...form, logo_url: url })}
+              folder="place-logos"
+              hint="Se muestra dentro del pin del mapa. PNG sin fondo."
             />
 
             <Field label="Color / degradado">
