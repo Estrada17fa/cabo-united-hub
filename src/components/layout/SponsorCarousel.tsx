@@ -70,7 +70,7 @@ export function SponsorCarousel() {
                   <img
                     src={sponsor.logo}
                     alt={copyIdx === 0 ? sponsor.name : ""}
-                    className="h-7 w-auto object-contain opacity-90 transition-opacity hover:opacity-100"
+                    className="h-7 w-auto max-w-none flex-shrink-0 object-contain opacity-90 transition-opacity hover:opacity-100"
                     loading="lazy"
                   />
                 </div>
