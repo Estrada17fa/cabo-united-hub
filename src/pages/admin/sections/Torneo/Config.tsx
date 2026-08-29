@@ -37,6 +37,7 @@ interface FormState {
   qualifiers_count: number;
   logo_url: string | null;
   rules: Rules;
+  groups: string[];
 }
 
 const EMPTY: FormState = {
@@ -49,7 +50,14 @@ const EMPTY: FormState = {
   qualifiers_count: 4,
   logo_url: null,
   rules: DEFAULT_RULES,
+  groups: [],
 };
+
+const LETTERS = "ABCDEFGH".split("");
+
+/** Ajusta la lista de nombres al número de grupos elegido. */
+const resizeGroups = (current: string[], count: number) =>
+  Array.from({ length: count }, (_, i) => current[i] ?? LETTERS[i] ?? String(i + 1));
 
 const STATUS_LABEL: Record<string, string> = {
   upcoming: "Próximo",
@@ -97,6 +105,7 @@ export default function Config() {
       qualifiers_count: s.qualifiers_count ?? 4,
       logo_url: s.logo_url ?? null,
       rules: { ...DEFAULT_RULES, ...r },
+      groups: (s.groups ?? []).filter(Boolean),
     });
     setOpen(true);
   };
@@ -116,6 +125,7 @@ export default function Config() {
       qualifiers_count: form.qualifiers_count,
       logo_url: form.logo_url,
       points_rules: form.rules,
+      groups: form.groups.map((g) => g.trim()).filter(Boolean),
     };
 
     const { error } = form.id
@@ -182,6 +192,7 @@ export default function Config() {
                   <p className="font-mono text-[11px] text-muted-foreground">
                     {s.season_key} · {STATUS_LABEL[s.status] ?? s.status} · {s.qualifiers_count ?? 4}{" "}
                     clasifican
+                    {s.groups?.length ? ` · ${s.groups.length} grupos` : " · tabla única"}
                   </p>
                 </div>
                 {s.is_active ? (
@@ -289,6 +300,53 @@ export default function Config() {
           onChange={(url) => setForm({ ...form, logo_url: url })}
           hint="PNG, JPG, WEBP o SVG · máx 2 MB"
         />
+
+        <div className="rounded-xl border border-hairline bg-surface-2 p-3">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Grupos
+          </p>
+          <Field label="¿Cuántos grupos son?">
+            <select
+              className={adminInput}
+              value={form.groups.length}
+              onChange={(e) =>
+                setForm({ ...form, groups: resizeGroups(form.groups, Number(e.target.value)) })
+              }
+            >
+              <option value={0}>Sin grupos (tabla única)</option>
+              {[2, 3, 4, 5, 6, 7, 8].map((n) => (
+                <option key={n} value={n}>
+                  {n} grupos
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          {form.groups.length > 0 && (
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              {form.groups.map((g, i) => (
+                <Field key={i} label={`Nombre del grupo ${i + 1}`}>
+                  <input
+                    className={adminInput}
+                    value={g}
+                    placeholder={LETTERS[i] ?? String(i + 1)}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        groups: form.groups.map((x, idx) => (idx === i ? e.target.value : x)),
+                      })
+                    }
+                  />
+                </Field>
+              ))}
+            </div>
+          )}
+          <Hint className="mt-2">
+            Estos nombres son los que se eligen en Equipos y en los partidos, y el orden en que aparecen
+            las pestañas de posiciones en Match Zone. Los partidos entre grupos suman a la tabla del grupo
+            de cada equipo.
+          </Hint>
+        </div>
 
         <div className="rounded-xl border border-hairline bg-surface-2 p-3">
           <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
