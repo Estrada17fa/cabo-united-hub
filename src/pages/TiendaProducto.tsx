@@ -262,6 +262,8 @@ const TiendaProducto = () => {
           </div>
         </div>
       </div>
+
+      <AuthGateDialog open={showAuth} onOpenChange={setShowAuth} onSuccess={handleAdd} />
     </motion.div>
   );
 };
