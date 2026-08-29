@@ -138,7 +138,13 @@ function MatchBlock() {
     <section className="space-y-3">
       <SectionHeader
         eyebrow="Match Zone"
-        title={state === "live" ? "Partido en vivo" : "Próximo partido"}
+        title={
+          state === "live"
+            ? "Partido en vivo"
+            : state === "post"
+              ? "Último resultado"
+              : "Próximo partido"
+        }
         action={<VerTodo to="/zona-partido" />}
       />
       {isLoading ? (
