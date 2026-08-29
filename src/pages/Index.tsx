@@ -33,7 +33,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PLACES, FEATURED_PLACE_IDS } from "@/lib/visita-los-cabos-data";
+import { usePlaces } from "@/hooks/useVisitaLosCabos";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import stadiumHero from "@/assets/stadium-hero.jpg";
@@ -1104,9 +1104,11 @@ function TiendaSection() {
 /* ============================================================ */
 
 function LosCabosStrip() {
-  const featured = FEATURED_PLACE_IDS.map((id) =>
-    PLACES.find((p) => p.id === id)
-  ).filter(Boolean) as (typeof PLACES)[number][];
+  const { data: places = [] } = usePlaces();
+  const flagged = places.filter((p) => p.featured);
+  const featured = (flagged.length ? flagged : places).slice(0, 6);
+
+  if (featured.length === 0) return null;
 
   return (
     <section>
@@ -1158,7 +1160,7 @@ function LosCabosStrip() {
                       style={{ fontSize: 11 }}
                     >
                       <MapPin className="w-3 h-3" />
-                      {place.area}
+                      {place.area ?? ""}
                     </div>
                   </div>
                 </div>
