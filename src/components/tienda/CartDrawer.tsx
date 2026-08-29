@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { ExternalLink, Loader2, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   Sheet,
@@ -15,23 +15,39 @@ import { formatMoney } from "@/lib/store-types";
 export function CartDrawer() {
   const items = useCartStore((s) => s.items);
   const isOpen = useCartStore((s) => s.isOpen);
+  const isLoading = useCartStore((s) => s.isLoading);
+  const isSyncing = useCartStore((s) => s.isSyncing);
   const setOpen = useCartStore((s) => s.setOpen);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
+  const syncCart = useCartStore((s) => s.syncCart);
+  const getCheckoutUrl = useCartStore((s) => s.getCheckoutUrl);
 
   const totalItems = items.reduce((s, i) => s + i.quantity, 0);
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
   const currency = items[0]?.currency ?? "MXN";
 
-  /** Punto ÚNICO de salida a checkout. Aquí se enchufa el pago real después. */
-  const handleCheckout = () => {
-    toast("Pago disponible muy pronto", {
-      description: "Estamos terminando de conectar el checkout de la tienda oficial.",
-    });
+  const handleOpenChange = (open: boolean) => {
+    setOpen(open);
+    if (open) syncCart();
   };
 
+  const handleCheckout = () => {
+    const checkoutUrl = getCheckoutUrl();
+    if (checkoutUrl) {
+      window.open(checkoutUrl, "_blank");
+      setOpen(false);
+    } else {
+      toast.error("No pudimos generar el checkout", {
+        description: "Agrega un producto e intenta de nuevo.",
+      });
+    }
+  };
+
+  const busy = isLoading || isSyncing;
+
   return (
-    <Sheet open={isOpen} onOpenChange={setOpen}>
+    <Sheet open={isOpen} onOpenChange={handleOpenChange}>
       <SheetContent
         side="right"
         className="flex h-full w-full flex-col gap-0 border-hairline bg-surface-1 p-0 sm:max-w-md"
@@ -116,17 +132,19 @@ export function CartDrawer() {
                             <button
                               onClick={() => updateQuantity(item.key, item.quantity - 1)}
                               aria-label="Disminuir"
-                              className="flex h-7 w-7 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                              disabled={busy}
+                              className="flex h-7 w-7 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:opacity-40"
                             >
                               <Minus className="h-3 w-3" />
                             </button>
-                            <span className="w-6 text-center font-display text-[12px] font-bold tabular-nums">
+                            <span className="w-8 text-center font-display text-[12px] font-bold tabular-nums">
                               {item.quantity}
                             </span>
                             <button
                               onClick={() => updateQuantity(item.key, item.quantity + 1)}
                               aria-label="Aumentar"
-                              className="flex h-7 w-7 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                              disabled={busy}
+                              className="flex h-7 w-7 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:opacity-40"
                             >
                               <Plus className="h-3 w-3" />
                             </button>
@@ -154,9 +172,16 @@ export function CartDrawer() {
               </p>
               <button
                 onClick={handleCheckout}
-                className="w-full rounded-xl bg-primary py-3 text-[13px] font-bold text-primary-foreground transition-opacity hover:opacity-90"
+                disabled={items.length === 0 || busy}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-[13px] font-bold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
               >
-                Pagar
+                {busy ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <ExternalLink className="h-4 w-4" /> Pagar con Shopify
+                  </>
+                )}
               </button>
             </div>
           </>
