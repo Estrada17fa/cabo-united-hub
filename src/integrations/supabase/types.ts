@@ -972,10 +972,15 @@ export type Database = {
       players: {
         Row: {
           active: boolean
+          birth_date: string | null
+          birth_place: string | null
           created_at: string
+          goals: number | null
           id: string
           jersey_number: number | null
+          matches_played: number | null
           name: string
+          nationality: string | null
           photo_url: string | null
           position: string | null
           short_bio: string | null
@@ -983,10 +988,15 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          birth_date?: string | null
+          birth_place?: string | null
           created_at?: string
+          goals?: number | null
           id?: string
           jersey_number?: number | null
+          matches_played?: number | null
           name: string
+          nationality?: string | null
           photo_url?: string | null
           position?: string | null
           short_bio?: string | null
@@ -994,10 +1004,15 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          birth_date?: string | null
+          birth_place?: string | null
           created_at?: string
+          goals?: number | null
           id?: string
           jersey_number?: number | null
+          matches_played?: number | null
           name?: string
+          nationality?: string | null
           photo_url?: string | null
           position?: string | null
           short_bio?: string | null
