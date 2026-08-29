@@ -196,7 +196,7 @@ export default function Lugares() {
         ) : (
           <ul className="divide-y divide-hairline">
             {places.map((p: any) => {
-              const meta = CATEGORY_META[p.category as PlaceCategory];
+              const meta = metaFor(p.category as PlaceCategory);
               return (
                 <li key={p.id}>
                   <button
