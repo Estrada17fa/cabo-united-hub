@@ -2,12 +2,21 @@ export const MAPBOX_TOKEN =
   "pk.eyJ1IjoiZW1pbGlvZXMxNyIsImEiOiJjbW85bXFmbHowYWVuMnNwdHZqbjNvaHBiIn0.FkXp1K9sD08aY2yXyLToyg";
 
 export type PlaceTier = "patrocinador" | "destacado" | "basico";
-export type PlaceCategory =
-  | "restaurantes"
-  | "bares"
-  | "tours"
-  | "tiendas"
-  | "hoteles";
+
+/** Slug de la categoría; el catálogo vive en la tabla `place_categories`. */
+export type PlaceCategory = string;
+
+/** Metadata de un tipo de lugar administrable. */
+export interface PlaceCategoryMeta {
+  slug: string;
+  label: string;
+  icon: string;
+  color: string;
+  gradient: string | null;
+  sortOrder: number;
+  active: boolean;
+}
+
 
 /** Lugar tal como lo consume el sitio (normalizado desde la tabla `places`). */
 export interface Place {
