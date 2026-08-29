@@ -4,11 +4,14 @@ import { LcuTabs } from "@/components/ui-lcu/LcuTabs";
 
 const Lugares = lazy(() => import("./Lugares"));
 const Rutas = lazy(() => import("./Rutas"));
+const Categorias = lazy(() => import("./Categorias"));
 
 const TABS = [
   { id: "lugares", label: "Lugares" },
+  { id: "categorias", label: "Tipos de lugar" },
   { id: "rutas", label: "Rutas del Amo" },
 ];
+
 
 function Fallback() {
   return (
