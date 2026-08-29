@@ -36,7 +36,7 @@ export interface Place {
 
 export interface FanRoute {
   id: string;
-  emoji: string;
+  icon: string;
   name: string;
   description: string;
   stops: number;
@@ -45,17 +45,20 @@ export interface FanRoute {
 
 export const CATEGORY_META: Record<
   PlaceCategory,
-  { label: string; emoji: string; color: string }
+  { label: string; icon: string; color: string }
 > = {
-  restaurantes: { label: "Restaurantes", emoji: "🍽️", color: "#F59E0B" },
-  bares: { label: "Bares", emoji: "🍺", color: "#FF6B6B" },
-  tours: { label: "Tours", emoji: "🏄", color: "#00D4FF" },
-  tiendas: { label: "Tiendas", emoji: "🛍️", color: "#8B5CF6" },
-  hoteles: { label: "Hoteles", emoji: "🏨", color: "#3B82F6" },
+  restaurantes: { label: "Restaurantes", icon: "utensils", color: "#F59E0B" },
+  bares: { label: "Bares", icon: "beer", color: "#FF6B6B" },
+  tours: { label: "Tours", icon: "waves", color: "#2DD4A7" },
+  tiendas: { label: "Tiendas", icon: "shopping-bag", color: "#8B5CF6" },
+  hoteles: { label: "Hoteles", icon: "bed-double", color: "#3B82F6" },
 };
 
-// Team green for sponsor pins
-export const SPONSOR_GREEN = "#00FF87";
+// Gold accent for sponsor-tier places (pins, badges, verified)
+export const SPONSOR_GOLD = "#F2B33D";
+
+// Brand cyan for chrome/UI accents on this page
+export const LCU_CYAN = "#00ABC4";
 
 export const PLACES: Place[] = [
   {
@@ -461,7 +464,7 @@ export const PLACES: Place[] = [
 export const FAN_ROUTES: FanRoute[] = [
   {
     id: "pre-partido",
-    emoji: "🏟️",
+    icon: "flag",
     name: "Ruta Pre-Partido",
     description: "Desayuna, compra tu merch y llega al estadio",
     stops: 3,
@@ -469,7 +472,7 @@ export const FAN_ROUTES: FanRoute[] = [
   },
   {
     id: "familiar",
-    emoji: "👨‍👩‍👧",
+    icon: "users",
     name: "Ruta Familiar",
     description: "Un día completo para toda la familia Amo",
     stops: 4,
@@ -477,7 +480,7 @@ export const FAN_ROUTES: FanRoute[] = [
   },
   {
     id: "vip",
-    emoji: "🥂",
+    icon: "wine",
     name: "Ruta VIP",
     description: "Experiencia premium antes del partido",
     stops: 3,
