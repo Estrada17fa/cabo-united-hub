@@ -1,11 +1,11 @@
 import { ArrowLeft, Clock, MapPin, MessageCircle, Navigation, Star, Flame, Users } from "lucide-react";
 import {
-  CATEGORY_META,
   LCU_CYAN,
   Place,
   placeBackground,
   SPONSOR_GOLD,
 } from "@/lib/visita-los-cabos-data";
+import { useCategoryMeta } from "@/hooks/usePlaceCategories";
 import { CategoryIcon } from "./CategoryIcon";
 
 interface PlaceDetailProps {
@@ -16,7 +16,9 @@ interface PlaceDetailProps {
 const AMBER = "hsl(42 95% 58%)";
 
 export function PlaceDetail({ place, onBack }: PlaceDetailProps) {
-  const meta = CATEGORY_META[place.category] ?? CATEGORY_META.restaurantes;
+  const { metaFor } = useCategoryMeta();
+  const meta = metaFor(place.category);
+
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.coords[1]},${place.coords[0]}`;
   const waUrl = place.whatsapp
     ? `https://wa.me/${place.whatsapp.replace(/[^0-9]/g, "")}`
