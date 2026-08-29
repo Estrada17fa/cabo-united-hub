@@ -8,6 +8,9 @@ import type { Match } from "@/components/match-zone/types";
 import { AdminSheet } from "@/components/admin/AdminSheet";
 import { EmptyRow, Field, Hint, adminInput } from "@/components/admin/AdminUI";
 
+/** Etiqueta para partidos entre equipos de grupos distintos. */
+export const INTERZONAL = "Interzonal";
+
 const PHASES = [
   { value: "scheduled", label: "Programado" },
   { value: "first_half", label: "1er tiempo" },
@@ -102,6 +105,7 @@ export function MatchSheet({
 
   useEffect(() => {
     if (!open) return;
+    groupTouched.current = !!match?.group_name;
     if (match) {
       setForm({
         matchday: match.matchday != null ? String(match.matchday) : "",
@@ -310,11 +314,33 @@ export function MatchSheet({
           />
         </Field>
         <Field label="Grupo">
-          <input
-            className={adminInput}
-            value={form.group_name}
-            onChange={(e) => setForm({ ...form, group_name: e.target.value })}
-          />
+          {groups.length ? (
+            <select
+              className={adminInput}
+              value={form.group_name}
+              onChange={(e) => {
+                groupTouched.current = true;
+                setForm({ ...form, group_name: e.target.value });
+              }}
+            >
+              <option value="">Sin grupo</option>
+              {groups.map((g) => (
+                <option key={g} value={g}>
+                  Grupo {g}
+                </option>
+              ))}
+              <option value={INTERZONAL}>Interzonal</option>
+            </select>
+          ) : (
+            <input
+              className={adminInput}
+              value={form.group_name}
+              onChange={(e) => {
+                groupTouched.current = true;
+                setForm({ ...form, group_name: e.target.value });
+              }}
+            />
+          )}
         </Field>
         <Field label="Fase">
           <select
@@ -344,7 +370,7 @@ export function MatchSheet({
         <select
           className={adminInput}
           value={form.away_team_id}
-          onChange={(e) => setForm({ ...form, away_team_id: e.target.value })}
+          onChange={(e) => setAway(e.target.value)}
         >
           <option value="">— Elegir —</option>
           {teams
