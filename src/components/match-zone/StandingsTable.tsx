@@ -77,7 +77,7 @@ export function StandingsTable({ standings, qualifySlots }: Props) {
         <div>
           {rows.map((s, i) => {
             const ours = !!s.team?.is_ours;
-            const qualifyEdge = qualifySlots > 0 && i === qualifySlots - 1 && rows.length > qualifySlots;
+            const qualifyEdge = slots > 0 && i === slots - 1 && rows.length > slots;
             return (
               <div
                 key={s.id}
@@ -137,9 +137,9 @@ export function StandingsTable({ standings, qualifySlots }: Props) {
         </div>
       </div>
 
-      {qualifySlots > 0 && rows.length > qualifySlots && (
+      {slots > 0 && rows.length > slots && (
         <p className="px-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-          Línea de clasificación · primeros {qualifySlots}
+          Línea de clasificación · primeros {slots}
         </p>
       )}
     </div>
