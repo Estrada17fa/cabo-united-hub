@@ -6,6 +6,7 @@ import { Loader2, Calendar, MapPin, Sparkles, ShieldCheck, RefreshCw, Download, 
 import { toPng } from "html-to-image";
 import { supabase } from "@/integrations/supabase/client";
 import lcuCrest from "@/assets/lcu-crest.png";
+import { tierStyle } from "@/lib/tiers";
 
 interface FanPass {
   id: string;
@@ -79,7 +80,7 @@ export function FanPassCard({
   const frontRef = useRef<HTMLDivElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
 
-  const tier = TIER_STYLE[pass.tier];
+  const tier = tierStyle(pass.tier);
   const issuedDate = new Date(pass.issued_at).toLocaleDateString("es-MX", {
     day: "2-digit", month: "short", year: "numeric",
   });
