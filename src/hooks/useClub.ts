@@ -77,6 +77,11 @@ export interface ClubPlayer {
   position: string | null;
   photo_url: string | null;
   short_bio: string | null;
+  goals: number | null;
+  matches_played: number | null;
+  birth_date: string | null;
+  nationality: string | null;
+  birth_place: string | null;
 }
 
 export function useClubPlayers() {
@@ -85,7 +90,9 @@ export function useClubPlayers() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("players")
-        .select("id, name, jersey_number, position, photo_url, short_bio")
+        .select(
+          "id, name, jersey_number, position, photo_url, short_bio, goals, matches_played, birth_date, nationality, birth_place"
+        )
         .eq("active", true)
         .order("jersey_number", { nullsFirst: false });
       if (error) throw error;
