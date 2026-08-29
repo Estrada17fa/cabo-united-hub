@@ -366,7 +366,7 @@ export function FanPassCard({
               <div className="flex items-start justify-between mt-3">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.14em] text-black/55 font-bold">Beneficios en comercios</div>
-                  <div className="text-[11px] text-black/55">Muestra este QR en el mostrador</div>
+                  <div className="text-[11px] text-black/55">Canjea beneficios próximamente</div>
                 </div>
                 <Store className="w-5 h-5" style={{ color: tier.accent }} />
               </div>
