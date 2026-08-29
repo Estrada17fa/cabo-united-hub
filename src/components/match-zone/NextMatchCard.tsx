@@ -1,19 +1,10 @@
-import { Bell, MapPin, Ticket } from "lucide-react";
-import { motion } from "framer-motion";
-import { buildIcs, downloadIcs, formatKickoff, getCountdown } from "@/lib/matchClock";
-import { useTicker } from "@/hooks/useMatchZone";
-import { LcuButton } from "@/components/ui-lcu";
-import type { Match } from "./types";
-import { Scoreboard } from "./Scoreboard";
+import { Bell, CalendarDays, MapPin, Ticket } from "lucide-react";
 import { toast } from "sonner";
+import { buildIcs, downloadIcs, formatKickoff } from "@/lib/matchClock";
+import { CountdownTimer, MatchupRow, PrimaryButton } from "@/components/lcu";
+import type { Match } from "./types";
 
-interface Props {
-  match: Match;
-}
-
-export function NextMatchCard({ match }: Props) {
-  const now = useTicker(true, 1000);
-  const c = getCountdown(match.kickoff_at, now);
+export function NextMatchCard({ match }: { match: Match }) {
   const { date, time } = formatKickoff(match.kickoff_at);
   const isHome = !!match.home_team?.is_ours;
 
@@ -27,69 +18,50 @@ export function NextMatchCard({ match }: Props) {
   };
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-white/[0.07] bg-surface-2">
-      <div className="relative px-4 pb-4 pt-5">
-        <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-10%,hsl(var(--primary)/0.16),transparent_65%)]"
-          aria-hidden
-        />
-        <div className="relative">
-          <p className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-            Próximo partido{match.matchday ? ` · Jornada ${match.matchday}` : ""}
-          </p>
+    <article className="rounded-2xl border border-hairline bg-surface-1 p-4">
+      <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+        Próximo partido{match.matchday ? ` · Jornada ${match.matchday}` : ""}
+      </p>
 
-          <Scoreboard match={match} />
-
-          <div className="mt-5 grid grid-cols-4 gap-2">
-            {[
-              { v: c.days, l: "Días" },
-              { v: c.hours, l: "Hrs" },
-              { v: c.minutes, l: "Min" },
-              { v: c.seconds, l: "Seg" },
-            ].map((u) => (
-              <div
-                key={u.l}
-                className="rounded-2xl border border-white/[0.06] bg-surface-3 py-2.5 text-center"
-              >
-                <motion.div
-                  key={u.v}
-                  initial={{ opacity: 0.4, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-xl font-bold tabular-nums text-foreground"
-                >
-                  {String(u.v).padStart(2, "0")}
-                </motion.div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  {u.l}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-            <MapPin className="h-3.5 w-3.5" />
-            <span className="truncate">
-              {match.venue || "Sede por confirmar"} · {date} {time}
-            </span>
-          </div>
-
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-            {isHome && match.tickets_url && (
-              <LcuButton className="flex-1" onClick={() => window.open(match.tickets_url!, "_blank")}>
-                <Ticket className="mr-1.5 h-4 w-4" />
-                Comprar boletos
-              </LcuButton>
-            )}
-            <button
-              onClick={remind}
-              className="flex h-11 flex-1 items-center justify-center gap-1.5 rounded-full border border-white/[0.08] bg-surface-3 text-sm font-semibold text-foreground transition-colors hover:border-primary/40"
-            >
-              <Bell className="h-4 w-4" />
-              Avísame
-            </button>
-          </div>
-        </div>
+      <div className="mt-4">
+        <MatchupRow match={match} />
       </div>
-    </div>
+
+      <div className="mt-4">
+        <CountdownTimer kickoffAt={match.kickoff_at} />
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-secondary-fg">
+        <span className="flex items-center gap-1.5">
+          <CalendarDays className="h-3.5 w-3.5 text-muted-foreground" />
+          {date} · {time}
+        </span>
+        <span className="flex items-center gap-1.5">
+          <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+          {match.venue || "Sede por confirmar"}
+        </span>
+      </div>
+
+      <div className="mt-3">
+        <span className="inline-flex items-center rounded-md border border-primary/40 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
+          {isHome ? "Local" : "Visita"}
+        </span>
+      </div>
+
+      {isHome && match.tickets_url ? (
+        <PrimaryButton
+          className="mt-4 w-full"
+          onClick={() => window.open(match.tickets_url!, "_blank")}
+        >
+          <Ticket className="h-4 w-4" />
+          Comprar boletos
+        </PrimaryButton>
+      ) : (
+        <PrimaryButton className="mt-4 w-full" onClick={remind}>
+          <Bell className="h-4 w-4" />
+          Recordarme
+        </PrimaryButton>
+      )}
+    </article>
   );
 }
