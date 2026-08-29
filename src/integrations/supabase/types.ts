@@ -1218,6 +1218,7 @@ export type Database = {
           end_date: string
           id: string
           name: string
+          season_key: string | null
           start_date: string
           status: Database["public"]["Enums"]["season_status_enum"]
         }
@@ -1227,6 +1228,7 @@ export type Database = {
           end_date: string
           id?: string
           name: string
+          season_key?: string | null
           start_date: string
           status?: Database["public"]["Enums"]["season_status_enum"]
         }
@@ -1236,6 +1238,7 @@ export type Database = {
           end_date?: string
           id?: string
           name?: string
+          season_key?: string | null
           start_date?: string
           status?: Database["public"]["Enums"]["season_status_enum"]
         }
