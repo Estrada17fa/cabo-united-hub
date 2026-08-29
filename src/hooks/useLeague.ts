@@ -44,6 +44,20 @@ export function useSeasonKey() {
   return data?.season_key ?? SEASON;
 }
 
+/** Grupos configurados en el torneo activo (vacío = tabla única). */
+export function useSeasonGroups() {
+  const { data } = useActiveSeason();
+  return (data?.groups ?? []).filter(Boolean);
+}
+
+/** Clasificados configurados en el torneo activo. */
+export function useQualifiersCount() {
+  const { data } = useActiveSeason();
+  return data?.qualifiers_count ?? 4;
+}
+
+
+
 export function useTeams(season?: string) {
   const active = useSeasonKey();
   const key = season ?? active;
