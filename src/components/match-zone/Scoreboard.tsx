@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { getMatchClock, formatKickoff } from "@/lib/matchClock";
-import { useTicker } from "@/hooks/useMatchZone";
+import { formatKickoff } from "@/lib/matchClock";
 import { isLivePhase, PHASE_LABEL, type Match } from "./types";
 import { TeamCrest } from "./TeamCrest";
 import { cn } from "@/lib/utils";
@@ -13,13 +12,15 @@ interface Props {
 
 export function Scoreboard({ match, variant = "hero" }: Props) {
   const live = isLivePhase(match.phase);
-  const now = useTicker(live, 15000);
-  const clock = getMatchClock(match, now);
   // Llegó la hora pero el admin aún no cambia la fase: mostrar 0-0 "Por arrancar".
   const kickoffDue =
     match.phase === "scheduled" && Date.now() >= +new Date(match.kickoff_at);
   const played = live || match.phase === "finished" || kickoffDue;
   const { date, time } = formatKickoff(match.kickoff_at);
+
+  // En lugar de minutos (reloj calculado) mostramos la fase del partido:
+  // el admin solo cambia la fase y la etiqueta siempre es correcta.
+  const phaseLabel = kickoffDue ? "Por arrancar" : PHASE_LABEL[match.phase];
 
   if (variant === "compact") {
     return (
@@ -29,11 +30,9 @@ export function Scoreboard({ match, variant = "hero" }: Props) {
           {played ? `${match.home_score} - ${match.away_score}` : time}
         </span>
         <TeamCrest team={match.away_team} size="sm" />
-        {clock && (
-          <span className={cn("text-xs font-semibold", live ? "text-pop" : "text-muted-foreground")}>
-            {clock}
-          </span>
-        )}
+        <span className={cn("text-xs font-semibold", live ? "text-pop" : "text-muted-foreground")}>
+          {phaseLabel}
+        </span>
       </div>
     );
   }
@@ -76,7 +75,7 @@ export function Scoreboard({ match, variant = "hero" }: Props) {
             live ? "text-pop" : "text-muted-foreground"
           )}
         >
-          {clock ?? (kickoffDue ? "Por arrancar" : PHASE_LABEL[match.phase])}
+          {phaseLabel}
         </span>
       </div>
 
@@ -109,7 +108,7 @@ function TeamSide({
             team?.is_ours ? "text-primary" : "text-foreground"
           )}
         >
-          {team?.name || team?.short_name || "—"}
+          {team?.short_name || team?.name || "—"}
         </p>
         <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
           {label}
