@@ -39,7 +39,9 @@ export default function Visita() {
 
       <Suspense fallback={<Fallback />}>
         {tab === "lugares" && <Lugares />}
+        {tab === "categorias" && <Categorias />}
         {tab === "rutas" && <Rutas />}
+
       </Suspense>
     </div>
   );
