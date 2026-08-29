@@ -22,7 +22,7 @@ export function RoutesPanel() {
           >
             <div className="flex items-start gap-3">
               <span className="w-10 h-10 rounded-xl bg-surface-2 border border-border flex items-center justify-center shrink-0">
-                <CategoryIcon name={route.icon} className="w-4.5 h-4.5 text-primary" />
+                <CategoryIcon name={route.icon} className="w-[18px] h-[18px] text-primary" />
               </span>
               <div className="min-w-0 flex-1">
                 <h3 className="text-[14px] font-bold text-foreground leading-tight">
