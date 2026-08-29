@@ -31,7 +31,10 @@ export function FeaturedStrip({ places, onSelect }: FeaturedStripProps) {
               onClick={() => onSelect(place)}
               className="shrink-0 w-[180px] h-[100px] relative rounded-xl overflow-hidden border border-border hover:border-foreground/40 transition-all group text-left"
               style={{
-                background: place.photoUrl ? undefined : placeBackground(place),
+                background: place.photoUrl
+                  ? undefined
+                  : placeBackground(place, meta.gradient),
+
                 borderLeft: `3px solid ${meta.color}`,
               }}
             >
