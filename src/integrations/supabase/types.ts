@@ -1260,6 +1260,7 @@ export type Database = {
           end_date: string
           id: string
           is_active: boolean
+          logo_url: string | null
           name: string
           points_rules: Json
           qualifiers_count: number
@@ -1273,6 +1274,7 @@ export type Database = {
           end_date: string
           id?: string
           is_active?: boolean
+          logo_url?: string | null
           name: string
           points_rules?: Json
           qualifiers_count?: number
@@ -1286,6 +1288,7 @@ export type Database = {
           end_date?: string
           id?: string
           is_active?: boolean
+          logo_url?: string | null
           name?: string
           points_rules?: Json
           qualifiers_count?: number
@@ -1413,6 +1416,7 @@ export type Database = {
           season: string
           short_name: string | null
           updated_at: string
+          venue: string | null
         }
         Insert: {
           active?: boolean
@@ -1426,6 +1430,7 @@ export type Database = {
           season?: string
           short_name?: string | null
           updated_at?: string
+          venue?: string | null
         }
         Update: {
           active?: boolean
@@ -1439,6 +1444,7 @@ export type Database = {
           season?: string
           short_name?: string | null
           updated_at?: string
+          venue?: string | null
         }
         Relationships: []
       }
