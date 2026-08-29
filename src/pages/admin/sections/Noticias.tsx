@@ -10,6 +10,7 @@ import { EmptyRow, Field, Hint, SectionTitle, adminCard, adminInput } from "@/co
 interface FormState {
   id?: string;
   title: string;
+  category: string;
   slug: string;
   excerpt: string;
   content: string;
@@ -20,6 +21,7 @@ interface FormState {
 
 const EMPTY: FormState = {
   title: "",
+  category: "",
   slug: "",
   excerpt: "",
   content: "",
@@ -64,6 +66,7 @@ export default function Noticias() {
     setSaving(true);
     const payload = {
       title: form.title.trim(),
+      category: form.category.trim() || null,
       slug: (form.slug.trim() || slugify(form.title)) || null,
       excerpt: form.excerpt.trim() || null,
       content: form.content.trim() || null,
@@ -122,6 +125,7 @@ export default function Noticias() {
                   setForm({
                     id: n.id,
                     title: n.title,
+                    category: n.category ?? "",
                     slug: n.slug ?? "",
                     excerpt: n.excerpt ?? "",
                     content: n.content ?? "",
@@ -190,6 +194,14 @@ export default function Noticias() {
                 className={adminInput}
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
+              />
+            </Field>
+            <Field label="Categoría">
+              <input
+                className={adminInput}
+                placeholder="Noticias · Entrevista · Detrás de cámaras"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
               />
             </Field>
             <Field label="Slug (opcional)">
