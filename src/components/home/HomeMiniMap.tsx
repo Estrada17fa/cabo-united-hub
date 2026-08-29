@@ -85,7 +85,7 @@ export function HomeMiniMap({ places, className = "" }: Props) {
     <div
       ref={containerRef}
       aria-hidden="true"
-      className={`h-full w-full overflow-hidden ${className}`}
+      className={`h-full w-full overflow-hidden [&_.mapboxgl-control-container]:hidden ${className}`}
     />
   );
 }

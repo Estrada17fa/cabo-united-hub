@@ -356,7 +356,7 @@ function VisitaBlock() {
         title="El paraíso, según la afición"
         subtitle={
           places.length > 0
-            ? `${places.length} lugares recomendados en Cabo San Lucas y San José`
+            ? `${places.length} ${places.length === 1 ? "lugar" : "lugares"} recomendados por la afición`
             : undefined
         }
         action={<VerTodo to="/conoce-los-cabos" />}
