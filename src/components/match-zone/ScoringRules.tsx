@@ -15,7 +15,7 @@ export function ScoringRules() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-surface-2">
+    <div className="overflow-hidden rounded-2xl border border-hairline bg-surface-1">
       <button
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}

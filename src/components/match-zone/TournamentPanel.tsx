@@ -1,50 +1,58 @@
 import { useState } from "react";
-import { BarChart3, CalendarDays, Goal, Shield } from "lucide-react";
-import { LcuTabs } from "@/components/ui-lcu";
-import { useScorers, useStandings, useTeams } from "@/hooks/useLeague";
+import { ChevronDown } from "lucide-react";
+import { LeagueTabs } from "@/components/lcu";
+import { useScorers, useStandings } from "@/hooks/useLeague";
 import type { Match } from "./types";
-import { StandingsTable } from "./StandingsTable";
+import { StandingsTable, EmptyState } from "./StandingsTable";
 import { FixturesList } from "./FixturesList";
 import { TopScorers } from "./TopScorers";
-import { TeamsGrid } from "./TeamsGrid";
 import { ScoringRules } from "./ScoringRules";
 
 export function TournamentPanel({ matches }: { matches: Match[] }) {
-  const [tab, setTab] = useState("fixtures");
+  const [tab, setTab] = useState("standings");
   const { data: standings = [] } = useStandings();
   const { data: scorers = [] } = useScorers();
-  const { data: teams = [] } = useTeams();
+
+  const finals = matches.filter((m) => m.stage === "final");
 
   return (
     <section className="space-y-4">
-      <div className="flex items-baseline justify-between">
-        <h2 className="text-lg font-bold text-foreground">El torneo</h2>
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Temporada 2026
-        </span>
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold text-foreground">Torneo</h2>
+        <button
+          type="button"
+          className="flex items-center gap-1 text-xs font-medium text-secondary-fg"
+        >
+          Apertura 2026
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+        </button>
       </div>
 
-      <LcuTabs
-        layoutId="tournament-tabs"
+      <LeagueTabs
         value={tab}
         onChange={setTab}
         items={[
-          { id: "fixtures", label: "Partidos", icon: CalendarDays },
-          { id: "standings", label: "Posiciones", icon: BarChart3 },
-          { id: "scorers", label: "Goleo", icon: Goal },
-          { id: "teams", label: "Equipos", icon: Shield },
+          { id: "fixtures", label: "Partidos" },
+          { id: "standings", label: "Posiciones" },
+          { id: "scorers", label: "Goleo" },
+          { id: "finals", label: "Fase final" },
         ]}
       />
 
       {tab === "fixtures" && <FixturesList matches={matches} />}
       {tab === "standings" && (
-        <div className="space-y-3">
-          <ScoringRules />
+        <div className="space-y-4">
           <StandingsTable standings={standings} />
+          <ScoringRules />
         </div>
       )}
       {tab === "scorers" && <TopScorers scorers={scorers} />}
-      {tab === "teams" && <TeamsGrid teams={teams} />}
+      {tab === "finals" &&
+        (finals.length ? (
+          <FixturesList matches={finals} />
+        ) : (
+          <EmptyState text="La fase final se publicará al cerrar la temporada regular." />
+        ))}
     </section>
   );
 }

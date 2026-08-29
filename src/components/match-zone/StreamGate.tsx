@@ -24,7 +24,7 @@ export function StreamGate({ streamUrl, title }: Props) {
 
   return (
     <>
-      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-pop/25 bg-surface-3">
+      <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-hairline bg-surface-3">
         {embed && user ? (
           <iframe
             src={embed.embedUrl}
@@ -36,17 +36,17 @@ export function StreamGate({ streamUrl, title }: Props) {
         ) : (
           <div className="absolute inset-0">
             <div
-              className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--primary)/0.18),transparent_60%),radial-gradient(circle_at_75%_80%,hsl(var(--pop)/0.16),transparent_55%)] blur-[2px]"
+              className="absolute inset-0 bg-surface-3 blur-[2px]"
               aria-hidden
             />
             <div className="relative flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
               {embed ? (
                 <>
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-surface-2">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline bg-surface-1">
                     <Lock className="h-5 w-5 text-primary" />
                   </span>
                   <p className="text-sm font-semibold text-foreground">
-                    La transmisión es exclusiva para aficionados con cuenta
+                    Inicia sesión o crea tu cuenta para ver el partido en vivo
                   </p>
                   <p className="max-w-xs text-xs text-muted-foreground">
                     Crea tu cuenta gratis, ve el partido en vivo y gana XP mientras alientas.
@@ -63,7 +63,7 @@ export function StreamGate({ streamUrl, title }: Props) {
                 </>
               ) : (
                 <>
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-surface-2">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-hairline bg-surface-1">
                     <Play className="h-5 w-5 text-muted-foreground" />
                   </span>
                   <p className="text-sm font-semibold text-foreground">

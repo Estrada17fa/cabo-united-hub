@@ -67,7 +67,7 @@ export function MotmVote({ match }: Props) {
   };
 
   return (
-    <div className="rounded-3xl border border-white/[0.06] bg-surface-2 p-4">
+    <div className="rounded-2xl border border-hairline bg-surface-1 p-4">
       <div className="mb-3 flex items-center gap-1.5">
         <Trophy className="h-4 w-4 text-brand-accent" />
         <h3 className="text-sm font-bold text-foreground">Jugador del partido</h3>
@@ -81,10 +81,10 @@ export function MotmVote({ match }: Props) {
               "w-[74px] shrink-0 rounded-2xl border p-2 text-center transition-colors",
               voted === p.id
                 ? "border-primary/60 bg-primary/10"
-                : "border-white/[0.06] bg-surface-3"
+                : "border-hairline bg-surface-3"
             )}
           >
-            <div className="mx-auto mb-1.5 h-12 w-12 overflow-hidden rounded-full bg-surface-2">
+            <div className="mx-auto mb-1.5 h-12 w-12 overflow-hidden rounded-full bg-surface-1">
               {p.photo_url ? (
                 <img src={p.photo_url} alt={p.name} loading="lazy" className="h-full w-full object-cover" />
               ) : (

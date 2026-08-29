@@ -18,9 +18,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Poppins", "system-ui", "sans-serif"],
-        poppins: ["Poppins", "sans-serif"],
-        display: ["var(--font-display, Poppins)", "Poppins", "sans-serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        poppins: ["Inter", "system-ui", "sans-serif"],
+        display: ["Space Grotesk", "Inter", "sans-serif"],
       },
 
       colors: {
@@ -72,6 +72,7 @@ export default {
           accent: "hsl(var(--brand-accent))",
         },
         "state-coming-soon": "hsl(var(--state-coming-soon))",
+        hairline: "hsl(var(--hairline))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

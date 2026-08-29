@@ -18,8 +18,8 @@ export function TopScorers({ scorers }: { scorers: Scorer[] }) {
           <div
             key={s.id}
             className={cn(
-              "rounded-3xl border p-3 text-center",
-              i === 0 ? "border-brand-accent/40 bg-brand-accent/[0.07]" : "border-white/[0.06] bg-surface-2"
+              "rounded-2xl border p-3 text-center",
+              i === 0 ? "border-primary/40 bg-primary/[0.06]" : "border-hairline bg-surface-1"
             )}
           >
             <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -36,7 +36,7 @@ export function TopScorers({ scorers }: { scorers: Scorer[] }) {
       </div>
 
       {!!rest.length && (
-        <div className="overflow-hidden rounded-3xl border border-white/[0.06] bg-surface-2 divide-y divide-white/[0.04]">
+        <div className="overflow-hidden rounded-2xl border border-hairline bg-surface-1 divide-y divide-hairline">
           {rest.map((s, i) => (
             <div
               key={s.id}

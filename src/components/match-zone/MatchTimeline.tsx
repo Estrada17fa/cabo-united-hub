@@ -31,7 +31,7 @@ interface Props {
 export function MatchTimeline({ match, events }: Props) {
   if (!events.length) {
     return (
-      <div className="rounded-3xl border border-white/[0.06] bg-surface-2 p-6 text-center">
+      <div className="rounded-2xl border border-hairline bg-surface-1 p-6 text-center">
         <p className="text-sm text-muted-foreground">
           Los momentos del partido aparecerán aquí en cuanto ruede la pelota.
         </p>
@@ -40,10 +40,10 @@ export function MatchTimeline({ match, events }: Props) {
   }
 
   return (
-    <div className="rounded-3xl border border-white/[0.06] bg-surface-2 p-4">
+    <div className="rounded-2xl border border-hairline bg-surface-1 p-4">
       <h3 className="mb-3 text-sm font-bold text-foreground">Momentos del partido</h3>
       <ol className="relative space-y-3 pl-6">
-        <span className="absolute left-[9px] top-1 bottom-1 w-px bg-white/[0.08]" aria-hidden />
+        <span className="absolute left-[9px] top-1 bottom-1 w-px bg-hairline" aria-hidden />
         {events.map((e, i) => {
           const Icon = ICONS[e.type] ?? Info;
           const isGoal = GOAL_EVENTS.includes(e.type);
@@ -69,12 +69,12 @@ export function MatchTimeline({ match, events }: Props) {
                 className={cn(
                   "absolute -left-6 top-0.5 flex h-[19px] w-[19px] items-center justify-center rounded-full border",
                   isGoal
-                    ? "border-pop/50 bg-pop/15 text-pop"
+                    ? "border-primary/50 bg-primary/15 text-primary"
                     : e.type === "red"
                       ? "border-destructive/50 bg-destructive/15 text-destructive"
                       : e.type === "yellow"
                         ? "border-brand-accent/50 bg-brand-accent/15 text-brand-accent"
-                        : "border-white/10 bg-surface-3 text-muted-foreground"
+                        : "border-hairline bg-surface-3 text-muted-foreground"
                 )}
               >
                 <Icon className="h-3 w-3" />
