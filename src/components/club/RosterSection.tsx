@@ -191,12 +191,6 @@ export function RosterSection() {
   const rows = players.filter((p) => (current ? groupOf(p.position) === current : true));
   const visible = expanded ? rows : rows.slice(0, 4);
 
-  const cardProps = {
-    flipped: false,
-    canHover,
-    onFlip: setFlippedId,
-  };
-
   const renderCard = (p: ClubPlayer) => (
     <PlayerCard
       key={p.id}
