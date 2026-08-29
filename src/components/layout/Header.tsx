@@ -74,7 +74,6 @@ const navLinks = [
 ];
 
 const shopLink = { name: "Tienda", path: "/tienda", icon: ShoppingBag };
-const ticketsLink = { name: "Boletos", path: "/accesos", icon: Ticket };
 
 const menuLinks = [
   { name: "Patrocinios", path: "/patrocinios", icon: Handshake },
@@ -335,19 +334,6 @@ export function Header() {
                       </motion.li>
                     );
                   })}
-                  <motion.li
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.03 * 6, duration: 0.22, ease: "easeOut" }}
-                  >
-                    <button
-                      onClick={() => go(ticketsLink.path)}
-                      className="flex w-full items-center gap-3 rounded-[11px] bg-primary px-3.5 py-3 text-sm font-semibold text-primary-foreground"
-                    >
-                      <Ticket className="h-4 w-4" strokeWidth={2.2} />
-                      Boletos
-                    </button>
-                  </motion.li>
                 </ul>
               )}
             </AnimatePresence>
