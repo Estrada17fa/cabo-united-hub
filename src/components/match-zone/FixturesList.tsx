@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ChevronDown, ChevronUp, MapPin, Ticket } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Ticket } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatKickoff } from "@/lib/matchClock";
 import { cn } from "@/lib/utils";
@@ -16,13 +16,12 @@ type Group = {
   key: string;
   matchday: number | null;
   label: string;
+  shortLabel: string;
   matches: Match[];
-  state: "played" | "current" | "future" | "final";
+  state: "played" | "live" | "future" | "final";
 };
 
 export function FixturesList({ matches }: Props) {
-  const [expanded, setExpanded] = useState(false);
-
   const groups = useMemo<Group[]>(() => {
     const regular = matches.filter((m) => m.stage !== "final");
     const finals = matches.filter((m) => m.stage === "final");
@@ -35,22 +34,19 @@ export function FixturesList({ matches }: Props) {
 
     const sorted = Array.from(byMatchday.entries()).sort(([a], [b]) => a - b);
 
-    const now = Date.now();
-
     const build = (md: number, list: Match[]): Group => {
       const hasLive = list.some((m) => isLivePhase(m.phase));
       const allFinished = list.length > 0 && list.every((m) => m.phase === "finished");
-      const hasFuture = list.some((m) => m.phase === "scheduled" && new Date(m.kickoff_at).getTime() > now);
 
       let state: Group["state"] = "future";
-      if (hasLive) state = "current";
+      if (hasLive) state = "live";
       else if (allFinished) state = "played";
-      else if (hasFuture) state = "current";
 
       return {
         key: `jornada-${md}`,
         matchday: md,
         label: md === 0 ? "Por definir" : `Jornada ${md}`,
+        shortLabel: md === 0 ? "—" : `J${md}`,
         matches: list.sort((a, b) => +new Date(a.kickoff_at) - +new Date(b.kickoff_at)),
         state,
       };
@@ -59,121 +55,121 @@ export function FixturesList({ matches }: Props) {
     const out: Group[] = sorted.map(([md, list]) => build(md, list));
 
     if (finals.length) {
-      const hasLiveFinal = finals.some((m) => isLivePhase(m.phase));
       out.push({
         key: "fase-final",
         matchday: null,
         label: "Fase final",
+        shortLabel: "FF",
         matches: finals.sort((a, b) => +new Date(a.kickoff_at) - +new Date(b.kickoff_at)),
-        state: hasLiveFinal ? "current" : "final",
+        state: finals.some((m) => isLivePhase(m.phase)) ? "live" : "final",
       });
     }
 
     return out;
   }, [matches]);
 
-  const currentIndex = useMemo(() => {
-    const idx = groups.findIndex((g) => g.state === "current");
-    if (idx !== -1) return idx;
-    // Si no hay actual, la última jugada es la actual.
-    const lastPlayed = groups.reduce<number>((acc, g, i) => (g.state === "played" ? i : acc), -1);
-    if (lastPlayed !== -1) return lastPlayed;
-    return 0;
+  // Índice seleccionado: null = aún no toca el usuario, se usa el automático.
+  const [selected, setSelected] = useState<number | null>(null);
+
+  const autoIndex = useMemo(() => {
+    if (!groups.length) return 0;
+    // Primera jornada no completamente finalizada (en vivo o con pendientes).
+    const pending = groups.findIndex((g) => g.state !== "played");
+    if (pending !== -1) return pending;
+    return groups.length - 1;
   }, [groups]);
 
-  const visibleGroups = useMemo(() => {
-    if (expanded) return groups;
-    const prev = currentIndex > 0 ? groups[currentIndex - 1] : null;
-    const curr = groups[currentIndex];
-    const out: Group[] = [];
-    if (prev) out.push(prev);
-    if (curr) out.push(curr);
-    return out;
-  }, [groups, currentIndex, expanded]);
+  const index = Math.min(selected ?? autoIndex, Math.max(groups.length - 1, 0));
+  const group = groups[index];
 
-  const hasMore = groups.length > visibleGroups.length;
+  if (!groups.length || !group) {
+    return <EmptyState text="Aún no hay partidos programados." />;
+  }
+
+  const canPrev = index > 0;
+  const canNext = index < groups.length - 1;
 
   return (
     <div className="space-y-3">
-      {!groups.length && <EmptyState text="Aún no hay partidos programados." />}
+      <div className="overflow-hidden rounded-2xl border border-hairline bg-surface-1">
+        {/* Header con navegación de jornada */}
+        <div className="flex items-center justify-between gap-2 px-4 py-2.5">
+          <div className="flex min-w-0 items-center gap-2">
+            <span
+              className={cn(
+                "text-[13px] font-semibold uppercase tracking-wide",
+                group.state === "live" && "text-primary",
+                group.state === "future" || group.state === "final"
+                  ? "text-muted-foreground"
+                  : group.state === "live"
+                    ? ""
+                    : "text-foreground"
+              )}
+            >
+              {group.label}
+            </span>
+            {group.state === "live" && (
+              <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                En vivo
+              </span>
+            )}
+            {group.state === "played" && (
+              <span className="rounded-full border border-hairline bg-surface-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Finalizada
+              </span>
+            )}
+          </div>
 
-      {visibleGroups.map((group) => (
-        <MatchdayGroup key={group.key} group={group} />
-      ))}
+          <div className="flex shrink-0 items-center gap-1">
+            <button
+              type="button"
+              aria-label="Jornada anterior"
+              disabled={!canPrev}
+              onClick={() => canPrev && setSelected(index - 1)}
+              className={cn(
+                "flex h-7 w-7 items-center justify-center rounded-lg border border-hairline transition-colors",
+                canPrev
+                  ? "text-foreground hover:bg-surface-2"
+                  : "text-muted-foreground/40"
+              )}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="min-w-8 text-center font-display text-xs font-bold tabular-nums text-secondary-fg">
+              {group.shortLabel}
+            </span>
+            <button
+              type="button"
+              aria-label="Jornada siguiente"
+              disabled={!canNext}
+              onClick={() => canNext && setSelected(index + 1)}
+              className={cn(
+                "flex h-7 w-7 items-center justify-center rounded-lg border border-hairline transition-colors",
+                canNext
+                  ? "text-foreground hover:bg-surface-2"
+                  : "text-muted-foreground/40"
+              )}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
 
-      {(hasMore || expanded) && (
-        <button
-          type="button"
-          onClick={() => setExpanded((v) => !v)}
-          className="flex w-full items-center justify-center gap-1.5 rounded-2xl border border-hairline bg-surface-1 py-3 text-xs font-semibold text-foreground transition-colors hover:bg-surface-2"
-        >
-          {expanded ? (
-            <>
-              Ver menos <ChevronUp className="h-3.5 w-3.5" />
-            </>
-          ) : (
-            <>
-              Ver todas las jornadas <ChevronDown className="h-3.5 w-3.5" />
-            </>
-          )}
-        </button>
-      )}
-
-      <AnimatePresence initial={false}>
-        {expanded && (
+        {/* Partidos de la jornada seleccionada */}
+        <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key="all-matchdays"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="space-y-3 overflow-hidden"
+            key={group.key}
+            initial={{ opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -12 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="divide-y divide-hairline"
           >
-            {groups
-              .filter((g) => !visibleGroups.some((v) => v.key === g.key))
-              .map((group) => (
-                <MatchdayGroup key={group.key} group={group} />
-              ))}
+            {group.matches.map((m) => (
+              <MatchRow key={m.id} match={m} />
+            ))}
           </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-function MatchdayGroup({ group }: { group: Group }) {
-  const isCurrent = group.state === "current";
-  const isPlayed = group.state === "played";
-  const isFuture = group.state === "future" || group.state === "final";
-
-  return (
-    <div className="overflow-hidden rounded-2xl border border-hairline bg-surface-1">
-      <div className="flex items-center gap-2 px-4 py-2.5">
-        <span
-          className={cn(
-            "text-[13px] font-semibold",
-            isCurrent && "text-primary",
-            isFuture && "text-muted-foreground",
-            isPlayed && "text-foreground"
-          )}
-        >
-          {group.label}
-        </span>
-        {isCurrent && (
-          <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
-            Actual
-          </span>
-        )}
-        {isPlayed && (
-          <span className="rounded-full border border-hairline bg-surface-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            Finalizada
-          </span>
-        )}
-      </div>
-      <div className="divide-y divide-hairline">
-        {group.matches.map((m) => (
-          <MatchRow key={m.id} match={m} />
-        ))}
+        </AnimatePresence>
       </div>
     </div>
   );
