@@ -3,13 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronRight, IdCard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import lcuCrest from "@/assets/lcu-crest.png";
-
-const TIER_ACCENT: Record<string, { color: string; label: string; bg: string }> = {
-  fan: { color: "#FFFFFF", label: "FAN", bg: "linear-gradient(120deg, #1f1f1f, #0a0a0a)" },
-  gold: { color: "#F59E0B", label: "GOLD", bg: "linear-gradient(120deg, #2a1f08, #0a0a0a)" },
-  premium: { color: "#00abc4", label: "PREMIUM", bg: "linear-gradient(120deg, #06222a, #0a0a0a)" },
-  platino: { color: "#E2E8F0", label: "PLATINO", bg: "linear-gradient(120deg, #1f2330, #0a0a0a)" },
-};
+import { tierStyle } from "@/lib/tiers";
 
 interface Props {
   userId: string;
@@ -29,7 +23,8 @@ export function FanPassMini({ userId, onNavigate }: Props) {
   }, [userId]);
 
   if (!pass) return null;
-  const t = TIER_ACCENT[pass.tier] ?? TIER_ACCENT.fan;
+  const s0 = tierStyle(pass.tier);
+  const t = { color: s0.accent, label: s0.label, bg: s0.bg };
   const active = pass.status === "active";
 
   return (
