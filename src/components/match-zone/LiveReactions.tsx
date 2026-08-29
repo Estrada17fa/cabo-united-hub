@@ -68,7 +68,7 @@ export function LiveReactions({ matchId }: Props) {
   };
 
   return (
-    <div className="relative flex items-center justify-between gap-2 rounded-2xl border border-white/[0.06] bg-surface-2 px-3 py-2">
+    <div className="relative flex items-center justify-between gap-2 rounded-2xl border border-hairline bg-surface-1 px-3 py-2">
       <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
         <Users className="h-3.5 w-3.5 text-primary" />
         {online} viendo

@@ -26,7 +26,7 @@ export function TeamCrest({ team, size = "md", className }: Props) {
   return (
     <div
       className={cn(
-        "flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/[0.08] bg-surface-3 font-semibold text-muted-foreground",
+        "flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-hairline bg-surface-3 font-semibold text-muted-foreground",
         SIZES[size],
         team?.is_ours && "border-primary/40",
         className

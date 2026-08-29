@@ -13,7 +13,7 @@ export function TeamsGrid({ teams }: { teams: Team[] }) {
           key={t.id}
           className={cn(
             "flex items-center gap-2.5 rounded-2xl border p-3",
-            t.is_ours ? "border-primary/40 bg-primary/[0.07]" : "border-white/[0.06] bg-surface-2"
+            t.is_ours ? "border-primary/40 bg-primary/[0.07]" : "border-hairline bg-surface-1"
           )}
         >
           <TeamCrest team={t} size="md" />

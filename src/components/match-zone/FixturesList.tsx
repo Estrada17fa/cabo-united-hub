@@ -59,7 +59,7 @@ export function FixturesList({ matches }: Props) {
             "h-9 shrink-0 rounded-full border px-3 text-[11px] font-semibold uppercase tracking-wider transition-colors",
             oursOnly
               ? "border-primary/50 bg-primary/10 text-primary"
-              : "border-white/[0.08] bg-surface-2 text-muted-foreground"
+              : "border-hairline bg-surface-1 text-muted-foreground"
           )}
         >
           Solo LCU
@@ -73,11 +73,11 @@ export function FixturesList({ matches }: Props) {
       )}
 
       {byMatchday.map(([label, group]) => (
-        <div key={label} className="overflow-hidden rounded-3xl border border-white/[0.06] bg-surface-2">
+        <div key={label} className="overflow-hidden rounded-2xl border border-hairline bg-surface-1">
           <p className="px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             {label}
           </p>
-          <div className="divide-y divide-white/[0.04]">
+          <div className="divide-y divide-hairline">
             {group.map((m) => (
               <MatchRow key={m.id} match={m} />
             ))}
@@ -102,7 +102,7 @@ function MatchRow({ match }: { match: Match }) {
           <TeamLine team={match.home_team} score={played ? match.home_score : null} />
           <TeamLine team={match.away_team} score={played ? match.away_score : null} />
         </div>
-        <div className="shrink-0 border-l border-white/[0.06] pl-3 text-right">
+        <div className="shrink-0 border-l border-hairline pl-3 text-right">
           {live ? (
             <span className="text-[10px] font-bold uppercase tracking-wider text-pop">En vivo</span>
           ) : (

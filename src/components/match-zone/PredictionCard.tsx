@@ -60,7 +60,7 @@ export function PredictionCard({ match }: Props) {
   };
 
   return (
-    <div className="rounded-3xl border border-white/[0.06] bg-surface-2 p-4">
+    <div className="rounded-2xl border border-hairline bg-surface-1 p-4">
       <div className="mb-3 flex items-center gap-1.5">
         <Sparkles className="h-4 w-4 text-brand-accent" />
         <h3 className="text-sm font-bold text-foreground">Tu pronóstico</h3>
