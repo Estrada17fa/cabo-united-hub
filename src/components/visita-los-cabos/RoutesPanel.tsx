@@ -89,8 +89,8 @@ export function RoutesPanel({ onSelectPlace }: RoutesPanelProps) {
                 {open && route.stops.length > 0 && (
                   <ol className="border-t border-border divide-y divide-border">
                     {route.stops.map((stop, i) => {
-                      const meta =
-                        CATEGORY_META[stop.category] ?? CATEGORY_META.restaurantes;
+                      const meta = metaFor(stop.category);
+
                       return (
                         <li key={stop.placeId}>
                           <button
