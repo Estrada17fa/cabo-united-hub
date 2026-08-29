@@ -34,7 +34,7 @@ const ZonaPartido = () => {
           <Loader2 className="h-5 w-5 animate-spin text-primary" />
         </div>
       ) : match ? (
-        live || state === "post" ? (
+        showRoom ? (
           <LiveRoom match={match} />
         ) : (
           <NextMatchCard match={match} />
@@ -48,7 +48,7 @@ const ZonaPartido = () => {
         </div>
       )}
 
-      {match && (live || state === "post") && <MatchTimeline match={match} events={events} />}
+      {match && showRoom && <MatchTimeline match={match} events={events} />}
 
       <TournamentPanel matches={matches} />
     </div>
