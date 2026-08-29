@@ -1,12 +1,12 @@
-import { ArrowLeft, Clock, MapPin, MessageCircle, Navigation, Star, Flame, Users } from "lucide-react";
-import { CATEGORY_META, Place } from "@/lib/visita-los-cabos-data";
+import { ArrowLeft, BadgeCheck, Clock, MapPin, MessageCircle, Navigation, Star, Flame, Users } from "lucide-react";
+import { CATEGORY_META, LCU_CYAN, Place, SPONSOR_GOLD } from "@/lib/visita-los-cabos-data";
+import { CategoryIcon } from "./CategoryIcon";
 
 interface PlaceDetailProps {
   place: Place;
   onBack: () => void;
 }
 
-const SPONSOR_GREEN = "#00FF87";
 const AMBER = "hsl(42 95% 58%)";
 
 export function PlaceDetail({ place, onBack }: PlaceDetailProps) {
@@ -36,14 +36,15 @@ export function PlaceDetail({ place, onBack }: PlaceDetailProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
           {place.tier === "patrocinador" && (
             <div
-              className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider"
+              className="absolute top-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider"
               style={{
-                backgroundColor: SPONSOR_GREEN,
+                backgroundColor: SPONSOR_GOLD,
                 color: "hsl(0 0% 8%)",
-                boxShadow: `0 0 12px ${SPONSOR_GREEN}80`,
+                boxShadow: `0 0 12px ${SPONSOR_GOLD}80`,
               }}
             >
-              ★ Patrocinador Oficial
+              <Star className="w-3 h-3" fill="currentColor" />
+              Patrocinador Oficial
             </div>
           )}
           <div className="absolute bottom-3 left-3 right-3">
@@ -51,8 +52,12 @@ export function PlaceDetail({ place, onBack }: PlaceDetailProps) {
               {place.name}
             </h2>
             <p className="text-[12px] text-white/70 mt-0.5 flex items-center gap-1.5">
-              <span style={{ color: meta.color }}>{meta.emoji}</span>
-              {meta.label}
+              <CategoryIcon
+                name={meta.icon}
+                className="w-3.5 h-3.5"
+                style={{ color: meta.color }}
+              />
+              <span style={{ color: meta.color }}>{meta.label}</span>
             </p>
           </div>
         </div>
@@ -61,15 +66,17 @@ export function PlaceDetail({ place, onBack }: PlaceDetailProps) {
         <div className="flex gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-card border border-border text-[11px] text-foreground">
             <Users className="w-3 h-3 text-primary" />
-            {place.visitedBy} fans visitaron
+            <span className="font-display tabular-nums">{place.visitedBy}</span>
+            fans visitaron
           </span>
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-card border border-border text-[11px] text-foreground">
             <Star className="w-3 h-3" style={{ color: AMBER, fill: AMBER }} />
-            {place.rating}
+            <span className="font-display tabular-nums">{place.rating}</span>
           </span>
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-card border border-border text-[11px] text-foreground">
-            <Flame className="w-3 h-3" style={{ color: "hsl(15 90% 60%)" }} />
-            {place.goingToday} van hoy
+            <Flame className="w-3 h-3 text-primary" />
+            <span className="font-display tabular-nums">{place.goingToday}</span>
+            van hoy
           </span>
         </div>
 
@@ -117,9 +124,9 @@ export function PlaceDetail({ place, onBack }: PlaceDetailProps) {
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-[12px] font-bold transition-all"
             style={{
-              backgroundColor: SPONSOR_GREEN,
+              backgroundColor: LCU_CYAN,
               color: "hsl(0 0% 8%)",
-              boxShadow: `0 4px 14px -4px ${SPONSOR_GREEN}80`,
+              boxShadow: `0 4px 14px -4px ${LCU_CYAN}80`,
             }}
           >
             <Navigation className="w-3.5 h-3.5" />
@@ -165,9 +172,10 @@ export function PlaceDetail({ place, onBack }: PlaceDetailProps) {
               {r.verified && (
                 <p
                   className="text-[10px] font-semibold inline-flex items-center gap-1"
-                  style={{ color: SPONSOR_GREEN }}
+                  style={{ color: SPONSOR_GOLD }}
                 >
-                  ✓ Visita verificada
+                  <BadgeCheck className="w-3 h-3" />
+                  Visita verificada
                 </p>
               )}
             </div>

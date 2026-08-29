@@ -1,7 +1,6 @@
 import { ArrowRight, Sparkles } from "lucide-react";
-import { FAN_ROUTES } from "@/lib/visita-los-cabos-data";
-
-const SPONSOR_GREEN = "#00FF87";
+import { FAN_ROUTES, LCU_CYAN } from "@/lib/visita-los-cabos-data";
+import { CategoryIcon } from "./CategoryIcon";
 
 export function RoutesPanel() {
   return (
@@ -22,8 +21,8 @@ export function RoutesPanel() {
             className="w-full text-left bg-card border border-border rounded-2xl p-4 hover:border-foreground/30 transition-all group"
           >
             <div className="flex items-start gap-3">
-              <span className="text-[28px] leading-none shrink-0">
-                {route.emoji}
+              <span className="w-10 h-10 rounded-xl bg-surface-2 border border-border flex items-center justify-center shrink-0">
+                <CategoryIcon name={route.icon} className="w-[18px] h-[18px] text-primary" />
               </span>
               <div className="min-w-0 flex-1">
                 <h3 className="text-[14px] font-bold text-foreground leading-tight">
@@ -32,7 +31,7 @@ export function RoutesPanel() {
                 <p className="text-[12px] text-muted-foreground mt-1 leading-relaxed">
                   {route.description}
                 </p>
-                <p className="text-[11px] text-muted-foreground mt-2 font-semibold">
+                <p className="text-[11px] text-muted-foreground mt-2 font-semibold font-display tabular-nums">
                   {route.stops} paradas · {route.duration}
                 </p>
               </div>
@@ -48,14 +47,14 @@ export function RoutesPanel() {
         style={{
           background:
             "linear-gradient(135deg, hsl(0 0% 8%) 0%, hsl(0 0% 5%) 100%)",
-          borderColor: `${SPONSOR_GREEN}40`,
+          borderColor: `${LCU_CYAN}40`,
         }}
       >
         <div className="flex items-center gap-1.5 mb-1.5">
-          <Sparkles className="w-3.5 h-3.5" style={{ color: SPONSOR_GREEN }} />
+          <Sparkles className="w-3.5 h-3.5" style={{ color: LCU_CYAN }} />
           <p
             className="text-[10px] uppercase tracking-wider font-semibold"
-            style={{ color: SPONSOR_GREEN }}
+            style={{ color: LCU_CYAN }}
           >
             ¿Eres un negocio en Los Cabos?
           </p>
@@ -67,9 +66,9 @@ export function RoutesPanel() {
           href="/contacto"
           className="inline-flex items-center justify-center gap-1.5 w-full px-3 py-2.5 rounded-xl text-[12px] font-bold transition-all"
           style={{
-            backgroundColor: SPONSOR_GREEN,
+            backgroundColor: LCU_CYAN,
             color: "hsl(0 0% 8%)",
-            boxShadow: `0 4px 14px -4px ${SPONSOR_GREEN}80`,
+            boxShadow: `0 4px 14px -4px ${LCU_CYAN}80`,
           }}
         >
           Quiero aparecer en el mapa
