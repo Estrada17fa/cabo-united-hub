@@ -45,7 +45,7 @@ export function PlaceDetail({ place, onBack }: PlaceDetailProps) {
           style={
             place.photoUrl
               ? undefined
-              : { background: placeBackground(place) }
+              : { background: placeBackground(place, meta.gradient) }
           }
         >
           {place.photoUrl && (
