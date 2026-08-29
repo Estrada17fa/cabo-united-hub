@@ -43,6 +43,9 @@ export default function Rutas() {
   const qc = useQueryClient();
   const [form, setForm] = useState<Form | null>(null);
   const [saving, setSaving] = useState(false);
+  const { metaFor } = useCategoryMeta();
+
+
 
   const { data: places } = useQuery({
     queryKey: ["admin-places-min"],
