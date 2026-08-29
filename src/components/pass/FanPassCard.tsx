@@ -317,7 +317,7 @@ export function FanPassCard({
               <div className="flex items-start justify-between mt-3">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.14em] text-black/55 font-bold">Acceso al estadio</div>
-                  <div className="text-[11px] text-black/55">QR único por partido</div>
+                  <div className="text-[11px] text-black/55">Acceso digital próximamente</div>
                 </div>
                 <ShieldCheck className="w-5 h-5" style={{ color: tier.accent }} />
               </div>
