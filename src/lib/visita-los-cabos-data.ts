@@ -55,8 +55,19 @@ export interface FanRoute {
   stops: FanRouteStop[];
 }
 
+/** Respaldo mínimo mientras carga el catálogo de `place_categories`. */
+export const FALLBACK_CATEGORY: PlaceCategoryMeta = {
+  slug: "otros",
+  label: "Lugar",
+  icon: "map-pin",
+  color: LCU_CYAN_VALUE,
+  gradient: "linear-gradient(135deg, hsl(188 60% 26%) 0%, hsl(210 45% 16%) 100%)",
+  sortOrder: 999,
+  active: true,
+};
+
 export const CATEGORY_META: Record<
-  PlaceCategory,
+  string,
   { label: string; icon: string; color: string }
 > = {
   restaurantes: { label: "Restaurantes", icon: "utensils", color: "#F59E0B" },
@@ -67,7 +78,7 @@ export const CATEGORY_META: Record<
 };
 
 /** Degradado de respaldo por categoría cuando el lugar no tiene foto ni color propio. */
-export const CATEGORY_GRADIENT: Record<PlaceCategory, string> = {
+export const CATEGORY_GRADIENT: Record<string, string> = {
   restaurantes: "linear-gradient(135deg, hsl(20 80% 40%) 0%, hsl(340 60% 30%) 100%)",
   bares: "linear-gradient(135deg, hsl(350 70% 38%) 0%, hsl(300 50% 24%) 100%)",
   tours: "linear-gradient(135deg, hsl(190 70% 32%) 0%, hsl(210 60% 22%) 100%)",
@@ -87,12 +98,70 @@ export const GRADIENT_PRESETS: { label: string; value: string }[] = [
   },
 ];
 
-export function placeBackground(place: Place): string {
+/** Íconos disponibles al crear un tipo de lugar (nombres de Lucide en kebab-case). */
+export const PLACE_ICON_CHOICES = [
+  "utensils",
+  "beer",
+  "wine",
+  "martini",
+  "coffee",
+  "ice-cream-cone",
+  "pizza",
+  "fish",
+  "waves",
+  "umbrella",
+  "palmtree",
+  "sun",
+  "sailboat",
+  "ship",
+  "anchor",
+  "mountain",
+  "tent",
+  "binoculars",
+  "camera",
+  "shopping-bag",
+  "store",
+  "shirt",
+  "gift",
+  "bed-double",
+  "hotel",
+  "building-2",
+  "shield",
+  "trophy",
+  "flag",
+  "goal",
+  "dumbbell",
+  "music",
+  "party-popper",
+  "mic-vocal",
+  "car",
+  "bike",
+  "bus",
+  "plane",
+  "landmark",
+  "church",
+  "heart",
+  "star",
+  "map-pin",
+  "sparkles",
+  "users",
+  "baby",
+  "dog",
+  "leaf",
+] as const;
+
+export function placeBackground(
+  place: Place,
+  categoryGradient?: string | null
+): string {
   return (
     place.photoGradient ||
+    categoryGradient ||
     CATEGORY_GRADIENT[place.category] ||
+    FALLBACK_CATEGORY.gradient ||
     CATEGORY_GRADIENT.restaurantes
   );
+
 }
 
 export const ROUTE_ICONS = ["flag", "users", "wine", "star", "waves", "utensils"];
