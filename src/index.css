@@ -8,26 +8,27 @@
 @layer base {
   :root {
     /* Dark Mode Only - Pure Black Theme */
-    --background: 0 0% 0%;
+    --background: 220 10% 3%;
     --foreground: 0 0% 100%;
 
     /* Layered surfaces (LCU design system) */
-    --surface-1: 240 6% 5%;
-    --surface-2: 240 7% 9%;
-    --surface-3: 240 7% 13%;
-    --text-secondary: 0 0% 78%;
-    --text-label: 0 0% 55%;
-    --pop: 336 65% 77%;
-    --pop-foreground: 0 0% 7%;
-    --radius-card: 22px;
+    --surface-1: 220 19% 6%;
+    --surface-2: 220 19% 6%;
+    --surface-3: 220 17% 4%;
+    --hairline: 218 14% 15%;
+    --text-secondary: 214 6% 64%;
+    --text-label: 219 7% 39%;
+    --pop: 189 100% 38%;
+    --pop-foreground: 0 0% 4%;
+    --radius-card: 16px;
 
 
     /* Card Surfaces */
-    --card: 0 0% 7%;
+    --card: 220 19% 6%;
     --card-foreground: 0 0% 100%;
 
     /* Popover/Dropdown */
-    --popover: 0 0% 7%;
+    --popover: 220 19% 6%;
     --popover-foreground: 0 0% 100%;
 
     /* Primary - Brand Blue #00abc4 */
@@ -39,8 +40,8 @@
     --secondary-foreground: 0 0% 7%;
 
     /* Muted - Subtle grays */
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 63%;
+    --muted: 220 15% 12%;
+    --muted-foreground: 219 7% 42%;
 
     /* Accent - Using primary blue */
     --accent: 189 100% 38%;
@@ -51,12 +52,12 @@
     --destructive-foreground: 0 0% 100%;
 
     /* Borders - Subtle dark borders #2A2A2A */
-    --border: 0 0% 16%;
-    --input: 0 0% 16%;
+    --border: 218 14% 15%;
+    --input: 218 14% 15%;
     --ring: 189 100% 38%;
 
     /* Border Radius - Moderate corners */
-    --radius: 0.75rem;
+    --radius: 0.7rem;
     --radius-lg: 1rem;
     --radius-xl: 1.25rem;
 
@@ -83,14 +84,14 @@
   }
 
   html {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 }
 
@@ -244,6 +245,17 @@
 
   .text-display-md {
     @apply font-display font-bold tracking-[-0.01em] leading-tight text-xl md:text-2xl;
+  }
+
+  .num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  .num-display {
+    @apply font-display font-bold;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
   }
 
   .num-hero {
