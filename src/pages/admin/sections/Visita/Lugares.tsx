@@ -212,9 +212,11 @@ export default function Lugares() {
                       className="h-9 w-9 shrink-0 overflow-hidden rounded-xl border border-hairline"
                       style={{ background: p.photo_gradient || "transparent" }}
                     >
-                      {p.photo_url && (
+                      {p.logo_url ? (
+                        <img src={p.logo_url} alt="" className="h-full w-full object-contain p-1" />
+                      ) : p.photo_url ? (
                         <img src={p.photo_url} alt="" className="h-full w-full object-cover" />
-                      )}
+                      ) : null}
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="flex items-center gap-1.5">
