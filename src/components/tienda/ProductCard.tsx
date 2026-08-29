@@ -66,14 +66,14 @@ export function ProductCard({ product, index = 0 }: Props) {
           </h3>
           <div className="flex items-baseline gap-2">
             <span
-              className={`font-grotesk text-[15px] font-bold tabular-nums ${
+              className={`font-display text-[15px] font-bold tabular-nums ${
                 product.soldOut ? "text-muted-foreground" : sale ? "text-primary" : "text-foreground"
               }`}
             >
               {formatMoney(product.price, product.currency)}
             </span>
             {sale && (
-              <span className="font-grotesk text-[12px] tabular-nums text-muted-foreground line-through">
+              <span className="font-display text-[12px] tabular-nums text-muted-foreground line-through">
                 {formatMoney(product.compareAtPrice!, product.currency)}
               </span>
             )}
