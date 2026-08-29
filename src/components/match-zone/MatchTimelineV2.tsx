@@ -85,7 +85,7 @@ export function MatchTimelineV2({
                   >
                     <p className="flex items-center gap-2">
                       <span className="num-hero text-sm text-foreground">{ev.minute}'</span>
-                      <span className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-label-fg">
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-label-fg">
                         {cfg.label}
                       </span>
                     </p>

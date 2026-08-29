@@ -38,7 +38,7 @@ export function Crest({ teamName, logoUrl, size = 40, className = "", highlight 
   return (
     <span
       style={{ ...box, fontSize: Math.max(10, size * 0.34) }}
-      className={`grid shrink-0 place-items-center rounded-full font-display font-extrabold ${
+      className={`grid shrink-0 place-items-center rounded-full font-display font-bold ${
         highlight
           ? "bg-primary/15 text-primary ring-1 ring-primary/40"
           : "bg-surface-3 text-secondary-fg ring-1 ring-white/10"

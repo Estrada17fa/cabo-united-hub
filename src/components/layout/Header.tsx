@@ -349,7 +349,7 @@ export function Header() {
                   <div className="space-y-2">
                     <button
                       onClick={() => setShowAuth(true)}
-                      className="flex items-center gap-3 w-full px-3.5 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium"
+                      className="flex items-center gap-3 w-full px-3.5 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-normal"
                     >
                       <User className="w-4 h-4" />
                       Iniciar sesión
@@ -359,7 +359,7 @@ export function Header() {
                         setIsMenuOpen(false);
                         setTimeout(() => setShowSignupWizard(true), 200);
                       }}
-                      className="flex items-center justify-center gap-2 w-full px-3.5 py-3 rounded-xl border border-border bg-card text-foreground text-sm font-medium hover:bg-muted transition-colors"
+                      className="flex items-center justify-center gap-2 w-full px-3.5 py-3 rounded-xl border border-border bg-card text-foreground text-sm font-normal hover:bg-muted transition-colors"
                     >
                       Crear cuenta
                     </button>
@@ -414,7 +414,7 @@ export function Header() {
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-all ${
+                  className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-normal transition-all ${
                     isActive(link.path)
                       ? "bg-secondary text-secondary-foreground"
                       : "bg-card border border-border text-foreground active:border-secondary/50"

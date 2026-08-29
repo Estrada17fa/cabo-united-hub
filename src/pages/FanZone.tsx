@@ -83,7 +83,7 @@ const FanZone = () => {
         <section>
           <div className="flex items-center gap-2 px-1 mb-4">
             <Gamepad2 className="w-4 h-4 text-brand-primary" />
-            <h2 className="text-sm font-extrabold uppercase tracking-wider text-foreground">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-foreground">
               Minijuegos
             </h2>
             <div className="flex-1 h-px bg-border" />
@@ -116,7 +116,7 @@ const FanZone = () => {
         >
           <button
             onClick={() => setAuthOpen(true)}
-            className="w-full inline-flex items-center justify-center gap-2 font-extrabold rounded-full h-12 backdrop-blur-xl"
+            className="w-full inline-flex items-center justify-center gap-2 font-bold rounded-full h-12 backdrop-blur-xl"
             style={{
               background: "hsl(var(--brand-primary))",
               color: "hsl(0 0% 8%)",

@@ -70,7 +70,7 @@ export function MatchList({
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                <span className="text-sm font-medium text-muted-foreground truncate">
+                <span className="text-sm font-normal text-muted-foreground truncate">
                   {match.away_team}
                 </span>
                 {showScore && isFinished && (

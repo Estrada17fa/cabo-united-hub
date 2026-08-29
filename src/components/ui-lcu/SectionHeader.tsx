@@ -20,7 +20,7 @@ export function SectionHeader({
     <div className={`flex items-end justify-between gap-3 ${className}`}>
       <div className="min-w-0">
         {eyebrow && (
-          <p className="mb-1 text-[10px] font-extrabold uppercase tracking-[0.2em] text-primary">
+          <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
             {eyebrow}
           </p>
         )}

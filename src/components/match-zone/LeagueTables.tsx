@@ -88,7 +88,7 @@ export function LeagueTables() {
             <div className="flex items-center gap-3">
               <Crest teamName={ourTeam} logoUrl={logoMap[ourTeam]} size={56} highlight />
               <div className="min-w-0 flex-1">
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-primary">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
                   Nuestro equipo
                 </p>
                 <h2 className="truncate text-display-md text-foreground">{ourTeam}</h2>

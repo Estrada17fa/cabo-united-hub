@@ -61,7 +61,7 @@ export function LiveMatchPlayer({ match, onRequestLogin }: LiveMatchPlayerProps)
               />
             </span>
             <span
-              className="text-[10px] font-extrabold tracking-widest"
+              className="text-[10px] font-semibold tracking-widest"
               style={{ color: "hsl(142 76% 55%)" }}
             >
               EN VIVO {clock ?? ""}
@@ -169,7 +169,7 @@ export function LiveMatchPlayer({ match, onRequestLogin }: LiveMatchPlayerProps)
             {/* Score */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <ScoreNumber value={match.home_score ?? 0} />
-              <span className="text-sm font-extrabold text-muted-foreground tracking-wider">
+              <span className="text-sm font-semibold text-muted-foreground tracking-wider">
                 VS
               </span>
               <ScoreNumber value={match.away_score ?? 0} />
@@ -227,7 +227,7 @@ function ScoreNumber({ value }: { value: number }) {
       initial={{ scale: 1.4, color: "hsl(142 76% 55%)" }}
       animate={{ scale: 1, color: "hsl(var(--foreground))" }}
       transition={{ duration: 0.6 }}
-      className="text-3xl sm:text-4xl font-extrabold tabular-nums leading-none"
+      className="text-3xl sm:text-4xl font-bold tabular-nums leading-none"
       style={{ textShadow: "0 0 18px hsl(142 76% 45% / 0.5)" }}
     >
       {value}

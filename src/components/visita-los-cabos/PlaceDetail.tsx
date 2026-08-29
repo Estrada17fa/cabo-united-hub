@@ -36,7 +36,7 @@ export function PlaceDetail({ place, onBack }: PlaceDetailProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
           {place.tier === "patrocinador" && (
             <div
-              className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider"
+              className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider"
               style={{
                 backgroundColor: SPONSOR_GREEN,
                 color: "hsl(0 0% 8%)",
@@ -47,7 +47,7 @@ export function PlaceDetail({ place, onBack }: PlaceDetailProps) {
             </div>
           )}
           <div className="absolute bottom-3 left-3 right-3">
-            <h2 className="text-[20px] font-extrabold text-white leading-tight">
+            <h2 className="text-[20px] font-bold text-white leading-tight">
               {place.name}
             </h2>
             <p className="text-[12px] text-white/70 mt-0.5 flex items-center gap-1.5">

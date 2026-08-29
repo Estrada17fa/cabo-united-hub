@@ -120,7 +120,7 @@ export function PrizesCarouselCard({
         <div className="flex items-center gap-2">
           <Gift className="w-4 h-4" style={{ color: ACCENT }} />
           <h3
-            className="font-extrabold text-white uppercase"
+            className="font-semibold text-white uppercase"
             style={{ fontSize: 12, letterSpacing: "0.16em" }}
           >
             Premios por puntos
@@ -182,7 +182,7 @@ export function PrizesCarouselCard({
                   {current.cc_cost.toLocaleString()} CC
                 </span>
               </div>
-              <div className="text-[15px] font-extrabold text-white leading-tight mb-1">
+              <div className="text-[15px] font-bold text-white leading-tight mb-1">
                 {current.title}
               </div>
               <div className="text-[11px] text-white/65 leading-snug line-clamp-2">
@@ -212,7 +212,7 @@ export function PrizesCarouselCard({
         type="button"
         onClick={handleRedeem}
         disabled={redeeming || !canRedeem}
-        className="mx-3 mt-3 inline-flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-[12px] font-extrabold uppercase tracking-wider transition-opacity disabled:opacity-40"
+        className="mx-3 mt-3 inline-flex items-center justify-center gap-1.5 rounded-lg py-2.5 text-[12px] font-semibold uppercase tracking-wider transition-opacity disabled:opacity-40"
         style={{
           background: current.color,
           color: "#0a0a0a",

@@ -86,7 +86,7 @@ const TiendaProducto = () => {
       <div>
         <ShopHeader />
         <div className="text-center py-24">
-          <p className="text-lg font-medium mb-2">Producto no disponible</p>
+          <p className="text-lg font-normal mb-2">Producto no disponible</p>
           <Button variant="outline" onClick={() => navigate("/tienda")}>
             Volver a la tienda
           </Button>
@@ -189,7 +189,7 @@ const TiendaProducto = () => {
                         onClick={() =>
                           setSelectedOptions((prev) => ({ ...prev, [option.name]: value }))
                         }
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+                        className={`px-4 py-2 rounded-full text-sm font-normal transition-all border ${
                           isSelected
                             ? "bg-foreground text-background border-foreground"
                             : "bg-card text-foreground border-border hover:border-foreground/40"

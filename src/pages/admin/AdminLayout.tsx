@@ -32,7 +32,7 @@ export default function AdminLayout() {
     <div className="pb-24 pt-2">
       <div className="flex items-center gap-2 mb-6">
         <ShieldCheck className="w-4 h-4 text-brand-primary" />
-        <h1 className="text-sm font-extrabold uppercase tracking-wider text-foreground">
+        <h1 className="text-sm font-semibold uppercase tracking-wider text-foreground">
           Panel de administración
         </h1>
       </div>

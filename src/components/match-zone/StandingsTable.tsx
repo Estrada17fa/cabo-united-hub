@@ -53,7 +53,7 @@ export function StandingsTable({
       {title && <h3 className="text-sm font-bold text-foreground mb-3">{title}</h3>}
 
       <div className="rounded-card border border-white/[0.07] bg-surface-1 overflow-hidden">
-        <div className="grid grid-cols-[22px_1fr_repeat(4,20px)_28px_30px] gap-1 px-2.5 py-2 text-[9px] font-extrabold uppercase tracking-[0.1em] text-muted-foreground border-b border-border/60">
+        <div className="grid grid-cols-[22px_1fr_repeat(4,20px)_28px_30px] gap-1 px-2.5 py-2 text-[9px] font-semibold uppercase tracking-[0.1em] text-muted-foreground border-b border-border/60">
           <span>#</span>
           <span>Equipo</span>
           <span className="text-center">JJ</span>
@@ -110,7 +110,7 @@ export function StandingsTable({
                 {row.dg > 0 ? `+${row.dg}` : row.dg}
               </span>
               <span
-                className={`text-center text-[13px] font-extrabold tabular-nums ${isOurs ? "text-primary" : "text-foreground"}`}
+                className={`text-center text-[13px] font-semibold tabular-nums ${isOurs ? "text-primary" : "text-foreground"}`}
               >
                 {row.pts}
               </span>

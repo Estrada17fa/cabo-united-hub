@@ -127,7 +127,7 @@ export function HorizontalMatchTimeline({
                 >
                   <div className="flex flex-col gap-1.5">
                     <div
-                      className="text-[10px] font-extrabold tracking-widest tabular-nums"
+                      className="text-[10px] font-semibold tracking-widest tabular-nums"
                       style={{ color: config.color }}
                     >
                       {event.minute}' · {config.label.toUpperCase()}
@@ -138,7 +138,7 @@ export function HorizontalMatchTimeline({
                       </div>
                     )}
                     {event.team && (
-                      <div className="text-[11px] text-muted-foreground font-medium">
+                      <div className="text-[11px] text-muted-foreground font-semibold">
                         {event.team}
                       </div>
                     )}

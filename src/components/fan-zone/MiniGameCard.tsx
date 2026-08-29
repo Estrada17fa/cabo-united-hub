@@ -80,7 +80,7 @@ export function MiniGameCard({ game, index, onClick }: Props) {
 
       {/* Title */}
       <div className="relative space-y-1 mt-3">
-        <h3 className="text-base md:text-lg font-extrabold tracking-tight leading-tight text-foreground">
+        <h3 className="text-base md:text-lg font-bold tracking-tight leading-tight text-foreground">
           {game.name}
         </h3>
         <p className="text-[11px] md:text-xs text-muted-foreground leading-snug">

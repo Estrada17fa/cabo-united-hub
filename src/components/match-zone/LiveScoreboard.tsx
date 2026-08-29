@@ -33,7 +33,7 @@ export function LiveScoreboard({ match, currentMinute }: LiveScoreboardProps) {
           />
         </span>
         <span
-          className="text-[10px] font-extrabold tracking-widest"
+          className="text-[10px] font-semibold tracking-widest"
           style={{ color: "hsl(142 76% 55%)" }}
         >
           EN VIVO
@@ -43,7 +43,7 @@ export function LiveScoreboard({ match, currentMinute }: LiveScoreboardProps) {
       {/* Score */}
       <div className="flex items-center gap-4 sm:gap-6">
         <ScoreDigit value={home} key={`h-${home}`} />
-        <span className="text-3xl sm:text-4xl font-extrabold text-muted-foreground">—</span>
+        <span className="text-3xl sm:text-4xl font-bold text-muted-foreground">—</span>
         <ScoreDigit value={away} key={`a-${away}`} />
       </div>
 
@@ -65,7 +65,7 @@ function ScoreDigit({ value }: { value: number }) {
       initial={{ scale: 1.4, color: "hsl(189 100% 60%)" }}
       animate={{ scale: 1, color: "hsl(var(--foreground))" }}
       transition={{ duration: 0.6 }}
-      className="text-6xl sm:text-7xl font-extrabold tabular-nums"
+      className="text-6xl sm:text-7xl font-bold tabular-nums"
       style={{ textShadow: "0 0 24px hsl(189 100% 50% / 0.4)" }}
     >
       {value}

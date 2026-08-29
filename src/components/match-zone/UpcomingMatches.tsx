@@ -70,7 +70,7 @@ function UpcomingMatchRow({ match, index }: { match: Tables<"matches">; index: n
         </div>
         <div className="flex items-center gap-2">
           <Shield className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-          <span className="text-sm font-medium text-muted-foreground truncate">
+          <span className="text-sm font-normal text-muted-foreground truncate">
             {match.away_team}
           </span>
         </div>
@@ -91,7 +91,7 @@ function UpcomingMatchRow({ match, index }: { match: Tables<"matches">; index: n
               />
             </span>
             <span
-              className="text-[11px] font-extrabold tabular-nums tracking-wider"
+              className="text-[11px] font-semibold tabular-nums tracking-wider"
               style={{ color: "hsl(142 76% 55%)" }}
             >
               {clock ?? ""}

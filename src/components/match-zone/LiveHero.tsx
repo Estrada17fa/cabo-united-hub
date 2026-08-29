@@ -59,11 +59,11 @@ export function LiveHero({
         {isLive ? (
           <LiveBadge clock={clock} />
         ) : isFinished ? (
-          <span className="rounded-full border border-white/12 bg-white/[0.06] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-secondary-fg">
+          <span className="rounded-full border border-white/12 bg-white/[0.06] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-secondary-fg">
             Finalizado
           </span>
         ) : (
-          <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-primary">
+          <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
             {isHome ? "De local" : "De visita"}
           </span>
         )}
@@ -80,7 +80,7 @@ export function LiveHero({
               {match.away_score ?? 0}
             </p>
           ) : (
-            <p className="font-display text-lg font-extrabold text-label-fg">VS</p>
+            <p className="font-display text-lg font-bold text-label-fg">VS</p>
           )}
         </div>
         <HeroTeam
@@ -145,7 +145,7 @@ export function LiveHero({
         </div>
       ) : isFinished ? (
         <div className="mt-5 text-center">
-          <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-label-fg">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-label-fg">
             Último resultado
           </p>
         </div>
@@ -203,7 +203,7 @@ function Countdown({ target, rival }: { target: Date; rival: string }) {
 
   return (
     <div className="mt-5">
-      <p className="mb-2.5 text-center text-[10px] font-extrabold uppercase tracking-[0.2em] text-primary">
+      <p className="mb-2.5 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
         Faltan para el partido vs {rival}
       </p>
       <motion.div layout className="grid grid-cols-4 gap-2">

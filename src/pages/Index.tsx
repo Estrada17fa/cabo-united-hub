@@ -221,7 +221,7 @@ function SectionHeader({
           </div>
         )}
         <h2
-          className="font-extrabold text-white"
+          className="font-bold text-white"
           style={{
             fontSize: "clamp(22px, 6vw, 44px)",
             letterSpacing: "-0.03em",
@@ -306,7 +306,7 @@ function HomeHero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="font-extrabold text-white mb-4"
+            className="font-bold text-white mb-4"
             style={{
               fontSize: "clamp(36px, 7vw, 60px)",
               letterSpacing: "-0.03em",
@@ -453,13 +453,13 @@ function HeroAbonoCards() {
             >
               <div className="flex flex-col items-center text-center">
               <span
-                className="font-medium text-white/55"
+                className="font-normal text-white/55"
                 style={{ fontSize: 9, letterSpacing: "0.15em" }}
               >
                 AMO DEL PARAÍSO
               </span>
               <span
-                className="font-extrabold mt-0.5"
+                className="font-bold mt-0.5"
                 style={{
                   fontSize: 18,
                   color: a.accent,
@@ -653,7 +653,7 @@ function LiveScoreOnly({ match }: { match: Tables<"matches"> }) {
               />
             </span>
             <span
-              className="text-[10px] font-extrabold tracking-widest"
+              className="text-[10px] font-semibold tracking-widest"
               style={{ color: "hsl(142 76% 55%)" }}
             >
               EN VIVO {clock ?? ""}
@@ -680,16 +680,16 @@ function LiveScoreOnly({ match }: { match: Tables<"matches"> }) {
           </div>
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <span
-              className="text-5xl sm:text-6xl font-extrabold tabular-nums leading-none text-white"
+              className="text-5xl sm:text-6xl font-bold tabular-nums leading-none text-white"
               style={{ textShadow: "0 0 18px hsl(142 76% 45% / 0.5)" }}
             >
               {match.home_score ?? 0}
             </span>
-            <span className="text-base font-extrabold text-white/40 tracking-wider">
+            <span className="text-base font-semibold text-white/40 tracking-wider">
               ·
             </span>
             <span
-              className="text-5xl sm:text-6xl font-extrabold tabular-nums leading-none text-white"
+              className="text-5xl sm:text-6xl font-bold tabular-nums leading-none text-white"
               style={{ textShadow: "0 0 18px hsl(142 76% 45% / 0.5)" }}
             >
               {match.away_score ?? 0}
@@ -744,7 +744,7 @@ function UpcomingMini({ matches }: { matches: Tables<"matches">[] }) {
       <div className="px-4 pt-4 pb-3 flex items-center gap-2">
         <Trophy className="w-4 h-4" style={{ color: ACCENT }} />
         <h3
-          className="font-extrabold text-white uppercase tracking-wider"
+          className="font-semibold text-white uppercase tracking-wider"
           style={{ fontSize: 12, letterSpacing: "0.1em" }}
         >
           Próximos 3 partidos
@@ -786,7 +786,7 @@ function UpcomingMini({ matches }: { matches: Tables<"matches">[] }) {
                       logoUrl={logos[m.away_team]}
                       size={14}
                     />
-                    <span className="text-[12px] font-medium text-white/70 truncate">
+                    <span className="text-[12px] font-semibold text-white/70 truncate">
                       {m.away_team}
                     </span>
                   </div>
@@ -837,7 +837,7 @@ function StandingsMini({
         <div className="flex items-center gap-2">
           <Medal className="w-4 h-4" style={{ color: ACCENT }} />
           <h3
-            className="font-extrabold text-white uppercase tracking-wider"
+            className="font-semibold text-white uppercase tracking-wider"
             style={{ fontSize: 12, letterSpacing: "0.1em" }}
           >
             Tabla de posiciones
@@ -845,7 +845,7 @@ function StandingsMini({
         </div>
         {lcuPos && (
           <span
-            className="text-[11px] font-extrabold px-2 py-0.5 rounded-md"
+            className="text-[11px] font-semibold px-2 py-0.5 rounded-md"
             style={{
               color: ACCENT,
               background: `${ACCENT}1a`,
@@ -909,7 +909,7 @@ function StandingsMini({
                     {row.dg > 0 ? `+${row.dg}` : row.dg}
                   </span>
                   <span
-                    className={`text-center text-[12px] font-extrabold tabular-nums ${
+                    className={`text-center text-[12px] font-semibold tabular-nums ${
                       isLCU ? "" : "text-white"
                     }`}
                     style={isLCU ? { color: ACCENT } : undefined}
@@ -989,7 +989,7 @@ function TuClubPlantelCard() {
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4" style={{ color: ACCENT }} />
             <h3
-              className="font-extrabold text-white"
+              className="font-bold text-white"
               style={{ fontSize: 18, letterSpacing: "-0.01em" }}
             >
               Nuestro plantel
@@ -1059,7 +1059,7 @@ function TuClubPlantelCard() {
                     style={{ borderColor: "rgba(255,255,255,0.07)" }}
                   >
                     <div className="aspect-square rounded-lg bg-white/5 flex items-center justify-center mb-1.5 relative overflow-hidden">
-                      <span className="text-2xl font-extrabold text-white/55">
+                      <span className="text-2xl font-bold text-white/55">
                         {player.number}
                       </span>
                       <span className="absolute top-1 right-1 text-sm">
@@ -1130,7 +1130,7 @@ function TuClubPlantelCard() {
                         ].map((s, i) => (
                           <div key={s.label} className="flex items-center flex-1">
                             <div className="flex flex-col items-center justify-center flex-1 min-w-0">
-                              <span className="text-[22px] font-extrabold text-white tabular-nums leading-none">
+                              <span className="text-[22px] font-bold text-white tabular-nums leading-none">
                                 {s.value}
                               </span>
                               <span
@@ -1196,7 +1196,7 @@ function TuClubAcademiaCard() {
           <div className="flex items-center gap-2">
             <GraduationCap className="w-4 h-4" style={{ color: ACCENT }} />
             <h3
-              className="font-extrabold text-white"
+              className="font-bold text-white"
               style={{ fontSize: 18, letterSpacing: "-0.01em" }}
             >
               Academia
@@ -1279,7 +1279,7 @@ function TuClubNoticiasCard() {
               style={{ color: "hsl(336 80% 77%)" }}
             />
             <h3
-              className="font-extrabold text-white"
+              className="font-bold text-white"
               style={{ fontSize: 18, letterSpacing: "-0.01em" }}
             >
               Noticias
@@ -1448,7 +1448,7 @@ function TiendaSection() {
                 Tienda Oficial
               </span>
               <span
-                className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md"
+                className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md"
                 style={{
                   background: ACCENT,
                   color: "#000",
@@ -1459,7 +1459,7 @@ function TiendaSection() {
             </div>
             <div>
               <h3
-                className="font-extrabold text-white mb-3"
+                className="font-bold text-white mb-3"
                 style={{ fontSize: "clamp(24px, 3vw, 34px)", letterSpacing: "-0.025em", lineHeight: 1.05 }}
               >
                 Jersey 2025–26
@@ -1496,7 +1496,7 @@ function TiendaSection() {
         >
           <div className="flex items-center justify-between mb-3 px-1">
             <h3
-              className="font-extrabold text-white uppercase"
+              className="font-semibold text-white uppercase"
               style={{ fontSize: 12, letterSpacing: "0.16em" }}
             >
               Destacados

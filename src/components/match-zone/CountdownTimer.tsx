@@ -17,9 +17,9 @@ export function CountdownTimer({ targetDate }: CountdownTimerProps) {
   return (
     <div className="flex items-center gap-1 sm:gap-2">
       <TimeBlock value={timeLeft.days} label="DÍAS" />
-      <span className="text-3xl sm:text-4xl font-extrabold text-primary">:</span>
+      <span className="text-3xl sm:text-4xl font-bold text-primary">:</span>
       <TimeBlock value={timeLeft.hours} label="HRS" />
-      <span className="text-3xl sm:text-4xl font-extrabold text-primary">:</span>
+      <span className="text-3xl sm:text-4xl font-bold text-primary">:</span>
       <TimeBlock value={timeLeft.minutes} label="MIN" />
     </div>
   );
@@ -28,7 +28,7 @@ export function CountdownTimer({ targetDate }: CountdownTimerProps) {
 function TimeBlock({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <span className="text-4xl sm:text-5xl font-extrabold tracking-tight text-foreground tabular-nums">
+      <span className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground tabular-nums">
         {String(value).padStart(2, "0")}
       </span>
       <span className="text-[10px] font-semibold tracking-widest text-muted-foreground mt-1">

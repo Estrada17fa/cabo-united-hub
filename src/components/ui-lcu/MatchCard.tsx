@@ -71,7 +71,7 @@ export function MatchCard({
         {state === "live" ? (
           <LiveBadge clock={clock} />
         ) : next ? (
-          <span className="rounded-full border border-primary/35 bg-primary/10 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-[0.16em] text-primary">
+          <span className="rounded-full border border-primary/35 bg-primary/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.16em] text-primary">
             Próximo
           </span>
         ) : null}
@@ -91,7 +91,7 @@ export function MatchCard({
               {match.away_score ?? 0}
             </p>
           ) : (
-            <p className="font-display text-sm font-extrabold text-label-fg">VS</p>
+            <p className="font-display text-sm font-bold text-label-fg">VS</p>
           )}
           {hasPens && (
             <p className="mt-1 rounded-full border border-pop/30 bg-pop/10 px-2 py-0.5 text-[9px] font-bold text-pop">

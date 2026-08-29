@@ -37,7 +37,7 @@ export function LeagueTeamsByGroup({ standings, logoMap = {} }: { standings: Sta
           <button
             key={tab.id}
             onClick={() => setActiveGroup(tab.id)}
-            className="relative whitespace-nowrap pb-2 text-[11px] font-medium transition-colors shrink-0"
+            className="relative whitespace-nowrap pb-2 text-[11px] font-semibold transition-colors shrink-0"
             style={{ color: activeGroup === tab.id ? "hsl(var(--primary))" : "hsl(0 0% 40%)" }}
           >
             {tab.label}

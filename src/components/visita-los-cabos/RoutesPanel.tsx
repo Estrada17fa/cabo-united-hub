@@ -7,7 +7,7 @@ export function RoutesPanel() {
   return (
     <div className="flex flex-col h-full overflow-y-auto scrollbar-hide space-y-4">
       <div>
-        <h2 className="text-[18px] font-extrabold text-foreground leading-tight">
+        <h2 className="text-[18px] font-bold text-foreground leading-tight">
           Rutas del Amo
         </h2>
         <p className="text-[12px] text-muted-foreground mt-0.5">
@@ -32,7 +32,7 @@ export function RoutesPanel() {
                 <p className="text-[12px] text-muted-foreground mt-1 leading-relaxed">
                   {route.description}
                 </p>
-                <p className="text-[11px] text-muted-foreground mt-2 font-medium">
+                <p className="text-[11px] text-muted-foreground mt-2 font-semibold">
                   {route.stops} paradas · {route.duration}
                 </p>
               </div>
@@ -54,7 +54,7 @@ export function RoutesPanel() {
         <div className="flex items-center gap-1.5 mb-1.5">
           <Sparkles className="w-3.5 h-3.5" style={{ color: SPONSOR_GREEN }} />
           <p
-            className="text-[10px] uppercase tracking-wider font-extrabold"
+            className="text-[10px] uppercase tracking-wider font-semibold"
             style={{ color: SPONSOR_GREEN }}
           >
             ¿Eres un negocio en Los Cabos?
