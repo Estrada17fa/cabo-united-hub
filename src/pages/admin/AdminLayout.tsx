@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { NavLink, Navigate, Outlet, useNavigate } from "react-router-dom";
-import { Loader2, Radio, ShieldCheck, Ticket } from "lucide-react";
+import { Loader2, ShieldCheck, Ticket } from "lucide-react";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 /** Secciones del panel. Agregar nuevas entradas aquí (Comercios, Pagos, etc.). */
