@@ -10,6 +10,7 @@ import { FilterPills, FilterValue } from "@/components/visita-los-cabos/FilterPi
 import { PlaceDetail } from "@/components/visita-los-cabos/PlaceDetail";
 import { RoutesPanel } from "@/components/visita-los-cabos/RoutesPanel";
 import { FeaturedStrip } from "@/components/visita-los-cabos/FeaturedStrip";
+import { BrandLeadForm } from "@/components/forms/BrandLeadForm";
 
 const ConoceLosCabos = () => {
   const isMobile = useIsMobile();
@@ -19,6 +20,7 @@ const ConoceLosCabos = () => {
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [showLeadForm, setShowLeadForm] = useState(false);
 
   // Open the place detail when arriving via ?place=<id>
   useEffect(() => {
@@ -149,6 +151,44 @@ const ConoceLosCabos = () => {
         <div className="bg-card border border-border rounded-2xl p-4">
           <RoutesPanel onSelectPlace={(id) => { const pl = places.find((p) => p.id === id); if (pl) handleSelect(pl); }} />
         </div>
+      </div>
+
+      {/* Alta de negocios */}
+      <div className="rounded-2xl border border-hairline bg-surface-1 p-4 md:p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">
+              Negocios
+            </p>
+            <h2 className="mt-1 font-display text-lg font-bold text-foreground">
+              ¿Quieres aparecer en el mapa?
+            </h2>
+            <p className="mt-1 max-w-md text-[12px] leading-relaxed text-muted-foreground">
+              Registra tu negocio y llega a la afición que recorre Los Cabos cada fin de semana.
+            </p>
+          </div>
+          <button
+            onClick={() => setShowLeadForm((v) => !v)}
+            className="rounded-xl bg-primary px-4 py-2.5 text-[12px] font-bold text-primary-foreground"
+          >
+            {showLeadForm ? "Ocultar formulario" : "Quiero aparecer"}
+          </button>
+        </div>
+        <AnimatePresence initial={false}>
+          {showLeadForm && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25 }}
+              className="overflow-hidden"
+            >
+              <div className="pt-4">
+                <BrandLeadForm defaultInterest="mapa" />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Desktop bottom strip */}

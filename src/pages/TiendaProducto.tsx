@@ -5,6 +5,8 @@ import { ArrowLeft, Check, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { ShopHeader } from "@/components/tienda/ShopHeader";
 import { useProduct } from "@/hooks/useProducts";
+import { useAuth } from "@/hooks/useAuth";
+import { AuthGateDialog } from "@/components/auth/AuthGateDialog";
 import { useCartStore } from "@/stores/cartStore";
 import { formatMoney, isOnSale } from "@/lib/store-types";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,6 +21,8 @@ const TiendaProducto = () => {
   const { handle } = useParams();
   const { data: product, isLoading } = useProduct(handle);
   const addItem = useCartStore((s) => s.addItem);
+  const { user } = useAuth();
+  const [showAuth, setShowAuth] = useState(false);
 
   const [activeImage, setActiveImage] = useState(0);
   const [size, setSize] = useState<string | null>(null);
@@ -70,6 +74,10 @@ const TiendaProducto = () => {
     if (isSoldOut) return;
     if (!size) {
       toast.error("Elige una talla");
+      return;
+    }
+    if (!user) {
+      setShowAuth(true);
       return;
     }
     await addItem(product, size, quantity);
@@ -224,7 +232,11 @@ const TiendaProducto = () => {
             ) : (
               <>
                 <ShoppingBag className="h-4 w-4" />
-                {isSoldOut ? "Agotado" : "Agregar al carrito"}
+                {isSoldOut
+                  ? "Agotado"
+                  : user
+                    ? "Agregar al carrito"
+                    : "Inicia sesión para comprar"}
               </>
             )}
           </button>
@@ -250,6 +262,8 @@ const TiendaProducto = () => {
           </div>
         </div>
       </div>
+
+      <AuthGateDialog open={showAuth} onOpenChange={setShowAuth} onSuccess={handleAdd} />
     </motion.div>
   );
 };

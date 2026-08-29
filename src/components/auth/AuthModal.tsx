@@ -8,6 +8,9 @@ import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
 import { useTranslation } from "react-i18next";
 
+/** Acceso con Google/Apple oculto por ahora: se conserva el código para reactivarlo. */
+const SHOW_SOCIAL_AUTH = false;
+
 interface AuthModalProps {
   onSuccess?: () => void;
   loginOnly?: boolean;
@@ -69,6 +72,8 @@ export function AuthModal({ onSuccess, loginOnly, onSignupClick }: AuthModalProp
 
   return (
     <div className="space-y-4">
+      {SHOW_SOCIAL_AUTH && (
+      <>
       <div className="space-y-2">
         <button
           type="button"
@@ -97,6 +102,8 @@ export function AuthModal({ onSuccess, loginOnly, onSignupClick }: AuthModalProp
         </span>
         <div className="flex-1 h-px bg-border" />
       </div>
+      </>
+      )}
 
       {!loginOnly && (
       <div className="flex rounded-xl bg-muted p-1 gap-1">
