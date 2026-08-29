@@ -437,15 +437,6 @@ export function FanPassCard({
             {exporting === "story" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Share2 className="w-3.5 h-3.5" />}
             Compartir story
           </button>
-          {flipped && (
-            <button
-              onClick={fetchQr}
-              disabled={loadingQr}
-              className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground underline disabled:opacity-50 ml-1"
-            >
-              <RefreshCw className="w-3 h-3" /> Regenerar QR
-            </button>
-          )}
         </div>
       </div>
 
