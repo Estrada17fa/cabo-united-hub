@@ -223,6 +223,16 @@ export function Header() {
                   </div>
                 </Link>
                 <FanPassMini userId={user.id} onNavigate={() => setIsMenuOpen(false)} />
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2.5 text-[13px] font-semibold text-foreground transition-colors hover:border-primary/40"
+                  >
+                    <ShieldCheck className="h-4 w-4 text-primary" />
+                    Panel de administración
+                  </Link>
+                )}
                 <button
                   onClick={async () => {
                     await signOut();
