@@ -230,6 +230,84 @@ export type Database = {
         }
         Relationships: []
       }
+      fan_route_stops: {
+        Row: {
+          created_at: string
+          id: string
+          place_id: string
+          position: number
+          route_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          place_id: string
+          position?: number
+          route_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          place_id?: string
+          position?: number
+          route_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fan_route_stops_place_id_fkey"
+            columns: ["place_id"]
+            isOneToOne: false
+            referencedRelation: "places"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fan_route_stops_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "fan_routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fan_routes: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          duration: string | null
+          icon: string
+          id: string
+          name: string
+          published: boolean
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          icon?: string
+          id?: string
+          name: string
+          published?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          icon?: string
+          id?: string
+          name?: string
+          published?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       game_plays: {
         Row: {
           cc_awarded: number
@@ -968,6 +1046,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      places: {
+        Row: {
+          area: string | null
+          category: Database["public"]["Enums"]["place_category"]
+          created_at: string
+          description: string | null
+          featured: boolean
+          going_today: number | null
+          hours: string | null
+          id: string
+          lat: number | null
+          lng: number | null
+          name: string
+          photo_gradient: string | null
+          photo_url: string | null
+          published: boolean
+          rating: number | null
+          slug: string | null
+          sort_order: number
+          tier: Database["public"]["Enums"]["place_tier"]
+          updated_at: string
+          visited_by: number | null
+          whatsapp: string | null
+        }
+        Insert: {
+          area?: string | null
+          category?: Database["public"]["Enums"]["place_category"]
+          created_at?: string
+          description?: string | null
+          featured?: boolean
+          going_today?: number | null
+          hours?: string | null
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          name: string
+          photo_gradient?: string | null
+          photo_url?: string | null
+          published?: boolean
+          rating?: number | null
+          slug?: string | null
+          sort_order?: number
+          tier?: Database["public"]["Enums"]["place_tier"]
+          updated_at?: string
+          visited_by?: number | null
+          whatsapp?: string | null
+        }
+        Update: {
+          area?: string | null
+          category?: Database["public"]["Enums"]["place_category"]
+          created_at?: string
+          description?: string | null
+          featured?: boolean
+          going_today?: number | null
+          hours?: string | null
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          name?: string
+          photo_gradient?: string | null
+          photo_url?: string | null
+          published?: boolean
+          rating?: number | null
+          slug?: string | null
+          sort_order?: number
+          tier?: Database["public"]["Enums"]["place_tier"]
+          updated_at?: string
+          visited_by?: number | null
+          whatsapp?: string | null
+        }
+        Relationships: []
       }
       players: {
         Row: {
@@ -1855,6 +2005,8 @@ export type Database = {
       match_stage: "regular" | "final"
       pass_tier: "fan" | "gold" | "premium" | "platino"
       payment_status: "free" | "pending" | "mock_paid" | "paid" | "failed"
+      place_category: "restaurantes" | "bares" | "tours" | "tiendas" | "hoteles"
+      place_tier: "basico" | "destacado" | "patrocinador"
       qr_kind: "master" | "match" | "benefit" | "experience" | "member"
       season_status_enum: "upcoming" | "active" | "reset_warning" | "closed"
       subscription_tier_enum: "FAN" | "GOLD" | "PREMIUM" | "PLATINO"
@@ -2036,6 +2188,8 @@ export const Constants = {
       match_stage: ["regular", "final"],
       pass_tier: ["fan", "gold", "premium", "platino"],
       payment_status: ["free", "pending", "mock_paid", "paid", "failed"],
+      place_category: ["restaurantes", "bares", "tours", "tiendas", "hoteles"],
+      place_tier: ["basico", "destacado", "patrocinador"],
       qr_kind: ["master", "match", "benefit", "experience", "member"],
       season_status_enum: ["upcoming", "active", "reset_warning", "closed"],
       subscription_tier_enum: ["FAN", "GOLD", "PREMIUM", "PLATINO"],
