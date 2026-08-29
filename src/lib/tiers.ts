@@ -96,3 +96,26 @@ export const TIER_ACCENT: Record<TierId, string> = {
 export function tierLabel(id: string) {
   return (SIGNUP_TIERS.find((t) => t.id === id)?.badge ?? "FAN") as string;
 }
+
+/** Fondo (gradiente) de cada tier — fuente única para pase y mini pase. */
+export const TIER_BG: Record<TierId, string> = {
+  fan: "linear-gradient(135deg, #1a1a1a, #0a0a0a)",
+  gold: "linear-gradient(135deg, #2a1f08, #0a0a0a)",
+  premium: "linear-gradient(135deg, #06222a, #0a0a0a)",
+  platino: "linear-gradient(135deg, #1f2330, #0a0a0a)",
+};
+
+export const TIER_LABEL: Record<TierId, string> = {
+  fan: "FAN",
+  gold: "GOLD",
+  premium: "PREMIUM",
+  platino: "PLATINO",
+};
+
+/** Estilo completo de un tier (tolerante a strings desconocidos). */
+export function tierStyle(id: string) {
+  const key = (["fan", "gold", "premium", "platino"] as TierId[]).includes(id as TierId)
+    ? (id as TierId)
+    : "fan";
+  return { accent: TIER_ACCENT[key], bg: TIER_BG[key], label: TIER_LABEL[key] };
+}
