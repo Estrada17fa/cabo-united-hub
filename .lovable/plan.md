@@ -12,7 +12,7 @@
 ### 1. Vista por defecto: jornada anterior + actual
 - Calcular la **jornada actual**: la que contiene partidos en vivo, o la primera con partidos `scheduled` futuros; si no hay, la última jugada.
 - Mostrar solo dos grupos: la jornada inmediatamente anterior (con resultados) y la actual.
-- Eliminar los tabs Próximos/Resultados como filtro principal de esta vista (la lista completa se ve con el botón de abajo). Mantener el toggle "Solo LCU".
+- Eliminar los tabs Próximos/Resultados como filtro principal de esta vista (la lista completa se ve con el botón de abajo). Quitar el toggle "Solo LCU": LCU se resalta en cada jornada y no hay filtro por equipo.
 
 ### 2. Botón "Ver todas las jornadas"
 - Debajo de los dos grupos, botón full-width estilo tarjeta (borde hairline, chevron) como en la referencia.
@@ -21,7 +21,7 @@
 ### 3. Header de jornada con chips de estado
 - **Jugada** (todos los partidos finished): chip gris discreto `border-hairline text-muted-foreground` → "Finalizada".
 - **Actual**: chip cyan (`bg-primary/10 text-primary border-primary/30`) → "Actual", y el texto "Jornada N" en cyan.
-- **Futura**: sin etiqueta, solo "Jornada N" normal.
+- **Futura**: sin etiqueta, texto "Jornada N" en gris neutro (`text-muted-foreground`).
 - "Fase final" se trata como grupo propio al final (sin chip salvo que esté en vivo).
 
 ### 4. Resaltado LCU reforzado
