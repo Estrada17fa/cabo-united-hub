@@ -271,6 +271,71 @@ export type Database = {
         }
         Relationships: []
       }
+      league_standings: {
+        Row: {
+          adjustment_note: string | null
+          drawn: number
+          form: string | null
+          goal_diff: number
+          goals_against: number
+          goals_for: number
+          group_name: string | null
+          id: string
+          lost: number
+          manual_adjustment: number
+          played: number
+          points: number
+          season: string
+          team_id: string
+          updated_at: string
+          won: number
+        }
+        Insert: {
+          adjustment_note?: string | null
+          drawn?: number
+          form?: string | null
+          goal_diff?: number
+          goals_against?: number
+          goals_for?: number
+          group_name?: string | null
+          id?: string
+          lost?: number
+          manual_adjustment?: number
+          played?: number
+          points?: number
+          season?: string
+          team_id: string
+          updated_at?: string
+          won?: number
+        }
+        Update: {
+          adjustment_note?: string | null
+          drawn?: number
+          form?: string | null
+          goal_diff?: number
+          goals_against?: number
+          goals_for?: number
+          group_name?: string | null
+          id?: string
+          lost?: number
+          manual_adjustment?: number
+          played?: number
+          points?: number
+          season?: string
+          team_id?: string
+          updated_at?: string
+          won?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "league_standings_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       locations: {
         Row: {
           active: boolean
@@ -324,6 +389,242 @@ export type Database = {
           visit_xp?: number
         }
         Relationships: []
+      }
+      match_events: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          match_id: string
+          minute: number
+          minute_extra: number | null
+          player_id: string | null
+          player_name: string | null
+          team_id: string | null
+          type: Database["public"]["Enums"]["match_event_type"]
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          match_id: string
+          minute?: number
+          minute_extra?: number | null
+          player_id?: string | null
+          player_name?: string | null
+          team_id?: string | null
+          type: Database["public"]["Enums"]["match_event_type"]
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          match_id?: string
+          minute?: number
+          minute_extra?: number | null
+          player_id?: string | null
+          player_name?: string | null
+          team_id?: string | null
+          type?: Database["public"]["Enums"]["match_event_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_events_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_events_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_events_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      match_predictions: {
+        Row: {
+          away_score: number
+          created_at: string
+          home_score: number
+          id: string
+          match_id: string
+          rewarded: boolean
+          user_id: string
+        }
+        Insert: {
+          away_score: number
+          created_at?: string
+          home_score: number
+          id?: string
+          match_id: string
+          rewarded?: boolean
+          user_id: string
+        }
+        Update: {
+          away_score?: number
+          created_at?: string
+          home_score?: number
+          id?: string
+          match_id?: string
+          rewarded?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_predictions_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      match_reactions: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          match_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          match_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          match_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_reactions_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      matches: {
+        Row: {
+          away_pens: number | null
+          away_points: number
+          away_score: number
+          away_team_id: string
+          created_at: string
+          first_half_started_at: string | null
+          group_name: string | null
+          highlights_url: string | null
+          home_pens: number | null
+          home_points: number
+          home_score: number
+          home_team_id: string
+          id: string
+          is_featured: boolean
+          kickoff_at: string
+          manual_score: boolean
+          matchday: number | null
+          notes: string | null
+          phase: Database["public"]["Enums"]["match_phase"]
+          season: string
+          second_half_started_at: string | null
+          stage: Database["public"]["Enums"]["match_stage"]
+          stoppage_minutes: number
+          stream_url: string | null
+          tickets_url: string | null
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          away_pens?: number | null
+          away_points?: number
+          away_score?: number
+          away_team_id: string
+          created_at?: string
+          first_half_started_at?: string | null
+          group_name?: string | null
+          highlights_url?: string | null
+          home_pens?: number | null
+          home_points?: number
+          home_score?: number
+          home_team_id: string
+          id?: string
+          is_featured?: boolean
+          kickoff_at: string
+          manual_score?: boolean
+          matchday?: number | null
+          notes?: string | null
+          phase?: Database["public"]["Enums"]["match_phase"]
+          season?: string
+          second_half_started_at?: string | null
+          stage?: Database["public"]["Enums"]["match_stage"]
+          stoppage_minutes?: number
+          stream_url?: string | null
+          tickets_url?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          away_pens?: number | null
+          away_points?: number
+          away_score?: number
+          away_team_id?: string
+          created_at?: string
+          first_half_started_at?: string | null
+          group_name?: string | null
+          highlights_url?: string | null
+          home_pens?: number | null
+          home_points?: number
+          home_score?: number
+          home_team_id?: string
+          id?: string
+          is_featured?: boolean
+          kickoff_at?: string
+          manual_score?: boolean
+          matchday?: number | null
+          notes?: string | null
+          phase?: Database["public"]["Enums"]["match_phase"]
+          season?: string
+          second_half_started_at?: string | null
+          stage?: Database["public"]["Enums"]["match_stage"]
+          stoppage_minutes?: number
+          stream_url?: string | null
+          tickets_url?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_away_team_id_fkey"
+            columns: ["away_team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_home_team_id_fkey"
+            columns: ["home_team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       missions: {
         Row: {
@@ -416,6 +717,45 @@ export type Database = {
           {
             foreignKeyName: "monthly_player_winners_winner_player_id_fkey"
             columns: ["winner_player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      motm_votes: {
+        Row: {
+          created_at: string
+          id: string
+          match_id: string
+          player_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_id: string
+          player_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_id?: string
+          player_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "motm_votes_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "motm_votes_player_id_fkey"
+            columns: ["player_id"]
             isOneToOne: false
             referencedRelation: "players"
             referencedColumns: ["id"]
@@ -1006,6 +1346,102 @@ export type Database = {
         }
         Relationships: []
       }
+      teams: {
+        Row: {
+          active: boolean
+          city: string | null
+          created_at: string
+          group_name: string | null
+          id: string
+          is_ours: boolean
+          logo_url: string | null
+          name: string
+          season: string
+          short_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          city?: string | null
+          created_at?: string
+          group_name?: string | null
+          id?: string
+          is_ours?: boolean
+          logo_url?: string | null
+          name: string
+          season?: string
+          short_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          city?: string | null
+          created_at?: string
+          group_name?: string | null
+          id?: string
+          is_ours?: boolean
+          logo_url?: string | null
+          name?: string
+          season?: string
+          short_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      top_scorers: {
+        Row: {
+          assists: number
+          created_at: string
+          goals: number
+          id: string
+          matches_played: number
+          player_id: string | null
+          player_name: string
+          season: string
+          team_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          assists?: number
+          created_at?: string
+          goals?: number
+          id?: string
+          matches_played?: number
+          player_id?: string | null
+          player_name: string
+          season?: string
+          team_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assists?: number
+          created_at?: string
+          goals?: number
+          id?: string
+          matches_played?: number
+          player_id?: string | null
+          player_name?: string
+          season?: string
+          team_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "top_scorers_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "top_scorers_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transactions: {
         Row: {
           cc_delta: number
@@ -1129,6 +1565,10 @@ export type Database = {
           user_id: string
         }[]
       }
+      admin_recalculate_standings: {
+        Args: { _season: string }
+        Returns: undefined
+      }
       award_points: {
         Args: {
           _cc: number
@@ -1164,6 +1604,18 @@ export type Database = {
         Returns: boolean
       }
       compute_level: { Args: { _xp: number }; Returns: number }
+      compute_match_points: {
+        Args: {
+          _away_pens: number
+          _away_score: number
+          _home_pens: number
+          _home_score: number
+        }
+        Returns: {
+          away_points: number
+          home_points: number
+        }[]
+      }
       generate_pass_code:
         | { Args: never; Returns: string }
         | {
@@ -1197,6 +1649,7 @@ export type Database = {
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_minor_user: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      recalculate_standings: { Args: { _season: string }; Returns: undefined }
       record_game_play: {
         Args: { _game_id: string; _result?: Json; _score?: number }
         Returns: string
@@ -1227,6 +1680,25 @@ export type Database = {
         | "stadium_regular"
       level_status_enum: "permanent" | "active" | "at_risk" | "demoted"
       location_type_enum: "stadium" | "sponsor"
+      match_event_type:
+        | "goal"
+        | "own_goal"
+        | "penalty_goal"
+        | "penalty_miss"
+        | "yellow"
+        | "red"
+        | "substitution"
+        | "note"
+        | "var"
+      match_phase:
+        | "scheduled"
+        | "first_half"
+        | "halftime"
+        | "second_half"
+        | "finished"
+        | "postponed"
+        | "canceled"
+      match_stage: "regular" | "final"
       pass_tier: "fan" | "gold" | "premium" | "platino"
       payment_status: "free" | "pending" | "mock_paid" | "paid" | "failed"
       qr_kind: "master" | "match" | "benefit" | "experience" | "member"
@@ -1387,6 +1859,27 @@ export const Constants = {
       ],
       level_status_enum: ["permanent", "active", "at_risk", "demoted"],
       location_type_enum: ["stadium", "sponsor"],
+      match_event_type: [
+        "goal",
+        "own_goal",
+        "penalty_goal",
+        "penalty_miss",
+        "yellow",
+        "red",
+        "substitution",
+        "note",
+        "var",
+      ],
+      match_phase: [
+        "scheduled",
+        "first_half",
+        "halftime",
+        "second_half",
+        "finished",
+        "postponed",
+        "canceled",
+      ],
+      match_stage: ["regular", "final"],
       pass_tier: ["fan", "gold", "premium", "platino"],
       payment_status: ["free", "pending", "mock_paid", "paid", "failed"],
       qr_kind: ["master", "match", "benefit", "experience", "member"],
