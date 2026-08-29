@@ -22,9 +22,9 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useShopifyProducts } from "@/hooks/useShopify";
+import { useProducts } from "@/hooks/useProducts";
 import type { Tables } from "@/integrations/supabase/types";
-import { EditorialProductCard } from "@/components/tienda/EditorialProductCard";
+import { ProductCard } from "@/components/tienda/ProductCard";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -961,7 +961,7 @@ function FanZoneSection({ onLoginClick }: { onLoginClick: () => void }) {
 /* ============================================================ */
 
 function TiendaSection() {
-  const { data: products = [], isLoading } = useShopifyProducts({ first: 6 });
+  const { data: products = [], isLoading } = useProducts();
   const featured = products.slice(0, 4);
 
   return (
@@ -1086,11 +1086,7 @@ function TiendaSection() {
                 </div>
               )
               : featured.map((product, i) => (
-                  <EditorialProductCard
-                    key={product.node.id}
-                    product={product}
-                    index={i}
-                  />
+                  <ProductCard key={product.id} product={product} index={i} />
                 ))}
           </div>
         </div>
