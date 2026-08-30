@@ -13,6 +13,13 @@ interface Props {
 }
 
 /**
+ * BANDERA TEMPORAL: mientras se arregla el correo de verificación,
+ * la transmisión se muestra sin login. Cambiar a false para volver
+ * al gate de acceso con cuenta.
+ */
+const STREAM_OPEN = true;
+
+/**
  * El reproductor es el único bloque que exige cuenta.
  * Sin sesión se ve el marco borroso + acceso con el mismo formulario del sitio.
  */
@@ -26,12 +33,12 @@ export function StreamGate({ streamUrl, title }: Props) {
     <>
       <div
         className={
-          embed && user
+          embed && (user || STREAM_OPEN)
             ? "relative aspect-video w-full overflow-hidden rounded-xl border border-hairline bg-surface-3"
             : "relative w-full overflow-hidden rounded-xl border border-hairline bg-surface-3 min-h-[320px] sm:aspect-video"
         }
       >
-        {embed && user ? (
+        {embed && (user || STREAM_OPEN) ? (
           <iframe
             src={embed.embedUrl}
             title={title}
