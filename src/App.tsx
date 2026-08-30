@@ -24,6 +24,7 @@ const Patrocinios = lazy(() => import("./pages/Patrocinios"));
 const Contacto = lazy(() => import("./pages/Contacto"));
 const MiPerfil = lazy(() => import("./pages/MiPerfil"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const ConfirmarCorreo = lazy(() => import("./pages/ConfirmarCorreo"));
 const ConsentimientoTutor = lazy(() => import("./pages/ConsentimientoTutor"));
 const Abonos = lazy(() => import("./pages/Abonos"));
 const AbonosExito = lazy(() => import("./pages/AbonosExito"));
