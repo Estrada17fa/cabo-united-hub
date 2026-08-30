@@ -40,13 +40,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string, confirmedAt?: string | null) => {
     const { data } = await supabase
       .from("profiles")
       .select("id, username, display_name, avatar_url, phone, birth_date, city, xp, cc, level, email_verified, phone_verified, identity_verified")
       .eq("id", userId)
       .single();
-    setProfile(data as Profile | null);
+    if (!data) {
+      setProfile(null);
+      return;
+    }
+    // La verificación real vive en la cuenta de auth; el perfil solo la refleja.
+    const verified = confirmedAt ? true : (data as Profile).email_verified;
+    setProfile({ ...(data as Profile), email_verified: verified });
+    if (confirmedAt && !(data as Profile).email_verified) {
+      await supabase.from("profiles").update({ email_verified: true }).eq("id", userId);
+    }
   };
 
   useEffect(() => {
@@ -55,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          setTimeout(() => fetchProfile(session.user.id), 0);
+          setTimeout(() => fetchProfile(session.user.id, session.user.email_confirmed_at ?? null), 0);
         } else {
           setProfile(null);
         }
@@ -67,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchProfile(session.user.id);
+        fetchProfile(session.user.id, session.user.email_confirmed_at ?? null);
       }
       setLoading(false);
     });
@@ -81,7 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password,
       options: {
         data: { display_name: displayName },
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: `${window.location.origin}/confirmar-correo`,
       },
     });
     return { error };
@@ -113,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const refreshProfile = async () => {
-    if (user) await fetchProfile(user.id);
+    if (user) await fetchProfile(user.id, user.email_confirmed_at ?? null);
   };
 
   return (
