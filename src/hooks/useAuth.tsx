@@ -40,13 +40,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string, confirmedAt?: string | null) => {
     const { data } = await supabase
       .from("profiles")
       .select("id, username, display_name, avatar_url, phone, birth_date, city, xp, cc, level, email_verified, phone_verified, identity_verified")
       .eq("id", userId)
       .single();
-    setProfile(data as Profile | null);
+    if (!data) {
+      setProfile(null);
+      return;
+    }
+    // La verificación real vive en la cuenta de auth; el perfil solo la refleja.
+    const verified = confirmedAt ? true : (data as Profile).email_verified;
+    setProfile({ ...(data as Profile), email_verified: verified });
+    if (confirmedAt && !(data as Profile).email_verified) {
+      await supabase.from("profiles").update({ email_verified: true }).eq("id", userId);
+    }
   };
 
   useEffect(() => {
