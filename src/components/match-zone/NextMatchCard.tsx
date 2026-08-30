@@ -10,6 +10,13 @@ import type { Match } from "./types";
 
 const PINK = "#F199C1";
 
+/**
+ * BANDERA TEMPORAL: mientras se arregla el correo de verificación,
+ * Match Zone es abierto para todos. Cambiar a false para volver
+ * a mostrar la invitación a crear cuenta.
+ */
+const STREAM_OPEN = true;
+
 export function NextMatchCard({ match }: { match: Match }) {
   const { user } = useAuth();
   const [loginOpen, setLoginOpen] = useState(false);
@@ -34,7 +41,7 @@ export function NextMatchCard({ match }: { match: Match }) {
         <CountdownTimer kickoffAt={match.kickoff_at} />
       </div>
 
-      {!user && (
+      {!user && !STREAM_OPEN && (
         <div className="mt-4 rounded-xl border border-hairline bg-surface-2 p-3.5 text-center">
           <p className="text-xs font-semibold text-foreground">
             La transmisión en vivo es exclusiva para miembros
