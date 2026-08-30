@@ -20,7 +20,11 @@ export function VerificationBadges({ emailVerified, phoneVerified, identityVerif
   const resendEmail = async () => {
     if (!user?.email) return;
     setResending(true);
-    const { error } = await supabase.auth.resend({ type: "signup", email: user.email });
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: user.email,
+      options: { emailRedirectTo: `${window.location.origin}/confirmar-correo` },
+    });
     setResending(false);
     if (error) toast.error(error.message);
     else toast.success(t("auth.verifyEmail"));
