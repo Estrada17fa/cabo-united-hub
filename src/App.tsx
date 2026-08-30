@@ -67,6 +67,7 @@ const AppShell = () => {
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/mi-perfil" element={<MiPerfil />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/confirmar-correo" element={<ConfirmarCorreo />} />
           <Route path="/consentimiento-tutor/:token" element={<ConsentimientoTutor />} />
           <Route path="/abonos" element={<Abonos />} />
           <Route path="/abonos/exito" element={<AbonosExito />} />
