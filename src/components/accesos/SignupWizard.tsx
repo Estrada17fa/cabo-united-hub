@@ -167,7 +167,7 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
       email: form.email,
       password: form.password,
       options: {
-        emailRedirectTo: `${window.location.origin}/mi-perfil`,
+        emailRedirectTo: `${window.location.origin}/confirmar-correo`,
         data: {
           display_name: form.fullName,
           full_name: form.fullName,

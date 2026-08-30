@@ -223,7 +223,7 @@ export function AuthFlow({ open, onClose, initialTierId = "fan" }: Props) {
       email: form.email.trim().toLowerCase(),
       password: form.password,
       options: {
-        emailRedirectTo: `${window.location.origin}/mi-perfil`,
+        emailRedirectTo: `${window.location.origin}/confirmar-correo`,
         data: {
           display_name: fullName,
           full_name: fullName,
