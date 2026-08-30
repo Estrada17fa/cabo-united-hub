@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          setTimeout(() => fetchProfile(session.user.id), 0);
+          setTimeout(() => fetchProfile(session.user.id, session.user.email_confirmed_at ?? null), 0);
         } else {
           setProfile(null);
         }
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchProfile(session.user.id);
+        fetchProfile(session.user.id, session.user.email_confirmed_at ?? null);
       }
       setLoading(false);
     });
@@ -122,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const refreshProfile = async () => {
-    if (user) await fetchProfile(user.id);
+    if (user) await fetchProfile(user.id, user.email_confirmed_at ?? null);
   };
 
   return (
