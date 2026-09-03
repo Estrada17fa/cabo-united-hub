@@ -34,7 +34,7 @@ import { NextMatchCard } from "@/components/match-zone/NextMatchCard";
 import { ProductCard } from "@/components/tienda/ProductCard";
 import { SectionHeader } from "@/components/ui-lcu/SectionHeader";
 import { LcuTabs } from "@/components/ui-lcu/LcuTabs";
-import { HomeMiniMap } from "@/components/home/HomeMiniMap";
+import { LazyHomeMiniMap as HomeMiniMap } from "@/components/home/LazyHomeMiniMap";
 import { CategoryIcon } from "@/components/visita-los-cabos/CategoryIcon";
 import { MiniGameCard } from "@/components/fan-zone/MiniGameCard";
 import { GAMES } from "@/components/fan-zone/games";
