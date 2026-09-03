@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import { Loader2, Calendar, MapPin, Sparkles, ShieldCheck, Download, Share2, Store, Ticket } from "lucide-react";
 
-import { toPng } from "html-to-image";
 import { supabase } from "@/integrations/supabase/client";
 import lcuCrest from "@/assets/lcu-crest.png";
 import { tierStyle } from "@/lib/tiers";
@@ -169,6 +168,7 @@ export function FanPassCard({
       const wasFlipped = flipped;
       if (wasFlipped) setFlipped(false);
       await new Promise((r) => setTimeout(r, 50));
+      const { toPng } = await import("html-to-image");
       const dataUrl = await toPng(frontRef.current, {
         pixelRatio: 3,
         cacheBust: true,
@@ -184,6 +184,7 @@ export function FanPassCard({
     if (!storyRef.current) return;
     setExporting("story");
     try {
+      const { toPng } = await import("html-to-image");
       const dataUrl = await toPng(storyRef.current, {
         pixelRatio: 1,
         cacheBust: true,

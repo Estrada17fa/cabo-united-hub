@@ -37,6 +37,7 @@ import { MiniPassChip } from "@/components/pass/MiniPassChip";
 import { AuthFlow } from "@/components/auth/AuthFlow";
 import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { preloadRoute } from "@/lib/route-preload";
 
 
 const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
@@ -107,6 +108,7 @@ export function Header() {
   };
 
   const go = (path: string) => {
+    preloadRoute(path);
     setIsMenuOpen(false);
     if (path !== location.pathname) {
       window.scrollTo(0, 0);
@@ -158,6 +160,9 @@ export function Header() {
               <li key={link.path} className="relative">
                 <Link
                   to={link.path}
+                  onMouseEnter={() => preloadRoute(link.path)}
+                  onTouchStart={() => preloadRoute(link.path)}
+                  onFocus={() => preloadRoute(link.path)}
                   onClick={() => window.scrollTo(0, 0)}
                   aria-current={active ? "page" : undefined}
                   className={cn(

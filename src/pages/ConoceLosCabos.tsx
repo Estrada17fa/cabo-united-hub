@@ -5,7 +5,7 @@ import { MapPin } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Place } from "@/lib/visita-los-cabos-data";
 import { usePlaces } from "@/hooks/useVisitaLosCabos";
-import { MapView } from "@/components/visita-los-cabos/MapView";
+import { LazyMapView as MapView } from "@/components/visita-los-cabos/LazyMapView";
 import { FilterPills, FilterValue } from "@/components/visita-los-cabos/FilterPills";
 import { PlaceDetail } from "@/components/visita-los-cabos/PlaceDetail";
 import { RoutesPanel } from "@/components/visita-los-cabos/RoutesPanel";
