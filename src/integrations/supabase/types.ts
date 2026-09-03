@@ -2231,6 +2231,18 @@ export type Database = {
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_minor_user: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      my_parental_consent_status: {
+        Args: never
+        Returns: {
+          confirmed_at: string
+          created_at: string
+          expires_at: string
+          id: string
+          tutor_email: string
+          tutor_name: string
+          tutor_relationship: string
+        }[]
+      }
       recalculate_standings: { Args: { _season: string }; Returns: undefined }
       record_game_play: {
         Args: { _game_id: string; _result?: Json; _score?: number }
