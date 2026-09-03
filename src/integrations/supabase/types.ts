@@ -2129,39 +2129,7 @@ export type Database = {
       }
     }
     Views: {
-      parental_consent_status: {
-        Row: {
-          confirmed_at: string | null
-          created_at: string | null
-          expires_at: string | null
-          id: string | null
-          tutor_email: string | null
-          tutor_name: string | null
-          tutor_relationship: string | null
-          user_id: string | null
-        }
-        Insert: {
-          confirmed_at?: string | null
-          created_at?: string | null
-          expires_at?: string | null
-          id?: string | null
-          tutor_email?: string | null
-          tutor_name?: string | null
-          tutor_relationship?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          confirmed_at?: string | null
-          created_at?: string | null
-          expires_at?: string | null
-          id?: string | null
-          tutor_email?: string | null
-          tutor_name?: string | null
-          tutor_relationship?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       admin_list_fan_passes: {
@@ -2263,6 +2231,18 @@ export type Database = {
       is_admin: { Args: { _user_id: string }; Returns: boolean }
       is_minor_user: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      my_parental_consent_status: {
+        Args: never
+        Returns: {
+          confirmed_at: string
+          created_at: string
+          expires_at: string
+          id: string
+          tutor_email: string
+          tutor_name: string
+          tutor_relationship: string
+        }[]
+      }
       recalculate_standings: { Args: { _season: string }; Returns: undefined }
       record_game_play: {
         Args: { _game_id: string; _result?: Json; _score?: number }
