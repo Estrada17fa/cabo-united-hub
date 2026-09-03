@@ -4,29 +4,35 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 import { AppLayout } from "./components/layout/AppLayout";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
+import { DataWarmup } from "./components/layout/DataWarmup";
+import { PageSkeleton } from "./components/lcu/PageSkeleton";
 import { AuthProvider } from "./hooks/useAuth";
 import Index from "./pages/Index";
+import { routeLoaders } from "./lib/route-preload";
 
-const ZonaPartido = lazy(() => import("./pages/ZonaPartido"));
-const Club = lazy(() => import("./pages/Club"));
-const FanZone = lazy(() => import("./pages/FanZone"));
-const Accesos = lazy(() => import("./pages/Accesos"));
-const MiPase = lazy(() => import("./pages/MiPase"));
-const Comercios = lazy(() => import("./pages/Comercios"));
-const Tienda = lazy(() => import("./pages/Tienda"));
+const lazyRoute = (path: string) =>
+  lazy(routeLoaders[path] as () => Promise<{ default: React.ComponentType }>);
+
+const ZonaPartido = lazyRoute("/zona-partido");
+const Club = lazyRoute("/club");
+const FanZone = lazyRoute("/fan-zone");
+const Accesos = lazyRoute("/accesos");
+const MiPase = lazyRoute("/mi-pase");
+const Comercios = lazyRoute("/comercios");
+const Tienda = lazyRoute("/tienda");
+const TiendaBuscar = lazyRoute("/tienda/buscar");
+const ConoceLosCabos = lazyRoute("/conoce-los-cabos");
+const Patrocinios = lazyRoute("/patrocinios");
+const Contacto = lazyRoute("/contacto");
+const MiPerfil = lazyRoute("/mi-perfil");
+const Abonos = lazyRoute("/abonos");
+
 const TiendaProducto = lazy(() => import("./pages/TiendaProducto"));
-const TiendaBuscar = lazy(() => import("./pages/TiendaBuscar"));
-const ConoceLosCabos = lazy(() => import("./pages/ConoceLosCabos"));
-const Patrocinios = lazy(() => import("./pages/Patrocinios"));
-const Contacto = lazy(() => import("./pages/Contacto"));
-const MiPerfil = lazy(() => import("./pages/MiPerfil"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const ConfirmarCorreo = lazy(() => import("./pages/ConfirmarCorreo"));
 const ConsentimientoTutor = lazy(() => import("./pages/ConsentimientoTutor"));
-const Abonos = lazy(() => import("./pages/Abonos"));
 const AbonosExito = lazy(() => import("./pages/AbonosExito"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -36,19 +42,26 @@ const AdminShell = lazy(() => import("./pages/admin/AdminShell"));
 import { CartDrawer } from "@/components/tienda/CartDrawer";
 import { useCartSync } from "@/hooks/useCartSync";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // La segunda visita a una página se pinta desde caché y actualiza en silencio.
+      staleTime: 5 * 60 * 1000,
+      gcTime: 30 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
-const PageFallback = () => (
-  <div className="flex justify-center py-24">
-    <Loader2 className="h-6 w-6 animate-spin text-primary" />
-  </div>
-);
+const PageFallback = () => <PageSkeleton />;
 
 const AppShell = () => {
   useCartSync();
   return (
     <AppLayout>
       <ScrollToTop />
+      <DataWarmup />
       <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route path="/" element={<Index />} />
