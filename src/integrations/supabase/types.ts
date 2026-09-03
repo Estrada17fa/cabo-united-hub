@@ -2129,7 +2129,39 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      parental_consent_status: {
+        Row: {
+          confirmed_at: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string | null
+          tutor_email: string | null
+          tutor_name: string | null
+          tutor_relationship: string | null
+          user_id: string | null
+        }
+        Insert: {
+          confirmed_at?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string | null
+          tutor_email?: string | null
+          tutor_name?: string | null
+          tutor_relationship?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          confirmed_at?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string | null
+          tutor_email?: string | null
+          tutor_name?: string | null
+          tutor_relationship?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       admin_list_fan_passes: {
