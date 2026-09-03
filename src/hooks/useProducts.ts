@@ -62,6 +62,7 @@ export function useProducts() {
 }
 
 export function useProduct(handle: string | undefined) {
+  const qc = useQueryClient();
   return useQuery({
     queryKey: ["store", "product", handle],
     enabled: !!handle,
@@ -71,5 +72,12 @@ export function useProduct(handle: string | undefined) {
       return node ? normalizeProduct(node) : null;
     },
     staleTime: 1000 * 60 * 5,
+    // Si el catálogo ya está en caché, mostramos ese producto de inmediato
+    // mientras llega el detalle completo (sin pantalla vacía).
+    placeholderData: () => {
+      if (!handle) return undefined;
+      const list = qc.getQueryData<StoreProduct[]>(["store", "products"]);
+      return list?.find((p) => p.handle === handle);
+    },
   });
 }
