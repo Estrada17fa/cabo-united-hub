@@ -1,59 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useShopHeroSlides, type ShopHeroSlide } from "@/hooks/useShopContent";
-import hero1 from "@/assets/tienda-hero-1.jpg";
-import hero2 from "@/assets/tienda-hero-2.jpg";
-import hero3 from "@/assets/tienda-hero-3.jpg";
-
-/** Respaldo si el admin todavía no capturó slides: la página nunca se ve vacía. */
-const FALLBACK: ShopHeroSlide[] = [
-  {
-    id: "f1",
-    image_url: hero1,
-    eyebrow: "Temporada 25/26",
-    title: "Jersey Oficial",
-    subtitle: "Hecho para los Amos del Paraíso",
-    cta_label: "Ver jerseys",
-    cta_url: "/tienda",
-    sort_order: 0,
-    published: true,
-  },
-  {
-    id: "f2",
-    image_url: hero2,
-    eyebrow: "Streetwear",
-    title: "Hoodies bordados",
-    subtitle: "Felpa pesada, escudo al pecho",
-    cta_label: "Ver colección",
-    cta_url: "/tienda",
-    sort_order: 1,
-    published: true,
-  },
-  {
-    id: "f3",
-    image_url: hero3,
-    eyebrow: "Edición limitada",
-    title: "Piezas contadas",
-    subtitle: "Mientras duren las existencias",
-    cta_label: "Ver todo",
-    cta_url: "/tienda",
-    sort_order: 2,
-    published: true,
-  },
-];
+import { useShopHeroSlides } from "@/hooks/useShopContent";
 
 function isExternal(url: string) {
   return /^https?:\/\//i.test(url);
 }
 
 export function HeroCarousel() {
-  const { data } = useShopHeroSlides();
-  const slides = useMemo(() => (data && data.length > 0 ? data : FALLBACK), [data]);
+  const { data, isLoading } = useShopHeroSlides();
+  const slides = data ?? [];
   const [index, setIndex] = useState(0);
 
   useEffect(() => setIndex(0), [slides.length]);
+
 
   useEffect(() => {
     slides.forEach((s) => {
