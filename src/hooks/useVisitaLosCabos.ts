@@ -79,6 +79,8 @@ export function usePlaces() {
 export function useFanRoutes() {
   return useQuery({
     queryKey: ["fan_routes", "public"],
+    staleTime: 5 * 60 * 1000,
+
     queryFn: async (): Promise<FanRoute[]> => {
       const { data, error } = await supabase
         .from("fan_routes")
