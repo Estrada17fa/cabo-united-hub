@@ -59,6 +59,9 @@ export function useMatchEvents(matchId: string | undefined) {
   const query = useQuery({
     queryKey: ["lcu-match-events", matchId],
     enabled: !!matchId,
+    // Dato en vivo: siempre fresco, nunca se guarda en el navegador.
+    staleTime: 0,
+
     queryFn: async () => {
       const { data, error } = await supabase
         .from("match_events")

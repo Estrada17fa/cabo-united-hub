@@ -25,20 +25,26 @@ export interface ShopBanner {
   published: boolean;
 }
 
+const HERO_COLS =
+  "id, image_url, eyebrow, title, subtitle, cta_label, cta_url, sort_order, published";
+
+const BANNER_COLS =
+  "id, image_url, bg_color, title, body, cta_label, cta_url, sort_order, published";
+
 /** Slides del hero editorial (los captura el admin). */
 export function useShopHeroSlides() {
   return useQuery({
     queryKey: ["shop_hero_slides", "public"],
+    staleTime: 5 * 60 * 1000,
     queryFn: async (): Promise<ShopHeroSlide[]> => {
       const { data, error } = await supabase
         .from("shop_hero_slides")
-        .select("*")
+        .select(HERO_COLS)
         .eq("published", true)
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return (data ?? []) as ShopHeroSlide[];
     },
-    staleTime: 1000 * 60 * 2,
   });
 }
 
@@ -46,15 +52,15 @@ export function useShopHeroSlides() {
 export function useShopBanners() {
   return useQuery({
     queryKey: ["shop_banners", "public"],
+    staleTime: 5 * 60 * 1000,
     queryFn: async (): Promise<ShopBanner[]> => {
       const { data, error } = await supabase
         .from("shop_banners")
-        .select("*")
+        .select(BANNER_COLS)
         .eq("published", true)
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return (data ?? []) as ShopBanner[];
     },
-    staleTime: 1000 * 60 * 2,
   });
 }

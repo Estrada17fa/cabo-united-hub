@@ -50,29 +50,37 @@ export function normalizePlace(row: PlaceRow): Place {
   };
 }
 
+const PLACE_COLS =
+  "id, name, category, tier, description, area, hours, lat, lng, photo_url, logo_url, " +
+  "photo_gradient, whatsapp, visited_by, going_today, rating, featured, sort_order, published";
+
 /** Lugares publicados con coordenadas válidas, listos para el mapa. */
 export function usePlaces() {
   return useQuery({
     queryKey: ["places", "public"],
+    staleTime: 5 * 60 * 1000,
     queryFn: async (): Promise<Place[]> => {
       const { data, error } = await supabase
         .from("places")
-        .select("*")
+        .select(PLACE_COLS)
         .eq("published", true)
         .order("sort_order", { ascending: true })
         .order("name", { ascending: true });
       if (error) throw error;
-      return (data as PlaceRow[])
+      return (data as unknown as PlaceRow[])
         .filter((r) => r.lat != null && r.lng != null)
         .map(normalizePlace);
     },
   });
 }
 
+
 /** Rutas publicadas con sus paradas ordenadas. */
 export function useFanRoutes() {
   return useQuery({
     queryKey: ["fan_routes", "public"],
+    staleTime: 5 * 60 * 1000,
+
     queryFn: async (): Promise<FanRoute[]> => {
       const { data, error } = await supabase
         .from("fan_routes")
