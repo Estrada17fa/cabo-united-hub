@@ -1,11 +1,13 @@
-import { useMemo, useState, useEffect } from "react";
+import { Suspense, lazy, useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Place } from "@/lib/visita-los-cabos-data";
 import { usePlaces } from "@/hooks/useVisitaLosCabos";
-import { MapView } from "@/components/visita-los-cabos/MapView";
+const MapView = lazy(() =>
+  import("@/components/visita-los-cabos/MapView").then((m) => ({ default: m.MapView }))
+);
 import { FilterPills, FilterValue } from "@/components/visita-los-cabos/FilterPills";
 import { PlaceDetail } from "@/components/visita-los-cabos/PlaceDetail";
 import { RoutesPanel } from "@/components/visita-los-cabos/RoutesPanel";
