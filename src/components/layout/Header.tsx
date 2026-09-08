@@ -231,7 +231,9 @@ export function Header() {
                     )}
                   </div>
                 </Link>
-                <FanPassMini userId={user.id} onNavigate={() => setIsMenuOpen(false)} />
+                <Suspense fallback={null}>
+                  <FanPassMini userId={user.id} onNavigate={() => setIsMenuOpen(false)} />
+                </Suspense>
                 {isAdmin && (
                   <Link
                     to="/admin"
@@ -256,13 +258,15 @@ export function Header() {
             ) : (
               <div>
                 {showAuth ? (
-                  <AuthModal
-                    loginOnly
-                    onSuccess={() => {
-                      setShowAuth(false);
-                      setIsMenuOpen(false);
-                    }}
-                  />
+                  <Suspense fallback={null}>
+                    <AuthModal
+                      loginOnly
+                      onSuccess={() => {
+                        setShowAuth(false);
+                        setIsMenuOpen(false);
+                      }}
+                    />
+                  </Suspense>
                 ) : (
                   <div className="space-y-2">
                     <button
@@ -413,11 +417,15 @@ export function Header() {
         </SheetContent>
       </Sheet>
 
-      <AuthFlow
-        open={showSignupWizard}
-        onClose={() => setShowSignupWizard(false)}
-        initialTierId="fan"
-      />
+      {showSignupWizard && (
+        <Suspense fallback={null}>
+          <AuthFlow
+            open={showSignupWizard}
+            onClose={() => setShowSignupWizard(false)}
+            initialTierId="fan"
+          />
+        </Suspense>
+      )}
     </header>
   );
 }
