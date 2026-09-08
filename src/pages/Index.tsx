@@ -89,8 +89,10 @@ function Hero({ onSignup, onLogin }: { onSignup: () => void; onLogin: () => void
 
   return (
     <section className="relative -mx-4 -mt-4 overflow-hidden md:-mx-6">
-      <img
-        src={stadiumHero}
+      <SmartImage
+        image={IMG.stadiumHero}
+        priority
+        sizes="(max-width: 768px) 100vw, 1024px"
         alt="Afición de Los Cabos United en el estadio Don Koll"
         className="absolute inset-0 h-full w-full object-cover"
       />
