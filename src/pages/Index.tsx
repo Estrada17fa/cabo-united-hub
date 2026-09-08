@@ -633,24 +633,25 @@ function VisitaBlock() {
         action={<VerTodo to="/conoce-los-cabos" />}
       />
 
-      <Link
-        ref={mapRef}
-        to="/conoce-los-cabos"
-        className="relative block h-56 overflow-hidden rounded-2xl border border-hairline bg-surface-1 md:h-64"
-      >
-        {!isLoading && mapInView && (
-          <Suspense fallback={null}>
-            <HomeMiniMap places={places} />
-          </Suspense>
-        )}
-        <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-background to-transparent px-4 pb-3 pt-10">
-          <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-            <MapPin className="h-3.5 w-3.5 text-primary" />
-            Abrir el mapa completo
+      <div ref={mapRef}>
+        <Link
+          to="/conoce-los-cabos"
+          className="relative block h-56 overflow-hidden rounded-2xl border border-hairline bg-surface-1 md:h-64"
+        >
+          {!isLoading && mapInView && (
+            <Suspense fallback={null}>
+              <HomeMiniMap places={places} />
+            </Suspense>
+          )}
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-background to-transparent px-4 pb-3 pt-10">
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+              <MapPin className="h-3.5 w-3.5 text-primary" />
+              Abrir el mapa completo
+            </span>
+            <ArrowRight className="h-4 w-4 text-primary" />
           </span>
-          <ArrowRight className="h-4 w-4 text-primary" />
-        </span>
-      </Link>
+        </Link>
+      </div>
 
       {highlights.length > 0 && (
         <div className="-mx-1 flex gap-2.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
