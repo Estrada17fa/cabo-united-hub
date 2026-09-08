@@ -613,6 +613,8 @@ function ShopBlock() {
 function VisitaBlock() {
   const { data: places = [], isLoading } = usePlaces();
   const { metaFor } = useCategoryMeta();
+  // El mapa solo se monta (y su librería solo se descarga) al acercarse por scroll.
+  const { ref: mapRef, inView: mapInView } = useInViewOnce<HTMLAnchorElement>();
   const highlights = places
     .slice()
     .sort((a, b) => Number(b.featured) - Number(a.featured))
@@ -632,10 +634,15 @@ function VisitaBlock() {
       />
 
       <Link
+        ref={mapRef}
         to="/conoce-los-cabos"
         className="relative block h-56 overflow-hidden rounded-2xl border border-hairline bg-surface-1 md:h-64"
       >
-        {!isLoading && <HomeMiniMap places={places} />}
+        {!isLoading && mapInView && (
+          <Suspense fallback={null}>
+            <HomeMiniMap places={places} />
+          </Suspense>
+        )}
         <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-background to-transparent px-4 pb-3 pt-10">
           <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
             <MapPin className="h-3.5 w-3.5 text-primary" />
@@ -835,20 +842,26 @@ export default function Index() {
         </section>
       )}
 
-      <AuthFlow open={signupOpen} onClose={() => setSignupOpen(false)} />
+      {signupOpen && (
+        <Suspense fallback={null}>
+          <AuthFlow open={signupOpen} onClose={() => setSignupOpen(false)} />
+        </Suspense>
+      )}
       <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
         <DialogContent className="max-h-[90vh] max-w-sm overflow-y-auto border-border bg-card">
           <DialogHeader>
             <DialogTitle>Acceso de aficionados</DialogTitle>
           </DialogHeader>
-          <AuthModal
-            loginOnly
-            onSuccess={() => setLoginOpen(false)}
-            onSignupClick={() => {
-              setLoginOpen(false);
-              setSignupOpen(true);
-            }}
-          />
+          <Suspense fallback={null}>
+            <AuthModal
+              loginOnly
+              onSuccess={() => setLoginOpen(false)}
+              onSignupClick={() => {
+                setLoginOpen(false);
+                setSignupOpen(true);
+              }}
+            />
+          </Suspense>
         </DialogContent>
       </Dialog>
     </div>
