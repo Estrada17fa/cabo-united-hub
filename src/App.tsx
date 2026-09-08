@@ -39,7 +39,32 @@ const AdminShell = lazy(() => import("./pages/admin/AdminShell"));
 import { CartDrawer } from "@/components/tienda/CartDrawer";
 import { useCartSync } from "@/hooks/useCartSync";
 
-const queryClient = new QueryClient();
+/**
+ * Caché con stale-while-revalidate: se pinta lo guardado al instante y se
+ * refresca en segundo plano. El staleTime real lo define cada consulta.
+ */
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000,
+      gcTime: 24 * 60 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
+
+/** Datos personales o en vivo: nunca se guardan en el navegador. */
+const NO_PERSIST = ["lcu-match-events", "lcu-profile", "lcu-pass", "fan-pass", "profile"];
+
+const persister = createSyncStoragePersister({
+  storage: typeof window !== "undefined" ? window.localStorage : undefined,
+  key: "lcu-query-cache",
+});
+
+/** Cambia en cada build: al publicar una versión nueva, la caché vieja se descarta. */
+const CACHE_BUSTER = import.meta.env.VITE_BUILD_ID ?? __BUILD_ID__;
+
 
 const PageFallback = () => (
   <div className="flex justify-center py-24">
