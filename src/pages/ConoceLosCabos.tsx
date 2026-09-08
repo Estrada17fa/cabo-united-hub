@@ -84,11 +84,13 @@ const ConoceLosCabos = () => {
         {/* LEFT — Map */}
         <div className="col-span-8 relative">
           <div className="absolute inset-0 rounded-2xl overflow-hidden">
-            <MapView
-              filteredPlaces={filteredPlaces}
-              selectedId={selectedId}
-              onSelect={handleSelect}
-            />
+            <Suspense fallback={<div className="h-full w-full bg-surface-2" />}>
+              <MapView
+                filteredPlaces={filteredPlaces}
+                selectedId={selectedId}
+                onSelect={handleSelect}
+              />
+            </Suspense>
           </div>
           {/* Filters overlay top-right */}
           <div className="absolute top-3 right-3 left-16 z-10 max-w-[460px] ml-auto">
@@ -142,11 +144,13 @@ const ConoceLosCabos = () => {
           onSearchChange={setSearch}
         />
         <div style={{ height: "45vh", minHeight: 320 }}>
-          <MapView
-            filteredPlaces={filteredPlaces}
-            selectedId={selectedId}
-            onSelect={handleSelect}
-          />
+          <Suspense fallback={<div className="h-full w-full bg-surface-2" />}>
+            <MapView
+              filteredPlaces={filteredPlaces}
+              selectedId={selectedId}
+              onSelect={handleSelect}
+            />
+          </Suspense>
         </div>
         <FeaturedStrip places={places} onSelect={handleSelect} />
         {/* Routes panel inline below on mobile */}
