@@ -669,7 +669,7 @@ function PointsOfSale({ loggedIn = false, isFan = false }: { loggedIn?: boolean;
               >
                 <div className="w-14 h-14 flex items-center justify-center flex-shrink-0">
                   {p.logo ? (
-                    <img src={p.logo} alt={p.name} className="w-12 h-12 object-contain" />
+                    <img loading="lazy" decoding="async" src={p.logo} alt={p.name} className="w-12 h-12 object-contain" />
                   ) : (
                     <Store className="w-8 h-8" style={{ color: "#00abc4" }} />
                   )}
@@ -1094,7 +1094,7 @@ const Accesos = () => {
                   <div className="text-xs text-white/60 mb-2">Próximo partido en casa:</div>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
-                      <img src={lcuCrest} alt="Los Cabos United" className="w-9 h-9 object-contain" />
+                      <img loading="lazy" decoding="async" src={lcuCrest} alt="Los Cabos United" className="w-9 h-9 object-contain" />
                       <span className="text-sm font-bold text-white">LCU</span>
                     </div>
                     <span className="text-white/40 text-xs font-bold">VS</span>

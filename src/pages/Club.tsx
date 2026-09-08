@@ -81,7 +81,7 @@ function ImageCard({
         className
       )}
     >
-      <img src={image} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
+      <img loading="lazy" decoding="async" src={image} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/25" />
       <div className="relative flex min-h-[280px] flex-col justify-between p-4 md:min-h-[320px] md:p-6">
         <span className="w-fit rounded-lg border border-primary/30 bg-background/60 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary backdrop-blur">

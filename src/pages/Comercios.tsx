@@ -122,7 +122,7 @@ export default function Comercios() {
         <div className="rounded-2xl border border-border bg-card p-5 space-y-4 text-center">
           <div className="w-24 h-24 mx-auto rounded-full overflow-hidden bg-muted flex items-center justify-center">
             {member.avatar_url ? (
-              <img src={member.avatar_url} alt={member.full_name} className="w-full h-full object-cover" />
+              <img loading="lazy" decoding="async" src={member.avatar_url} alt={member.full_name} className="w-full h-full object-cover" />
             ) : (
               <span className="text-2xl font-bold text-muted-foreground">
                 {member.full_name.split(/\s+/).slice(0, 2).map((p) => p[0]).join("")}
