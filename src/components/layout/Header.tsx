@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from "react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Menu,
@@ -29,21 +29,15 @@ import {
 } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
 
-/** Registro, login y pase bajan solo al abrirlos: no pesan en la primera carga. */
-const AuthModal = lazy(() =>
-  import("@/components/auth/AuthModal").then((m) => ({ default: m.AuthModal }))
-);
-const AuthFlow = lazy(() =>
-  import("@/components/auth/AuthFlow").then((m) => ({ default: m.AuthFlow }))
-);
-const FanPassMini = lazy(() =>
-  import("@/components/pass/FanPassMini").then((m) => ({ default: m.FanPassMini }))
-);
+import { AuthModal } from "@/components/auth/AuthModal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cartStore";
+import { FanPassMini } from "@/components/pass/FanPassMini";
 import { MiniPassChip } from "@/components/pass/MiniPassChip";
+import { AuthFlow } from "@/components/auth/AuthFlow";
 import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { preloadRoute } from "@/lib/route-preload";
 
 
 const SoccerBallIcon = (props: React.SVGProps<SVGSVGElement> & { size?: number }) => (
@@ -114,6 +108,7 @@ export function Header() {
   };
 
   const go = (path: string) => {
+    preloadRoute(path);
     setIsMenuOpen(false);
     if (path !== location.pathname) {
       window.scrollTo(0, 0);
@@ -165,6 +160,9 @@ export function Header() {
               <li key={link.path} className="relative">
                 <Link
                   to={link.path}
+                  onMouseEnter={() => preloadRoute(link.path)}
+                  onTouchStart={() => preloadRoute(link.path)}
+                  onFocus={() => preloadRoute(link.path)}
                   onClick={() => window.scrollTo(0, 0)}
                   aria-current={active ? "page" : undefined}
                   className={cn(
@@ -231,9 +229,7 @@ export function Header() {
                     )}
                   </div>
                 </Link>
-                <Suspense fallback={null}>
-                  <FanPassMini userId={user.id} onNavigate={() => setIsMenuOpen(false)} />
-                </Suspense>
+                <FanPassMini userId={user.id} onNavigate={() => setIsMenuOpen(false)} />
                 {isAdmin && (
                   <Link
                     to="/admin"
@@ -258,15 +254,13 @@ export function Header() {
             ) : (
               <div>
                 {showAuth ? (
-                  <Suspense fallback={null}>
-                    <AuthModal
-                      loginOnly
-                      onSuccess={() => {
-                        setShowAuth(false);
-                        setIsMenuOpen(false);
-                      }}
-                    />
-                  </Suspense>
+                  <AuthModal
+                    loginOnly
+                    onSuccess={() => {
+                      setShowAuth(false);
+                      setIsMenuOpen(false);
+                    }}
+                  />
                 ) : (
                   <div className="space-y-2">
                     <button
@@ -417,15 +411,11 @@ export function Header() {
         </SheetContent>
       </Sheet>
 
-      {showSignupWizard && (
-        <Suspense fallback={null}>
-          <AuthFlow
-            open={showSignupWizard}
-            onClose={() => setShowSignupWizard(false)}
-            initialTierId="fan"
-          />
-        </Suspense>
-      )}
+      <AuthFlow
+        open={showSignupWizard}
+        onClose={() => setShowSignupWizard(false)}
+        initialTierId="fan"
+      />
     </header>
   );
 }

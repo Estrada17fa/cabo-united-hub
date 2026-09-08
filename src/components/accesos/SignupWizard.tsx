@@ -332,7 +332,7 @@ export function SignupWizard({ open, onClose, tiers, initialTierId = "fan" }: Pr
                               style={{ background: "rgba(255,255,255,0.06)" }}
                             >
                               {p.photo_url ? (
-                                <img loading="lazy" decoding="async" src={p.photo_url} alt={p.name} className="w-full h-full object-cover" />
+                                <img src={p.photo_url} alt={p.name} className="w-full h-full object-cover" />
                               ) : (
                                 <span className="text-sm font-bold text-foreground/80">{initials}</span>
                               )}

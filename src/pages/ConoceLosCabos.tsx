@@ -1,13 +1,11 @@
-import { Suspense, lazy, useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Place } from "@/lib/visita-los-cabos-data";
 import { usePlaces } from "@/hooks/useVisitaLosCabos";
-const MapView = lazy(() =>
-  import("@/components/visita-los-cabos/MapView").then((m) => ({ default: m.MapView }))
-);
+import { LazyMapView as MapView } from "@/components/visita-los-cabos/LazyMapView";
 import { FilterPills, FilterValue } from "@/components/visita-los-cabos/FilterPills";
 import { PlaceDetail } from "@/components/visita-los-cabos/PlaceDetail";
 import { RoutesPanel } from "@/components/visita-los-cabos/RoutesPanel";
@@ -84,13 +82,11 @@ const ConoceLosCabos = () => {
         {/* LEFT — Map */}
         <div className="col-span-8 relative">
           <div className="absolute inset-0 rounded-2xl overflow-hidden">
-            <Suspense fallback={<div className="h-full w-full bg-surface-2" />}>
-              <MapView
-                filteredPlaces={filteredPlaces}
-                selectedId={selectedId}
-                onSelect={handleSelect}
-              />
-            </Suspense>
+            <MapView
+              filteredPlaces={filteredPlaces}
+              selectedId={selectedId}
+              onSelect={handleSelect}
+            />
           </div>
           {/* Filters overlay top-right */}
           <div className="absolute top-3 right-3 left-16 z-10 max-w-[460px] ml-auto">
@@ -144,13 +140,11 @@ const ConoceLosCabos = () => {
           onSearchChange={setSearch}
         />
         <div style={{ height: "45vh", minHeight: 320 }}>
-          <Suspense fallback={<div className="h-full w-full bg-surface-2" />}>
-            <MapView
-              filteredPlaces={filteredPlaces}
-              selectedId={selectedId}
-              onSelect={handleSelect}
-            />
-          </Suspense>
+          <MapView
+            filteredPlaces={filteredPlaces}
+            selectedId={selectedId}
+            onSelect={handleSelect}
+          />
         </div>
         <FeaturedStrip places={places} onSelect={handleSelect} />
         {/* Routes panel inline below on mobile */}

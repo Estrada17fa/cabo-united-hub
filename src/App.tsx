@@ -2,33 +2,37 @@ import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient } from "@tanstack/react-query";
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 import { AppLayout } from "./components/layout/AppLayout";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
+import { DataWarmup } from "./components/layout/DataWarmup";
+import { PageSkeleton } from "./components/lcu/PageSkeleton";
 import { AuthProvider } from "./hooks/useAuth";
 import Index from "./pages/Index";
+import { routeLoaders } from "./lib/route-preload";
 
-const ZonaPartido = lazy(() => import("./pages/ZonaPartido"));
-const Club = lazy(() => import("./pages/Club"));
-const FanZone = lazy(() => import("./pages/FanZone"));
-const Accesos = lazy(() => import("./pages/Accesos"));
-const MiPase = lazy(() => import("./pages/MiPase"));
-const Comercios = lazy(() => import("./pages/Comercios"));
-const Tienda = lazy(() => import("./pages/Tienda"));
+const lazyRoute = (path: string) =>
+  lazy(routeLoaders[path] as () => Promise<{ default: React.ComponentType }>);
+
+const ZonaPartido = lazyRoute("/zona-partido");
+const Club = lazyRoute("/club");
+const FanZone = lazyRoute("/fan-zone");
+const Accesos = lazyRoute("/accesos");
+const MiPase = lazyRoute("/mi-pase");
+const Comercios = lazyRoute("/comercios");
+const Tienda = lazyRoute("/tienda");
+const TiendaBuscar = lazyRoute("/tienda/buscar");
+const ConoceLosCabos = lazyRoute("/conoce-los-cabos");
+const Patrocinios = lazyRoute("/patrocinios");
+const Contacto = lazyRoute("/contacto");
+const MiPerfil = lazyRoute("/mi-perfil");
+const Abonos = lazyRoute("/abonos");
+
 const TiendaProducto = lazy(() => import("./pages/TiendaProducto"));
-const TiendaBuscar = lazy(() => import("./pages/TiendaBuscar"));
-const ConoceLosCabos = lazy(() => import("./pages/ConoceLosCabos"));
-const Patrocinios = lazy(() => import("./pages/Patrocinios"));
-const Contacto = lazy(() => import("./pages/Contacto"));
-const MiPerfil = lazy(() => import("./pages/MiPerfil"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const ConfirmarCorreo = lazy(() => import("./pages/ConfirmarCorreo"));
 const ConsentimientoTutor = lazy(() => import("./pages/ConsentimientoTutor"));
-const Abonos = lazy(() => import("./pages/Abonos"));
 const AbonosExito = lazy(() => import("./pages/AbonosExito"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -41,34 +45,23 @@ import { useCartSync } from "@/hooks/useCartSync";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Los datos del sitio casi no cambian: se reutilizan sin volver a pedirlos.
+      // La segunda visita a una página se pinta desde caché y actualiza en silencio.
       staleTime: 5 * 60 * 1000,
-      gcTime: 24 * 60 * 60 * 1000,
+      gcTime: 30 * 60 * 1000,
       refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
       retry: 1,
     },
   },
 });
 
-/** Caché en el navegador: la segunda visita pinta al instante. */
-const persister = createSyncStoragePersister({
-  storage: typeof window !== "undefined" ? window.localStorage : undefined,
-  key: "lcu-query-cache",
-  throttleTime: 1000,
-});
-
-const PageFallback = () => (
-  <div className="flex justify-center py-24">
-    <Loader2 className="h-6 w-6 animate-spin text-primary" />
-  </div>
-);
+const PageFallback = () => <PageSkeleton />;
 
 const AppShell = () => {
   useCartSync();
   return (
     <AppLayout>
       <ScrollToTop />
+      <DataWarmup />
       <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route path="/" element={<Index />} />
@@ -100,21 +93,7 @@ const AppShell = () => {
 };
 
 const App = () => (
-  <PersistQueryClientProvider
-    client={queryClient}
-    persistOptions={{
-      persister,
-      maxAge: 24 * 60 * 60 * 1000,
-      // No se guardan datos de sesión/usuario en el navegador.
-      dehydrateOptions: {
-        shouldDehydrateQuery: (query) => {
-          const key = String(query.queryKey[0] ?? "");
-          if (query.state.status !== "success") return false;
-          return !/profile|user|pass|cart|admin|consent/i.test(key);
-        },
-      },
-    }}
-  >
+  <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -134,7 +113,7 @@ const App = () => (
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
-  </PersistQueryClientProvider>
+  </QueryClientProvider>
 );
 
 export default App;

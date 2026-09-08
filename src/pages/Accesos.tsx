@@ -6,12 +6,12 @@ import { AuthFlow } from "@/components/auth/AuthFlow";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import stadiumHero from "@/assets/accesos-page-hero-1024.webp";
-import mobileTeamBg from "@/assets/mobile-team-bg-1024.webp";
-import kitFan from "@/assets/accesos-kit-fan-1024.webp";
-import kitGold from "@/assets/accesos-kit-gold-1024.webp";
-import kitPremium from "@/assets/accesos-kit-premium-1024.webp";
-import kitPlatino from "@/assets/accesos-kit-platino-1024.webp";
+import stadiumHero from "@/assets/accesos-page-hero.jpg";
+import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
+import kitFan from "@/assets/accesos-kit-fan.jpg";
+import kitGold from "@/assets/accesos-kit-gold.jpg";
+import kitPremium from "@/assets/accesos-kit-premium.jpg";
+import kitPlatino from "@/assets/accesos-kit-platino.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
 import { FanPassPreview } from "@/components/pass/FanPassPreview";
 
@@ -669,7 +669,7 @@ function PointsOfSale({ loggedIn = false, isFan = false }: { loggedIn?: boolean;
               >
                 <div className="w-14 h-14 flex items-center justify-center flex-shrink-0">
                   {p.logo ? (
-                    <img loading="lazy" decoding="async" src={p.logo} alt={p.name} className="w-12 h-12 object-contain" />
+                    <img src={p.logo} alt={p.name} className="w-12 h-12 object-contain" />
                   ) : (
                     <Store className="w-8 h-8" style={{ color: "#00abc4" }} />
                   )}
@@ -1094,7 +1094,7 @@ const Accesos = () => {
                   <div className="text-xs text-white/60 mb-2">Próximo partido en casa:</div>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
-                      <img loading="lazy" decoding="async" src={lcuCrest} alt="Los Cabos United" className="w-9 h-9 object-contain" />
+                      <img src={lcuCrest} alt="Los Cabos United" className="w-9 h-9 object-contain" />
                       <span className="text-sm font-bold text-white">LCU</span>
                     </div>
                     <span className="text-white/40 text-xs font-bold">VS</span>

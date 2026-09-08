@@ -95,7 +95,7 @@ export function NewsSection({ className = "" }: { className?: string }) {
               </DialogHeader>
 
               {open.image_url && (
-                <img loading="lazy" decoding="async"
+                <img
                   src={open.image_url}
                   alt={open.title}
                   className="w-full rounded-xl border border-hairline object-cover"
