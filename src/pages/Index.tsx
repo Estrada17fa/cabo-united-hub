@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Suspense, lazy, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -34,15 +34,24 @@ import { NextMatchCard } from "@/components/match-zone/NextMatchCard";
 import { ProductCard } from "@/components/tienda/ProductCard";
 import { SectionHeader } from "@/components/ui-lcu/SectionHeader";
 import { LcuTabs } from "@/components/ui-lcu/LcuTabs";
-import { HomeMiniMap } from "@/components/home/HomeMiniMap";
+/** El mapa (librería más pesada del sitio) y el registro bajan solo cuando se usan. */
+const HomeMiniMap = lazy(() =>
+  import("@/components/home/HomeMiniMap").then((m) => ({ default: m.HomeMiniMap }))
+);
+const AuthFlow = lazy(() =>
+  import("@/components/auth/AuthFlow").then((m) => ({ default: m.AuthFlow }))
+);
+const AuthModal = lazy(() =>
+  import("@/components/auth/AuthModal").then((m) => ({ default: m.AuthModal }))
+);
 import { CategoryIcon } from "@/components/visita-los-cabos/CategoryIcon";
 import { MiniGameCard } from "@/components/fan-zone/MiniGameCard";
 import { GAMES } from "@/components/fan-zone/games";
-import { AuthFlow } from "@/components/auth/AuthFlow";
-import { AuthModal } from "@/components/auth/AuthModal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { lcuButtonClasses } from "@/components/ui-lcu/LcuButton";
-import stadiumHero from "@/assets/stadium-hero-1024.webp";
+import { SmartImage } from "@/components/ui-lcu/SmartImage";
+import { IMG } from "@/lib/imageSets";
+import { useInViewOnce } from "@/hooks/useInViewOnce";
 import lcuCrest from "@/assets/lcu-crest.png";
 import prizeJersey from "@/assets/prize-jersey-1024.webp";
 import prizeTickets from "@/assets/prize-tickets-1024.webp";
