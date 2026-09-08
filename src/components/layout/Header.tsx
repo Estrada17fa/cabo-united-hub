@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Menu,
@@ -29,12 +29,19 @@ import {
 } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
 
-import { AuthModal } from "@/components/auth/AuthModal";
+/** Registro, login y pase bajan solo al abrirlos: no pesan en la primera carga. */
+const AuthModal = lazy(() =>
+  import("@/components/auth/AuthModal").then((m) => ({ default: m.AuthModal }))
+);
+const AuthFlow = lazy(() =>
+  import("@/components/auth/AuthFlow").then((m) => ({ default: m.AuthFlow }))
+);
+const FanPassMini = lazy(() =>
+  import("@/components/pass/FanPassMini").then((m) => ({ default: m.FanPassMini }))
+);
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cartStore";
-import { FanPassMini } from "@/components/pass/FanPassMini";
 import { MiniPassChip } from "@/components/pass/MiniPassChip";
-import { AuthFlow } from "@/components/auth/AuthFlow";
 import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
