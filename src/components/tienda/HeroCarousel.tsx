@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useShopHeroSlides, type ShopHeroSlide } from "@/hooks/useShopContent";
-import hero1 from "@/assets/tienda-hero-1.jpg";
-import hero2 from "@/assets/tienda-hero-2.jpg";
-import hero3 from "@/assets/tienda-hero-3.jpg";
+import hero1 from "@/assets/tienda-hero-1-1024.webp";
+import hero2 from "@/assets/tienda-hero-2-1024.webp";
+import hero3 from "@/assets/tienda-hero-3-1024.webp";
 
 /** Respaldo si el admin todavía no capturó slides: la página nunca se ve vacía. */
 const FALLBACK: ShopHeroSlide[] = [

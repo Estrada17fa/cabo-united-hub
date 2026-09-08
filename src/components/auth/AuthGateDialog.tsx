@@ -1,5 +1,8 @@
+import { Suspense, lazy } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AuthModal } from "./AuthModal";
+
+/** El formulario de acceso baja solo al abrir el modal. */
+const AuthModal = lazy(() => import("./AuthModal").then((m) => ({ default: m.AuthModal })));
 
 interface Props {
   open: boolean;
@@ -24,12 +27,14 @@ export function AuthGateDialog({
           <DialogTitle className="text-base font-bold text-foreground">{title}</DialogTitle>
           <p className="text-[12px] leading-relaxed text-muted-foreground">{description}</p>
         </DialogHeader>
-        <AuthModal
-          onSuccess={() => {
-            onOpenChange(false);
-            onSuccess?.();
-          }}
-        />
+        <Suspense fallback={null}>
+          <AuthModal
+            onSuccess={() => {
+              onOpenChange(false);
+              onSuccess?.();
+            }}
+          />
+        </Suspense>
       </DialogContent>
     </Dialog>
   );

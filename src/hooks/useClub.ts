@@ -1,3 +1,4 @@
+import { CONTENT_STALE, STATIC_STALE } from "@/lib/queryConfig";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -87,6 +88,7 @@ export interface ClubPlayer {
 export function useClubPlayers() {
   return useQuery({
     queryKey: ["lcu-players"],
+    staleTime: STATIC_STALE,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("players")
@@ -118,6 +120,7 @@ export interface ClubNews {
 export function useClubNews(limit = 9) {
   return useQuery({
     queryKey: ["lcu-news", limit],
+    staleTime: STATIC_STALE,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("news")
@@ -150,6 +153,7 @@ export interface FanPost {
 export function useFanPosts() {
   return useQuery({
     queryKey: ["lcu-fan-posts"],
+    staleTime: CONTENT_STALE,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("fan_posts")
@@ -176,6 +180,7 @@ export interface YouthTeam {
 export function useYouthTeam() {
   return useQuery({
     queryKey: ["lcu-youth-team"],
+    staleTime: STATIC_STALE,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("youth_team")

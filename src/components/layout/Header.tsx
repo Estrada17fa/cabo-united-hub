@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Menu,
@@ -29,12 +29,19 @@ import {
 } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
 
-import { AuthModal } from "@/components/auth/AuthModal";
+/** Registro, login y pase bajan solo al abrirlos: no pesan en la primera carga. */
+const AuthModal = lazy(() =>
+  import("@/components/auth/AuthModal").then((m) => ({ default: m.AuthModal }))
+);
+const AuthFlow = lazy(() =>
+  import("@/components/auth/AuthFlow").then((m) => ({ default: m.AuthFlow }))
+);
+const FanPassMini = lazy(() =>
+  import("@/components/pass/FanPassMini").then((m) => ({ default: m.FanPassMini }))
+);
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cartStore";
-import { FanPassMini } from "@/components/pass/FanPassMini";
 import { MiniPassChip } from "@/components/pass/MiniPassChip";
-import { AuthFlow } from "@/components/auth/AuthFlow";
 import { cn } from "@/lib/utils";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
@@ -224,7 +231,9 @@ export function Header() {
                     )}
                   </div>
                 </Link>
-                <FanPassMini userId={user.id} onNavigate={() => setIsMenuOpen(false)} />
+                <Suspense fallback={null}>
+                  <FanPassMini userId={user.id} onNavigate={() => setIsMenuOpen(false)} />
+                </Suspense>
                 {isAdmin && (
                   <Link
                     to="/admin"
@@ -249,13 +258,15 @@ export function Header() {
             ) : (
               <div>
                 {showAuth ? (
-                  <AuthModal
-                    loginOnly
-                    onSuccess={() => {
-                      setShowAuth(false);
-                      setIsMenuOpen(false);
-                    }}
-                  />
+                  <Suspense fallback={null}>
+                    <AuthModal
+                      loginOnly
+                      onSuccess={() => {
+                        setShowAuth(false);
+                        setIsMenuOpen(false);
+                      }}
+                    />
+                  </Suspense>
                 ) : (
                   <div className="space-y-2">
                     <button
@@ -406,11 +417,15 @@ export function Header() {
         </SheetContent>
       </Sheet>
 
-      <AuthFlow
-        open={showSignupWizard}
-        onClose={() => setShowSignupWizard(false)}
-        initialTierId="fan"
-      />
+      {showSignupWizard && (
+        <Suspense fallback={null}>
+          <AuthFlow
+            open={showSignupWizard}
+            onClose={() => setShowSignupWizard(false)}
+            initialTierId="fan"
+          />
+        </Suspense>
+      )}
     </header>
   );
 }

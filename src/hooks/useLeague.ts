@@ -1,3 +1,4 @@
+import { LIVE_STALE, STATIC_STALE } from "@/lib/queryConfig";
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -63,6 +64,7 @@ export function useTeams(season?: string) {
   const key = season ?? active;
   return useQuery({
     queryKey: ["lcu-teams", key],
+    staleTime: STATIC_STALE,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("teams")
@@ -80,6 +82,7 @@ export function useMatches(season?: string) {
   const key = season ?? active;
   return useQuery({
     queryKey: ["lcu-matches", key],
+    staleTime: LIVE_STALE,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("matches")
@@ -97,6 +100,7 @@ export function useStandings(season?: string) {
   const key = season ?? active;
   return useQuery({
     queryKey: ["lcu-standings", key],
+    staleTime: LIVE_STALE,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("league_standings")
@@ -116,6 +120,7 @@ export function useScorers(season?: string) {
   const key = season ?? active;
   return useQuery({
     queryKey: ["lcu-scorers", key],
+    staleTime: LIVE_STALE,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("top_scorers")
@@ -133,6 +138,7 @@ export function useScorers(season?: string) {
 export function useSeasons() {
   return useQuery({
     queryKey: ["lcu-seasons"],
+    staleTime: STATIC_STALE,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("seasons")

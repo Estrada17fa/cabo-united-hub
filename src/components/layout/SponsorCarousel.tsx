@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
-import sponsor05 from "@/assets/sponsors/sponsor-05.png";
-import sponsor06 from "@/assets/sponsors/sponsor-06.png";
-import sponsor07 from "@/assets/sponsors/sponsor-07.png";
-import sponsor08 from "@/assets/sponsors/sponsor-08.png";
-import sponsor09 from "@/assets/sponsors/sponsor-09.png";
-import sponsor10 from "@/assets/sponsors/sponsor-10.png";
+import sponsor05 from "@/assets/sponsors/sponsor-05.webp";
+import sponsor06 from "@/assets/sponsors/sponsor-06.webp";
+import sponsor07 from "@/assets/sponsors/sponsor-07.webp";
+import sponsor08 from "@/assets/sponsors/sponsor-08.webp";
+import sponsor09 from "@/assets/sponsors/sponsor-09.webp";
+import sponsor10 from "@/assets/sponsors/sponsor-10.webp";
 import { useSponsors } from "@/hooks/useSponsors";
 
 /** Respaldo: si aún no hay patrocinadores en el panel, la banda nunca se ve vacía. */

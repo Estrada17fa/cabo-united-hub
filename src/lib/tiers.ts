@@ -1,7 +1,7 @@
-import kitFan from "@/assets/accesos-kit-fan.jpg";
-import kitGold from "@/assets/accesos-kit-gold.jpg";
-import kitPremium from "@/assets/accesos-kit-premium.jpg";
-import kitPlatino from "@/assets/accesos-kit-platino.jpg";
+import kitFan from "@/assets/accesos-kit-fan-1024.webp";
+import kitGold from "@/assets/accesos-kit-gold-1024.webp";
+import kitPremium from "@/assets/accesos-kit-premium-1024.webp";
+import kitPlatino from "@/assets/accesos-kit-platino-1024.webp";
 
 export type TierId = "fan" | "gold" | "premium" | "platino";
 

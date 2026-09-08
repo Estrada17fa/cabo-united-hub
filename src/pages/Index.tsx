@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Suspense, lazy, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -34,19 +34,28 @@ import { NextMatchCard } from "@/components/match-zone/NextMatchCard";
 import { ProductCard } from "@/components/tienda/ProductCard";
 import { SectionHeader } from "@/components/ui-lcu/SectionHeader";
 import { LcuTabs } from "@/components/ui-lcu/LcuTabs";
-import { HomeMiniMap } from "@/components/home/HomeMiniMap";
+/** El mapa (librería más pesada del sitio) y el registro bajan solo cuando se usan. */
+const HomeMiniMap = lazy(() =>
+  import("@/components/home/HomeMiniMap").then((m) => ({ default: m.HomeMiniMap }))
+);
+const AuthFlow = lazy(() =>
+  import("@/components/auth/AuthFlow").then((m) => ({ default: m.AuthFlow }))
+);
+const AuthModal = lazy(() =>
+  import("@/components/auth/AuthModal").then((m) => ({ default: m.AuthModal }))
+);
 import { CategoryIcon } from "@/components/visita-los-cabos/CategoryIcon";
 import { MiniGameCard } from "@/components/fan-zone/MiniGameCard";
 import { GAMES } from "@/components/fan-zone/games";
-import { AuthFlow } from "@/components/auth/AuthFlow";
-import { AuthModal } from "@/components/auth/AuthModal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { lcuButtonClasses } from "@/components/ui-lcu/LcuButton";
-import stadiumHero from "@/assets/stadium-hero.jpg";
+import { SmartImage } from "@/components/ui-lcu/SmartImage";
+import { IMG } from "@/lib/imageSets";
+import { useInViewOnce } from "@/hooks/useInViewOnce";
 import lcuCrest from "@/assets/lcu-crest.png";
-import prizeJersey from "@/assets/prize-jersey.jpg";
-import prizeTickets from "@/assets/prize-tickets.jpg";
-import prizeVestuario from "@/assets/prize-vestuario.jpg";
+import prizeJersey from "@/assets/prize-jersey-1024.webp";
+import prizeTickets from "@/assets/prize-tickets-1024.webp";
+import prizeVestuario from "@/assets/prize-vestuario-1024.webp";
 
 const LIVE_PINK = "#F199C1";
 
@@ -80,8 +89,10 @@ function Hero({ onSignup, onLogin }: { onSignup: () => void; onLogin: () => void
 
   return (
     <section className="relative -mx-4 -mt-4 overflow-hidden md:-mx-6">
-      <img
-        src={stadiumHero}
+      <SmartImage
+        image={IMG.stadiumHero}
+        priority
+        sizes="(max-width: 768px) 100vw, 1024px"
         alt="Afición de Los Cabos United en el estadio Don Koll"
         className="absolute inset-0 h-full w-full object-cover"
       />
@@ -602,6 +613,8 @@ function ShopBlock() {
 function VisitaBlock() {
   const { data: places = [], isLoading } = usePlaces();
   const { metaFor } = useCategoryMeta();
+  // El mapa solo se monta (y su librería solo se descarga) al acercarse por scroll.
+  const { ref: mapRef, inView: mapInView } = useInViewOnce<HTMLDivElement>();
   const highlights = places
     .slice()
     .sort((a, b) => Number(b.featured) - Number(a.featured))
@@ -620,19 +633,25 @@ function VisitaBlock() {
         action={<VerTodo to="/conoce-los-cabos" />}
       />
 
-      <Link
-        to="/conoce-los-cabos"
-        className="relative block h-56 overflow-hidden rounded-2xl border border-hairline bg-surface-1 md:h-64"
-      >
-        {!isLoading && <HomeMiniMap places={places} />}
-        <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-background to-transparent px-4 pb-3 pt-10">
-          <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-            <MapPin className="h-3.5 w-3.5 text-primary" />
-            Abrir el mapa completo
+      <div ref={mapRef}>
+        <Link
+          to="/conoce-los-cabos"
+          className="relative block h-56 overflow-hidden rounded-2xl border border-hairline bg-surface-1 md:h-64"
+        >
+          {!isLoading && mapInView && (
+            <Suspense fallback={null}>
+              <HomeMiniMap places={places} />
+            </Suspense>
+          )}
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-background to-transparent px-4 pb-3 pt-10">
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+              <MapPin className="h-3.5 w-3.5 text-primary" />
+              Abrir el mapa completo
+            </span>
+            <ArrowRight className="h-4 w-4 text-primary" />
           </span>
-          <ArrowRight className="h-4 w-4 text-primary" />
-        </span>
-      </Link>
+        </Link>
+      </div>
 
       {highlights.length > 0 && (
         <div className="-mx-1 flex gap-2.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -824,20 +843,26 @@ export default function Index() {
         </section>
       )}
 
-      <AuthFlow open={signupOpen} onClose={() => setSignupOpen(false)} />
+      {signupOpen && (
+        <Suspense fallback={null}>
+          <AuthFlow open={signupOpen} onClose={() => setSignupOpen(false)} />
+        </Suspense>
+      )}
       <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
         <DialogContent className="max-h-[90vh] max-w-sm overflow-y-auto border-border bg-card">
           <DialogHeader>
             <DialogTitle>Acceso de aficionados</DialogTitle>
           </DialogHeader>
-          <AuthModal
-            loginOnly
-            onSuccess={() => setLoginOpen(false)}
-            onSignupClick={() => {
-              setLoginOpen(false);
-              setSignupOpen(true);
-            }}
-          />
+          <Suspense fallback={null}>
+            <AuthModal
+              loginOnly
+              onSuccess={() => setLoginOpen(false)}
+              onSignupClick={() => {
+                setLoginOpen(false);
+                setSignupOpen(true);
+              }}
+            />
+          </Suspense>
         </DialogContent>
       </Dialog>
     </div>

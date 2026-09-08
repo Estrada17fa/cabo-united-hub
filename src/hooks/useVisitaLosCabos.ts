@@ -1,3 +1,4 @@
+import { STATIC_STALE } from "@/lib/queryConfig";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type {
@@ -54,6 +55,7 @@ export function normalizePlace(row: PlaceRow): Place {
 export function usePlaces() {
   return useQuery({
     queryKey: ["places", "public"],
+    staleTime: STATIC_STALE,
     queryFn: async (): Promise<Place[]> => {
       const { data, error } = await supabase
         .from("places")
@@ -73,6 +75,7 @@ export function usePlaces() {
 export function useFanRoutes() {
   return useQuery({
     queryKey: ["fan_routes", "public"],
+    staleTime: STATIC_STALE,
     queryFn: async (): Promise<FanRoute[]> => {
       const { data, error } = await supabase
         .from("fan_routes")

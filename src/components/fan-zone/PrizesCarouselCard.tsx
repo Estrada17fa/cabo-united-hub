@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Gift, Ticket, ShoppingBag, Crown, ChevronRight, Coins, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
-import prizeTickets from "@/assets/prize-tickets.jpg";
-import prizeJersey from "@/assets/prize-jersey.jpg";
-import prizePass from "@/assets/prize-pass.jpg";
-import prizeVestuario from "@/assets/prize-vestuario.jpg";
+import prizeTickets from "@/assets/prize-tickets-1024.webp";
+import prizeJersey from "@/assets/prize-jersey-1024.webp";
+import prizePass from "@/assets/prize-pass-1024.webp";
+import prizeVestuario from "@/assets/prize-vestuario-1024.webp";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 

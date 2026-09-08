@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { CalendarDays, MapPin, Ticket } from "lucide-react";
 import { formatKickoff } from "@/lib/matchClock";
 import { CountdownTimer, MatchupRow, PrimaryButton } from "@/components/lcu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AuthModal } from "@/components/auth/AuthModal";
-import { AuthFlow } from "@/components/auth/AuthFlow";
+/** Registro y login bajan solo al abrirlos. */
+const AuthModal = lazy(() =>
+  import("@/components/auth/AuthModal").then((m) => ({ default: m.AuthModal }))
+);
+const AuthFlow = lazy(() =>
+  import("@/components/auth/AuthFlow").then((m) => ({ default: m.AuthFlow }))
+);
 import { useAuth } from "@/hooks/useAuth";
 import type { Match } from "./types";
 
@@ -100,18 +105,24 @@ export function NextMatchCard({ match }: { match: Match }) {
           <DialogHeader>
             <DialogTitle>Acceso de aficionados</DialogTitle>
           </DialogHeader>
-          <AuthModal
-            loginOnly
-            onSuccess={() => setLoginOpen(false)}
-            onSignupClick={() => {
-              setLoginOpen(false);
-              setSignupOpen(true);
-            }}
-          />
+          <Suspense fallback={null}>
+            <AuthModal
+              loginOnly
+              onSuccess={() => setLoginOpen(false)}
+              onSignupClick={() => {
+                setLoginOpen(false);
+                setSignupOpen(true);
+              }}
+            />
+          </Suspense>
         </DialogContent>
       </Dialog>
 
-      <AuthFlow open={signupOpen} onClose={() => setSignupOpen(false)} />
+      {signupOpen && (
+        <Suspense fallback={null}>
+          <AuthFlow open={signupOpen} onClose={() => setSignupOpen(false)} />
+        </Suspense>
+      )}
     </article>
   );
 }

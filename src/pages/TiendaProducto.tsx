@@ -105,7 +105,7 @@ const TiendaProducto = () => {
         {/* GALERÍA */}
         <div>
           <div className="overflow-hidden rounded-2xl border border-hairline bg-surface-2">
-            <img
+            <img loading="lazy" decoding="async"
               src={product.images[activeImage] ?? product.images[0]}
               alt={product.title}
               width={1024}
