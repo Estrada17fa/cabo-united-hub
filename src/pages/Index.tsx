@@ -614,7 +614,7 @@ function VisitaBlock() {
   const { data: places = [], isLoading } = usePlaces();
   const { metaFor } = useCategoryMeta();
   // El mapa solo se monta (y su librería solo se descarga) al acercarse por scroll.
-  const { ref: mapRef, inView: mapInView } = useInViewOnce<HTMLAnchorElement>();
+  const { ref: mapRef, inView: mapInView } = useInViewOnce<HTMLDivElement>();
   const highlights = places
     .slice()
     .sort((a, b) => Number(b.featured) - Number(a.featured))
