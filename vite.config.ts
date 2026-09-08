@@ -13,6 +13,11 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  define: {
+    // Identificador de build: invalida la caché guardada al publicar una versión nueva.
+    __BUILD_ID__: JSON.stringify(String(Date.now())),
+  },
+
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
