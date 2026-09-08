@@ -30,8 +30,17 @@ export function HeroCarousel() {
     return () => clearInterval(id);
   }, [slides.length]);
 
+  if (isLoading && slides.length === 0) {
+    return (
+      <div className="w-full overflow-hidden rounded-2xl border border-hairline bg-surface-1">
+        <div className="aspect-[4/3] w-full animate-pulse bg-white/[0.03] sm:aspect-[16/9] md:aspect-[21/9]" />
+      </div>
+    );
+  }
+
   const slide = slides[Math.min(index, slides.length - 1)];
   if (!slide) return null;
+
 
   const cta =
     slide.cta_label && slide.cta_url ? (
