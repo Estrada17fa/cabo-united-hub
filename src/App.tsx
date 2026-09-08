@@ -108,7 +108,21 @@ const AppShell = () => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+  <PersistQueryClientProvider
+    client={queryClient}
+    persistOptions={{
+      persister,
+      maxAge: 24 * 60 * 60 * 1000,
+      buster: CACHE_BUSTER,
+      dehydrateOptions: {
+        shouldDehydrateQuery: (query) => {
+          const first = String(query.queryKey?.[0] ?? "");
+          if (NO_PERSIST.some((k) => first.includes(k))) return false;
+          return query.state.status === "success";
+        },
+      },
+    }}
+  >
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -128,7 +142,8 @@ const App = () => (
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
-  </QueryClientProvider>
+  </PersistQueryClientProvider>
 );
+
 
 export default App;
