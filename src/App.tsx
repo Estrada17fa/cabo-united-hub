@@ -2,7 +2,9 @@ import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { AppLayout } from "./components/layout/AppLayout";
@@ -36,7 +38,25 @@ const AdminShell = lazy(() => import("./pages/admin/AdminShell"));
 import { CartDrawer } from "@/components/tienda/CartDrawer";
 import { useCartSync } from "@/hooks/useCartSync";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Los datos del sitio casi no cambian: se reutilizan sin volver a pedirlos.
+      staleTime: 5 * 60 * 1000,
+      gcTime: 24 * 60 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: 1,
+    },
+  },
+});
+
+/** Caché en el navegador: la segunda visita pinta al instante. */
+const persister = createSyncStoragePersister({
+  storage: typeof window !== "undefined" ? window.localStorage : undefined,
+  key: "lcu-query-cache",
+  throttleTime: 1000,
+});
 
 const PageFallback = () => (
   <div className="flex justify-center py-24">
@@ -80,7 +100,21 @@ const AppShell = () => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+  <PersistQueryClientProvider
+    client={queryClient}
+    persistOptions={{
+      persister,
+      maxAge: 24 * 60 * 60 * 1000,
+      // No se guardan datos de sesión/usuario en el navegador.
+      dehydrateOptions: {
+        shouldDehydrateQuery: (query) => {
+          const key = String(query.queryKey[0] ?? "");
+          if (query.state.status !== "success") return false;
+          return !/profile|user|pass|cart|admin|consent/i.test(key);
+        },
+      },
+    }}
+  >
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -100,7 +134,7 @@ const App = () => (
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
-  </QueryClientProvider>
+  </PersistQueryClientProvider>
 );
 
 export default App;
