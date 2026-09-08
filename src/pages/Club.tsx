@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
-import donKollImg from "@/assets/don-koll.jpg";
-import adnCabenoImg from "@/assets/adn-cabeno.jpg";
+import donKollImg from "@/assets/don-koll-1024.webp";
+import adnCabenoImg from "@/assets/adn-cabeno-1024.webp";
 import { SeasonSummary } from "@/components/club/SeasonSummary";
 import { RosterSection } from "@/components/club/RosterSection";
 import { YouthTeamCard } from "@/components/club/YouthTeamCard";

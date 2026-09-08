@@ -16,9 +16,9 @@ import { GAMES } from "@/components/fan-zone/games";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { AuthFlow } from "@/components/auth/AuthFlow";
 import { useAuth } from "@/hooks/useAuth";
-import prizeJersey from "@/assets/prize-jersey.jpg";
-import prizeTickets from "@/assets/prize-tickets.jpg";
-import prizeVestuario from "@/assets/prize-vestuario.jpg";
+import prizeJersey from "@/assets/prize-jersey-1024.webp";
+import prizeTickets from "@/assets/prize-tickets-1024.webp";
+import prizeVestuario from "@/assets/prize-vestuario-1024.webp";
 
 const TEASER_GAMES = GAMES.filter((g) =>
   ["quiniela", "arma-tu-11", "marcador-exacto", "visitas-paraiso"].includes(g.id),

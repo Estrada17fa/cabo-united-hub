@@ -6,12 +6,12 @@ import { AuthFlow } from "@/components/auth/AuthFlow";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import stadiumHero from "@/assets/accesos-page-hero.jpg";
-import mobileTeamBg from "@/assets/mobile-team-bg.jpg";
-import kitFan from "@/assets/accesos-kit-fan.jpg";
-import kitGold from "@/assets/accesos-kit-gold.jpg";
-import kitPremium from "@/assets/accesos-kit-premium.jpg";
-import kitPlatino from "@/assets/accesos-kit-platino.jpg";
+import stadiumHero from "@/assets/accesos-page-hero-1024.webp";
+import mobileTeamBg from "@/assets/mobile-team-bg-1024.webp";
+import kitFan from "@/assets/accesos-kit-fan-1024.webp";
+import kitGold from "@/assets/accesos-kit-gold-1024.webp";
+import kitPremium from "@/assets/accesos-kit-premium-1024.webp";
+import kitPlatino from "@/assets/accesos-kit-platino-1024.webp";
 import lcuCrest from "@/assets/lcu-crest.png";
 import { FanPassPreview } from "@/components/pass/FanPassPreview";
 

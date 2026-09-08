@@ -42,11 +42,11 @@ import { AuthFlow } from "@/components/auth/AuthFlow";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { lcuButtonClasses } from "@/components/ui-lcu/LcuButton";
-import stadiumHero from "@/assets/stadium-hero.jpg";
+import stadiumHero from "@/assets/stadium-hero-1024.webp";
 import lcuCrest from "@/assets/lcu-crest.png";
-import prizeJersey from "@/assets/prize-jersey.jpg";
-import prizeTickets from "@/assets/prize-tickets.jpg";
-import prizeVestuario from "@/assets/prize-vestuario.jpg";
+import prizeJersey from "@/assets/prize-jersey-1024.webp";
+import prizeTickets from "@/assets/prize-tickets-1024.webp";
+import prizeVestuario from "@/assets/prize-vestuario-1024.webp";
 
 const LIVE_PINK = "#F199C1";
 
