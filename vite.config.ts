@@ -40,7 +40,8 @@ export default defineConfig(({ mode }) => ({
           if (id.includes("/react/") || id.includes("react-dom") || id.includes("scheduler"))
             return "vendor-react";
           if (id.includes("@radix-ui")) return "vendor-ui";
-          return "vendor";
+          if (id.includes("@remix-run")) return "vendor-router";
+          // lucide-react se reparte por página: cada pantalla baja solo sus iconos.
         },
       },
     },
