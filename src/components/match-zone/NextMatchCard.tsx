@@ -105,18 +105,24 @@ export function NextMatchCard({ match }: { match: Match }) {
           <DialogHeader>
             <DialogTitle>Acceso de aficionados</DialogTitle>
           </DialogHeader>
-          <AuthModal
-            loginOnly
-            onSuccess={() => setLoginOpen(false)}
-            onSignupClick={() => {
-              setLoginOpen(false);
-              setSignupOpen(true);
-            }}
-          />
+          <Suspense fallback={null}>
+            <AuthModal
+              loginOnly
+              onSuccess={() => setLoginOpen(false)}
+              onSignupClick={() => {
+                setLoginOpen(false);
+                setSignupOpen(true);
+              }}
+            />
+          </Suspense>
         </DialogContent>
       </Dialog>
 
-      <AuthFlow open={signupOpen} onClose={() => setSignupOpen(false)} />
+      {signupOpen && (
+        <Suspense fallback={null}>
+          <AuthFlow open={signupOpen} onClose={() => setSignupOpen(false)} />
+        </Suspense>
+      )}
     </article>
   );
 }
