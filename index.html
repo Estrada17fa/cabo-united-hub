@@ -24,6 +24,65 @@
   </head>
 
   <body>
+    <div id="lcu-splash" aria-hidden="true">
+      <img src="/splash-crest.png" alt="" width="120" height="140" />
+      <div class="lcu-splash-bar"><span></span></div>
+    </div>
+    <style>
+      #lcu-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+        background: #060708;
+        transition: opacity 0.3s ease;
+      }
+      #lcu-splash.lcu-splash-hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+      #lcu-splash img {
+        width: 120px;
+        height: auto;
+        animation: lcu-splash-pulse 1.6s ease-in-out infinite;
+      }
+      #lcu-splash .lcu-splash-bar {
+        width: 96px;
+        height: 2px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+      #lcu-splash .lcu-splash-bar span {
+        display: block;
+        width: 40%;
+        height: 100%;
+        border-radius: 999px;
+        background: #00ABC4;
+        animation: lcu-splash-slide 1.2s ease-in-out infinite;
+      }
+      @keyframes lcu-splash-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.04); }
+      }
+      @keyframes lcu-splash-slide {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(240%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #lcu-splash img,
+        #lcu-splash .lcu-splash-bar span {
+          animation: none;
+        }
+        #lcu-splash .lcu-splash-bar span {
+          width: 100%;
+        }
+      }
+    </style>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
