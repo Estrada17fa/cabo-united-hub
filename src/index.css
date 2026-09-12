@@ -182,6 +182,52 @@
   }
 }
 
+/* Indicador global mientras se descarga una sección por primera vez. */
+@layer components {
+  .lcu-route-loading {
+    position: sticky;
+    top: 6.75rem;
+    z-index: 40;
+    width: 100%;
+    height: 3px;
+    overflow: hidden;
+    opacity: 0;
+    background-color: hsl(var(--hairline));
+    transition: opacity 150ms ease;
+  }
+
+  .lcu-route-loading-visible {
+    opacity: 1;
+  }
+
+  .lcu-route-loading span {
+    display: block;
+    width: 42%;
+    height: 100%;
+    border-radius: 999px;
+    background-color: hsl(var(--primary));
+    animation: lcu-route-loading-slide 1.05s ease-in-out infinite;
+  }
+
+  @media (min-width: 640px) {
+    .lcu-route-loading {
+      top: 6.5rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lcu-route-loading span {
+      width: 100%;
+      animation: none;
+    }
+  }
+}
+
+@keyframes lcu-route-loading-slide {
+  from { transform: translateX(-105%); }
+  to { transform: translateX(245%); }
+}
+
 /* Scrollbar styling */
 @layer utilities {
   .scrollbar-hide {

@@ -7,8 +7,8 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Loader2 } from "lucide-react";
 import { AppLayout } from "./components/layout/AppLayout";
+import { RouteLoadingBar } from "./components/layout/RouteLoadingBar";
 import { ScrollToTop } from "./components/layout/ScrollToTop";
 import { AuthProvider } from "./hooks/useAuth";
 import Index from "./pages/Index";
@@ -67,9 +67,7 @@ const CACHE_BUSTER = import.meta.env.VITE_BUILD_ID ?? __BUILD_ID__;
 
 
 const PageFallback = () => (
-  <div className="flex justify-center py-24">
-    <Loader2 className="h-6 w-6 animate-spin text-primary" />
-  </div>
+  <RouteLoadingBar />
 );
 
 const AppShell = () => {
