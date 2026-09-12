@@ -1,21 +1,17 @@
-import { useEffect, useState } from "react";
+import lcuCrest from "@/assets/lcu-crest.png";
 
 export function RouteLoadingBar() {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setVisible(true), 120);
-    return () => window.clearTimeout(timer);
-  }, []);
-
   return (
     <div
-      className={`lcu-route-loading ${visible ? "lcu-route-loading-visible" : ""}`}
+      className="lcu-route-loading"
       role="status"
       aria-live="polite"
-      aria-label="Cargando página"
     >
-      <span />
+      <img src={lcuCrest} alt="" className="lcu-route-loading-crest" />
+      <div className="lcu-route-loading-track" aria-hidden="true">
+        <span />
+      </div>
+      <span className="lcu-route-loading-label">Cargando</span>
     </div>
   );
 }
