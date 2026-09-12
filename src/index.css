@@ -186,7 +186,7 @@
 @layer components {
   .lcu-route-loading {
     display: flex;
-    min-height: calc(100svh - 11rem);
+    min-height: 100%;
     width: 100%;
     flex-direction: column;
     align-items: center;
