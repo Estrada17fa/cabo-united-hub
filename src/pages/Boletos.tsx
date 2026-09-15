@@ -23,7 +23,7 @@ function MatchRow({ match, past }: { match: Match; past?: boolean }) {
         past ? "opacity-60" : "hover:border-primary/40",
       )}
     >
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-col gap-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <div className="min-w-0 flex-1">
           <div className="mb-2 flex flex-wrap items-center gap-2">
             {match.matchday != null && (
@@ -38,16 +38,19 @@ function MatchRow({ match, past }: { match: Match; past?: boolean }) {
             )}
           </div>
 
-          <div className="flex items-center gap-2.5">
-            <Crest team={match.home_team} size="md" />
-            <span className="text-sm font-semibold text-foreground">
-              {match.home_team?.name ?? "Los Cabos United"}
+          <div className="flex items-center gap-2">
+            <Crest team={match.home_team} size="sm" className="sm:h-9 sm:w-9" />
+            <span className="text-[13px] font-semibold text-foreground sm:text-sm">
+              <span className="sm:hidden">{match.home_team?.short_name ?? "LCU"}</span>
+              <span className="hidden sm:inline">
+                {match.home_team?.name ?? "Los Cabos United"}
+              </span>
             </span>
-            <span className="px-1 font-display text-[11px] font-semibold text-muted-foreground">
+            <span className="px-0.5 font-display text-[11px] font-semibold text-muted-foreground">
               VS
             </span>
-            <Crest team={rival} size="md" />
-            <span className="truncate text-sm font-semibold text-foreground">
+            <Crest team={rival} size="sm" className="sm:h-9 sm:w-9" />
+            <span className="min-w-0 truncate text-[13px] font-semibold text-foreground sm:text-sm">
               {rival?.name ?? "Rival"}
             </span>
           </div>
@@ -74,14 +77,14 @@ function MatchRow({ match, past }: { match: Match; past?: boolean }) {
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 sm:w-auto"
             >
               <Ticket className="h-4 w-4" />
               Comprar boletos
               <ExternalLink className="h-3.5 w-3.5 opacity-70" />
             </a>
           ) : (
-            <span className="inline-flex h-11 items-center justify-center rounded-full border border-hairline bg-surface-2 px-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="flex h-11 w-full items-center justify-center rounded-full border border-hairline bg-surface-2 px-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground sm:w-auto">
               {past ? "Partido jugado" : "Próximamente"}
             </span>
           )}
