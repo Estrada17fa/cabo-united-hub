@@ -6,7 +6,6 @@ import {
   Heart,
   ShoppingBag,
   MapPin,
-  MoreHorizontal,
   Shield,
   Handshake,
   Mail,
@@ -189,30 +188,6 @@ export function Header() {
               </li>
             );
           })}
-          <li className="relative">
-            <button
-              type="button"
-              onClick={() => setIsMenuOpen(true)}
-              aria-label="Abrir más opciones"
-              aria-current={drawerNavLinks.some((link) => isActive(link.path)) ? "page" : undefined}
-              className={cn(
-                "flex w-full flex-col items-center justify-center gap-0.5 py-1.5 transition-colors",
-                drawerNavLinks.some((link) => isActive(link.path))
-                  ? "font-semibold text-primary"
-                  : "font-medium text-muted-foreground",
-              )}
-            >
-              <MoreHorizontal className="h-[18px] w-[18px]" strokeWidth={2} />
-              <span className="text-[9px] leading-none tracking-wide">Más</span>
-            </button>
-            {drawerNavLinks.some((link) => isActive(link.path)) && (
-              <motion.span
-                layoutId="nav-underline"
-                transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-primary"
-              />
-            )}
-          </li>
         </ul>
 
         <ul className="mx-auto hidden max-w-6xl items-center justify-center gap-1 px-4 sm:flex">
