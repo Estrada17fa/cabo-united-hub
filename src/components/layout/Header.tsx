@@ -16,6 +16,7 @@ import {
   LogOut,
   ChevronRight,
   ShieldCheck,
+  Ticket,
 } from "lucide-react";
 import lcuCrest from "@/assets/lcu-crest.png";
 import { soccerBall } from "@lucide/lab";
@@ -69,7 +70,9 @@ const navLinks = [
   { name: "Tu Club", shortName: "Club", path: "/club", icon: Users },
   { name: "Fan Zone", shortName: "Fans", path: "/fan-zone", icon: Heart },
   { name: "Visita Los Cabos", shortName: "Visita", path: "/conoce-los-cabos", icon: MapPin },
-  { name: "Tienda Oficial", shortName: "Tienda", path: "/tienda", icon: ShoppingBag },
+  { name: "Tienda", shortName: "Tienda", path: "/tienda", icon: ShoppingBag },
+  /** Séptima sección: en móvil vive en el menú de hamburguesa para no amontonar la barra. */
+  { name: "Boletos", shortName: "Boletos", path: "/boletos", icon: Ticket, desktopOnly: true },
 ];
 
 const shopLink = { name: "Tienda", path: "/tienda", icon: ShoppingBag };
