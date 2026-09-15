@@ -238,28 +238,9 @@ export function Header() {
           </SheetHeader>
 
 
-
-          {/* Conoce tu Club — entrada destacada */}
-          <button
-            onClick={() => go("/club")}
-            className="group mb-5 flex w-full items-center gap-3 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-4 text-left transition-all hover:border-primary/60 hover:bg-primary/15 active:scale-[0.99]"
-          >
-            <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-[11px] bg-primary/15">
-              <Shield className="h-6 w-6 text-primary" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-[13px] font-bold uppercase tracking-[0.12em] text-primary">
-                Conoce tu Club
-              </span>
-              <span className="block truncate text-[11px] text-muted-foreground">
-                Temporada, plantel y afición
-              </span>
-            </span>
-            <ChevronRight className="h-4 w-4 flex-shrink-0 text-primary opacity-70" />
-          </button>
-
           {/* Perfil / Auth */}
           <div className="mb-5 mt-1">
+
 
             {user && profile ? (
               <div className="space-y-4">
