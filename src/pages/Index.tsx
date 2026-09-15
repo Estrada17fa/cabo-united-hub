@@ -306,11 +306,14 @@ function HomeTicketCard({ match }: { match: Match }) {
 
 function TicketsBlock() {
   const { data: matches = [], isLoading } = useMatches();
+  // El partido de Match Zone (protagonista arriba) no se repite aquí.
+  const { match: featuredMatch } = useFeaturedMatch();
   const upcomingHomeMatches = useMemo(() => {
     const now = Date.now();
     return matches
       .filter(
         (match) =>
+          match.id !== featuredMatch?.id &&
           Boolean(match.home_team?.is_ours) &&
           match.phase !== "finished" &&
           match.phase !== "canceled" &&
@@ -318,7 +321,7 @@ function TicketsBlock() {
       )
       .sort((a, b) => +new Date(a.kickoff_at) - +new Date(b.kickoff_at))
       .slice(0, 3);
-  }, [matches]);
+  }, [matches, featuredMatch?.id]);
 
   return (
     <section className="space-y-3">
