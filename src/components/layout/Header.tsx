@@ -6,7 +6,6 @@ import {
   Heart,
   ShoppingBag,
   MapPin,
-  MoreHorizontal,
   Shield,
   Handshake,
   Mail,
@@ -73,15 +72,7 @@ const primaryNavLinks = [
   { name: "Fan Zone", shortName: "Fans", path: "/fan-zone", icon: Heart },
 ];
 
-const mobileNavLinks = primaryNavLinks.slice(0, 4);
-
-const drawerNavLinks = [
-  { name: "Visita Los Cabos", path: "/conoce-los-cabos", icon: MapPin },
-  { name: "Fan Zone", path: "/fan-zone", icon: Heart },
-  { name: "Tu Club", path: "/club", icon: Shield },
-];
-
-const shopLink = { name: "Tienda", path: "/tienda", icon: ShoppingBag };
+const mobileNavLinks = primaryNavLinks;
 
 const menuLinks = [
   { name: "Patrocinios", path: "/patrocinios", icon: Handshake },
@@ -159,7 +150,7 @@ export function Header() {
 
       {/* Línea 2 — navbar visible en todos los formatos, subrayado activo animado */}
       <nav className="border-b border-hairline" aria-label="Navegación principal">
-        <ul className="mx-auto grid max-w-6xl grid-cols-5 px-1 sm:hidden">
+        <ul className="mx-auto grid max-w-6xl grid-cols-6 px-1 sm:hidden">
           {mobileNavLinks.map((link) => {
             const NavIcon = link.icon;
             const active = isActive(link.path);
@@ -181,7 +172,7 @@ export function Header() {
                     transition={{ type: "spring", stiffness: 500, damping: 18 }}
                     className="flex"
                   >
-                    <NavIcon className="h-[18px] w-[18px]" strokeWidth={2} />
+                    <NavIcon className="h-4 w-4" strokeWidth={2} />
                   </motion.span>
                   <span className="text-[9px] leading-none tracking-wide">
                     {link.shortName}
@@ -191,36 +182,12 @@ export function Header() {
                   <motion.span
                     layoutId="nav-underline"
                     transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                    className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-primary"
+                    className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-primary"
                   />
                 )}
               </li>
             );
           })}
-          <li className="relative">
-            <button
-              type="button"
-              onClick={() => setIsMenuOpen(true)}
-              aria-label="Abrir más opciones"
-              aria-current={drawerNavLinks.some((link) => isActive(link.path)) ? "page" : undefined}
-              className={cn(
-                "flex w-full flex-col items-center justify-center gap-0.5 py-1.5 transition-colors",
-                drawerNavLinks.some((link) => isActive(link.path))
-                  ? "font-semibold text-primary"
-                  : "font-medium text-muted-foreground",
-              )}
-            >
-              <MoreHorizontal className="h-[18px] w-[18px]" strokeWidth={2} />
-              <span className="text-[9px] leading-none tracking-wide">Más</span>
-            </button>
-            {drawerNavLinks.some((link) => isActive(link.path)) && (
-              <motion.span
-                layoutId="nav-underline"
-                transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-primary"
-              />
-            )}
-          </li>
         </ul>
 
         <ul className="mx-auto hidden max-w-6xl items-center justify-center gap-1 px-4 sm:flex">
@@ -270,8 +237,79 @@ export function Header() {
             <SheetDescription className="sr-only">Menú de navegación</SheetDescription>
           </SheetHeader>
 
+          {/* Conoce tu Club — entrada destacada */}
+          <button
+            onClick={() => go("/club")}
+            className="group mb-5 mt-1 flex w-full items-center gap-3 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-4 text-left transition-all hover:border-primary/60 hover:bg-primary/15 active:scale-[0.99]"
+          >
+            <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-[11px] bg-primary/15">
+              <Shield className="h-6 w-6 text-primary" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[13px] font-bold uppercase tracking-[0.12em] text-primary">
+                Conoce tu Club
+              </span>
+              <span className="block truncate text-[11px] text-muted-foreground">
+                Temporada, plantel y afición
+              </span>
+            </span>
+            <ChevronRight className="h-4 w-4 flex-shrink-0 text-primary opacity-70" />
+          </button>
+
+          {/* Navegación */}
+          <nav className="mb-5" aria-label="Navegación">
+            <AnimatePresence initial={false}>
+              {isMenuOpen && (
+                <>
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                    Navegación
+                  </p>
+                  <ul className="space-y-1">
+                    {primaryNavLinks.map((link, i) => {
+                      const NavIcon = link.icon;
+                      const active = isActive(link.path);
+                      return (
+                        <motion.li
+                          key={link.path}
+                          initial={{ opacity: 0, x: -12 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.03 * i, duration: 0.22, ease: "easeOut" }}
+                        >
+                          <button
+                            onClick={() => go(link.path)}
+                            aria-current={active ? "page" : undefined}
+                            className={cn(
+                              "relative flex w-full items-center gap-3 rounded-[11px] px-3.5 py-3 text-sm transition-colors",
+                              active
+                                ? "bg-surface-2 font-semibold text-foreground"
+                                : "font-medium text-muted-foreground hover:text-foreground",
+                            )}
+                          >
+                            {active && (
+                              <span className="absolute left-0 top-1/2 h-5 w-[2px] -translate-y-1/2 rounded-full bg-primary" />
+                            )}
+                            <NavIcon className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
+                            <span className="flex-1 truncate text-left">{link.name}</span>
+                            {link.path === "/tienda" && hasCartItems && (
+                              <span
+                                className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold text-background"
+                                style={{ background: "hsl(var(--primary))" }}
+                              >
+                                {totalCartItems}
+                              </span>
+                            )}
+                          </button>
+                        </motion.li>
+                      );
+                    })}
+                  </ul>
+                </>
+              )}
+            </AnimatePresence>
+          </nav>
+
           {/* Perfil / Auth */}
-          <div className="mb-5 mt-4">
+          <div className="mb-5">
             {user && profile ? (
               <div className="space-y-4">
                 <Link
@@ -361,52 +399,6 @@ export function Header() {
             )}
           </div>
 
-          {/* Destinos secundarios */}
-          <nav className="mb-4" aria-label="Más secciones">
-            <AnimatePresence initial={false}>
-              {isMenuOpen && (
-                <ul className="space-y-1">
-                  {drawerNavLinks.map((link, i) => {
-                    const NavIcon = link.icon;
-                    const active = isActive(link.path);
-                    return (
-                      <motion.li
-                        key={link.path}
-                        initial={{ opacity: 0, x: -12 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.03 * i, duration: 0.22, ease: "easeOut" }}
-                      >
-                        <button
-                          onClick={() => go(link.path)}
-                          aria-current={active ? "page" : undefined}
-                          className={cn(
-                            "relative flex w-full items-center gap-3 rounded-[11px] px-3.5 py-3 text-sm transition-colors",
-                            active
-                              ? "bg-surface-2 font-semibold text-foreground"
-                              : "font-medium text-muted-foreground hover:text-foreground",
-                          )}
-                        >
-                          {active && (
-                            <span className="absolute left-0 top-1/2 h-5 w-[2px] -translate-y-1/2 rounded-full bg-primary" />
-                          )}
-                          <NavIcon className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
-                          <span className="flex-1 truncate text-left">{link.name}</span>
-                          {link.path === shopLink.path && hasCartItems && (
-                            <span
-                              className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold text-background"
-                              style={{ background: "hsl(var(--primary))" }}
-                            >
-                              {totalCartItems}
-                            </span>
-                          )}
-                        </button>
-                      </motion.li>
-                    );
-                  })}
-                </ul>
-              )}
-            </AnimatePresence>
-          </nav>
 
           {/* Ver carrito */}
           <button
