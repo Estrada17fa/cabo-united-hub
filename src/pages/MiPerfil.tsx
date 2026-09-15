@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ChevronRight,
-  ExternalLink,
   Loader2,
   LogOut,
   Pencil,
@@ -23,7 +22,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { tierStyle } from "@/lib/tiers";
 
-const BOLETOMOVIL_URL = "https://www.boletomovil.com";
 
 interface PassSummary {
   pass_code: string;
