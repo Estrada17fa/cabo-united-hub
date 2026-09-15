@@ -29,6 +29,7 @@ const MiPerfil = lazy(() => import("./pages/MiPerfil"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const ConfirmarCorreo = lazy(() => import("./pages/ConfirmarCorreo"));
 const ConsentimientoTutor = lazy(() => import("./pages/ConsentimientoTutor"));
+const Boletos = lazy(() => import("./pages/Boletos"));
 const Abonos = lazy(() => import("./pages/Abonos"));
 const AbonosExito = lazy(() => import("./pages/AbonosExito"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -95,6 +96,7 @@ const AppShell = () => {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/confirmar-correo" element={<ConfirmarCorreo />} />
           <Route path="/consentimiento-tutor/:token" element={<ConsentimientoTutor />} />
+          <Route path="/boletos" element={<Boletos />} />
           <Route path="/abonos" element={<Abonos />} />
           <Route path="/abonos/exito" element={<AbonosExito />} />
           <Route path="*" element={<NotFound />} />
