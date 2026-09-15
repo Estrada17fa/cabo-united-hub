@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  CalendarDays,
+  ExternalLink,
   Facebook,
   Gamepad2,
   Gift,
@@ -27,10 +29,12 @@ import {
   useYouthTeam,
   type ClubPlayer,
 } from "@/hooks/useClub";
-import { useActiveSeason } from "@/hooks/useLeague";
+import { useActiveSeason, useMatches } from "@/hooks/useLeague";
 import { useFeaturedMatch } from "@/hooks/useMatchZone";
+import type { Match } from "@/components/match-zone/types";
 import { SeasonSummary } from "@/components/club/SeasonSummary";
 import { NextMatchCard } from "@/components/match-zone/NextMatchCard";
+import { Crest } from "@/components/lcu";
 import { ProductCard } from "@/components/tienda/ProductCard";
 import { SectionHeader } from "@/components/ui-lcu/SectionHeader";
 import { LcuTabs } from "@/components/ui-lcu/LcuTabs";
@@ -42,6 +46,7 @@ import { AuthFlow } from "@/components/auth/AuthFlow";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { lcuButtonClasses } from "@/components/ui-lcu/LcuButton";
+import { formatKickoff } from "@/lib/matchClock";
 import stadiumHero from "@/assets/stadium-hero.jpg";
 import lcuCrest from "@/assets/lcu-crest.png";
 import prizeJersey from "@/assets/prize-jersey.jpg";
@@ -228,6 +233,137 @@ function MatchBlock() {
             className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-primary"
           >
             Ir a Match Zone
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      )}
+    </section>
+  );
+}
+
+/* --------------------------------- boletos --------------------------------- */
+
+function HomeTicketCard({ match }: { match: Match }) {
+  const { date, time } = formatKickoff(match.kickoff_at);
+  const ticketUrl = match.tickets_url?.trim();
+
+  return (
+    <article className="flex min-h-[238px] flex-col rounded-2xl border border-hairline bg-surface-1 p-4 transition-colors hover:border-primary/40">
+      <div className="flex items-center justify-between gap-2">
+        <span className="font-display text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground tabular-nums">
+          {match.matchday != null ? `Jornada ${match.matchday}` : "Partido de local"}
+        </span>
+        <span className="rounded-md border border-primary/35 bg-primary/10 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-primary">
+          Local
+        </span>
+      </div>
+
+      <div className="mt-4 flex min-w-0 items-center gap-3">
+        <Crest team={match.home_team} size="lg" />
+        <span className="shrink-0 font-display text-[10px] font-semibold text-muted-foreground">
+          VS
+        </span>
+        <Crest team={match.away_team} size="lg" />
+        <p className="min-w-0 text-sm font-semibold leading-tight text-foreground">
+          {match.away_team?.name ?? "Rival por definir"}
+        </p>
+      </div>
+
+      <div className="mt-4 space-y-1.5 text-[12px] text-secondary-fg">
+        <p className="flex items-center gap-1.5">
+          <CalendarDays className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <span className="font-display tabular-nums first-letter:uppercase">
+            {date} · {time}
+          </span>
+        </p>
+        <p className="flex min-w-0 items-center gap-1.5">
+          <MapPin className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <span className="truncate">{match.venue || "Sede por confirmar"}</span>
+        </p>
+      </div>
+
+      <div className="mt-auto pt-4">
+        {ticketUrl ? (
+          <a
+            href={ticketUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={lcuButtonClasses("primary", "sm") + " w-full"}
+          >
+            <Ticket className="h-3.5 w-3.5" />
+            Comprar boletos
+            <ExternalLink className="h-3 w-3 opacity-70" />
+          </a>
+        ) : (
+          <span className="flex h-9 w-full items-center justify-center rounded-full border border-hairline bg-surface-2 px-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+            Próximamente
+          </span>
+        )}
+      </div>
+    </article>
+  );
+}
+
+function TicketsBlock() {
+  const { data: matches = [], isLoading } = useMatches();
+  const upcomingHomeMatches = useMemo(() => {
+    const now = Date.now();
+    return matches
+      .filter(
+        (match) =>
+          Boolean(match.home_team?.is_ours) &&
+          match.phase !== "finished" &&
+          match.phase !== "canceled" &&
+          new Date(match.kickoff_at).getTime() >= now,
+      )
+      .sort((a, b) => +new Date(a.kickoff_at) - +new Date(b.kickoff_at))
+      .slice(0, 3);
+  }, [matches]);
+
+  return (
+    <section className="space-y-3">
+      <SectionHeader
+        eyebrow="Boletos"
+        title="Vive el partido en casa"
+        action={
+          <Link
+            to="/boletos"
+            className="inline-flex shrink-0 items-center gap-1 text-right text-[11px] font-semibold uppercase tracking-[0.14em] text-primary"
+          >
+            <span>Ver todos los boletos</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        }
+      />
+
+      {isLoading ? (
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          {[0, 1, 2].map((item) => (
+            <div
+              key={item}
+              className="h-[238px] animate-pulse rounded-2xl border border-hairline bg-surface-1"
+            />
+          ))}
+        </div>
+      ) : upcomingHomeMatches.length > 0 ? (
+        <div className="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-1 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
+          {upcomingHomeMatches.map((match) => (
+            <div key={match.id} className="w-[82vw] max-w-[320px] shrink-0 snap-start md:w-auto md:max-w-none">
+              <HomeTicketCard match={match} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex min-h-36 flex-col items-center justify-center rounded-2xl border border-hairline bg-surface-1 px-5 py-7 text-center">
+          <Ticket className="h-5 w-5 text-muted-foreground" />
+          <p className="mt-2 text-sm font-semibold text-foreground">
+            Aún no hay partidos de local programados
+          </p>
+          <Link
+            to="/boletos"
+            className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary"
+          >
+            Ver página de boletos
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
@@ -793,6 +929,7 @@ export default function Index() {
     <div className="mx-auto w-full max-w-5xl space-y-10 px-4 pb-20 pt-4 md:px-6">
       <Hero onSignup={openSignup} onLogin={openLogin} />
       <MatchBlock />
+      <TicketsBlock />
       <ClubBlock />
       <ShopBlock />
       <VisitaBlock />
