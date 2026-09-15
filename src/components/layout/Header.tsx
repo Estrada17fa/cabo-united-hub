@@ -73,15 +73,7 @@ const primaryNavLinks = [
   { name: "Fan Zone", shortName: "Fans", path: "/fan-zone", icon: Heart },
 ];
 
-const mobileNavLinks = primaryNavLinks.slice(0, 4);
-
-const drawerNavLinks = [
-  { name: "Visita Los Cabos", path: "/conoce-los-cabos", icon: MapPin },
-  { name: "Fan Zone", path: "/fan-zone", icon: Heart },
-  { name: "Tu Club", path: "/club", icon: Shield },
-];
-
-const shopLink = { name: "Tienda", path: "/tienda", icon: ShoppingBag };
+const mobileNavLinks = primaryNavLinks;
 
 const menuLinks = [
   { name: "Patrocinios", path: "/patrocinios", icon: Handshake },
@@ -159,7 +151,7 @@ export function Header() {
 
       {/* Línea 2 — navbar visible en todos los formatos, subrayado activo animado */}
       <nav className="border-b border-hairline" aria-label="Navegación principal">
-        <ul className="mx-auto grid max-w-6xl grid-cols-5 px-1 sm:hidden">
+        <ul className="mx-auto grid max-w-6xl grid-cols-6 px-1 sm:hidden">
           {mobileNavLinks.map((link) => {
             const NavIcon = link.icon;
             const active = isActive(link.path);
@@ -181,7 +173,7 @@ export function Header() {
                     transition={{ type: "spring", stiffness: 500, damping: 18 }}
                     className="flex"
                   >
-                    <NavIcon className="h-[18px] w-[18px]" strokeWidth={2} />
+                    <NavIcon className="h-4 w-4" strokeWidth={2} />
                   </motion.span>
                   <span className="text-[9px] leading-none tracking-wide">
                     {link.shortName}
@@ -191,7 +183,7 @@ export function Header() {
                   <motion.span
                     layoutId="nav-underline"
                     transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                    className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-primary"
+                    className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-primary"
                   />
                 )}
               </li>
