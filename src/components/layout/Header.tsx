@@ -3,10 +3,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Menu,
   Home,
-  Users,
   Heart,
   ShoppingBag,
   MapPin,
+  MoreHorizontal,
+  Shield,
   Handshake,
   Mail,
   Icon,
@@ -63,16 +64,21 @@ const socialLinks = [
   { icon: WhatsAppIcon, href: "#", label: "WhatsApp" },
 ];
 
-/** Navbar principal: visible en móvil (etiqueta corta) y desktop (nombre completo). */
-const navLinks = [
+const primaryNavLinks = [
   { name: "Inicio", shortName: "Inicio", path: "/", icon: Home },
-  { name: "Match Zone", shortName: "Match", path: "/zona-partido", icon: SoccerBallIcon },
-  { name: "Tu Club", shortName: "Club", path: "/club", icon: Users },
-  { name: "Fan Zone", shortName: "Fans", path: "/fan-zone", icon: Heart },
-  { name: "Visita Los Cabos", shortName: "Visita", path: "/conoce-los-cabos", icon: MapPin },
+  { name: "Boletos", shortName: "Boletos", path: "/boletos", icon: Ticket },
   { name: "Tienda", shortName: "Tienda", path: "/tienda", icon: ShoppingBag },
-  /** Séptima sección: en móvil vive en el menú de hamburguesa para no amontonar la barra. */
-  { name: "Boletos", shortName: "Boletos", path: "/boletos", icon: Ticket, desktopOnly: true },
+  { name: "Match Zone", shortName: "Match", path: "/zona-partido", icon: SoccerBallIcon },
+  { name: "Visita Los Cabos", shortName: "Visita", path: "/conoce-los-cabos", icon: MapPin },
+  { name: "Fan Zone", shortName: "Fans", path: "/fan-zone", icon: Heart },
+];
+
+const mobileNavLinks = primaryNavLinks.slice(0, 4);
+
+const drawerNavLinks = [
+  { name: "Visita Los Cabos", path: "/conoce-los-cabos", icon: MapPin },
+  { name: "Fan Zone", path: "/fan-zone", icon: Heart },
+  { name: "Tu Club", path: "/club", icon: Shield },
 ];
 
 const shopLink = { name: "Tienda", path: "/tienda", icon: ShoppingBag };
@@ -153,23 +159,20 @@ export function Header() {
 
       {/* Línea 2 — navbar visible en todos los formatos, subrayado activo animado */}
       <nav className="border-b border-hairline" aria-label="Navegación principal">
-        <ul className="mx-auto grid max-w-6xl grid-cols-6 px-1 sm:flex sm:items-center sm:justify-center sm:gap-1 sm:px-4">
-          {navLinks.map((link) => {
+        <ul className="mx-auto grid max-w-6xl grid-cols-5 px-1 sm:hidden">
+          {mobileNavLinks.map((link) => {
             const NavIcon = link.icon;
             const active = isActive(link.path);
             return (
-              <li
-                key={link.path}
-                className={cn("relative", link.desktopOnly && "hidden sm:block")}
-              >
+              <li key={link.path} className="relative">
                 <Link
                   to={link.path}
                   onClick={() => window.scrollTo(0, 0)}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex flex-col items-center justify-center gap-0.5 py-1.5 transition-colors sm:flex-row sm:gap-1.5 sm:px-2 sm:py-3 lg:px-3",
+                    "flex flex-col items-center justify-center gap-0.5 py-1.5 transition-colors",
                     active
-                      ? "font-semibold text-primary sm:text-foreground"
+                      ? "font-semibold text-primary"
                       : "font-medium text-muted-foreground hover:text-foreground/80",
                   )}
                 >
@@ -178,20 +181,79 @@ export function Header() {
                     transition={{ type: "spring", stiffness: 500, damping: 18 }}
                     className="flex"
                   >
-                    <NavIcon className="h-[18px] w-[18px] sm:h-4 sm:w-4" strokeWidth={2} />
+                    <NavIcon className="h-[18px] w-[18px]" strokeWidth={2} />
                   </motion.span>
-                  <span className="text-[9px] leading-none tracking-wide sm:hidden">
+                  <span className="text-[9px] leading-none tracking-wide">
                     {link.shortName}
-                  </span>
-                  <span className="hidden whitespace-nowrap text-[12px] sm:inline lg:text-[13px]">
-                    {link.name}
                   </span>
                 </Link>
                 {active && (
                   <motion.span
                     layoutId="nav-underline"
                     transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                    className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-primary sm:inset-x-2"
+                    className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-primary"
+                  />
+                )}
+              </li>
+            );
+          })}
+          <li className="relative">
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen(true)}
+              aria-label="Abrir más opciones"
+              aria-current={drawerNavLinks.some((link) => isActive(link.path)) ? "page" : undefined}
+              className={cn(
+                "flex w-full flex-col items-center justify-center gap-0.5 py-1.5 transition-colors",
+                drawerNavLinks.some((link) => isActive(link.path))
+                  ? "font-semibold text-primary"
+                  : "font-medium text-muted-foreground",
+              )}
+            >
+              <MoreHorizontal className="h-[18px] w-[18px]" strokeWidth={2} />
+              <span className="text-[9px] leading-none tracking-wide">Más</span>
+            </button>
+            {drawerNavLinks.some((link) => isActive(link.path)) && (
+              <motion.span
+                layoutId="nav-underline"
+                transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-primary"
+              />
+            )}
+          </li>
+        </ul>
+
+        <ul className="mx-auto hidden max-w-6xl items-center justify-center gap-1 px-4 sm:flex">
+          {primaryNavLinks.map((link) => {
+            const NavIcon = link.icon;
+            const active = isActive(link.path);
+            return (
+              <li key={link.path} className="relative">
+                <Link
+                  to={link.path}
+                  onClick={() => window.scrollTo(0, 0)}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex items-center justify-center gap-1.5 px-2 py-3 transition-colors lg:px-3",
+                    active
+                      ? "font-semibold text-foreground"
+                      : "font-medium text-muted-foreground hover:text-foreground/80",
+                  )}
+                >
+                  <motion.span
+                    animate={active ? { scale: [1, 1.25, 1] } : { scale: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 18 }}
+                    className="flex"
+                  >
+                    <NavIcon className="h-4 w-4" strokeWidth={2} />
+                  </motion.span>
+                  <span className="whitespace-nowrap text-[12px] lg:text-[13px]">{link.name}</span>
+                </Link>
+                {active && (
+                  <motion.span
+                    layoutId="nav-underline"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                    className="absolute inset-x-2 bottom-0 h-[2px] rounded-full bg-primary"
                   />
                 )}
               </li>
@@ -299,12 +361,12 @@ export function Header() {
             )}
           </div>
 
-          {/* Navegación apilada (móvil) */}
-          <nav className="mb-4 lg:hidden" aria-label="Navegación">
+          {/* Destinos secundarios */}
+          <nav className="mb-4" aria-label="Más secciones">
             <AnimatePresence initial={false}>
               {isMenuOpen && (
                 <ul className="space-y-1">
-                  {navLinks.map((link, i) => {
+                  {drawerNavLinks.map((link, i) => {
                     const NavIcon = link.icon;
                     const active = isActive(link.path);
                     return (
