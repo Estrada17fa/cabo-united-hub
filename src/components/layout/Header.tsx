@@ -237,9 +237,9 @@ export function Header() {
             <SheetDescription className="sr-only">Menú de navegación</SheetDescription>
           </SheetHeader>
 
-
           {/* Perfil / Auth */}
           <div className="mb-5 mt-1">
+
 
 
             {user && profile ? (
