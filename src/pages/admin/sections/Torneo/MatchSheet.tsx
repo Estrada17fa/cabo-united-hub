@@ -468,10 +468,17 @@ export function MatchSheet({
 
           <Field label="Link de boletos">
             <input
+              type="url"
+              inputMode="url"
+              placeholder="https://boletomovil.com/..."
               className={adminInput}
               value={form.tickets_url}
               onChange={(e) => setForm({ ...form, tickets_url: e.target.value })}
             />
+            <Hint>
+              Pega aquí el link de venta de este partido. Si es partido de local, el botón
+              "Comprar boletos" aparece en la página de Boletos.
+            </Hint>
           </Field>
           <Field label="Link de resumen">
             <input

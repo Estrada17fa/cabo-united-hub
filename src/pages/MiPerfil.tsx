@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ChevronRight,
-  ExternalLink,
   Loader2,
   LogOut,
   Pencil,
@@ -23,7 +22,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { tierStyle } from "@/lib/tiers";
 
-const BOLETOMOVIL_URL = "https://www.boletomovil.com";
 
 interface PassSummary {
   pass_code: string;
@@ -283,18 +281,16 @@ export default function MiPerfil() {
           </span>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </Link>
-        <a
-          href={BOLETOMOVIL_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/boletos"
           className="flex items-center justify-between gap-3 rounded-2xl border border-hairline bg-surface-1 px-4 py-4 transition-colors hover:border-primary/40"
         >
           <span className="flex items-center gap-2.5">
             <Ticket className="h-4 w-4 text-primary" />
             <span className="text-[13px] font-bold text-foreground">Boletos</span>
           </span>
-          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
-        </a>
+          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        </Link>
       </section>
 
       {/* Cerrar sesión */}

@@ -16,6 +16,7 @@ import {
   LogOut,
   ChevronRight,
   ShieldCheck,
+  Ticket,
 } from "lucide-react";
 import lcuCrest from "@/assets/lcu-crest.png";
 import { soccerBall } from "@lucide/lab";
@@ -69,7 +70,9 @@ const navLinks = [
   { name: "Tu Club", shortName: "Club", path: "/club", icon: Users },
   { name: "Fan Zone", shortName: "Fans", path: "/fan-zone", icon: Heart },
   { name: "Visita Los Cabos", shortName: "Visita", path: "/conoce-los-cabos", icon: MapPin },
-  { name: "Tienda Oficial", shortName: "Tienda", path: "/tienda", icon: ShoppingBag },
+  { name: "Tienda", shortName: "Tienda", path: "/tienda", icon: ShoppingBag },
+  /** Séptima sección: en móvil vive en el menú de hamburguesa para no amontonar la barra. */
+  { name: "Boletos", shortName: "Boletos", path: "/boletos", icon: Ticket, desktopOnly: true },
 ];
 
 const shopLink = { name: "Tienda", path: "/tienda", icon: ShoppingBag };
@@ -155,13 +158,16 @@ export function Header() {
             const NavIcon = link.icon;
             const active = isActive(link.path);
             return (
-              <li key={link.path} className="relative">
+              <li
+                key={link.path}
+                className={cn("relative", link.desktopOnly && "hidden sm:block")}
+              >
                 <Link
                   to={link.path}
                   onClick={() => window.scrollTo(0, 0)}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex flex-col items-center justify-center gap-0.5 py-1.5 transition-colors sm:flex-row sm:gap-1.5 sm:px-3 sm:py-3",
+                    "flex flex-col items-center justify-center gap-0.5 py-1.5 transition-colors sm:flex-row sm:gap-1.5 sm:px-2 sm:py-3 lg:px-3",
                     active
                       ? "font-semibold text-primary sm:text-foreground"
                       : "font-medium text-muted-foreground hover:text-foreground/80",
@@ -177,7 +183,9 @@ export function Header() {
                   <span className="text-[9px] leading-none tracking-wide sm:hidden">
                     {link.shortName}
                   </span>
-                  <span className="hidden text-[13px] sm:inline">{link.name}</span>
+                  <span className="hidden whitespace-nowrap text-[12px] sm:inline lg:text-[13px]">
+                    {link.name}
+                  </span>
                 </Link>
                 {active && (
                   <motion.span
