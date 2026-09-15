@@ -350,6 +350,58 @@ export function Header() {
             )}
           </div>
 
+          {/* Navegación */}
+          <nav className="mb-5" aria-label="Navegación">
+            <AnimatePresence initial={false}>
+              {isMenuOpen && (
+                <>
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                    Navegación
+                  </p>
+                  <ul className="space-y-1">
+                    {primaryNavLinks.map((link, i) => {
+                      const NavIcon = link.icon;
+                      const active = isActive(link.path);
+                      return (
+                        <motion.li
+                          key={link.path}
+                          initial={{ opacity: 0, x: -12 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.03 * i, duration: 0.22, ease: "easeOut" }}
+                        >
+                          <button
+                            onClick={() => go(link.path)}
+                            aria-current={active ? "page" : undefined}
+                            className={cn(
+                              "relative flex w-full items-center gap-3 rounded-[11px] px-3.5 py-3 text-sm transition-colors",
+                              active
+                                ? "bg-surface-2 font-semibold text-foreground"
+                                : "font-medium text-muted-foreground hover:text-foreground",
+                            )}
+                          >
+                            {active && (
+                              <span className="absolute left-0 top-1/2 h-5 w-[2px] -translate-y-1/2 rounded-full bg-primary" />
+                            )}
+                            <NavIcon className="h-4 w-4 flex-shrink-0" strokeWidth={2} />
+                            <span className="flex-1 truncate text-left">{link.name}</span>
+                            {link.path === "/tienda" && hasCartItems && (
+                              <span
+                                className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-[10px] font-bold text-background"
+                                style={{ background: "hsl(var(--primary))" }}
+                              >
+                                {totalCartItems}
+                              </span>
+                            )}
+                          </button>
+                        </motion.li>
+                      );
+                    })}
+                  </ul>
+                </>
+              )}
+            </AnimatePresence>
+          </nav>
+
 
           {/* Ver carrito */}
           <button
