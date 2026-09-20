@@ -7,8 +7,9 @@ import type { Match, Scorer, Season, Standing, Team } from "@/components/match-z
 export const SEASON = "2026";
 
 /** Minutos de frescura por tipo de dato (stale-while-revalidate). */
-const EDITORIAL_STALE = 5 * 60 * 1000;
-const LEAGUE_STALE = 60 * 1000;
+const EDITORIAL_STALE = 15 * 60 * 1000;
+const LEAGUE_STALE = 5 * 60 * 1000;
+const LEAGUE_GC = 30 * 60 * 1000;
 
 const TEAM_COLS =
   "id, name, short_name, logo_url, group_name, city, venue, is_ours, season, active";
@@ -115,6 +116,8 @@ export function useMatches(season?: string) {
   const query = useQuery({
     queryKey: season ? ["lcu-matches", season] : ["lcu-matches", "all"],
     staleTime: LEAGUE_STALE,
+    gcTime: LEAGUE_GC,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       let q = supabase
         .from("matches")
@@ -141,6 +144,8 @@ export function useStandings(season?: string) {
   const query = useQuery({
     queryKey: season ? ["lcu-standings", season] : ["lcu-standings", "all"],
     staleTime: LEAGUE_STALE,
+    gcTime: LEAGUE_GC,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       let q = supabase
         .from("league_standings")
@@ -169,6 +174,8 @@ export function useScorers(season?: string) {
   const query = useQuery({
     queryKey: season ? ["lcu-scorers", season] : ["lcu-scorers", "all"],
     staleTime: LEAGUE_STALE,
+    gcTime: LEAGUE_GC,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       let q = supabase
         .from("top_scorers")
