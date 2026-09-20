@@ -7,8 +7,9 @@ import type { Match, Scorer, Season, Standing, Team } from "@/components/match-z
 export const SEASON = "2026";
 
 /** Minutos de frescura por tipo de dato (stale-while-revalidate). */
-const EDITORIAL_STALE = 5 * 60 * 1000;
-const LEAGUE_STALE = 60 * 1000;
+const EDITORIAL_STALE = 15 * 60 * 1000;
+const LEAGUE_STALE = 5 * 60 * 1000;
+const LEAGUE_GC = 30 * 60 * 1000;
 
 const TEAM_COLS =
   "id, name, short_name, logo_url, group_name, city, venue, is_ours, season, active";

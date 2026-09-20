@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789880414226,
+      "tag": "0000_indices_para_bajar_carga_de_liga",
+      "breakpoints": true
+    }
+  ]
+}
