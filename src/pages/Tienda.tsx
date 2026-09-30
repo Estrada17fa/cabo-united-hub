@@ -187,7 +187,7 @@ const Tienda = () => {
   }, [line, showEquipaciones, equipacion, showSections, seccion, showTypes, tipo]);
 
   const isDefaultView =
-    line === "oficial" && seccion === "todo" && equipacion === "todo" && tipo === "todo";
+    line === (lines[0] ?? "oficial") && seccion === "todo" && equipacion === "todo" && tipo === "todo";
 
   return (
     <motion.div
