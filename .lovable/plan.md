@@ -35,7 +35,7 @@ Se elimina `mapShopifyCategory` (adivinanza por palabras clave) y se reemplaza p
 - **Normalización:** minúsculas, sin acentos, sin espacios extra, singular/plural indistinto.
 - **Línea:** tag `linea:oficial` → Jerseys; `linea:streetwear` → Streetwear; sin tag → `otros`.
 - **Secciones:** todos los tags `seccion:*` (un producto puede tener varias y aparece en cada una).
-- **Equipación:** `equipacion:local|visita|portero|tercero` o el tag suelto equivalente (solo jerseys).
+- **Equipación:** `equipacion:local|visita|portero|tercero` (forma oficial); tags sueltos `Local`/`Visita`/`Portero`/`Tercero` solo como respaldo.
 - **Tipo de prenda:** el `productType` tal cual, normalizado; nombre en pantalla en plural con acentos (`Playera`→`Playeras`, `Pantalon`→`Pantalones`, `Short`→`Shorts`, `Gorra`→`Gorras`, `Bolsa`→`Bolsas`; los desconocidos se pluralizan con regla simple).
 - **Corte:** se guarda en el modelo (`corte:oversize`, etc.) sin usarlo en navegación.
 - Tags sin prefijo conocido se ignoran.
