@@ -45,15 +45,16 @@ Se elimina `mapShopifyCategory` (adivinanza por palabras clave) y se reemplaza p
 ```text
 Nivel 1 (pestañas grandes):  Jerseys · Streetwear · Otros*
 Nivel 2 (secciones):         Jerseys → Todo · Local · Visita · Portero · Tercero
-                             Streetwear → Hombre · Mujer · Niño · Accesorios
+                             Streetwear → Todo · Hombre · Mujer · Niño · Accesorios
 Nivel 3 (tipos de prenda):   Todo · Playeras · Hoodies · ...  (de ESA sección)
 ```
 
+- **Vista inicial:** `/tienda` sin parámetros abre en Jerseys. En Streetwear, "Todo" es la primera opción del nivel de secciones y la selección por defecto.
 - Cada nivel aparece solo al elegir el anterior; nivel 3 siempre empieza en "Todo".
-- **Condicional:** una pestaña/sección/tipo solo aparece si tiene ≥1 producto; si un nivel tendría una sola opción, se omite.
+- **Condicional:** una pestaña/sección/tipo solo aparece si tiene ≥1 producto; si un nivel tendría una sola opción real (sin contar "Todo"), se omite.
 - Si un jersey trae `seccion:` en el futuro, el filtro de sección aparece también dentro de Jerseys con la misma lógica.
 - Todo se deriva de los datos: un Type o sección nueva aparece sin tocar código.
-- **URL compartible:** `?linea=streetwear&seccion=hombre&tipo=hoodie` (useSearchParams); al volver de un producto se conserva el filtro.
+- **URL compartible:** `?linea=streetwear&seccion=hombre&tipo=hoodie` (useSearchParams); al volver de un producto se conserva el filtro. Links viejos (`?categoria=jerseys`, etc.) redirigen a una vista válida, nunca vacía.
 - **Look:** segmentos/pestañas limpias (no chips sueltos), cyan solo en la opción activa, hairline, Inter + Space Grotesk; niveles 2 y 3 con scroll horizontal en móvil.
 
 ### 3. Conservado
