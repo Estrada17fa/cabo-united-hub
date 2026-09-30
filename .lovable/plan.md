@@ -18,8 +18,13 @@
 
 **Hallazgos clave:**
 - Los 5 jerseys **aún no tienen `linea:oficial`** → caerían en la pestaña "Otros" hasta que los etiquetes (se reportan en consola con su nombre).
-- Los jerseys usan tags `Local`/`Visita`/`Portero`/`Tercero` **sin prefijo** `equipacion:`. El mapeo aceptará ambas formas (`equipacion:local` o el tag suelto `Local`) para que no tengas que re-etiquetar.
+- Los jerseys usan tags `Local`/`Visita`/`Portero`/`Tercero` **sin prefijo** `equipacion:`. Se aceptan ambas formas: la oficial es `equipacion:` y el tag suelto queda solo como respaldo.
 - El Type viene **en plural** (`Jerseys`, `Playeras`): la normalización ignora plural, mayúsculas, acentos y espacios.
+
+**Ajustes aprobados por el usuario:**
+1. **Vista inicial:** `/tienda` sin parámetros abre en Jerseys. En Streetwear, el nivel de secciones incluye "Todo" como primera opción (Todo · Hombre · Mujer · Niño · Accesorios) y es la selección por defecto. La regla de "omitir nivel con una sola opción" se evalúa sin contar "Todo".
+2. **Usos de `STORE_CATEGORIES`:** barrido completo del repo hecho — solo lo usan `src/pages/Tienda.tsx` y `src/hooks/useProducts.ts` (ni Home, ni navegación, ni links con `?categoria=`). `TiendaBuscar.tsx` y `TiendaProducto.tsx` no lo usan. Aun así, cualquier link viejo con parámetros anteriores (`?categoria=jerseys`, etc.) redirige a una vista válida, nunca a una tienda vacía.
+3. **Tags sueltos:** `Local`/`Visita`/`Portero`/`Tercero` sin prefijo se aceptan solo como respaldo; la forma oficial es `equipacion:` y `equipacion:tercero` es válido.
 
 ## Qué se construye
 
