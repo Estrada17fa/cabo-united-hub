@@ -66,7 +66,7 @@ Nivel 3 (tipos de prenda):   Todo · Playeras · Hoodies · ...  (de ESA secció
 ## Detalles técnicos
 
 - Archivos: `src/lib/store-types.ts` (parser + tipos `StoreLine`, `StoreSection`), `src/hooks/useProducts.ts` (usar parser, reportar en consola los sin `linea:`), `src/pages/Tienda.tsx` (navegación en niveles + URL). Componente nuevo pequeño `src/components/tienda/ShopTabs.tsx` para los segmentos.
-- Se elimina `STORE_CATEGORIES`/`StoreCategoryId`; se revisan usos en `TiendaBuscar.tsx` y `TiendaProducto.tsx` para que compilen con el modelo nuevo (sin cambiar su diseño).
+- Se elimina `STORE_CATEGORIES`/`StoreCategoryId`. Barrido completo hecho: solo los usan `Tienda.tsx` y `useProducts.ts` — `TiendaBuscar.tsx`, `TiendaProducto.tsx`, Home, navegación y demás páginas no los tocan; no hay que ajustar nada más.
 
 ## Lo único que te toca en Shopify
 
