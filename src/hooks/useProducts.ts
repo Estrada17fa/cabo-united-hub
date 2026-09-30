@@ -4,7 +4,13 @@ import {
   fetchShopifyProducts,
   type ShopifyProduct,
 } from "@/lib/shopify-storefront";
-import { mapShopifyCategory, mapShopifySize, type StoreProduct } from "@/lib/store-types";
+import {
+  classifyStoreProduct,
+  mapShopifySize,
+  STORE_EQUIPACION_LABELS,
+  STORE_SECTION_LABELS,
+  type StoreProduct,
+} from "@/lib/store-types";
 
 function normalizeProduct(node: ShopifyProduct["node"]): StoreProduct {
   const variants = node.variants.edges.map(({ node: v }) => ({
@@ -22,10 +28,17 @@ function normalizeProduct(node: ShopifyProduct["node"]): StoreProduct {
   const images = node.images.edges.map(({ node }) => node.url);
   const sizes = variants.map((v) => v.title);
 
-  const category = mapShopifyCategory(node.productType, node.tags, node.title);
+  const cls = classifyStoreProduct(node.productType, node.tags);
+
+  if (cls.line === "otros") {
+    console.warn(
+      `[tienda] Producto sin etiqueta linea: — "${node.title}" (type: ${node.productType}). Se muestra en "Otros".`,
+    );
+  }
 
   const eyebrow =
-    node.tags.find((t) => ["Local", "Visita", "Portero", "Tercero"].includes(t)) ||
+    (cls.equipacion && STORE_EQUIPACION_LABELS[cls.equipacion]) ||
+    (cls.sections[0] && STORE_SECTION_LABELS[cls.sections[0]]) ||
     node.productType ||
     undefined;
 
@@ -34,7 +47,11 @@ function normalizeProduct(node: ShopifyProduct["node"]): StoreProduct {
     handle: node.handle,
     title: node.title,
     description: node.description,
-    category,
+    line: cls.line,
+    sections: cls.sections,
+    equipacion: cls.equipacion,
+    garmentType: cls.garmentType,
+    corte: cls.corte,
     eyebrow,
     price: minPrice,
     compareAtPrice: compareAtPrice && compareAtPrice > minPrice ? compareAtPrice : null,
