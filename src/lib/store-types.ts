@@ -87,23 +87,13 @@ export function normalizeStoreKey(value: string): string {
     .replace(/\s+/g, " ");
 }
 
-/** Quita el plural simple del final ("playeras"→"playera", "pantalones"→"pantalon"). */
-function singularize(key: string): string {
-  if (key.endsWith("ones")) return key.slice(0, -4) + "on";
-  if (key.endsWith("es") && !key.endsWith("ses")) return key.slice(0, -2);
-  if (key.endsWith("s") && key.length > 3) return key.slice(0, -1);
-  return key;
-}
-
-/** Etiqueta en pantalla para un tipo de prenda (plural con acentos). */
+/**
+ * Etiqueta en pantalla para un tipo de prenda: exactamente el Type de Shopify,
+ * solo con la primera letra en mayúscula (sin singularizar ni pluralizar).
+ */
 export function storeTypeLabel(productType: string): string {
-  const key = singularize(normalizeStoreKey(productType));
-  if (TYPE_LABELS[key]) return TYPE_LABELS[key];
-  // Desconocido: capitaliza y pluraliza con regla simple.
-  const base = productType.trim();
-  if (!base) return "Otros";
-  const cap = formatTagLabel(base);
-  return /[aeiou]s$/i.test(base) ? cap : `${cap}s`;
+  const label = formatTagLabel(productType);
+  return label || "Otros";
 }
 
 export interface StoreClassification {
