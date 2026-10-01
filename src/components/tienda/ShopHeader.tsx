@@ -81,7 +81,7 @@ export function ShopHeader({ sort, sortOptions, onSortChange }: ShopHeaderProps)
             </motion.span>
           )}
         </Button>
-        {sort && sortOptions && onSortChange && (
+        {sort && Array.isArray(sortOptions) && sortOptions.length > 0 && onSortChange && (
           <ShopSortSheet value={sort} options={sortOptions} onChange={onSortChange} />
         )}
       </div>

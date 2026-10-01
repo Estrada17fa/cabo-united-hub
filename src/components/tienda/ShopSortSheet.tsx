@@ -17,12 +17,14 @@ export interface ShopSortOption {
 }
 
 interface ShopSortSheetProps {
-  value: string;
-  options: ShopSortOption[];
-  onChange: (value: string) => void;
+  value?: string;
+  options?: ShopSortOption[];
+  onChange?: (value: string) => void;
 }
 
-export function ShopSortSheet({ value, options, onChange }: ShopSortSheetProps) {
+export function ShopSortSheet({ value = "newest", options = [], onChange }: ShopSortSheetProps) {
+  if (options.length === 0 || !onChange) return null;
+
   return (
     <Sheet>
       <SheetTrigger asChild>
