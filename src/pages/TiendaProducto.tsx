@@ -9,6 +9,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { AuthGateDialog } from "@/components/auth/AuthGateDialog";
 import { useCartStore } from "@/stores/cartStore";
 import { formatMoney, isOnSale } from "@/lib/store-types";
+import { SizeGuideSheet } from "@/components/tienda/SizeGuideSheet";
+import { getSizeGuide } from "@/data/size-guides";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Accordion,
@@ -167,9 +169,15 @@ const TiendaProducto = () => {
               <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Talla
               </span>
-              {!size && !isSoldOut && (
-                <span className="text-[11px] text-muted-foreground">Elige una talla</span>
-              )}
+              <div className="flex items-center gap-3">
+                {!size && !isSoldOut && (
+                  <span className="text-[11px] text-muted-foreground">Elige una talla</span>
+                )}
+                {(() => {
+                  const guide = getSizeGuide(product);
+                  return guide ? <SizeGuideSheet guide={guide} /> : null;
+                })()}
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
               {product.variants.map((variant) => {

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { FREE_SHIPPING_MIN } from "@/lib/shipping";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, Loader2, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -170,6 +171,24 @@ export function CartDrawer() {
             </div>
 
             <div className="space-y-3 border-t border-hairline p-5">
+              {(() => {
+                const missing = Math.max(0, FREE_SHIPPING_MIN - subtotal);
+                const pct = Math.min(100, (subtotal / FREE_SHIPPING_MIN) * 100);
+                return (
+                  <div>
+                    <p className="mb-1.5 text-[11px] text-muted-foreground">
+                      {missing > 0 ? (
+                        <>Te faltan <span className="font-display font-bold tabular-nums text-foreground">{formatMoney(missing, currency)}</span> para envío gratis</>
+                      ) : (
+                        <span className="font-semibold text-foreground">Tienes envío gratis</span>
+                      )}
+                    </p>
+                    <div className="h-1 overflow-hidden rounded-full bg-surface-2">
+                      <div className="h-full rounded-full bg-foreground/80 transition-[width] duration-500" style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                );
+              })()}
               <div className="flex items-center justify-between">
                 <span className="text-[12px] text-muted-foreground">Subtotal</span>
                 <span className="font-display text-lg font-bold tabular-nums text-foreground">

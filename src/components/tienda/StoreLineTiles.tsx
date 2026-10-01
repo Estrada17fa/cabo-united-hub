@@ -65,9 +65,6 @@ export function StoreLineTiles({ lines, products, value, onChange }: StoreLineTi
               <span className="block font-display text-[15px] font-bold leading-none text-foreground md:text-[20px]">
                 {STORE_LINE_LABELS[line]}
               </span>
-              <span className="mt-1 block font-display text-[10px] font-medium tabular-nums text-foreground/65">
-                {lineProducts.length} {lineProducts.length === 1 ? "pieza" : "piezas"}
-              </span>
             </span>
           </Button>
         );
