@@ -61,21 +61,6 @@ export const sectionLabel = (v: string) => STORE_SECTION_LABELS[v] ?? formatTagL
 /** Etiqueta de equipación. */
 export const equipacionLabel = (v: string) => STORE_EQUIPACION_LABELS[v] ?? formatTagLabel(v);
 
-/** Nombres en pantalla de tipos de prenda (plural, con acentos). */
-const TYPE_LABELS: Record<string, string> = {
-  jersey: "Jerseys",
-  playera: "Playeras",
-  camiseta: "Camisetas",
-  hoodie: "Hoodies",
-  sudadera: "Sudaderas",
-  crewneck: "Crewnecks",
-  pantalon: "Pantalones",
-  short: "Shorts",
-  gorra: "Gorras",
-  bolsa: "Bolsas",
-  bufanda: "Bufandas",
-  chamarra: "Chamarras",
-};
 
 /** minúsculas, sin acentos, sin espacios extra. */
 export function normalizeStoreKey(value: string): string {
