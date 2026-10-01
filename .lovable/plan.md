@@ -15,7 +15,9 @@
 - Sustituir las pestañas grandes por una cuadrícula bento de tiles: **Jerseys · Streetwear · Otros** cuando existan.
 - En móvil, dos columnas estables sin scroll y altura aproximada de 120 px; si aparece un tercer tile, ocupará la siguiente celda sin deformar los anteriores.
 - En escritorio, conservar tiles compactos lado a lado dentro del ancho de contenido.
-- Cada tile mostrará la primera foto disponible de su línea, degradado oscuro inferior, nombre en Space Grotesk y conteo de piezas.
+- Preparar un mapa línea → portada fácil de cambiar para `src/assets/tienda/linea-jerseys.jpg` y `linea-streetwear.jpg`.
+- Mientras esas portadas fijas no existan, y para cualquier línea sin imagen asignada como “Otros”, usar la primera imagen del primer producto de esa línea tomada del **catálogo completo**, nunca de resultados filtrados o buscados. Así la portada no cambia al navegar.
+- Cada tile mostrará esa portada fija o de respaldo, degradado oscuro inferior, nombre en Space Grotesk y conteo de piezas.
 - Activo: imagen completa y borde cyan fino. Inactivo: imagen atenuada y borde hairline neutro.
 - Mantener exactamente el cambio de línea y limpieza de parámetros que ya funcionan.
 
