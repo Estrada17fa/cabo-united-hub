@@ -3,8 +3,16 @@ import { Search, ShoppingBag, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCartStore } from "@/stores/cartStore";
 import { useSearchStore } from "@/stores/searchStore";
+import { Button } from "@/components/ui/button";
+import { ShopSortSheet, type ShopSortOption } from "@/components/tienda/ShopSortSheet";
 
-export function ShopHeader() {
+interface ShopHeaderProps {
+  sort: string;
+  sortOptions: ShopSortOption[];
+  onSortChange: (value: string) => void;
+}
+
+export function ShopHeader({ sort, sortOptions, onSortChange }: ShopHeaderProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const setCartOpen = useCartStore((s) => s.setOpen);
@@ -26,37 +34,7 @@ export function ShopHeader() {
 
   return (
     <div className="mb-6 md:mb-8">
-      <div
-        className="rounded-2xl border border-white/[0.06] bg-card p-3 md:p-3.5 flex items-center gap-2 md:gap-3"
-        style={{ boxShadow: "0 4px 20px -8px rgba(0,0,0,0.5)" }}
-      >
-        {/* Botón Ver Carrito (izquierda) */}
-        <button
-          onClick={() => setCartOpen(true)}
-          aria-label="Ver carrito"
-          className="relative shrink-0 inline-flex items-center gap-2 h-11 px-3 md:px-4 rounded-xl font-bold text-[12px] md:text-[13px] transition-all hover:opacity-90 active:scale-[0.98]"
-          style={{
-            background: "#00abc4",
-            color: "#000",
-            boxShadow: "0 4px 14px -4px #00abc480",
-          }}
-        >
-          <ShoppingBag className="w-4 h-4" />
-          <span className="hidden sm:inline">Ver Carrito</span>
-          {totalItems > 0 && (
-            <motion.span
-              key={totalItems}
-              initial={{ scale: 0.6, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 500, damping: 25 }}
-              className="min-w-[20px] h-[20px] px-1 rounded-full bg-black text-[10px] font-bold text-white flex items-center justify-center"
-            >
-              {totalItems}
-            </motion.span>
-          )}
-        </button>
-
-        {/* Buscador (derecha) */}
+      <div className="flex items-center gap-2">
         <form onSubmit={onSearch} className="flex-1 min-w-0">
           <div className="relative">
             <Search className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -65,20 +43,45 @@ export function ShopHeader() {
               value={query}
               onChange={(e) => onChange(e.target.value)}
               placeholder="Buscar jerseys, playeras, accesorios…"
-              className="h-11 w-full rounded-xl bg-background/40 border border-white/[0.06] pl-10 md:pl-11 pr-9 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-[#00abc4]/60 transition-colors"
+              className="h-11 w-full rounded-xl border border-hairline bg-surface-1 pl-10 pr-9 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-foreground/40 md:pl-11"
             />
             {query && (
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={() => setQuery("")}
                 aria-label="Limpiar búsqueda"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-lg text-muted-foreground hover:bg-surface-2 hover:text-foreground"
               >
                 <X className="w-3.5 h-3.5" />
-              </button>
+              </Button>
             )}
           </div>
         </form>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={() => setCartOpen(true)}
+          aria-label="Ver carrito"
+          title="Ver carrito"
+          className="relative h-11 w-11 shrink-0 rounded-xl border border-hairline bg-surface-1 text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+        >
+          <ShoppingBag className="h-4 w-4" />
+          {totalItems > 0 && (
+            <motion.span
+              key={totalItems}
+              initial={{ scale: 0.6, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 25 }}
+              className="absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-primary px-1 font-display text-[9px] font-bold text-background"
+            >
+              {totalItems}
+            </motion.span>
+          )}
+        </Button>
+        <ShopSortSheet value={sort} options={sortOptions} onChange={onSortChange} />
       </div>
     </div>
   );
