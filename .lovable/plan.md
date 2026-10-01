@@ -45,7 +45,8 @@ El lector de tags, la URL y las reglas de qué filtros se muestran no se tocan.
 ## Detalles técnicos
 - Cambios en la base (solo se agregan columnas, sin borrar nada) en `shop_hero_slides`: `image_mobile_url`, `show_cta boolean default true`, `cta_type text` ('store'|'product'|'page'|'external'), `cta_ref` (handle o parámetros), `starts_at`, `ends_at`, y `title` con valor por defecto vacío. La consulta pública filtra por fechas.
 - Bucket "tienda" + 4 políticas en storage.objects (lectura pública, insert/update/delete con `is_admin`). `ImageUploadField` acepta un bucket opcional.
-- Tabla nueva `store_line_covers (line text pk, image_url, updated_at)` con permisos (GRANT), RLS, lectura pública y escritura con `is_admin(auth.uid())`. Las imágenes van al bucket `avatars`, carpeta `tienda`, que ya está permitida.
+- Tabla nueva `store_line_covers (line text pk, image_url, updated_at)` con permisos (GRANT), RLS, lectura pública y escritura con `is_admin(auth.uid())`. Las imágenes van al bucket nuevo "tienda", igual que el carrusel. Nada nuevo se sube a `avatars`.
+- Revisión de `avatars/tienda/`: los usuarios con sesión solo pueden escribir en una carpeta con su propio ID; en `tienda/` solo pueden escribir los admins. Por eso la imagen actual del hero se queda donde está.
 - `StoreLineTiles` recibe un mapa de portadas resuelto en `Tienda.tsx` (sin cambiar la lógica de navegación); se elimina `import.meta.glob` y se actualiza la regla en AGENTS.md.
 - Arrastrar para ordenar con eventos nativos de arrastre o puntero, sin dependencias nuevas; los cambios de orden se guardan en lote.
 - El buscador de productos usa la consulta de Shopify que ya existe.
