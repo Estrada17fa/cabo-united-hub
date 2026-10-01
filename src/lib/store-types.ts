@@ -33,6 +33,34 @@ export const STORE_EQUIPACION_LABELS: Record<string, string> = {
   tercero: "Tercero",
 };
 
+/** Acentos para palabras conocidas que llegan sin acento desde los tags. */
+const ACCENT_WORDS: Record<string, string> = {
+  nino: "niño", nina: "niña", ninos: "niños", ninas: "niñas", edicion: "edición",
+  pantalon: "pantalón", pantalones: "pantalones", sueter: "suéter", sueteres: "suéteres",
+  camison: "camisón", calcetin: "calcetín", calcetines: "calcetines", bebe: "bebé",
+  coleccion: "colección", aniversario: "aniversario", campeon: "campeón", campeones: "campeones",
+  ultimas: "últimas", ultima: "última", nueva: "nueva", basico: "básico", basica: "básica",
+  clasico: "clásico", clasica: "clásica", tecnico: "técnico", unico: "único", unica: "única",
+};
+
+/** Formato en pantalla de cualquier valor de tag/Type: guiones a espacios, acentos, mayúscula inicial. */
+export function formatTagLabel(value: string | null | undefined): string {
+  if (!value) return "";
+  const words = value.trim().replace(/[-_]+/g, " ").replace(/\s+/g, " ").split(" ");
+  const out = words
+    .map((w) => {
+      const key = normalizeStoreKey(w);
+      return ACCENT_WORDS[key] ?? w.toLowerCase();
+    })
+    .join(" ");
+  return out.charAt(0).toUpperCase() + out.slice(1);
+}
+
+/** Etiqueta de sección. */
+export const sectionLabel = (v: string) => STORE_SECTION_LABELS[v] ?? formatTagLabel(v);
+/** Etiqueta de equipación. */
+export const equipacionLabel = (v: string) => STORE_EQUIPACION_LABELS[v] ?? formatTagLabel(v);
+
 /** Nombres en pantalla de tipos de prenda (plural, con acentos). */
 const TYPE_LABELS: Record<string, string> = {
   jersey: "Jerseys",
@@ -74,7 +102,7 @@ export function storeTypeLabel(productType: string): string {
   // Desconocido: capitaliza y pluraliza con regla simple.
   const base = productType.trim();
   if (!base) return "Otros";
-  const cap = base.charAt(0).toUpperCase() + base.slice(1);
+  const cap = formatTagLabel(base);
   return /[aeiou]s$/i.test(base) ? cap : `${cap}s`;
 }
 

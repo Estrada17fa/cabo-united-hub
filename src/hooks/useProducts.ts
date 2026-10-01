@@ -7,8 +7,9 @@ import {
 import {
   classifyStoreProduct,
   mapShopifySize,
-  STORE_EQUIPACION_LABELS,
-  STORE_SECTION_LABELS,
+  equipacionLabel,
+  formatTagLabel,
+  sectionLabel,
   type StoreProduct,
 } from "@/lib/store-types";
 
@@ -37,9 +38,9 @@ function normalizeProduct(node: ShopifyProduct["node"]): StoreProduct {
   }
 
   const eyebrow =
-    (cls.equipacion && STORE_EQUIPACION_LABELS[cls.equipacion]) ||
-    (cls.sections[0] && STORE_SECTION_LABELS[cls.sections[0]]) ||
-    node.productType ||
+    (cls.equipacion && equipacionLabel(cls.equipacion)) ||
+    (cls.sections[0] && sectionLabel(cls.sections[0])) ||
+    (node.productType && formatTagLabel(node.productType)) ||
     undefined;
 
   return {

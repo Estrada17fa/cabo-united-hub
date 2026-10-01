@@ -9,13 +9,13 @@ import { ShopTabs } from "@/components/tienda/ShopTabs";
 import { StoreLineTiles } from "@/components/tienda/StoreLineTiles";
 import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
-import { useShopBanners } from "@/hooks/useShopContent";
+import { useShopBanners, useStoreLineCovers } from "@/hooks/useShopContent";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchStore } from "@/stores/searchStore";
 import {
-  STORE_EQUIPACION_LABELS,
+  equipacionLabel,
+  sectionLabel,
   STORE_LINE_LABELS,
-  STORE_SECTION_LABELS,
   storeTypeLabel,
   type StoreLine,
   type StoreProduct,
@@ -76,6 +76,7 @@ const Tienda = () => {
   }, [params, setParams]);
 
   const all = products ?? [];
+  const { data: lineCovers } = useStoreLineCovers();
 
   // ---- Nivel 1: líneas con al menos 1 producto ----
   const lines = useMemo(
@@ -178,11 +179,11 @@ const Tienda = () => {
     let keep: Record<string, string> = { linea: line };
     if (showEquipaciones && equipacion !== "todo") {
       keep = { ...keep, equipacion };
-      crumbs.push({ label: STORE_EQUIPACION_LABELS[equipacion] ?? equipacion, keep });
+      crumbs.push({ label: equipacionLabel(equipacion), keep });
     }
     if (showSections && seccion !== "todo") {
       keep = { ...keep, seccion };
-      crumbs.push({ label: STORE_SECTION_LABELS[seccion] ?? seccion, keep });
+      crumbs.push({ label: sectionLabel(seccion), keep });
     }
     if (showTypes && tipo !== "todo") {
       keep = { ...keep, tipo };
@@ -228,7 +229,7 @@ const Tienda = () => {
           )}
           {/* 3. LÍNEAS (departamentos) */}
           <section className="mb-3">
-            <StoreLineTiles lines={lines} products={all} value={line} onChange={selectLine} />
+            <StoreLineTiles lines={lines} products={all} covers={lineCovers} value={line} onChange={selectLine} />
           </section>
         </>
       )}
@@ -254,7 +255,7 @@ const Tienda = () => {
                         { id: "todo", label: "Todo" },
                         ...lineEquipaciones.map((e) => ({
                           id: e,
-                          label: STORE_EQUIPACION_LABELS[e] ?? e,
+                          label: equipacionLabel(e),
                         })),
                       ]}
                       value={equipacion}
@@ -277,7 +278,7 @@ const Tienda = () => {
                         { id: "todo", label: "Todo" },
                         ...lineSections.map((s) => ({
                           id: s,
-                          label: STORE_SECTION_LABELS[s] ?? s,
+                          label: sectionLabel(s),
                         })),
                       ]}
                       value={seccion}
