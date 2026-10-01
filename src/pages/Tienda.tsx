@@ -221,11 +221,13 @@ const Tienda = () => {
 
       {/* 4. NAVEGACIÓN EDITORIAL EN NIVELES */}
       {!isSearching && (
-        <section className="mb-7">
-          <StoreLineTiles lines={lines} products={all} value={line} onChange={selectLine} />
+        <>
+          <section>
+            <StoreLineTiles lines={lines} products={all} value={line} onChange={selectLine} />
+          </section>
 
           {(showEquipaciones || showSections || showTypes) && (
-            <div className="sticky top-[6.75rem] z-20 -mx-3 mt-3 border-y border-hairline bg-background/95 px-3 py-2.5 backdrop-blur-md sm:top-[6.5rem] sm:-mx-4 sm:px-4">
+            <div className="sticky top-[6.75rem] z-20 -mx-3 mb-7 mt-3 border-y border-hairline bg-background/95 px-3 py-2.5 backdrop-blur-md sm:top-[6.5rem] sm:-mx-4 sm:px-4">
               <div className="space-y-2">
                 {showEquipaciones && (
                   <div className="overflow-x-auto scrollbar-hide">
@@ -288,7 +290,7 @@ const Tienda = () => {
               </div>
             </div>
           )}
-        </section>
+        </>
       )}
 
       {/* 5. GRILLA */}
