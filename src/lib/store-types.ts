@@ -61,21 +61,6 @@ export const sectionLabel = (v: string) => STORE_SECTION_LABELS[v] ?? formatTagL
 /** Etiqueta de equipación. */
 export const equipacionLabel = (v: string) => STORE_EQUIPACION_LABELS[v] ?? formatTagLabel(v);
 
-/** Nombres en pantalla de tipos de prenda (plural, con acentos). */
-const TYPE_LABELS: Record<string, string> = {
-  jersey: "Jerseys",
-  playera: "Playeras",
-  camiseta: "Camisetas",
-  hoodie: "Hoodies",
-  sudadera: "Sudaderas",
-  crewneck: "Crewnecks",
-  pantalon: "Pantalones",
-  short: "Shorts",
-  gorra: "Gorras",
-  bolsa: "Bolsas",
-  bufanda: "Bufandas",
-  chamarra: "Chamarras",
-};
 
 /** minúsculas, sin acentos, sin espacios extra. */
 export function normalizeStoreKey(value: string): string {
@@ -87,23 +72,13 @@ export function normalizeStoreKey(value: string): string {
     .replace(/\s+/g, " ");
 }
 
-/** Quita el plural simple del final ("playeras"→"playera", "pantalones"→"pantalon"). */
-function singularize(key: string): string {
-  if (key.endsWith("ones")) return key.slice(0, -4) + "on";
-  if (key.endsWith("es") && !key.endsWith("ses")) return key.slice(0, -2);
-  if (key.endsWith("s") && key.length > 3) return key.slice(0, -1);
-  return key;
-}
-
-/** Etiqueta en pantalla para un tipo de prenda (plural con acentos). */
+/**
+ * Etiqueta en pantalla para un tipo de prenda: exactamente el Type de Shopify,
+ * solo con la primera letra en mayúscula (sin singularizar ni pluralizar).
+ */
 export function storeTypeLabel(productType: string): string {
-  const key = singularize(normalizeStoreKey(productType));
-  if (TYPE_LABELS[key]) return TYPE_LABELS[key];
-  // Desconocido: capitaliza y pluraliza con regla simple.
-  const base = productType.trim();
-  if (!base) return "Otros";
-  const cap = formatTagLabel(base);
-  return /[aeiou]s$/i.test(base) ? cap : `${cap}s`;
+  const label = formatTagLabel(productType);
+  return label || "Otros";
 }
 
 export interface StoreClassification {
@@ -149,7 +124,7 @@ export function classifyStoreProduct(productType: string, tags: string[]): Store
     line,
     sections,
     equipacion,
-    garmentType: singularize(normalizeStoreKey(productType)),
+    garmentType: normalizeStoreKey(productType),
     corte,
   };
 }
