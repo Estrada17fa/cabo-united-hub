@@ -65,9 +65,15 @@ export const SIZE_GUIDES: SizeGuide[] = [
   },
 ];
 
+/** Tolera singular/plural: "hoodies" encuentra la tabla de "hoodie". */
+function sameType(a: string, b: string): boolean {
+  const base = (v: string) => v.replace(/e?s$/, "");
+  return a === b || base(a) === base(b);
+}
+
 /** Busca primero tipo + corte, luego solo tipo (la primera sin corte o cualquiera del tipo). */
 export function getSizeGuide(p: { garmentType: string; corte: string | null }): SizeGuide | null {
-  const byType = SIZE_GUIDES.filter((g) => g.garmentType === p.garmentType);
+  const byType = SIZE_GUIDES.filter((g) => sameType(g.garmentType, p.garmentType));
   if (byType.length === 0) return null;
   return (
     (p.corte && byType.find((g) => g.corte === p.corte)) ||
