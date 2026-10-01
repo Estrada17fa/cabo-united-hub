@@ -12,12 +12,14 @@ interface Props {
   value: string | null;
   onChange: (url: string | null) => void;
   /** Carpeta dentro del bucket público */
-  folder: "teams" | "tournaments" | "players" | "places" | "place-logos" | "tienda" | "sponsors";
+  folder: "" | "teams" | "tournaments" | "players" | "places" | "place-logos" | "tienda" | "sponsors";
   hint?: string;
+  /** Bucket opcional (por defecto avatars). */
+  bucket?: string;
 }
 
 /** Subida de imagen (PNG/JPG/WEBP/SVG, máx 2 MB) con vista previa. Sin URLs manuales. */
-export function ImageUploadField({ label, value, onChange, folder, hint }: Props) {
+export function ImageUploadField({ label, value, onChange, folder, hint, bucket = "avatars" }: Props) {
   const [busy, setBusy] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
 
@@ -27,8 +29,8 @@ export function ImageUploadField({ label, value, onChange, folder, hint }: Props
 
     setBusy(true);
     const ext = file.name.split(".").pop()?.toLowerCase() || "png";
-    const path = `${folder}/${crypto.randomUUID()}.${ext}`;
-    const { error } = await supabase.storage.from("avatars").upload(path, file, {
+    const path = `${folder ? `${folder}/` : ""}${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from(bucket).upload(path, file, {
       cacheControl: "31536000",
       upsert: false,
       contentType: file.type,
@@ -36,7 +38,7 @@ export function ImageUploadField({ label, value, onChange, folder, hint }: Props
     setBusy(false);
     if (error) return toast.error("No se pudo subir la imagen", { description: error.message });
 
-    const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
     onChange(data.publicUrl);
     toast.success("Imagen subida");
   };
