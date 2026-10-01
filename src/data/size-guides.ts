@@ -67,7 +67,7 @@ export const SIZE_GUIDES: SizeGuide[] = [
 
 /** Tolera singular/plural: "hoodies" encuentra la tabla de "hoodie". */
 function sameType(a: string, b: string): boolean {
-  const base = (v: string) => v.replace(/e?s$/, "");
+  const base = (v: string) => v.replace(/e?s$/, "").replace(/e$/, "");
   return a === b || base(a) === base(b);
 }
 
