@@ -36,8 +36,15 @@ Decisión: **amplío la tabla actual** en vez de crear `store_hero_slides`. Así
 ## Fuera de alcance
 El lector de tags, la URL y las reglas de qué filtros se muestran no se tocan.
 
+## Ajustes aprobados
+1. **Almacenamiento:** bucket propio "tienda" (público para leer; subir/cambiar/borrar solo `is_admin`). Ahí va todo lo nuevo (carrusel escritorio/móvil y portadas). La imagen actual del hero (en `avatars/tienda`) se queda donde está y sigue funcionando.
+2. **Fechas:** se capturan y muestran en hora de Los Cabos (America/Mazatlan), se guardan como timestamptz; el filtro público compara contra la hora actual.
+3. **Destinos rotos:** producto guarda el handle; si no existe o no está publicado, se oculta el botón (la diapositiva sigue). Tienda: si la combinación ya no tiene productos, cae en la vista válida más cercana (regla existente). El admin marca con aviso las diapositivas con destino roto.
+4. **Orden:** arrastrar con mouse en escritorio y flechas (también en celular).
+
 ## Detalles técnicos
-- Cambios en la base (solo se agregan columnas, sin borrar nada) en `shop_hero_slides`: `image_mobile_url`, `show_cta boolean default true`, `cta_type text` ('store'|'product'|'page'|'external'), `starts_at`, `ends_at`, y `title` deja de ser obligatorio. La consulta pública filtra por fechas.
+- Cambios en la base (solo se agregan columnas, sin borrar nada) en `shop_hero_slides`: `image_mobile_url`, `show_cta boolean default true`, `cta_type text` ('store'|'product'|'page'|'external'), `cta_ref` (handle o parámetros), `starts_at`, `ends_at`, y `title` con valor por defecto vacío. La consulta pública filtra por fechas.
+- Bucket "tienda" + 4 políticas en storage.objects (lectura pública, insert/update/delete con `is_admin`). `ImageUploadField` acepta un bucket opcional.
 - Tabla nueva `store_line_covers (line text pk, image_url, updated_at)` con permisos (GRANT), RLS, lectura pública y escritura con `is_admin(auth.uid())`. Las imágenes van al bucket `avatars`, carpeta `tienda`, que ya está permitida.
 - `StoreLineTiles` recibe un mapa de portadas resuelto en `Tienda.tsx` (sin cambiar la lógica de navegación); se elimina `import.meta.glob` y se actualiza la regla en AGENTS.md.
 - Arrastrar para ordenar con eventos nativos de arrastre o puntero, sin dependencias nuevas; los cambios de orden se guardan en lote.
