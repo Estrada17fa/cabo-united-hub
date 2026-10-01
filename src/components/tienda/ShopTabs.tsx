@@ -85,7 +85,6 @@ export const ShopTabs = ({
               >
                 <span className="absolute inset-x-3 bottom-1 h-[2px] rounded-full bg-primary" />
               </motion.span>
-              />
             )}
             <span className="relative z-10">{opt.label}</span>
           </Button>
