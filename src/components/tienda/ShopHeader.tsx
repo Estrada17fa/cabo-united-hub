@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { ShopSortSheet, type ShopSortOption } from "@/components/tienda/ShopSortSheet";
 
 interface ShopHeaderProps {
-  sort: string;
-  sortOptions: ShopSortOption[];
-  onSortChange: (value: string) => void;
+  sort?: string;
+  sortOptions?: ShopSortOption[];
+  onSortChange?: (value: string) => void;
 }
 
 export function ShopHeader({ sort, sortOptions, onSortChange }: ShopHeaderProps) {
@@ -81,7 +81,9 @@ export function ShopHeader({ sort, sortOptions, onSortChange }: ShopHeaderProps)
             </motion.span>
           )}
         </Button>
-        <ShopSortSheet value={sort} options={sortOptions} onChange={onSortChange} />
+        {sort && sortOptions && onSortChange && (
+          <ShopSortSheet value={sort} options={sortOptions} onChange={onSortChange} />
+        )}
       </div>
     </div>
   );
