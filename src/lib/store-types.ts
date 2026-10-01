@@ -139,7 +139,7 @@ export function classifyStoreProduct(productType: string, tags: string[]): Store
     line,
     sections,
     equipacion,
-    garmentType: singularize(normalizeStoreKey(productType)),
+    garmentType: normalizeStoreKey(productType),
     corte,
   };
 }
