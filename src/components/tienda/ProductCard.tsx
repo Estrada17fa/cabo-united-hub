@@ -8,13 +8,12 @@ interface Props {
   index?: number;
 }
 
-const NEW_DAYS = 21;
-
-/** Una sola etiqueta, por prioridad: Preventa > Nuevo. */
+/** Una sola etiqueta, por prioridad: Preventa > Nuevo. Ambas por tag estado:*. */
 function productBadge(p: StoreProduct): string | null {
-  if (p.tags.some((t) => normalizeStoreKey(t).replace(/\s/g, "") === "estado:preventa")) return "Preventa";
-  const created = Date.parse(p.createdAt);
-  if (!Number.isNaN(created) && Date.now() - created <= NEW_DAYS * 86400000) return "Nuevo";
+  const tag = (needle: string) =>
+    p.tags.some((t) => normalizeStoreKey(t).replace(/\s/g, "") === needle);
+  if (tag("estado:preventa")) return "Preventa";
+  if (tag("estado:nuevo")) return "Nuevo";
   return null;
 }
 
