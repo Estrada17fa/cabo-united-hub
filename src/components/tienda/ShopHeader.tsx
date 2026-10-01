@@ -33,7 +33,7 @@ export function ShopHeader({ sort, sortOptions, onSortChange }: ShopHeaderProps)
   };
 
   return (
-    <div className="mb-6 md:mb-8">
+    <div className="mb-4 md:mb-5">
       <div className="flex items-center gap-2">
         <form onSubmit={onSearch} className="flex-1 min-w-0">
           <div className="relative">
