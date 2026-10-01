@@ -1,43 +1,91 @@
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
 interface ShopTabsProps {
   options: { id: string; label: string }[];
   value: string;
   onChange: (id: string) => void;
-  /** Pestañas grandes (nivel 1) vs. segmentos secundarios (niveles 2 y 3). */
-  size?: "lg" | "sm";
+  variant?: "segment" | "type";
+  ariaLabel?: string;
 }
 
-/** Fila de pestañas/segmentos de la tienda. Scroll horizontal en móvil. */
-export const ShopTabs = ({ options, value, onChange, size = "sm" }: ShopTabsProps) => {
+export const ShopTabs = ({
+  options,
+  value,
+  onChange,
+  variant = "segment",
+  ariaLabel = "Filtros de tienda",
+}: ShopTabsProps) => {
   if (options.length === 0) return null;
-  const isLg = size === "lg";
+
+  if (variant === "type") {
+    return (
+      <div
+        className="flex gap-6 overflow-x-auto border-b border-hairline scrollbar-hide"
+        role="tablist"
+        aria-label={ariaLabel}
+      >
+        {options.map((option) => {
+          const active = option.id === value;
+          return (
+            <Button
+              key={option.id}
+              type="button"
+              variant="ghost"
+              role="tab"
+              aria-selected={active}
+              onClick={() => onChange(option.id)}
+              className={cn(
+                "relative h-9 shrink-0 rounded-none px-0 pb-3 pt-2 text-[11px] font-semibold text-muted-foreground hover:bg-transparent hover:text-foreground",
+                active && "text-foreground",
+              )}
+            >
+              {option.label}
+              {active && (
+                <motion.span
+                  layoutId="shop-type-indicator"
+                  transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                  className="absolute inset-x-0 bottom-0 h-px bg-primary"
+                />
+              )}
+            </Button>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
     <div
-      className={`-mx-1 flex gap-1 overflow-x-auto px-1 scrollbar-hide ${
-        isLg ? "border-b border-hairline" : ""
-      }`}
+      className="flex min-w-max gap-1 rounded-xl border border-hairline bg-surface-1 p-1"
+      role="tablist"
+      aria-label={ariaLabel}
     >
       {options.map((opt) => {
         const active = opt.id === value;
         return (
-          <button
+          <Button
             key={opt.id}
+            type="button"
+            variant="ghost"
+            role="tab"
+            aria-selected={active}
             onClick={() => onChange(opt.id)}
-            className={`shrink-0 whitespace-nowrap font-bold transition-colors ${
-              isLg
-                ? `border-b-2 px-4 py-2.5 text-[14px] ${
-                    active
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`
-                : `rounded-lg px-3 py-1.5 text-[12px] ${
-                    active
-                      ? "bg-surface-2 text-primary"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`
-            }`}
+            className={cn(
+              "relative h-8 shrink-0 rounded-lg px-3 text-[11px] font-semibold text-muted-foreground hover:bg-transparent hover:text-foreground md:px-4",
+              active && "text-background",
+            )}
           >
-            {opt.label}
-          </button>
+            {active && (
+              <motion.span
+                layoutId="shop-segment-indicator"
+                transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                className="absolute inset-0 rounded-lg bg-primary"
+              />
+            )}
+            <span className="relative z-10">{opt.label}</span>
+          </Button>
         );
       })}
     </div>

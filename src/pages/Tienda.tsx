@@ -1,12 +1,13 @@
 import { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { ShopHeader } from "@/components/tienda/ShopHeader";
 import { HeroCarousel } from "@/components/tienda/HeroCarousel";
 import { PromoBanner } from "@/components/tienda/PromoBanner";
 import { ProductCard } from "@/components/tienda/ProductCard";
 import { ShopTabs } from "@/components/tienda/ShopTabs";
+import { StoreLineTiles } from "@/components/tienda/StoreLineTiles";
+import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
 import { useShopBanners } from "@/hooks/useShopContent";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,12 +20,6 @@ import {
   type StoreLine,
   type StoreProduct,
 } from "@/lib/store-types";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 type SortKey = "newest" | "price-asc" | "price-desc" | "name";
 const SORTS: { key: SortKey; label: string }[] = [
@@ -174,17 +169,20 @@ const Tienda = () => {
     return sorted;
   }, [all, level2Products, tipo, sort, term]);
 
-  const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? "Más nuevo";
-
-  const activeLabel = useMemo(() => {
+  const breadcrumbParts = useMemo(() => {
     const parts: string[] = [STORE_LINE_LABELS[line]];
     if (showEquipaciones && equipacion !== "todo")
       parts.push(STORE_EQUIPACION_LABELS[equipacion] ?? equipacion);
     if (showSections && seccion !== "todo")
       parts.push(STORE_SECTION_LABELS[seccion] ?? seccion);
     if (showTypes && tipo !== "todo") parts.push(storeTypeLabel(tipo));
-    return parts.join(" · ");
+    return parts;
   }, [line, showEquipaciones, equipacion, showSections, seccion, showTypes, tipo]);
+
+  const activeLabel = breadcrumbParts.join(" · ");
+  const resultTitle = isSearching
+    ? `Resultados para “${searchQuery}”`
+    : (breadcrumbParts[breadcrumbParts.length - 1] ?? STORE_LINE_LABELS[line]);
 
   const isDefaultView =
     line === (lines[0] ?? "oficial") && seccion === "todo" && equipacion === "todo" && tipo === "todo";
@@ -214,88 +212,85 @@ const Tienda = () => {
         </>
       )}
 
-      {/* 3. BUSCADOR + CARRITO */}
-      <ShopHeader />
+      {/* 3. BUSCADOR + CARRITO + ORDEN */}
+      <ShopHeader
+        sort={sort}
+        sortOptions={SORTS}
+        onSortChange={(value) => setParam("orden", value === "newest" ? null : value)}
+      />
 
-      {/* 4. NAVEGACIÓN EN NIVELES + ORDEN */}
+      {/* 4. NAVEGACIÓN EDITORIAL EN NIVELES */}
       {!isSearching && (
-        <section className="mb-6 space-y-2.5">
-          <div className="flex items-end justify-between gap-3">
-            <ShopTabs
-              size="lg"
-              options={lines.map((l) => ({ id: l, label: STORE_LINE_LABELS[l] }))}
-              value={line}
-              onChange={(id) => selectLine(id as StoreLine)}
-            />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="mb-1 inline-flex shrink-0 items-center gap-2 rounded-xl border border-hairline bg-surface-1 px-3.5 py-2 text-[12px] font-semibold text-foreground">
-                  Ordenar: <span className="font-normal text-muted-foreground">{sortLabel}</span>
-                  <ChevronDown className="h-3.5 w-3.5" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="border-hairline bg-surface-1">
-                {SORTS.map((s) => (
-                  <DropdownMenuItem
-                    key={s.key}
-                    onClick={() => setParam("orden", s.key === "newest" ? null : s.key)}
-                    className="cursor-pointer text-xs"
-                  >
-                    {s.label}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+        <>
+          <section>
+            <StoreLineTiles lines={lines} products={all} value={line} onChange={selectLine} />
+          </section>
 
-          {showEquipaciones && (
-            <ShopTabs
-              options={[
-                { id: "todo", label: "Todo" },
-                ...lineEquipaciones.map((e) => ({
-                  id: e,
-                  label: STORE_EQUIPACION_LABELS[e] ?? e,
-                })),
-              ]}
-              value={equipacion}
-              onChange={(id) => {
-                setParam("equipacion", id === "todo" ? null : id);
-                if (id !== equipacion) setParam("tipo", null);
-              }}
-            />
-          )}
+          {(showEquipaciones || showSections || showTypes) && (
+            <div className="sticky top-[6.75rem] z-20 -mx-3 mb-7 mt-3 border-y border-hairline bg-background/95 px-3 py-2.5 backdrop-blur-md sm:top-[6.5rem] sm:-mx-4 sm:px-4">
+              <div className="space-y-2">
+                {showEquipaciones && (
+                  <div className="overflow-x-auto scrollbar-hide">
+                    <ShopTabs
+                      ariaLabel="Equipación"
+                      options={[
+                        { id: "todo", label: "Todo" },
+                        ...lineEquipaciones.map((e) => ({
+                          id: e,
+                          label: STORE_EQUIPACION_LABELS[e] ?? e,
+                        })),
+                      ]}
+                      value={equipacion}
+                      onChange={(id) => {
+                        const next = new URLSearchParams(params);
+                        if (id === "todo") next.delete("equipacion");
+                        else next.set("equipacion", id);
+                        next.delete("tipo");
+                        setParams(next, { replace: true });
+                      }}
+                    />
+                  </div>
+                )}
 
-          {showSections && (
-            <ShopTabs
-              options={[
-                { id: "todo", label: "Todo" },
-                ...lineSections.map((s) => ({
-                  id: s,
-                  label: STORE_SECTION_LABELS[s] ?? s,
-                })),
-              ]}
-              value={seccion}
-              onChange={(id) => {
-                const next = new URLSearchParams(params);
-                if (id === "todo") next.delete("seccion");
-                else next.set("seccion", id);
-                next.delete("tipo");
-                setParams(next, { replace: true });
-              }}
-            />
-          )}
+                {showSections && (
+                  <div className="overflow-x-auto scrollbar-hide">
+                    <ShopTabs
+                      ariaLabel="Sección"
+                      options={[
+                        { id: "todo", label: "Todo" },
+                        ...lineSections.map((s) => ({
+                          id: s,
+                          label: STORE_SECTION_LABELS[s] ?? s,
+                        })),
+                      ]}
+                      value={seccion}
+                      onChange={(id) => {
+                        const next = new URLSearchParams(params);
+                        if (id === "todo") next.delete("seccion");
+                        else next.set("seccion", id);
+                        next.delete("tipo");
+                        setParams(next, { replace: true });
+                      }}
+                    />
+                  </div>
+                )}
 
-          {showTypes && (
-            <ShopTabs
-              options={[
-                { id: "todo", label: "Todo" },
-                ...level3Types.map((t) => ({ id: t, label: storeTypeLabel(t) })),
-              ]}
-              value={tipo}
-              onChange={(id) => setParam("tipo", id === "todo" ? null : id)}
-            />
+                {showTypes && (
+                  <ShopTabs
+                    variant="type"
+                    ariaLabel="Tipo de prenda"
+                    options={[
+                      { id: "todo", label: "Todo" },
+                      ...level3Types.map((t) => ({ id: t, label: storeTypeLabel(t) })),
+                    ]}
+                    value={tipo}
+                    onChange={(id) => setParam("tipo", id === "todo" ? null : id)}
+                  />
+                )}
+              </div>
+            </div>
           )}
-        </section>
+        </>
       )}
 
       {/* 5. GRILLA */}
@@ -305,26 +300,31 @@ const Tienda = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
       >
-        <div className="mb-4 flex items-end justify-between gap-3">
-          <p className="text-[11px] text-muted-foreground">
-            <span className="font-bold text-foreground">
-              {isSearching ? `Resultados para "${searchQuery}"` : activeLabel}
-            </span>
-            {list.length > 0 && (
-              <>
-                {" · "}
-                <span className="font-display tabular-nums">{list.length}</span>{" "}
-                {list.length === 1 ? "pieza" : "piezas"}
-              </>
+        <div className="mb-5 flex items-end justify-between gap-3">
+          <div className="min-w-0">
+            {!isSearching && breadcrumbParts.length > 0 && (
+              <p className="mb-1 truncate text-[10px] font-medium text-muted-foreground">
+                {breadcrumbParts.join(" / ")}
+              </p>
             )}
-          </p>
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h1 className="font-display text-[26px] font-bold leading-none text-foreground md:text-[32px]">
+                {resultTitle}
+              </h1>
+              <span className="font-display text-[11px] font-medium tabular-nums text-muted-foreground">
+                {list.length} {list.length === 1 ? "pieza" : "piezas"}
+              </span>
+            </div>
+          </div>
           {!isDefaultView && !isSearching && (
-            <button
+            <Button
+              type="button"
+              variant="ghost"
               onClick={() => setParams({}, { replace: true })}
-              className="text-[12px] font-bold text-primary"
+              className="h-8 shrink-0 rounded-lg px-2 text-[11px] font-semibold text-muted-foreground hover:bg-surface-1 hover:text-foreground"
             >
               Ver todos
-            </button>
+            </Button>
           )}
         </div>
 
