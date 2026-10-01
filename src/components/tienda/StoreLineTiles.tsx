@@ -22,7 +22,12 @@ interface StoreLineTilesProps {
 
 export function StoreLineTiles({ lines, products, value, onChange }: StoreLineTilesProps) {
   return (
-    <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 md:gap-3">
+    <div
+      className={cn(
+        "grid grid-cols-2 gap-2.5 md:gap-3",
+        lines.length >= 3 && "md:grid-cols-3",
+      )}
+    >
       {lines.map((line) => {
         const lineProducts = products.filter((product) => product.line === line);
         const configuredPath = LINE_COVER_PATHS[line];
