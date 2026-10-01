@@ -33,7 +33,7 @@ export function HeroCarousel() {
   if (isLoading && slides.length === 0) {
     return (
       <div className="w-full overflow-hidden rounded-2xl border border-hairline bg-surface-1">
-        <div className="aspect-[4/3] w-full animate-pulse bg-white/[0.03] sm:aspect-[16/9] md:aspect-[21/9]" />
+        <div className="aspect-[20/9] w-full animate-pulse bg-white/[0.03] sm:aspect-[8/3] md:aspect-[7/2]" />
       </div>
     );
   }
@@ -65,7 +65,7 @@ export function HeroCarousel() {
 
   return (
     <div className="relative w-full overflow-hidden rounded-2xl border border-hairline bg-surface-1">
-      <div className="relative aspect-[4/3] w-full sm:aspect-[16/9] md:aspect-[21/9]">
+      <div className="relative aspect-[20/9] w-full sm:aspect-[8/3] md:aspect-[7/2]">
         <AnimatePresence mode="sync">
           <motion.img
             key={slide.id}
@@ -82,7 +82,7 @@ export function HeroCarousel() {
         {/* Legibilidad del texto, sin degradado decorativo */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
-        <div className="absolute inset-x-0 bottom-0 p-5 md:p-8">
+        <div className="absolute inset-x-0 bottom-0 p-4 md:p-6">
           <motion.div key={`${slide.id}-copy`} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             {slide.eyebrow && (
               <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70">
@@ -95,7 +95,7 @@ export function HeroCarousel() {
             {slide.subtitle && (
               <p className="mt-1.5 max-w-md text-[13px] text-white/70 md:text-sm">{slide.subtitle}</p>
             )}
-            {cta && <div className="mt-4">{cta}</div>}
+            {cta && <div className="mt-3">{cta}</div>}
           </motion.div>
         </div>
       </div>

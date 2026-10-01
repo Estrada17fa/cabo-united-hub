@@ -103,8 +103,9 @@ const Tienda = () => {
     [lineProducts],
   );
 
-  const showSections = line === "streetwear" ? lineSections.length > 0 : lineSections.length > 1;
-  const showEquipaciones = line === "oficial" && lineEquipaciones.length > 0;
+  // Un nivel solo aparece si hay 2+ opciones reales (sin contar "Todo").
+  const showSections = lineSections.length > 1;
+  const showEquipaciones = line === "oficial" && lineEquipaciones.length > 1;
 
   const rawSeccion = params.get("seccion");
   const seccion =
@@ -169,23 +170,39 @@ const Tienda = () => {
     return sorted;
   }, [all, level2Products, tipo, sort, term]);
 
-  const breadcrumbParts = useMemo(() => {
-    const parts: string[] = [STORE_LINE_LABELS[line]];
-    if (showEquipaciones && equipacion !== "todo")
-      parts.push(STORE_EQUIPACION_LABELS[equipacion] ?? equipacion);
-    if (showSections && seccion !== "todo")
-      parts.push(STORE_SECTION_LABELS[seccion] ?? seccion);
-    if (showTypes && tipo !== "todo") parts.push(storeTypeLabel(tipo));
-    return parts;
+  /** Cada miga guarda los parámetros de URL que la llevan a ese nivel. */
+  const breadcrumbs = useMemo(() => {
+    const crumbs: { label: string; keep: Record<string, string> }[] = [
+      { label: STORE_LINE_LABELS[line], keep: { linea: line } },
+    ];
+    let keep: Record<string, string> = { linea: line };
+    if (showEquipaciones && equipacion !== "todo") {
+      keep = { ...keep, equipacion };
+      crumbs.push({ label: STORE_EQUIPACION_LABELS[equipacion] ?? equipacion, keep });
+    }
+    if (showSections && seccion !== "todo") {
+      keep = { ...keep, seccion };
+      crumbs.push({ label: STORE_SECTION_LABELS[seccion] ?? seccion, keep });
+    }
+    if (showTypes && tipo !== "todo") {
+      keep = { ...keep, tipo };
+      crumbs.push({ label: storeTypeLabel(tipo), keep });
+    }
+    return crumbs;
   }, [line, showEquipaciones, equipacion, showSections, seccion, showTypes, tipo]);
+  const breadcrumbParts = breadcrumbs.map((c) => c.label);
+
+  const goToCrumb = (keep: Record<string, string>) => {
+    const next = new URLSearchParams(keep);
+    const orden = params.get("orden");
+    if (orden) next.set("orden", orden);
+    setParams(next, { replace: true });
+  };
 
   const activeLabel = breadcrumbParts.join(" · ");
   const resultTitle = isSearching
     ? `Resultados para “${searchQuery}”`
     : (breadcrumbParts[breadcrumbParts.length - 1] ?? STORE_LINE_LABELS[line]);
-
-  const isDefaultView =
-    line === (lines[0] ?? "oficial") && seccion === "todo" && equipacion === "todo" && tipo === "todo";
 
   return (
     <motion.div
@@ -209,25 +226,25 @@ const Tienda = () => {
               ))}
             </section>
           )}
+          {/* 3. LÍNEAS (departamentos) */}
+          <section className="mb-3">
+            <StoreLineTiles lines={lines} products={all} value={line} onChange={selectLine} />
+          </section>
         </>
       )}
 
-      {/* 3. BUSCADOR + CARRITO + ORDEN */}
+      {/* 4. BUSCADOR + CARRITO + ORDEN */}
       <ShopHeader
         sort={sort}
         sortOptions={SORTS}
         onSortChange={(value) => setParam("orden", value === "newest" ? null : value)}
       />
 
-      {/* 4. NAVEGACIÓN EDITORIAL EN NIVELES */}
+      {/* 5. FILTROS EN NIVELES */}
       {!isSearching && (
         <>
-          <section>
-            <StoreLineTiles lines={lines} products={all} value={line} onChange={selectLine} />
-          </section>
-
           {(showEquipaciones || showSections || showTypes) && (
-            <div className="sticky top-[6.75rem] z-20 -mx-3 mb-7 mt-3 border-y border-hairline bg-background/95 px-3 py-2.5 backdrop-blur-md sm:top-[6.5rem] sm:-mx-4 sm:px-4">
+            <div className="sticky top-[6.75rem] z-20 -mx-3 mb-4 bg-background px-3 py-2 sm:top-[6.5rem] sm:-mx-4 sm:px-4">
               <div className="space-y-2">
                 {showEquipaciones && (
                   <div className="overflow-x-auto scrollbar-hide">
@@ -300,32 +317,38 @@ const Tienda = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
       >
-        <div className="mb-5 flex items-end justify-between gap-3">
-          <div className="min-w-0">
-            {!isSearching && breadcrumbParts.length > 0 && (
-              <p className="mb-1 truncate text-[10px] font-medium text-muted-foreground">
-                {breadcrumbParts.join(" / ")}
-              </p>
-            )}
-            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <h1 className="font-display text-[26px] font-bold leading-none text-foreground md:text-[32px]">
-                {resultTitle}
-              </h1>
-              <span className="font-display text-[11px] font-medium tabular-nums text-muted-foreground">
-                {list.length} {list.length === 1 ? "pieza" : "piezas"}
-              </span>
-            </div>
-          </div>
-          {!isDefaultView && !isSearching && (
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setParams({}, { replace: true })}
-              className="h-8 shrink-0 rounded-lg px-2 text-[11px] font-semibold text-muted-foreground hover:bg-surface-1 hover:text-foreground"
-            >
-              Ver todos
-            </Button>
+        <div className="mb-4 min-w-0">
+          {!isSearching && breadcrumbs.length > 0 && (
+            <nav aria-label="Ruta" className="mb-1 flex flex-wrap items-center gap-1 text-[10px] font-medium text-muted-foreground">
+              {breadcrumbs.map((c, i) => {
+                const last = i === breadcrumbs.length - 1;
+                return (
+                  <span key={c.label + i} className="flex items-center gap-1">
+                    {i > 0 && <span aria-hidden>/</span>}
+                    {last ? (
+                      <span aria-current="page" className="text-foreground/70">{c.label}</span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => goToCrumb(c.keep)}
+                        className="rounded hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      >
+                        {c.label}
+                      </button>
+                    )}
+                  </span>
+                );
+              })}
+            </nav>
           )}
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h1 className="font-display text-[24px] font-bold leading-none text-foreground md:text-[32px]">
+              {resultTitle}
+            </h1>
+            <span className="font-display text-[11px] font-medium tabular-nums text-muted-foreground">
+              {list.length} {list.length === 1 ? "pieza" : "piezas"}
+            </span>
+          </div>
         </div>
 
         {isLoading && (
