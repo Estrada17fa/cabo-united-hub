@@ -103,8 +103,9 @@ const Tienda = () => {
     [lineProducts],
   );
 
-  const showSections = line === "streetwear" ? lineSections.length > 0 : lineSections.length > 1;
-  const showEquipaciones = line === "oficial" && lineEquipaciones.length > 0;
+  // Un nivel solo aparece si hay 2+ opciones reales (sin contar "Todo").
+  const showSections = lineSections.length > 1;
+  const showEquipaciones = line === "oficial" && lineEquipaciones.length > 1;
 
   const rawSeccion = params.get("seccion");
   const seccion =
@@ -169,23 +170,39 @@ const Tienda = () => {
     return sorted;
   }, [all, level2Products, tipo, sort, term]);
 
-  const breadcrumbParts = useMemo(() => {
-    const parts: string[] = [STORE_LINE_LABELS[line]];
-    if (showEquipaciones && equipacion !== "todo")
-      parts.push(STORE_EQUIPACION_LABELS[equipacion] ?? equipacion);
-    if (showSections && seccion !== "todo")
-      parts.push(STORE_SECTION_LABELS[seccion] ?? seccion);
-    if (showTypes && tipo !== "todo") parts.push(storeTypeLabel(tipo));
-    return parts;
+  /** Cada miga guarda los parámetros de URL que la llevan a ese nivel. */
+  const breadcrumbs = useMemo(() => {
+    const crumbs: { label: string; keep: Record<string, string> }[] = [
+      { label: STORE_LINE_LABELS[line], keep: { linea: line } },
+    ];
+    let keep: Record<string, string> = { linea: line };
+    if (showEquipaciones && equipacion !== "todo") {
+      keep = { ...keep, equipacion };
+      crumbs.push({ label: STORE_EQUIPACION_LABELS[equipacion] ?? equipacion, keep });
+    }
+    if (showSections && seccion !== "todo") {
+      keep = { ...keep, seccion };
+      crumbs.push({ label: STORE_SECTION_LABELS[seccion] ?? seccion, keep });
+    }
+    if (showTypes && tipo !== "todo") {
+      keep = { ...keep, tipo };
+      crumbs.push({ label: storeTypeLabel(tipo), keep });
+    }
+    return crumbs;
   }, [line, showEquipaciones, equipacion, showSections, seccion, showTypes, tipo]);
+  const breadcrumbParts = breadcrumbs.map((c) => c.label);
+
+  const goToCrumb = (keep: Record<string, string>) => {
+    const next = new URLSearchParams(keep);
+    const orden = params.get("orden");
+    if (orden) next.set("orden", orden);
+    setParams(next, { replace: true });
+  };
 
   const activeLabel = breadcrumbParts.join(" · ");
   const resultTitle = isSearching
     ? `Resultados para “${searchQuery}”`
     : (breadcrumbParts[breadcrumbParts.length - 1] ?? STORE_LINE_LABELS[line]);
-
-  const isDefaultView =
-    line === (lines[0] ?? "oficial") && seccion === "todo" && equipacion === "todo" && tipo === "todo";
 
   return (
     <motion.div
