@@ -1718,12 +1718,18 @@ export type Database = {
         Row: {
           created_at: string
           cta_label: string | null
+          cta_ref: string | null
+          cta_type: string
           cta_url: string | null
+          ends_at: string | null
           eyebrow: string | null
           id: string
+          image_mobile_url: string | null
           image_url: string | null
           published: boolean
+          show_cta: boolean
           sort_order: number
+          starts_at: string | null
           subtitle: string | null
           title: string
           updated_at: string
@@ -1731,25 +1737,37 @@ export type Database = {
         Insert: {
           created_at?: string
           cta_label?: string | null
+          cta_ref?: string | null
+          cta_type?: string
           cta_url?: string | null
+          ends_at?: string | null
           eyebrow?: string | null
           id?: string
+          image_mobile_url?: string | null
           image_url?: string | null
           published?: boolean
+          show_cta?: boolean
           sort_order?: number
+          starts_at?: string | null
           subtitle?: string | null
-          title: string
+          title?: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           cta_label?: string | null
+          cta_ref?: string | null
+          cta_type?: string
           cta_url?: string | null
+          ends_at?: string | null
           eyebrow?: string | null
           id?: string
+          image_mobile_url?: string | null
           image_url?: string | null
           published?: boolean
+          show_cta?: boolean
           sort_order?: number
+          starts_at?: string | null
           subtitle?: string | null
           title?: string
           updated_at?: string
@@ -1785,6 +1803,24 @@ export type Database = {
           logo_url?: string
           name?: string
           sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      store_line_covers: {
+        Row: {
+          image_url: string | null
+          line: string
+          updated_at: string
+        }
+        Insert: {
+          image_url?: string | null
+          line: string
+          updated_at?: string
+        }
+        Update: {
+          image_url?: string | null
+          line?: string
           updated_at?: string
         }
         Relationships: []

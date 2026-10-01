@@ -4,9 +4,11 @@ import { LcuTabs } from "@/components/ui-lcu/LcuTabs";
 
 const HeroSlides = lazy(() => import("./HeroSlides"));
 const Banners = lazy(() => import("./Banners"));
+const LineCovers = lazy(() => import("./LineCovers"));
 
 const TABS = [
-  { id: "hero", label: "Hero" },
+  { id: "hero", label: "Carrusel" },
+  { id: "portadas", label: "Portadas de línea" },
   { id: "banners", label: "Banners" },
 ];
 
@@ -26,7 +28,7 @@ export default function Tienda() {
       <div>
         <h1 className="text-base font-bold text-foreground">Tienda</h1>
         <p className="text-[11px] text-muted-foreground">
-          Aquí se edita el contenido de campaña de la tienda: el hero y los banners. Las fotos y
+          Aquí se edita el contenido de campaña de la tienda: el carrusel, las portadas de línea y los banners. Las fotos y
           precios de producto vienen del catálogo, no se suben desde aquí.
         </p>
       </div>
@@ -38,6 +40,7 @@ export default function Tienda() {
       <Suspense fallback={<Fallback />}>
         {tab === "hero" && <HeroSlides />}
         {tab === "banners" && <Banners />}
+        {tab === "portadas" && <LineCovers />}
       </Suspense>
     </div>
   );
