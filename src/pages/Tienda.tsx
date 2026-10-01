@@ -317,38 +317,40 @@ const Tienda = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
       >
-        <div className="mb-4 min-w-0">
-          {!isSearching && breadcrumbs.length > 0 && (
-            <nav aria-label="Ruta" className="mb-1 flex flex-wrap items-center gap-1 text-[10px] font-medium text-muted-foreground">
-              {breadcrumbs.map((c, i) => {
-                const last = i === breadcrumbs.length - 1;
-                return (
-                  <span key={c.label + i} className="flex items-center gap-1">
-                    {i > 0 && <span aria-hidden>/</span>}
-                    {last ? (
-                      <span aria-current="page" className="text-foreground/70">{c.label}</span>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => goToCrumb(c.keep)}
-                        className="rounded hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                      >
-                        {c.label}
-                      </button>
-                    )}
-                  </span>
-                );
-              })}
-            </nav>
-          )}
-          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <h1 className="font-display text-[24px] font-bold leading-none text-foreground md:text-[32px]">
-              {resultTitle}
-            </h1>
-            <span className="font-display text-[11px] font-medium tabular-nums text-muted-foreground">
-              {list.length} {list.length === 1 ? "pieza" : "piezas"}
-            </span>
+        <h1 className="sr-only">{resultTitle}</h1>
+        <div className="mb-2.5 flex min-h-5 items-center justify-between gap-3">
+          <div className="min-w-0">
+            {isSearching ? (
+              <p className="truncate text-[11px] font-medium text-muted-foreground">{resultTitle}</p>
+            ) : (
+              breadcrumbs.length >= 2 && (
+                <nav aria-label="Ruta" className="flex flex-wrap items-center gap-1 text-[11px] font-medium text-muted-foreground">
+                  {breadcrumbs.map((c, i) => {
+                    const last = i === breadcrumbs.length - 1;
+                    return (
+                      <span key={c.label + i} className="flex items-center gap-1">
+                        {i > 0 && <span aria-hidden>/</span>}
+                        {last ? (
+                          <span aria-current="page" className="text-foreground/80">{c.label}</span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => goToCrumb(c.keep)}
+                            className="rounded hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                          >
+                            {c.label}
+                          </button>
+                        )}
+                      </span>
+                    );
+                  })}
+                </nav>
+              )
+            )}
           </div>
+          <span className="shrink-0 font-display text-[11px] font-medium tabular-nums text-muted-foreground">
+            {list.length} {list.length === 1 ? "producto" : "productos"}
+          </span>
         </div>
 
         {isLoading && (
