@@ -406,11 +406,17 @@ export default function HeroSlides() {
                 <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Vista previa
                 </span>
-                <div className="relative aspect-[7/2] w-full overflow-hidden rounded-xl border border-hairline">
-                  <HeroSlideFrame slide={preview} />
+                {/* Escritorio: se dibuja a 1100 px reales y se escala al ancho del panel */}
+                <div className="relative h-[118px] w-[412px] max-w-full overflow-hidden rounded-xl border border-hairline">
+                  <div className="absolute left-0 top-0 aspect-[7/2] w-[1100px] origin-top-left scale-[0.3745]">
+                    <HeroSlideFrame slide={preview} />
+                  </div>
                 </div>
-                <div className="relative mx-auto aspect-[20/9] w-[220px] overflow-hidden rounded-xl border border-hairline">
-                  <HeroSlideFrame slide={preview} forceMobile />
+                {/* Celular: 360 px reales escalados */}
+                <div className="relative mx-auto h-[144px] w-[324px] overflow-hidden rounded-xl border border-hairline">
+                  <div className="absolute left-0 top-0 aspect-[20/9] w-[360px] origin-top-left scale-90">
+                    <HeroSlideFrame slide={preview} forceMobile />
+                  </div>
                 </div>
                 <p className="text-center text-[10px] text-muted-foreground">Escritorio · Celular</p>
               </div>
