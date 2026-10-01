@@ -24,8 +24,8 @@ export function StoreLineTiles({ lines, products, value, onChange }: StoreLineTi
   return (
     <div
       className={cn(
-        "grid grid-cols-2 gap-2.5 md:gap-3",
-        lines.length >= 3 && "md:grid-cols-3",
+        "grid gap-2 md:gap-3",
+        lines.length >= 3 ? "grid-cols-3" : lines.length === 2 ? "grid-cols-2" : "grid-cols-1",
       )}
     >
       {lines.map((line) => {
@@ -44,7 +44,7 @@ export function StoreLineTiles({ lines, products, value, onChange }: StoreLineTi
             onClick={() => onChange(line)}
             aria-pressed={active}
             className={cn(
-              "group relative h-[124px] w-full overflow-hidden rounded-2xl border p-0 text-left transition-colors md:h-[154px]",
+              "group relative h-[88px] w-full overflow-hidden rounded-2xl border p-0 text-left transition-colors md:h-[104px]",
               active ? "border-primary" : "border-hairline hover:border-foreground/30",
             )}
           >
@@ -60,12 +60,12 @@ export function StoreLineTiles({ lines, products, value, onChange }: StoreLineTi
             ) : (
               <span className="absolute inset-0 bg-surface-2" />
             )}
-            <span className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-            <span className="absolute inset-x-0 bottom-0 block p-3 md:p-4">
-              <span className="block font-display text-[18px] font-bold leading-none text-foreground md:text-[22px]">
+            <span className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/10" />
+            <span className="absolute inset-x-0 bottom-0 block p-2.5 md:p-3.5">
+              <span className="block font-display text-[15px] font-bold leading-none text-foreground md:text-[20px]">
                 {STORE_LINE_LABELS[line]}
               </span>
-              <span className="mt-1.5 block font-display text-[10px] font-medium tabular-nums text-foreground/65">
+              <span className="mt-1 block font-display text-[10px] font-medium tabular-nums text-foreground/65">
                 {lineProducts.length} {lineProducts.length === 1 ? "pieza" : "piezas"}
               </span>
             </span>

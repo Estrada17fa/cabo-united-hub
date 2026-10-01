@@ -22,7 +22,7 @@ export const ShopTabs = ({
   if (variant === "type") {
     return (
       <div
-        className="flex gap-6 overflow-x-auto border-b border-hairline scrollbar-hide"
+        className="flex gap-6 overflow-x-auto scrollbar-hide"
         role="tablist"
         aria-label={ariaLabel}
       >
@@ -73,15 +73,18 @@ export const ShopTabs = ({
             aria-selected={active}
             onClick={() => onChange(opt.id)}
             className={cn(
-              "relative h-8 shrink-0 rounded-lg px-3 text-[11px] font-semibold text-muted-foreground hover:bg-transparent hover:text-foreground md:px-4",
-              active && "text-background",
+              "relative h-8 shrink-0 rounded-lg px-3 text-[11px] font-semibold text-muted-foreground hover:bg-transparent hover:text-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0 md:px-4",
+              active && "text-foreground",
             )}
           >
             {active && (
               <motion.span
                 layoutId="shop-segment-indicator"
                 transition={{ type: "spring", stiffness: 420, damping: 36 }}
-                className="absolute inset-0 rounded-lg bg-primary"
+                className="absolute inset-0 rounded-lg bg-surface-2"
+              >
+                <span className="absolute inset-x-3 bottom-1 h-[2px] rounded-full bg-primary" />
+              </motion.span>
               />
             )}
             <span className="relative z-10">{opt.label}</span>
